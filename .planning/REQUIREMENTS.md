@@ -88,40 +88,40 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| VOICE-01 | — | Pending |
-| VOICE-02 | — | Pending |
-| VOICE-03 | — | Pending |
-| VOICE-04 | — | Pending |
-| VOICE-05 | — | Pending |
-| AI-01 | — | Pending |
-| AI-02 | — | Pending |
-| AI-03 | — | Pending |
-| AI-04 | — | Pending |
-| CRM-01 | — | Pending |
-| CRM-02 | — | Pending |
-| CRM-03 | — | Pending |
-| CRM-04 | — | Pending |
-| CRM-05 | — | Pending |
-| CRM-06 | — | Pending |
-| CRM-07 | — | Pending |
-| CRM-08 | — | Pending |
-| CRM-09 | — | Pending |
-| CRM-10 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
-| UI-03 | — | Pending |
-| UI-04 | — | Pending |
-| UI-05 | — | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| UI-01 | Phase 1 | Pending |
+| VOICE-01 | Phase 2 | Pending |
+| VOICE-02 | Phase 2 | Pending |
+| VOICE-03 | Phase 2 | Pending |
+| VOICE-04 | Phase 2 | Pending |
+| VOICE-05 | Phase 2 | Pending |
+| AI-01 | Phase 3 | Pending |
+| AI-02 | Phase 3 | Pending |
+| AI-03 | Phase 3 | Pending |
+| AI-04 | Phase 3 | Pending |
+| CRM-01 | Phase 4 | Pending |
+| CRM-02 | Phase 4 | Pending |
+| CRM-03 | Phase 4 | Pending |
+| CRM-04 | Phase 4 | Pending |
+| CRM-09 | Phase 4 | Pending |
+| UI-04 | Phase 4 | Pending |
+| CRM-05 | Phase 5 | Pending |
+| CRM-06 | Phase 5 | Pending |
+| CRM-07 | Phase 5 | Pending |
+| CRM-08 | Phase 5 | Pending |
+| CRM-10 | Phase 5 | Pending |
+| UI-02 | Phase 6 | Pending |
+| UI-03 | Phase 6 | Pending |
+| UI-05 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 (pending roadmap creation)
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-18*
-*Last updated: 2026-02-18 after initial definition*
+*Last updated: 2026-02-18 after roadmap creation — all 28 requirements mapped*
