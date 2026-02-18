@@ -31,12 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User stays logged in after closing and reopening the browser tab
   4. User can log out from any page and is returned to the login screen
   5. All pages are usable one-handed on an iPhone 14 with large, thumb-friendly tap targets
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Next.js App Router scaffold with Tailwind, Supabase client setup, and environment config
-- [ ] 01-02: Supabase auth (email/password + Google OAuth), middleware session refresh, getUser() pattern
-- [ ] 01-03: Database schema (notes, crm_connections, deal_stage_cache tables with RLS) and mobile-first layout shell
+- [ ] 01-01-PLAN.md — Next.js 14 scaffold with Tailwind, Supabase client utilities, middleware, and mobile root layout
+- [ ] 01-02-PLAN.md — Auth pages (login, sign-up, OAuth callback), server actions, protected layout, and dashboard
+- [ ] 01-03-PLAN.md — Database migration (notes, crm_connections, deal_stage_cache) with RLS and indexes
 
 ### Phase 2: Voice Capture + Transcription
 **Goal**: Users can record a voice note on any mobile device — including iOS Safari — and receive an accurate transcript of what they said
@@ -128,7 +128,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Auth Foundation | 0/3 | Not started | - |
+| 1. Auth Foundation | 0/3 | Planning complete | - |
 | 2. Voice Capture + Transcription | 0/3 | Not started | - |
 | 3. AI Structuring Pipeline | 0/3 | Not started | - |
 | 4. CRM OAuth Connections | 0/3 | Not started | - |
@@ -137,4 +137,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 ---
 *Roadmap created: 2026-02-18*
-*Last updated: 2026-02-18 after initial creation*
+*Last updated: 2026-02-18 after Phase 1 planning*
