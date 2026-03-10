@@ -36,11 +36,17 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/sign-up')
+
   // Allow public routes
   const isPublicRoute =
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/sign-up') ||
-    pathname.startsWith('/auth')
+    pathname === '/' || isAuthPage || pathname.startsWith('/auth') || pathname.startsWith('/api')
+
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
 
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone()

@@ -3,12 +3,13 @@ import { login } from './actions'
 import GoogleSignInButton from '@/components/google-sign-in-button'
 
 interface LoginPageProps {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; message?: string }>
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams
   const error = params.error
+  const message = params.message
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6">
@@ -21,6 +22,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         {error && (
           <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
             <p className="text-base text-red-700">{decodeURIComponent(error)}</p>
+          </div>
+        )}
+
+        {message && (
+          <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
+            <p className="text-base text-green-700">{decodeURIComponent(message)}</p>
           </div>
         )}
 

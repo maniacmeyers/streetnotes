@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import SignOutButton from '@/components/sign-out-button'
+import VoiceNoteCapture from '@/components/voice-note-capture'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -17,6 +18,8 @@ export default async function DashboardPage() {
           Welcome, <span className="font-medium">{user?.email}</span>
         </p>
       </div>
+
+      <VoiceNoteCapture />
 
       <SignOutButton />
     </main>

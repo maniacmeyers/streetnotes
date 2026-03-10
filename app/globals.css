@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  ::selection {
+    background-color: #00E676;
+    color: #000000;
+  }
+}
+
+@layer components {
+  .neo-shadow {
+    box-shadow: 8px 8px 0px #000000;
+  }
+  .neo-shadow-white {
+    box-shadow: 8px 8px 0px #FFFFFF;
+  }
+  .neo-shadow-sm {
+    box-shadow: 4px 4px 0px #000000;
+  }
+  .neo-shadow-volt {
+    box-shadow: 8px 8px 0px #00E676;
+  }
+
+  .brutalist-btn {
+    @apply font-mono text-sm uppercase tracking-widest font-bold
+           border-4 border-black px-6 py-3
+           transition-transform duration-100;
+    box-shadow: 4px 4px 0px #000000;
+  }
+  .brutalist-btn:hover {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+  .brutalist-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  .sticker {
+    @apply border-4 border-black bg-white px-4 py-2 inline-block;
+    box-shadow: 4px 4px 0px #000000;
+  }
+}

@@ -1,12 +1,29 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Plus_Jakarta_Sans, Space_Mono, Ranchers } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '500', '600', '700', '800'],
+})
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '700'],
+})
+
+const ranchers = Ranchers({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: '400',
+})
 
 export const metadata: Metadata = {
-  title: 'StreetNotes',
-  description: 'AI-powered meeting notes for sales reps',
+  title: 'StreetNotes.ai — Voice-to-CRM for Sales Reps',
+  description:
+    'Stop losing deals because you forgot what happened in the parking lot. Hit record, talk, and your CRM updates itself.',
 }
 
 export const viewport: Viewport = {
@@ -22,10 +39,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-white antialiased`}>
-        <main className="max-w-md mx-auto min-h-screen flex flex-col">
-          {children}
-        </main>
+      <body
+        className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} font-body min-h-screen bg-dark antialiased`}
+      >
+        {children}
       </body>
     </html>
   )

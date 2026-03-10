@@ -13,5 +13,9 @@ export default async function ProtectedLayout({
     redirect('/login')
   }
 
-  return <>{children}</>
+  return (
+    <main className="max-w-md mx-auto min-h-screen flex flex-col">
+      {children}
+    </main>
+  )
 }
