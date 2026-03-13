@@ -1,0 +1,36 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Post-Call Brain Dump — Free Sales Debrief Tool | StreetNotes.ai',
+  description:
+    'Hit the mic after your sales call. Get structured deal notes, objections, next steps, and a deal mind map in 60 seconds. Free.',
+}
+
+export default function DebriefLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div className="min-h-screen bg-dark text-white">
+      {/* Header */}
+      <header className="border-b-4 border-volt/30 bg-dark">
+        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-16">
+          <a href="/" className="flex items-center min-h-[44px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/streetnotes_logo.png"
+              alt="StreetNotes.ai"
+              className="h-10 w-auto"
+            />
+          </a>
+          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-volt font-bold border-2 border-volt/40 px-3 py-1">
+            Free Tool
+          </span>
+        </div>
+      </header>
+      {/* Content */}
+      <main className="max-w-2xl mx-auto px-4 py-8 sm:py-12">{children}</main>
+    </div>
+  )
+}
