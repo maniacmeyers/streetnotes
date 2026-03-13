@@ -19,9 +19,12 @@ export default function LandingPage() {
 
           {/* Right side */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <span className="hidden sm:inline-block font-mono text-[10px] uppercase tracking-[0.1em] text-volt font-bold border-2 border-volt/40 px-3 py-1">
-              Voice → CRM
-            </span>
+            <a
+              href="/debrief"
+              className="font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold text-volt border-2 border-volt/40 px-3 py-1.5 sm:px-4 sm:py-2 cursor-pointer min-h-[44px] flex items-center hover:bg-volt/10 transition-colors duration-100"
+            >
+              Try Free Tool
+            </a>
             <a
               href="#waitlist"
               className="header-cta font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black border-2 sm:border-4 border-black px-3 py-1.5 sm:px-5 sm:py-2.5 cursor-pointer min-h-[44px] flex items-center transition-transform duration-100"
@@ -65,6 +68,15 @@ export default function LandingPage() {
           {/* Brutalist waitlist form */}
           <div id="waitlist" className="max-w-lg">
             <WaitlistForm />
+            <p className="font-mono text-xs uppercase tracking-[0.1em] text-gray-500 mt-4">
+              Not ready to commit?{' '}
+              <a
+                href="/debrief"
+                className="text-volt hover:underline font-bold"
+              >
+                Try the free Post-Call Brain Dump →
+              </a>
+            </p>
           </div>
         </div>
 
@@ -226,6 +238,47 @@ export default function LandingPage() {
                 StreetNotes populates every CRM field — contact, company, notes,
                 next steps, deal stage — directly inside your CRM. Review the
                 structured data, tap confirm, and it&apos;s live. Fully integrated. No copy-paste.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FREE TOOL CTA ── */}
+      <section className="bg-black border-b-8 border-black py-12 sm:py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="border-4 border-volt bg-dark p-6 sm:p-10 md:p-14 text-center relative overflow-hidden">
+            {/* Background watermark */}
+            <div
+              className="absolute inset-0 flex items-center justify-center font-display text-[200px] sm:text-[300px] text-volt pointer-events-none select-none"
+              style={{ opacity: 0.03 }}
+            >
+              MIC
+            </div>
+
+            <div className="relative">
+              <span className="sticker -rotate-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold mb-6 inline-block">
+                Free — no signup required
+              </span>
+
+              <h2 className="font-display text-[28px] sm:text-[48px] md:text-[64px] uppercase leading-[0.85] text-white mb-4">
+                Try it <span className="text-volt">right now</span>
+              </h2>
+
+              <p className="font-body text-base sm:text-lg md:text-xl text-gray-300 max-w-xl mx-auto mb-8">
+                Our Post-Call Brain Dump turns 60 seconds of talking into structured deal
+                notes, a mind map, and a downloadable PDF. No account needed.
+              </p>
+
+              <a
+                href="/debrief"
+                className="inline-flex items-center font-display text-lg sm:text-xl uppercase bg-volt text-black border-4 border-black px-8 py-4 neo-shadow cursor-pointer hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-transform duration-100 min-h-[44px]"
+              >
+                Start a Brain Dump →
+              </a>
+
+              <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-500 mt-4">
+                60 seconds. Structured deal notes. Free forever.
               </p>
             </div>
           </div>

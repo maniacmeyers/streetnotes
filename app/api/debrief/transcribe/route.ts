@@ -42,6 +42,12 @@ export async function POST(request: Request) {
   if (!session) return jsonError('Invalid session', 400)
 
   try {
+    console.log('[debrief/transcribe] Audio file:', {
+      name: audio.name,
+      type: audio.type,
+      size: audio.size,
+    })
+
     const openai = getOpenAIClient()
     const transcription = await openai.audio.transcriptions.create({
       model: 'whisper-1',
@@ -59,7 +65,8 @@ export async function POST(request: Request) {
       .eq('id', sessionId)
 
     return NextResponse.json({ transcript })
-  } catch {
+  } catch (error) {
+    console.error('[debrief/transcribe] Error:', error)
     return jsonError('Failed to transcribe audio', 502)
   }
 }
