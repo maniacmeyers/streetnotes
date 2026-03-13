@@ -9,37 +9,97 @@
   }
 }
 
+@layer base {
+  button, a, input, [role="button"] {
+    touch-action: manipulation;
+  }
+}
+
 @layer components {
   .neo-shadow {
-    box-shadow: 8px 8px 0px #000000;
-  }
-  .neo-shadow-white {
-    box-shadow: 8px 8px 0px #FFFFFF;
-  }
-  .neo-shadow-sm {
     box-shadow: 4px 4px 0px #000000;
   }
+  .neo-shadow-white {
+    box-shadow: 4px 4px 0px #FFFFFF;
+  }
+  .neo-shadow-sm {
+    box-shadow: 3px 3px 0px #000000;
+  }
   .neo-shadow-volt {
-    box-shadow: 8px 8px 0px #00E676;
+    box-shadow: 4px 4px 0px #00E676;
+  }
+
+  @media (min-width: 640px) {
+    .neo-shadow {
+      box-shadow: 8px 8px 0px #000000;
+    }
+    .neo-shadow-white {
+      box-shadow: 8px 8px 0px #FFFFFF;
+    }
+    .neo-shadow-sm {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .neo-shadow-volt {
+      box-shadow: 8px 8px 0px #00E676;
+    }
   }
 
   .brutalist-btn {
     @apply font-mono text-sm uppercase tracking-widest font-bold
-           border-4 border-black px-6 py-3
+           border-4 border-black px-5 py-3
            transition-transform duration-100;
-    box-shadow: 4px 4px 0px #000000;
+    box-shadow: 3px 3px 0px #000000;
+    min-height: 44px;
+  }
+  @media (min-width: 640px) {
+    .brutalist-btn {
+      @apply px-6;
+      box-shadow: 4px 4px 0px #000000;
+    }
   }
   .brutalist-btn:hover {
-    transform: translate(4px, 4px);
+    transform: translate(3px, 3px);
     box-shadow: none;
   }
+  @media (min-width: 640px) {
+    .brutalist-btn:hover {
+      transform: translate(4px, 4px);
+    }
+  }
   .brutalist-btn:active {
-    transform: translate(4px, 4px);
+    transform: translate(3px, 3px);
     box-shadow: none;
+  }
+  @media (min-width: 640px) {
+    .brutalist-btn:active {
+      transform: translate(4px, 4px);
+    }
+  }
+
+  .header-cta {
+    /* Clean and compact on mobile — no shadow */
+  }
+  @media (min-width: 640px) {
+    .header-cta {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .header-cta:hover {
+      transform: translate(4px, 4px);
+      box-shadow: none;
+    }
+  }
+  .header-cta:active {
+    transform: translate(2px, 2px);
   }
 
   .sticker {
-    @apply border-4 border-black bg-white px-4 py-2 inline-block;
-    box-shadow: 4px 4px 0px #000000;
+    @apply border-3 border-black bg-white px-3 py-1.5 inline-block;
+    box-shadow: 3px 3px 0px #000000;
+  }
+  @media (min-width: 640px) {
+    .sticker {
+      @apply border-4 px-4 py-2;
+      box-shadow: 4px 4px 0px #000000;
+    }
   }
 }

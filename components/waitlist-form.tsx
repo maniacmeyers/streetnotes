@@ -43,21 +43,23 @@ export default function WaitlistForm({ variant = 'dark' }: { variant?: 'dark' | 
     <div>
       <form
         onSubmit={handleSubmit}
-        className="flex border-4 border-black neo-shadow bg-white"
+        className="flex flex-col sm:flex-row border-4 border-black neo-shadow bg-white"
       >
         <input
           type="email"
           name="email"
+          inputMode="email"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="YOUR WORK EMAIL"
           required
-          className="flex-1 px-4 py-4 font-mono text-sm text-black placeholder:text-gray-400 uppercase tracking-wider bg-white outline-none"
+          className="flex-1 px-4 py-3.5 sm:py-4 font-mono text-sm text-black placeholder:text-gray-400 uppercase tracking-wider bg-white outline-none min-h-[44px]"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="border-l-4 border-black bg-black text-white font-display text-lg sm:text-xl px-6 py-4 uppercase hover:bg-white hover:text-black transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50"
+          className="border-t-4 sm:border-t-0 sm:border-l-4 border-black bg-black text-white font-display text-lg sm:text-xl px-6 py-3.5 sm:py-4 uppercase hover:bg-white hover:text-black transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px] w-full sm:w-auto"
         >
           {status === 'loading' ? '...' : 'Join Waitlist'}
         </button>
@@ -67,7 +69,7 @@ export default function WaitlistForm({ variant = 'dark' }: { variant?: 'dark' | 
           Something went wrong. Try again.
         </p>
       )}
-      <p className={`font-mono text-sm sm:text-base uppercase tracking-[0.15em] font-bold ${variant === 'dark' ? 'text-volt' : 'text-black'} mt-4`}>
+      <p className={`font-mono text-sm sm:text-base uppercase tracking-[0.15em] font-bold ${variant === 'dark' ? 'text-volt' : 'text-black'} mt-3 sm:mt-4`}>
         {variant === 'dark' ? '★ Free early access. No credit card. ★' : '★ Early access is free. Be first. ★'}
       </p>
     </div>
