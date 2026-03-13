@@ -56,7 +56,7 @@ export default function ProcessingSteps({
   onRetry,
 }: ProcessingStepsProps) {
   return (
-    <div className="flex flex-col items-center gap-8 sm:gap-12 py-8 sm:py-16">
+    <div className="relative flex flex-col items-center gap-8 sm:gap-12 py-8 sm:py-16">
       {/* Watermark */}
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"

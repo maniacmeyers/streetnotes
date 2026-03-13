@@ -125,3 +125,30 @@
     50% { transform: scaleY(1); }
   }
 }
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring {
+    animation: none;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Better focus states for accessibility */
+@layer base {
+  :focus-visible {
+    outline: 3px solid #00E676;
+    outline-offset: 2px;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid #00E676;
+    outline-offset: -1px;
+  }
+}

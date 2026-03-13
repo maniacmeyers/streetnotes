@@ -12,16 +12,16 @@ export default function DebriefLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-dark text-white">
+    <div className="min-h-screen bg-dark text-white overflow-x-hidden">
       {/* Header */}
-      <header className="border-b-4 border-volt/30 bg-dark">
-        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-16">
+      <header className="border-b-4 border-volt/30 bg-dark pt-safe">
+        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-14 sm:h-16">
           <a href="/" className="flex items-center min-h-[44px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/streetnotes_logo.png"
               alt="StreetNotes.ai"
-              className="h-10 w-auto"
+              className="h-8 sm:h-10 w-auto"
             />
           </a>
           <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-volt font-bold border-2 border-volt/40 px-3 py-1">
@@ -29,8 +29,10 @@ export default function DebriefLayout({
           </span>
         </div>
       </header>
-      {/* Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8 sm:py-12">{children}</main>
+      {/* Content — extra px on mobile for neo-shadow offset */}
+      <main className="max-w-2xl mx-auto px-5 sm:px-4 py-6 sm:py-12 pb-safe">
+        {children}
+      </main>
     </div>
   )
 }
