@@ -344,7 +344,7 @@ export default function LandingPage() {
                 Works with your stack
               </h3>
               <p className="font-body text-black/70 text-base sm:text-lg">
-                Salesforce. HubSpot. More coming based on what you tell us.
+                Salesforce. HubSpot. Microsoft Dynamics. Zoho CRM. More coming based on what you tell us.
               </p>
             </div>
           </div>
