@@ -91,13 +91,46 @@ Full roadmap and execution plans live in `.planning/`:
 - `.planning/REQUIREMENTS.md` — All v1 requirements with traceability
 - `.planning/phases/` — Per-phase research and execution plans
 
+## Brain Dump Lead Magnet (Post-Call Brain Dump)
+
+A free public tool at `/debrief` — the lead magnet for StreetNotes.ai.
+
+### Route
+- `app/debrief/` — Public page (no auth required), added to middleware whitelist
+
+### Flow
+Email gate → Voice recording → AI transcription (Whisper) → User reviews/edits transcript → GPT-4o structuring → Results display + PDF download → Bridge CTA
+
+### Key Files
+- `lib/debrief/types.ts` — TypeScript interfaces (DebriefStructuredOutput, DebriefStep)
+- `lib/debrief/prompts.ts` — GPT-4o system and user prompts with few-shot examples
+- `lib/debrief/pdf.tsx` — @react-pdf/renderer branded PDF generation
+- `components/debrief/` — All UI components (debrief-flow, email-gate, recorder, mic-button, waveform-visualizer, transcript-review, processing-steps, results-display, deal-mind-map, bridge-cta)
+- `hooks/use-audio-analyser.ts` — Web Audio API waveform hook
+- `app/api/debrief/start/` — Email gate + rate limiting + session creation
+- `app/api/debrief/transcribe/` — Public Whisper transcription
+- `app/api/debrief/structure/` — GPT-4o structured extraction
+- `app/api/debrief/pdf/` — PDF generation endpoint
+
+### Database
+- `debrief_sessions` table (migration 003) — tracks email, transcript, structured output per session
+- Rate limit: 3 debriefs/day/email (enforced in `/api/debrief/start`)
+
+### Dependencies Added
+- `@react-pdf/renderer` — server-side PDF generation
+- `react-icons` — UI icons (mic, stop, download, check)
+
+### Bridge Mechanic
+Free: structured call summary, one-off deal mind map, PDF download
+Missing (paid): CRM auto-sync, deal history, living mind map, pipeline analytics
+
 ## Key Decisions (Do Not Override)
 
 - Use `@supabase/ssr` — the older `@supabase/auth-helpers-nextjs` is deprecated
 - `tailwindcss-safe-area@0.1.0` — v1.3.0 breaks webpack in Next.js 14
 - Keep `/api/transcribe` separate from AI structuring — retry isolation
 - User always reviews structured output before CRM push — no auto-push
-- Public routes: `/login`, `/sign-up`, `/auth` — all others require auth
+- Public routes: `/login`, `/sign-up`, `/auth`, `/debrief` — all others require auth
 - Mobile-first layout: `max-w-md mx-auto` with thumb-friendly 44px min tap targets
 
 ## Ideabrowser Project
