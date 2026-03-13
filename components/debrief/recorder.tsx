@@ -106,16 +106,16 @@ export default function Recorder({ onComplete }: RecorderProps) {
   }, [stopRecording, stopAnalysing])
 
   return (
-    <div className="flex flex-col items-center gap-6 sm:gap-8">
+    <div className="flex flex-col items-center gap-5 sm:gap-8">
       {/* Header */}
       <div className="text-center">
-        <div className="mb-4">
-          <span className="sticker rotate-1 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
+        <div className="mb-3 sm:mb-4">
+          <span className="inline-block bg-white border-2 sm:border-3 border-black px-2.5 py-1 sm:px-3 sm:py-1.5 rotate-1 font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000]">
             Step 1 of 3
           </span>
         </div>
         <h2
-          className="font-display text-[32px] sm:text-[48px] uppercase leading-[0.85] text-white mb-3"
+          className="font-display text-[28px] sm:text-[48px] uppercase leading-[0.85] text-white mb-2 sm:mb-3"
           style={{ textShadow: '3px 3px 0px #000000' }}
         >
           {isRecording ? (

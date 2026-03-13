@@ -98,14 +98,14 @@ function Section({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 + index * 0.1, duration: 0.4 }}
     >
-      <div className="border-4 border-black bg-white neo-shadow-sm">
-        <div className="border-b-4 border-black px-4 py-3 flex items-center gap-2">
+      <div className="border-3 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+        <div className="border-b-3 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2">
           {icon && <span className="text-black">{icon}</span>}
           <h3 className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
             {title}
           </h3>
         </div>
-        <div className="p-4 sm:p-5">{children}</div>
+        <div className="p-3 sm:p-5">{children}</div>
       </div>
     </motion.div>
   )
@@ -181,27 +181,27 @@ export default function ResultsDisplay({
   let sectionIndex = 0
 
   return (
-    <div className="flex flex-col gap-6 sm:gap-8">
+    <div className="flex flex-col gap-5 sm:gap-8">
       {/* Results header */}
       <motion.div
         className="text-center"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <div className="mb-4">
-          <span className="sticker -rotate-1 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
+        <div className="mb-3 sm:mb-4">
+          <span className="inline-block bg-white border-2 sm:border-3 border-black px-2.5 py-1 sm:px-3 sm:py-1.5 -rotate-1 font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000]">
             Your debrief is ready
           </span>
         </div>
         <h2
-          className="font-display text-[32px] sm:text-[48px] uppercase leading-[0.85] text-white mb-2"
+          className="font-display text-[28px] sm:text-[48px] uppercase leading-[0.85] text-white mb-2"
           style={{ textShadow: '3px 3px 0px #000000' }}
         >
           {d.dealSnapshot.companyName !== 'Not mentioned'
             ? d.dealSnapshot.companyName
             : 'Deal Intel'}
         </h2>
-        <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-500">
+        <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-gray-500">
           {email} &middot; {Math.round(durationSec / 60)}m{durationSec % 60}s
           recording
         </p>
@@ -222,7 +222,7 @@ export default function ResultsDisplay({
 
       {/* Deal Snapshot */}
       <Section index={sectionIndex++} title="Deal Snapshot">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {[
             {
               label: 'Company',
@@ -474,8 +474,8 @@ export default function ResultsDisplay({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 + sectionIndex * 0.1, duration: 0.4 }}
       >
-        <div className="border-4 border-black neo-shadow-sm overflow-hidden">
-          <div className="border-b-4 border-black px-4 py-3 bg-white">
+        <div className="border-3 sm:border-4 border-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] overflow-hidden">
+          <div className="border-b-3 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 bg-white">
             <h3 className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
               Deal Mind Map
             </h3>

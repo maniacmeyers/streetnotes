@@ -45,7 +45,7 @@ export default function TranscriptReview({
           animate={{ opacity: 1, rotate: 2 }}
           transition={{ delay: 0.1 }}
         >
-          <span className="sticker rotate-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
+          <span className="inline-block bg-white border-2 sm:border-3 border-black px-2.5 py-1 sm:px-3 sm:py-1.5 rotate-2 font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000]">
             Step 2 of 3
           </span>
         </motion.div>
@@ -74,22 +74,22 @@ export default function TranscriptReview({
 
       {/* Transcript card */}
       <motion.div
-        className="border-4 border-black bg-white neo-shadow"
+        className="border-3 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000]"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
         {/* Card header */}
-        <div className="border-b-4 border-black px-4 py-3 flex items-center justify-between bg-white">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-black font-bold">
+        <div className="border-b-3 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between bg-white">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-black font-bold">
               Transcript
             </span>
-            <span className="bg-volt/20 text-black font-mono text-[10px] uppercase tracking-[0.1em] px-2 py-0.5 border border-volt/40">
+            <span className="bg-volt/20 text-black font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] px-1.5 sm:px-2 py-0.5 border border-volt/40">
               AI-Generated
             </span>
           </div>
-          <span className="font-mono text-[10px] text-gray-400">
+          <span className="font-mono text-[9px] sm:text-[10px] text-gray-400">
             {wordCount} words
           </span>
         </div>
@@ -99,15 +99,15 @@ export default function TranscriptReview({
           ref={textareaRef}
           value={edited}
           onChange={(e) => setEdited(e.target.value)}
-          className="w-full px-4 py-4 font-mono text-sm text-black bg-white leading-relaxed outline-none resize-none min-h-[200px]"
+          className="w-full px-3 py-3 sm:px-4 sm:py-4 font-mono text-[13px] sm:text-sm text-black bg-white leading-relaxed outline-none resize-none min-h-[200px]"
           spellCheck={true}
         />
 
         {/* Card footer */}
         {hasEdits && (
-          <div className="border-t-4 border-black px-4 py-2 bg-volt/10">
-            <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-volt">
-              Edits detected — your version will be used for extraction
+          <div className="border-t-3 sm:border-t-4 border-black px-3 py-2 sm:px-4 bg-volt/10">
+            <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-volt">
+              Edits detected — your version will be used
             </p>
           </div>
         )}

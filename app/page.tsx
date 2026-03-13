@@ -18,16 +18,22 @@ export default function LandingPage() {
           </a>
 
           {/* Right side */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <a
               href="/debrief"
-              className="font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold text-volt border-2 border-volt/40 px-3 py-1.5 sm:px-4 sm:py-2 cursor-pointer min-h-[44px] flex items-center hover:bg-volt/10 transition-colors duration-100"
+              className="hidden sm:flex font-mono text-xs uppercase tracking-widest font-bold text-volt border-2 border-volt/40 px-4 py-2 cursor-pointer min-h-[44px] items-center hover:bg-volt/10 transition-colors duration-100"
             >
               Try Free Tool
             </a>
             <a
+              href="/debrief"
+              className="sm:hidden font-mono text-[10px] uppercase tracking-wider font-bold text-volt min-h-[44px] flex items-center px-2"
+            >
+              Free Tool
+            </a>
+            <a
               href="#waitlist"
-              className="header-cta font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black border-2 sm:border-4 border-black px-3 py-1.5 sm:px-5 sm:py-2.5 cursor-pointer min-h-[44px] flex items-center transition-transform duration-100"
+              className="header-cta font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black border-2 sm:border-4 border-black px-3 py-1.5 sm:px-5 sm:py-2.5 cursor-pointer min-h-[44px] flex items-center transition-transform duration-100"
             >
               Join Beta
             </a>
