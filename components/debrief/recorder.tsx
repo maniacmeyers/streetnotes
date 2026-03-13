@@ -35,6 +35,7 @@ export default function Recorder({ onComplete }: RecorderProps) {
     mimeType,
     error: recorderError,
     isSupported,
+    mediaStream,
     startRecording,
     stopRecording,
   } = useVoiceRecorder()
@@ -79,9 +80,8 @@ export default function Recorder({ onComplete }: RecorderProps) {
     if (isRecording && durationSec >= MAX_DURATION && !hasAutoStoppedRef.current) {
       hasAutoStoppedRef.current = true
       stopRecording()
-      stopAnalysing()
     }
-  }, [isRecording, durationSec, stopRecording, stopAnalysing])
+  }, [isRecording, durationSec, stopRecording])
 
   // When recording stops and we have audio, hand it off
   useEffect(() => {
@@ -93,17 +93,22 @@ export default function Recorder({ onComplete }: RecorderProps) {
   const handleStart = useCallback(async () => {
     hasAutoStoppedRef.current = false
     await startRecording()
-    // Start the audio analyser for waveform visualization
-    // Slight delay to ensure mic stream is active
-    setTimeout(() => {
-      startAnalysing().catch(() => {})
-    }, 200)
-  }, [startRecording, startAnalysing])
+  }, [startRecording])
+
+  // Start analyser once the media stream is available (reuse the same stream —
+  // opening a second getUserMedia on iOS WebKit kills the first one)
+  useEffect(() => {
+    if (isRecording && mediaStream) {
+      startAnalysing(mediaStream).catch(() => {})
+    }
+    if (!isRecording) {
+      stopAnalysing()
+    }
+  }, [isRecording, mediaStream, startAnalysing, stopAnalysing])
 
   const handleStop = useCallback(() => {
     stopRecording()
-    stopAnalysing()
-  }, [stopRecording, stopAnalysing])
+  }, [stopRecording])
 
   return (
     <div className="flex flex-col items-center gap-5 sm:gap-8">

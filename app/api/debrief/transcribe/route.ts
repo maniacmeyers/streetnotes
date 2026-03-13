@@ -67,6 +67,47 @@ export async function POST(request: Request) {
     return NextResponse.json({ transcript })
   } catch (error) {
     console.error('[debrief/transcribe] Error:', error)
-    return jsonError('Failed to transcribe audio', 502)
+
+    const errMsg = error instanceof Error ? error.message : String(error)
+    const errStatus =
+      typeof error === 'object' &&
+      error !== null &&
+      'status' in error &&
+      typeof (error as { status?: unknown }).status === 'number'
+        ? (error as { status: number }).status
+        : undefined
+
+    if (errStatus === 401 || errStatus === 403 || errMsg.includes('API key')) {
+      return jsonError('Transcription auth error — API key may be invalid', 502)
+    }
+    if (errStatus === 413) {
+      return jsonError('Audio rejected by OpenAI (too large)', 413)
+    }
+    if (errStatus === 429) {
+      return jsonError('Rate limited by OpenAI — wait a moment and retry', 429)
+    }
+    if (errStatus === 400) {
+      return jsonError(
+        `Audio format rejected by OpenAI (type: ${audio.type || 'unknown'}, size: ${audio.size} bytes)`,
+        400
+      )
+    }
+    if (
+      errMsg.includes('timeout') ||
+      errMsg.includes('ETIMEDOUT') ||
+      errMsg.includes('ECONNABORTED') ||
+      errMsg.includes('aborted')
+    ) {
+      return jsonError(
+        'Transcription timed out — try a shorter recording',
+        504
+      )
+    }
+
+    // Surface actual error message for diagnosis
+    return jsonError(
+      `Transcription failed: ${errMsg.substring(0, 200)}`,
+      502
+    )
   }
 }

@@ -17,6 +17,7 @@ interface UseVoiceRecorderResult {
   mimeType: string
   error: string | null
   isSupported: boolean
+  mediaStream: MediaStream | null
   startRecording: () => Promise<void>
   stopRecording: () => void
   resetRecording: () => void
@@ -172,6 +173,7 @@ export function useVoiceRecorder(): UseVoiceRecorderResult {
     mimeType,
     error,
     isSupported,
+    mediaStream: mediaStreamRef.current,
     startRecording,
     stopRecording,
     resetRecording,
