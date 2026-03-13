@@ -368,7 +368,7 @@ export default function LandingPage() {
             </p>
             <p className="font-body text-base sm:text-lg text-gray-400 mb-4 sm:mb-6">
               45 years of combined SMB, mid-market, and enterprise sales and
-              sales management experience. 28x President&apos;s Clubs. We&apos;ve
+              sales leadership experience. 28x President&apos;s Clubs. We&apos;ve
               been the rep in the parking lot, typing half-assed notes into the
               CRM before the next meeting.
             </p>
