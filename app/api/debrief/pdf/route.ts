@@ -37,12 +37,13 @@ export async function GET(request: NextRequest) {
   })
 
   try {
+    const pdfElement = React.createElement(DebriefPDF, {
+      data: structured,
+      email: session.email,
+      date,
+    })
     const buffer = await renderToBuffer(
-      React.createElement(DebriefPDF, {
-        data: structured,
-        email: session.email,
-        date,
-      })
+      pdfElement as unknown as React.ReactElement
     )
 
     // Mark PDF as generated
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
 
     const dateSlug = new Date().toISOString().split('T')[0]
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

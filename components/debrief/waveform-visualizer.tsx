@@ -17,7 +17,7 @@ export default function WaveformVisualizer({
 }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animFrameRef = useRef<number>(0)
-  const frequencyDataRef = useRef<Uint8Array | null>(null)
+  const frequencyDataRef = useRef<Uint8Array<ArrayBuffer> | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
