@@ -12,7 +12,7 @@ StreetNotes.ai is built as a strict sequential pipeline: auth must exist before 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Auth Foundation** - Working Supabase auth, Next.js App Router scaffolding, and database schema with RLS
+- [x] **Phase 1: Auth Foundation** - Working Supabase auth, Next.js App Router scaffolding, and database schema with RLS
 - [ ] **Phase 2: Voice Capture + Transcription** - Mobile voice recording with iOS format detection and Whisper transcription
 - [ ] **Phase 3: AI Structuring Pipeline** - Claude structured output, CRMNote Zod schema, and note storage
 - [ ] **Phase 4: CRM OAuth Connections** - Salesforce + HubSpot OAuth flows with encrypted token storage
@@ -34,9 +34,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 14 scaffold with Tailwind, Supabase client utilities, middleware, and mobile root layout
-- [ ] 01-02-PLAN.md — Auth pages (login, sign-up, OAuth callback), server actions, protected layout, and dashboard
-- [ ] 01-03-PLAN.md — Database migration (notes, crm_connections, deal_stage_cache) with RLS and indexes
+- [x] 01-01-PLAN.md — Next.js 14 scaffold with Tailwind, Supabase client utilities, middleware, and mobile root layout
+- [x] 01-02-PLAN.md — Auth pages (login, sign-up, OAuth callback), server actions, protected layout, and dashboard
+- [x] 01-03-PLAN.md — Database migration (notes, crm_connections, deal_stage_cache) with RLS and indexes
 
 ### Phase 2: Voice Capture + Transcription
 **Goal**: Users can record a voice note on any mobile device — including iOS Safari — and receive an accurate transcript of what they said
@@ -48,12 +48,12 @@ Plans:
   3. User sees an error with clear guidance if the audio file exceeds 25MB
   4. User receives a transcript within 30 seconds of stopping the recording
   5. Sales-specific terminology (deal stages, acronyms like ARR and MEDDIC) transcribes accurately
-**Plans**: TBD
+**Plans**: 3 plans (execution-ready)
 
 Plans:
-- [ ] 02-01: useVoiceRecorder hook with MediaRecorder.isTypeSupported() format negotiation and real-time duration display
-- [ ] 02-02: Client-side file size validation and /api/transcribe Route Handler with Whisper API and sales vocabulary prompt
-- [ ] 02-03: Recording UI component (start/stop controls, duration display, upload progress, error states)
+- [ ] 02-01-PLAN.md — Recorder foundation: MIME negotiation, duration tracking hook, and recording lab route
+- [ ] 02-02-PLAN.md — OpenAI Whisper integration: authenticated `/api/transcribe`, validation, and env wiring
+- [ ] 02-03-PLAN.md — Dashboard voice UX: record/transcribe component, states, and cross-device QA checkpoint
 
 ### Phase 3: AI Structuring Pipeline
 **Goal**: A raw transcript is sent to Claude and returns a validated, structured CRM note — with all fields nullable and confidence indicators flagging uncertain extractions
@@ -128,8 +128,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Auth Foundation | 0/3 | Planning complete | - |
-| 2. Voice Capture + Transcription | 0/3 | Not started | - |
+| 1. Auth Foundation | 3/3 | Completed | 2026-02-18 |
+| 2. Voice Capture + Transcription | 0/3 | Planning complete (ready to execute) | - |
 | 3. AI Structuring Pipeline | 0/3 | Not started | - |
 | 4. CRM OAuth Connections | 0/3 | Not started | - |
 | 5. CRM Push + Actions | 0/3 | Not started | - |
@@ -137,4 +137,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 ---
 *Roadmap created: 2026-02-18*
-*Last updated: 2026-02-18 after Phase 1 planning*
+*Last updated: 2026-03-07 after Phase 2 execution planning refresh*
