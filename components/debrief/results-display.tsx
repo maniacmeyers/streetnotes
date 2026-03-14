@@ -479,6 +479,9 @@ export default function ResultsDisplay({
             <h3 className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
               Deal Mind Map
             </h3>
+            <p className="sm:hidden font-mono text-[8px] uppercase tracking-[0.1em] text-gray-400 mt-1">
+              Rotate to landscape for the best view
+            </p>
           </div>
           <DealMindMap data={d} />
         </div>

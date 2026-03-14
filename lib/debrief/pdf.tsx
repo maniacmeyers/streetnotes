@@ -229,6 +229,69 @@ const s = StyleSheet.create({
     fontSize: 7,
     color: GRAY_500,
   },
+  // Mind map
+  mmCentral: {
+    backgroundColor: DARK,
+    borderWidth: 2.5,
+    borderColor: VOLT,
+    borderRadius: 4,
+    padding: 14,
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
+    marginBottom: 16,
+  },
+  mmCompanyText: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 14,
+    color: '#FFFFFF',
+    textTransform: 'uppercase' as const,
+    letterSpacing: 1.5,
+  },
+  mmScorePill: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#000000',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
+  },
+  mmScoreText: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 20,
+    color: '#000000',
+  },
+  mmBranch: {
+    borderLeftWidth: 3,
+    paddingLeft: 10,
+    paddingVertical: 6,
+    marginBottom: 10,
+  },
+  mmBranchLabel: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase' as const,
+    marginBottom: 4,
+  },
+  mmItem: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    gap: 6,
+    marginBottom: 3,
+  },
+  mmDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+  },
+  mmItemText: {
+    fontSize: 9,
+    color: GRAY_700,
+    flex: 1,
+    lineHeight: 1.3,
+  },
   // CTA page
   ctaContainer: {
     flex: 1,
@@ -282,7 +345,7 @@ interface PDFProps {
 
 export function DebriefPDF({ data, email, date }: PDFProps) {
   const d = data
-  const totalPages = 4
+  const totalPages = 5
 
   return (
     <Document>
@@ -536,7 +599,116 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
         </View>
       </Page>
 
-      {/* ── PAGE 4: CTA ── */}
+      {/* ── PAGE 4: DEAL MIND MAP ── */}
+      <Page size="A4" style={s.page}>
+        <Text style={s.sectionTitle}>Deal Mind Map</Text>
+
+        {/* Central node */}
+        <View style={s.mmCentral}>
+          <Text style={s.mmCompanyText}>
+            {d.dealSnapshot.companyName || 'Deal'}
+          </Text>
+          <View
+            style={[
+              s.mmScorePill,
+              { backgroundColor: scoreColor(d.dealScore) },
+            ]}
+          >
+            <Text style={s.mmScoreText}>{d.dealScore}</Text>
+          </View>
+        </View>
+
+        {/* Branches */}
+        {d.nextSteps.length > 0 && (
+          <View style={[s.mmBranch, { borderLeftColor: VOLT }]}>
+            <Text style={[s.mmBranchLabel, { color: VOLT }]}>Next Steps</Text>
+            {d.nextSteps.map((step, i) => (
+              <View key={i} style={s.mmItem}>
+                <View style={[s.mmDot, { backgroundColor: VOLT }]} />
+                <Text style={s.mmItemText}>{step.action}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {d.objections.length > 0 && (
+          <View style={[s.mmBranch, { borderLeftColor: RED }]}>
+            <Text style={[s.mmBranchLabel, { color: RED }]}>Objections</Text>
+            {d.objections.map((obj, i) => (
+              <View key={i} style={s.mmItem}>
+                <View style={[s.mmDot, { backgroundColor: RED }]} />
+                <Text style={s.mmItemText}>
+                  {obj.objection}
+                  {obj.resolved ? ' (Resolved)' : ''}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {d.decisionMakers.length > 0 && (
+          <View style={[s.mmBranch, { borderLeftColor: BLUE }]}>
+            <Text style={[s.mmBranchLabel, { color: BLUE }]}>Stakeholders</Text>
+            {d.decisionMakers.map((dm, i) => (
+              <View key={i} style={s.mmItem}>
+                <View style={[s.mmDot, { backgroundColor: BLUE }]} />
+                <Text style={s.mmItemText}>
+                  {dm.name} — {dm.role}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {d.buyingSignals.length > 0 && (
+          <View style={[s.mmBranch, { borderLeftColor: VOLT }]}>
+            <Text style={[s.mmBranchLabel, { color: VOLT }]}>
+              Buying Signals
+            </Text>
+            {d.buyingSignals.map((sig, i) => (
+              <View key={i} style={s.mmItem}>
+                <View style={[s.mmDot, { backgroundColor: VOLT }]} />
+                <Text style={s.mmItemText}>{sig}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {d.risks.length > 0 && (
+          <View style={[s.mmBranch, { borderLeftColor: RED }]}>
+            <Text style={[s.mmBranchLabel, { color: RED }]}>Risks</Text>
+            {d.risks.map((risk, i) => (
+              <View key={i} style={s.mmItem}>
+                <View style={[s.mmDot, { backgroundColor: RED }]} />
+                <Text style={s.mmItemText}>{risk}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {d.competitorsMentioned.length > 0 && (
+          <View style={[s.mmBranch, { borderLeftColor: GRAY_500 }]}>
+            <Text style={[s.mmBranchLabel, { color: GRAY_500 }]}>
+              Competitors
+            </Text>
+            {d.competitorsMentioned.map((comp, i) => (
+              <View key={i} style={s.mmItem}>
+                <View style={[s.mmDot, { backgroundColor: GRAY_500 }]} />
+                <Text style={s.mmItemText}>{comp}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        <View style={s.footer}>
+          <Text>
+            Page 4 of {totalPages} — streetnotes.ai
+          </Text>
+          <Text>Confidential</Text>
+        </View>
+      </Page>
+
+      {/* ── PAGE 5: CTA ── */}
       <Page size="A4" style={s.page}>
         <View style={s.ctaContainer}>
           <Text style={s.ctaHeadline}>
@@ -551,7 +723,7 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
 
         <View style={s.footer}>
           <Text>
-            Page 4 of {totalPages} — streetnotes.ai
+            Page 5 of {totalPages} — streetnotes.ai
           </Text>
           <Text>Confidential</Text>
         </View>

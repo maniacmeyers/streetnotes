@@ -55,11 +55,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Also add to waitlist (ignore duplicate)
-    await supabase
+    const { error: waitlistError } = await supabase
       .from('waitlist')
       .insert({ email: cleanEmail })
-      .select()
-      .maybeSingle()
+
+    if (waitlistError && waitlistError.code !== '23505') {
+      // 23505 = unique violation (already on waitlist) — that's fine
+      console.error('Debrief waitlist sync error:', waitlistError)
+    }
 
     // Resend notification (non-blocking, fire-and-forget)
     if (process.env.RESEND_API_KEY) {

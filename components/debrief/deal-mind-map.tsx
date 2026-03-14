@@ -21,10 +21,10 @@ function truncateItems(items: string[], max: number): string[] {
 
 function truncateText(text: string, max: number): string {
   if (text.length <= max) return text
-  return text.substring(0, max - 2) + '...'
+  return text.substring(0, max - 1) + '\u2026'
 }
 
-/* ─── Mobile layout: vertical tree ─── */
+/* ─── Mobile: trunk-and-branch tree ─── */
 function MobileMindMap({
   companyName,
   score,
@@ -36,164 +36,189 @@ function MobileMindMap({
   scoreColor: string
   branches: Branch[]
 }) {
-  const nodeWidth = 280
-  const centerX = nodeWidth / 2
-  const nodeHeight = 50
-  const itemHeight = 22
-  const branchHeaderHeight = 28
-  const branchPaddingY = 16
+  const W = 340
+  const trunkX = 28
+  const branchX = 46
+  const itemDotX = 54
+  const itemTextX = 66
+  const centralX = 12
+  const centralW = W - 24
+  const centralH = 50
+  const centralY = 16
+  const R = 6
+  const labelH = 26
+  const itemH = 22
 
-  // Calculate total height
-  let totalHeight = nodeHeight + 20 // central node + gap
-  branches.forEach((branch) => {
-    totalHeight +=
-      branchPaddingY + branchHeaderHeight + branch.items.length * itemHeight + 10
+  // Pre-calculate branch positions
+  interface BranchPos {
+    labelY: number
+    midY: number
+    items: number[]
+  }
+
+  let y = centralY + centralH + 24
+  const positions: BranchPos[] = branches.map((branch) => {
+    const labelY = y
+    const midY = labelY + labelH / 2
+    y += labelH + 6
+    const items = branch.items.map(() => {
+      const iy = y
+      y += itemH
+      return iy
+    })
+    y += 18
+    return { labelY, midY, items }
   })
-  totalHeight += 20 // bottom padding
 
-  let currentY = 0
+  const totalH = y + 8
+  const trunkEndY =
+    positions.length > 0
+      ? positions[positions.length - 1].midY
+      : centralY + centralH
+
+  const svgStyle = {
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace',
+    textRendering: 'geometricPrecision' as const,
+  }
 
   return (
     <svg
-      viewBox={`0 0 ${nodeWidth} ${totalHeight}`}
+      viewBox={`0 0 ${W} ${totalH}`}
       className="w-full"
-      style={{ fontFamily: 'monospace' }}
+      style={svgStyle}
     >
-      <rect width={nodeWidth} height={totalHeight} fill="#121212" />
-      {/* Grid */}
-      <defs>
-        <pattern
-          id="grid-m"
-          width="20"
-          height="20"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 20 0 L 0 0 0 20"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="0.3"
-            opacity="0.05"
-          />
-        </pattern>
-      </defs>
-      <rect width={nodeWidth} height={totalHeight} fill="url(#grid-m)" />
+      <rect width={W} height={totalH} fill="#0A0A0A" />
 
       {/* Central node */}
       <rect
-        x={centerX - 65}
-        y={10}
-        width={130}
-        height={nodeHeight}
+        x={centralX}
+        y={centralY}
+        width={centralW}
+        height={centralH}
+        rx={R}
         fill="#00E676"
-        stroke="#000000"
-        strokeWidth="3"
+        stroke="#000"
+        strokeWidth="2.5"
       />
       <text
-        x={centerX}
-        y={30}
-        textAnchor="middle"
-        fill="#000000"
-        fontSize="12"
+        x={centralX + 16}
+        y={centralY + centralH / 2 + 5}
+        fill="#000"
+        fontSize="14"
         fontWeight="bold"
-        style={{ textTransform: 'uppercase' }}
+        style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
       >
-        {truncateText(companyName, 14)}
+        {truncateText(companyName, 20)}
       </text>
-      <circle
-        cx={centerX}
-        cy={48}
-        r="12"
+      {/* Score pill inside central node */}
+      <rect
+        x={centralX + centralW - 50}
+        y={centralY + (centralH - 30) / 2}
+        width={36}
+        height={30}
+        rx={4}
         fill={scoreColor}
-        stroke="#000000"
-        strokeWidth="2"
+        stroke="#000"
+        strokeWidth="1.5"
       />
       <text
-        x={centerX}
-        y={52}
+        x={centralX + centralW - 32}
+        y={centralY + centralH / 2 + 6}
         textAnchor="middle"
-        fill="#000000"
-        fontSize="11"
+        fill="#000"
+        fontSize="16"
         fontWeight="bold"
       >
         {score}
       </text>
 
-      {(() => {
-        currentY = nodeHeight + 20
-        return null
-      })()}
+      {/* Trunk line */}
+      {positions.length > 0 && (
+        <>
+          <line
+            x1={trunkX}
+            y1={centralY + centralH + 2}
+            x2={trunkX}
+            y2={trunkEndY}
+            stroke="#333"
+            strokeWidth="2"
+          />
+          {/* Small connector from central node left edge down to trunk */}
+          <line
+            x1={trunkX}
+            y1={centralY + centralH}
+            x2={trunkX}
+            y2={centralY + centralH + 2}
+            stroke="#444"
+            strokeWidth="2"
+          />
+        </>
+      )}
 
       {/* Branches */}
       {branches.map((branch, bi) => {
-        const branchTop = currentY + branchPaddingY
-        const labelY = branchTop
-        const itemsStartY = labelY + branchHeaderHeight
-
-        // Accumulate height for next branch
-        const branchTotalHeight =
-          branchPaddingY +
-          branchHeaderHeight +
-          branch.items.length * itemHeight +
-          10
-        currentY += branchTotalHeight
+        const pos = positions[bi]
+        const labelW = branch.label.length * 7.5 + 22
 
         return (
           <g key={bi}>
-            {/* Vertical connector line */}
+            {/* Trunk dot */}
+            <circle cx={trunkX} cy={pos.midY} r="4.5" fill={branch.color} />
+
+            {/* Horizontal connector */}
             <line
-              x1={centerX}
-              y1={branchTop - branchPaddingY}
-              x2={centerX}
-              y2={labelY + branchHeaderHeight / 2}
+              x1={trunkX + 5}
+              y1={pos.midY}
+              x2={branchX - 2}
+              y2={pos.midY}
               stroke={branch.color}
               strokeWidth="2"
-              opacity="0.4"
+              opacity="0.5"
             />
 
             {/* Branch label */}
             <rect
-              x={centerX - (branch.label.length * 8 + 16) / 2}
-              y={labelY}
-              width={branch.label.length * 8 + 16}
-              height={branchHeaderHeight}
+              x={branchX}
+              y={pos.labelY}
+              width={labelW}
+              height={labelH}
+              rx={3}
               fill={branch.color}
-              stroke="#000000"
-              strokeWidth="2"
+              stroke="#000"
+              strokeWidth="1.5"
             />
             <text
-              x={centerX}
-              y={labelY + 18}
-              textAnchor="middle"
-              fill="#000000"
+              x={branchX + 11}
+              y={pos.labelY + 17}
+              fill="#000"
               fontSize="10"
               fontWeight="bold"
-              style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
+              style={{
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+              }}
             >
               {branch.label}
             </text>
 
             {/* Items */}
             {branch.items.map((item, ii) => {
-              const itemY = itemsStartY + ii * itemHeight
+              const iy = pos.items[ii]
               return (
                 <g key={ii}>
-                  <line
-                    x1={centerX}
-                    y1={labelY + branchHeaderHeight}
-                    x2={30}
-                    y2={itemY + 10}
-                    stroke={branch.color}
-                    strokeWidth="1"
-                    opacity="0.2"
+                  <circle
+                    cx={itemDotX}
+                    cy={iy + itemH / 2}
+                    r="2.5"
+                    fill={branch.color}
+                    opacity="0.6"
                   />
-                  <circle cx={30} cy={itemY + 10} r="3" fill={branch.color} />
                   <text
-                    x={40}
-                    y={itemY + 14}
-                    fill="#FFFFFF"
-                    fontSize="10"
-                    opacity="0.8"
+                    x={itemTextX}
+                    y={iy + itemH / 2 + 4}
+                    fill="#FFF"
+                    fontSize="11"
+                    opacity="0.85"
                   >
                     {truncateText(item, 32)}
                   </text>
@@ -207,7 +232,7 @@ function MobileMindMap({
   )
 }
 
-/* ─── Desktop layout: horizontal radial tree ─── */
+/* ─── Desktop: horizontal radial tree ─── */
 function DesktopMindMap({
   companyName,
   score,
@@ -219,105 +244,126 @@ function DesktopMindMap({
   scoreColor: string
   branches: Branch[]
 }) {
-  const width = 800
-  const height = 500
-  const centerX = 160
-  const centerY = height / 2
+  const W = 800
+  const R = 6
+  const centralW = 150
+  const centralH = 64
+  const branchLabelH = 30
+  const itemSlotH = 24
+
+  // Calculate height each branch needs
+  const branchHeights = branches.map(
+    (b) => branchLabelH + b.items.length * itemSlotH + 16
+  )
+  const totalBranchHeight =
+    branchHeights.reduce((a, b) => a + b, 0) +
+    (branches.length - 1) * 10
+  const H = Math.max(420, totalBranchHeight + 80)
+
+  const centerX = 155
+  const centerY = H / 2
+
+  // Position branches vertically, distributed based on content height
+  let branchY = (H - totalBranchHeight) / 2
+  const branchPositions = branches.map((_, bi) => {
+    const top = branchY
+    const mid = top + branchHeights[bi] / 2
+    branchY += branchHeights[bi] + 10
+    return { top, mid }
+  })
+
+  const branchLabelX = 340
+
+  const svgStyle = {
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace',
+    textRendering: 'geometricPrecision' as const,
+  }
 
   return (
     <svg
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`0 0 ${W} ${H}`}
       className="w-full"
-      style={{ fontFamily: 'monospace' }}
+      style={svgStyle}
     >
-      <rect width={width} height={height} fill="#121212" />
-      <defs>
-        <pattern
-          id="grid-d"
-          width="20"
-          height="20"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 20 0 L 0 0 0 20"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="0.3"
-            opacity="0.05"
-          />
-        </pattern>
-      </defs>
-      <rect width={width} height={height} fill="url(#grid-d)" />
+      <rect width={W} height={H} fill="#0A0A0A" />
 
       {/* Branches */}
-      {branches.map((branch, branchIndex) => {
-        const branchStartX = centerX + 70
-        const branchEndX = 340
-        const ySpread = (height - 80) / Math.max(branches.length, 1)
-        const branchY = 40 + branchIndex * ySpread + ySpread / 2
+      {branches.map((branch, bi) => {
+        const pos = branchPositions[bi]
+        const labelW = branch.label.length * 9 + 24
 
         return (
-          <g key={branch.label}>
+          <g key={bi}>
+            {/* Connector from center */}
             <line
-              x1={branchStartX}
+              x1={centerX + centralW / 2}
               y1={centerY}
-              x2={branchEndX}
-              y2={branchY}
+              x2={branchLabelX}
+              y2={pos.mid}
               stroke={branch.color}
-              strokeWidth="3"
-              opacity="0.6"
+              strokeWidth="2"
+              opacity="0.3"
             />
+
+            {/* Branch label */}
             <rect
-              x={branchEndX}
-              y={branchY - 14}
-              width={branch.label.length * 9.5 + 16}
-              height={28}
+              x={branchLabelX}
+              y={pos.mid - branchLabelH / 2}
+              width={labelW}
+              height={branchLabelH}
+              rx={4}
               fill={branch.color}
-              stroke="#000000"
-              strokeWidth="3"
+              stroke="#000"
+              strokeWidth="2"
             />
             <text
-              x={branchEndX + 8}
-              y={branchY + 4}
-              fill="#000000"
-              fontSize="11"
+              x={branchLabelX + 12}
+              y={pos.mid + 4}
+              fill="#000"
+              fontSize="12"
               fontWeight="bold"
-              textAnchor="start"
-              style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
+              style={{
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
             >
               {branch.label}
             </text>
 
-            {branch.items.map((item, itemIndex) => {
-              const itemX =
-                branchEndX + branch.label.length * 9.5 + 16 + 20
-              const itemY = branchY - 10 + itemIndex * 22
+            {/* Items — spread evenly around branch midpoint */}
+            {branch.items.map((item, ii) => {
+              const itemX = branchLabelX + labelW + 22
+              const itemY =
+                pos.mid -
+                ((branch.items.length - 1) * itemSlotH) / 2 +
+                ii * itemSlotH
 
               return (
-                <g key={itemIndex}>
+                <g key={ii}>
                   <line
-                    x1={branchEndX + branch.label.length * 9.5 + 16}
-                    y1={branchY}
-                    x2={itemX}
-                    y2={itemY + 6}
+                    x1={branchLabelX + labelW}
+                    y1={pos.mid}
+                    x2={itemX - 6}
+                    y2={itemY + 4}
                     stroke={branch.color}
-                    strokeWidth="1.5"
-                    opacity="0.3"
+                    strokeWidth="1"
+                    opacity="0.2"
                   />
                   <circle
-                    cx={itemX}
-                    cy={itemY + 6}
+                    cx={itemX - 6}
+                    cy={itemY + 4}
                     r="3"
                     fill={branch.color}
+                    opacity="0.55"
                   />
                   <text
-                    x={itemX + 10}
-                    y={itemY + 10}
-                    fill="#FFFFFF"
-                    fontSize="10"
-                    opacity="0.8"
+                    x={itemX + 6}
+                    y={itemY + 8}
+                    fill="#FFF"
+                    fontSize="11"
+                    opacity="0.85"
                   >
-                    {truncateText(item, 40)}
+                    {truncateText(item, 44)}
                   </text>
                 </g>
               )
@@ -326,41 +372,42 @@ function DesktopMindMap({
         )
       })}
 
-      {/* Central node */}
+      {/* Central node (drawn last to layer on top) */}
       <rect
-        x={centerX - 65}
-        y={centerY - 35}
-        width={130}
-        height={70}
+        x={centerX - centralW / 2}
+        y={centerY - centralH / 2}
+        width={centralW}
+        height={centralH}
+        rx={R}
         fill="#00E676"
-        stroke="#000000"
-        strokeWidth="4"
+        stroke="#000"
+        strokeWidth="3"
       />
       <text
         x={centerX}
         y={centerY - 8}
         textAnchor="middle"
-        fill="#000000"
-        fontSize="13"
+        fill="#000"
+        fontSize="14"
         fontWeight="bold"
-        style={{ textTransform: 'uppercase' }}
+        style={{ textTransform: 'uppercase', letterSpacing: '0.04em' }}
       >
-        {truncateText(companyName, 14)}
+        {truncateText(companyName, 16)}
       </text>
       <circle
         cx={centerX}
-        cy={centerY + 18}
+        cy={centerY + 16}
         r="14"
         fill={scoreColor}
-        stroke="#000000"
-        strokeWidth="3"
+        stroke="#000"
+        strokeWidth="2"
       />
       <text
         x={centerX}
-        y={centerY + 23}
+        y={centerY + 21}
         textAnchor="middle"
-        fill="#000000"
-        fontSize="13"
+        fill="#000"
+        fontSize="14"
         fontWeight="bold"
       >
         {score}
@@ -403,7 +450,7 @@ export default function DealMindMap({ data }: DealMindMapProps) {
     branches.push({
       label: 'Stakeholders',
       items: truncateItems(
-        data.decisionMakers.map((d) => `${d.name} — ${d.role}`),
+        data.decisionMakers.map((d) => `${d.name} \u2014 ${d.role}`),
         4
       ),
       color: '#448AFF',
@@ -432,8 +479,8 @@ export default function DealMindMap({ data }: DealMindMapProps) {
   }
 
   return (
-    <div className="w-full bg-dark">
-      {/* Mobile: vertical tree */}
+    <div className="w-full bg-[#0A0A0A]">
+      {/* Mobile: trunk-and-branch tree */}
       <div className="block sm:hidden">
         <MobileMindMap
           companyName={companyName}
