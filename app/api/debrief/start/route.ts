@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendNotification } from '@/lib/resend'
 
 export const runtime = 'nodejs'
 
@@ -64,22 +65,11 @@ export async function POST(request: NextRequest) {
       console.error('Debrief waitlist sync error:', waitlistError)
     }
 
-    // Resend notification (non-blocking, fire-and-forget)
-    if (process.env.RESEND_API_KEY) {
-      fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'StreetNotes <debrief@streetnotes.ai>',
-          to: 'jeff@forgetime.ai',
-          subject: `Brain Dump started: ${cleanEmail}`,
-          text: `New Brain Dump session\n\nEmail: ${cleanEmail}\nTime: ${new Date().toISOString()}`,
-        }),
-      }).catch(() => {})
-    }
+    // Notify — awaited so Vercel doesn't kill the request
+    await sendNotification(
+      `Brain Dump started: ${cleanEmail}`,
+      `New Brain Dump session\n\nEmail: ${cleanEmail}\nSession: ${data.id}\nTime: ${new Date().toISOString()}`
+    )
 
     return NextResponse.json({ sessionId: data.id })
   } catch {

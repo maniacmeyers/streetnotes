@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendNotification } from '@/lib/resend'
 import {
   DEBRIEF_SYSTEM_PROMPT,
   DEBRIEF_USER_PROMPT_TEMPLATE,
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     const supabase = await createClient()
     const { data: session } = await supabase
       .from('debrief_sessions')
-      .select('id')
+      .select('id, email')
       .eq('id', sessionId)
       .single()
 
@@ -70,6 +71,27 @@ export async function POST(request: Request) {
       .from('debrief_sessions')
       .update({ structured_output: structured as unknown as Record<string, unknown> })
       .eq('id', sessionId)
+
+    // Notify on completion — awaited so Vercel doesn't kill it
+    const company = structured.dealSnapshot?.companyName || 'Unknown'
+    const score = structured.dealScore ?? '?'
+    await sendNotification(
+      `Brain Dump completed: ${session.email} — ${company} (${score}/10)`,
+      [
+        'Brain Dump completed!',
+        '',
+        `Email: ${session.email}`,
+        `Company: ${company}`,
+        `Deal Score: ${score}/10`,
+        `Contact: ${structured.dealSnapshot?.contactName || 'Not mentioned'}`,
+        `Stage: ${structured.dealSnapshot?.dealStage || 'Not mentioned'}`,
+        `Next Steps: ${structured.nextSteps?.length || 0}`,
+        `Objections: ${structured.objections?.length || 0}`,
+        '',
+        `Session: ${sessionId}`,
+        `Time: ${new Date().toISOString()}`,
+      ].join('\n')
+    )
 
     return NextResponse.json({ structured })
   } catch {
