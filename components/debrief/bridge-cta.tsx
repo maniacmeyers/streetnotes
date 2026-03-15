@@ -34,15 +34,15 @@ export default function BridgeCTA() {
         <h3
           className="font-display text-[22px] sm:text-[40px] uppercase leading-[0.85] text-black mb-2 sm:mb-3"
         >
-          Now imagine this
+          Pattern recognition.
           <br />
-          pushed straight
+          Buyer psychology.
           <br className="sm:hidden" />
-          {' '}to your CRM.
+          {' '}Every call.
         </h3>
 
         <p className="font-body text-base sm:text-xl text-black/70 mb-1.5 sm:mb-2">
-          That&apos;s StreetNotes.
+          Now imagine it straight in your CRM. That&apos;s StreetNotes.
         </p>
         <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black/50 mb-5 sm:mb-6">
           Every call. Every field. No typing.
@@ -63,10 +63,10 @@ export default function BridgeCTA() {
             </p>
             <ul className="space-y-0.5 sm:space-y-1">
               {[
-                'Structured notes',
-                'Deal mind map',
-                'Branded PDF',
-                'Objection tracking',
+                'Deal pattern recognition',
+                'Buyer psychology reads',
+                'BANT gap analysis',
+                'Objection diagnostics',
               ].map((item) => (
                 <li
                   key={item}
@@ -85,9 +85,9 @@ export default function BridgeCTA() {
             <ul className="space-y-0.5 sm:space-y-1">
               {[
                 'CRM auto-sync',
-                'Deal history',
-                'Living mind map',
-                'Pipeline analytics',
+                'Deal history across calls',
+                'Team-wide pattern analytics',
+                'Pipeline risk scoring',
               ].map((item) => (
                 <li
                   key={item}

@@ -9,11 +9,11 @@ import {
 import type { DebriefStructuredOutput } from '@/lib/debrief/types'
 
 export const runtime = 'nodejs'
-export const maxDuration = 30
+export const maxDuration = 45
 
 export async function POST(request: Request) {
   try {
-    const { sessionId, transcript } = await request.json()
+    const { sessionId, transcript, dealSegment } = await request.json()
 
     if (!sessionId || !transcript) {
       return NextResponse.json(
@@ -34,6 +34,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 })
     }
 
+    const segment = dealSegment || 'smb'
+
     const openai = getOpenAIClient()
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
         { role: 'system', content: DEBRIEF_SYSTEM_PROMPT },
         {
           role: 'user',
-          content: DEBRIEF_USER_PROMPT_TEMPLATE(transcript),
+          content: DEBRIEF_USER_PROMPT_TEMPLATE(transcript, segment),
         },
       ],
       temperature: 0.3,
@@ -74,19 +76,22 @@ export async function POST(request: Request) {
 
     // Notify on completion — awaited so Vercel doesn't kill it
     const company = structured.dealSnapshot?.companyName || 'Unknown'
-    const score = structured.dealScore ?? '?'
+    const pattern = structured.dealPattern?.name || 'Unknown'
+    const nextStepsStatus = structured.mutualNextSteps?.status || 'unknown'
     await sendNotification(
-      `Brain Dump completed: ${session.email} — ${company} (${score}/10)`,
+      `Brain Dump completed: ${session.email} — ${company} (${pattern})`,
       [
         'Brain Dump completed!',
         '',
         `Email: ${session.email}`,
         `Company: ${company}`,
-        `Deal Score: ${score}/10`,
+        `Deal Pattern: ${pattern}`,
+        `Segment: ${segment}`,
+        `Next Steps Status: ${nextStepsStatus}`,
         `Contact: ${structured.dealSnapshot?.contactName || 'Not mentioned'}`,
-        `Stage: ${structured.dealSnapshot?.dealStage || 'Not mentioned'}`,
-        `Next Steps: ${structured.nextSteps?.length || 0}`,
-        `Objections: ${structured.objections?.length || 0}`,
+        `Objection Diagnostics: ${structured.objectionDiagnostics?.length || 0}`,
+        `Real Commitments: ${structured.commitmentAnalysis?.realCommitments?.length || 0}`,
+        `Filler Signals: ${structured.commitmentAnalysis?.fillerSignals?.length || 0}`,
         '',
         `Session: ${sessionId}`,
         `Time: ${new Date().toISOString()}`,

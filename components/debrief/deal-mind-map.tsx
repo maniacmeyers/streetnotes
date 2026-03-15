@@ -96,14 +96,14 @@ function MobileMindMap({
         width={centralW}
         height={centralH}
         rx={R}
-        fill="#00E676"
-        stroke="#000"
+        fill="#0A0A0A"
+        stroke={scoreColor}
         strokeWidth="2.5"
       />
       <text
         x={centralX + 16}
         y={centralY + centralH / 2 + 5}
-        fill="#000"
+        fill="#FFF"
         fontSize="14"
         fontWeight="bold"
         style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
@@ -111,26 +111,30 @@ function MobileMindMap({
         {truncateText(companyName, 20)}
       </text>
       {/* Score pill inside central node */}
-      <rect
-        x={centralX + centralW - 50}
-        y={centralY + (centralH - 30) / 2}
-        width={36}
-        height={30}
-        rx={4}
-        fill={scoreColor}
-        stroke="#000"
-        strokeWidth="1.5"
-      />
-      <text
-        x={centralX + centralW - 32}
-        y={centralY + centralH / 2 + 6}
-        textAnchor="middle"
-        fill="#000"
-        fontSize="16"
-        fontWeight="bold"
-      >
-        {score}
-      </text>
+      {score > 0 && (
+        <>
+          <rect
+            x={centralX + centralW - 50}
+            y={centralY + (centralH - 30) / 2}
+            width={36}
+            height={30}
+            rx={4}
+            fill={scoreColor}
+            stroke="#000"
+            strokeWidth="1.5"
+          />
+          <text
+            x={centralX + centralW - 32}
+            y={centralY + centralH / 2 + 6}
+            textAnchor="middle"
+            fill="#000"
+            fontSize="16"
+            fontWeight="bold"
+          >
+            {score}
+          </text>
+        </>
+      )}
 
       {/* Trunk line */}
       {positions.length > 0 && (
@@ -379,68 +383,121 @@ function DesktopMindMap({
         width={centralW}
         height={centralH}
         rx={R}
-        fill="#00E676"
-        stroke="#000"
+        fill="#0A0A0A"
+        stroke={scoreColor}
         strokeWidth="3"
       />
       <text
         x={centerX}
-        y={centerY - 8}
+        y={score > 0 ? centerY - 8 : centerY + 5}
         textAnchor="middle"
-        fill="#000"
+        fill="#FFF"
         fontSize="14"
         fontWeight="bold"
         style={{ textTransform: 'uppercase', letterSpacing: '0.04em' }}
       >
         {truncateText(companyName, 16)}
       </text>
-      <circle
-        cx={centerX}
-        cy={centerY + 16}
-        r="14"
-        fill={scoreColor}
-        stroke="#000"
-        strokeWidth="2"
-      />
-      <text
-        x={centerX}
-        y={centerY + 21}
-        textAnchor="middle"
-        fill="#000"
-        fontSize="14"
-        fontWeight="bold"
-      >
-        {score}
-      </text>
+      {score > 0 && (
+        <>
+          <circle
+            cx={centerX}
+            cy={centerY + 16}
+            r="14"
+            fill={scoreColor}
+            stroke="#000"
+            strokeWidth="2"
+          />
+          <text
+            x={centerX}
+            y={centerY + 21}
+            textAnchor="middle"
+            fill="#000"
+            fontSize="14"
+            fontWeight="bold"
+          >
+            {score}
+          </text>
+        </>
+      )}
     </svg>
   )
 }
 
 export default function DealMindMap({ data }: DealMindMapProps) {
-  const companyName = data.dealSnapshot.companyName || 'Deal'
-  const score = data.dealScore
-  const scoreColor =
-    score >= 7 ? '#00E676' : score >= 4 ? '#FFD600' : '#FF5252'
+  const companyName =
+    data.dealSnapshot.companyName || data.dealPattern.name || 'Deal'
+
+  // Status-based color for central node border
+  const statusColor =
+    data.mutualNextSteps.status === 'confirmed'
+      ? '#00E676'
+      : data.mutualNextSteps.status === 'one-sided'
+        ? '#FFD600'
+        : '#FF5252'
+
+  // No numeric score in new schema — pass 0 to hide score pill
+  const score = 0
+  const scoreColor = statusColor
 
   const branches: Branch[] = []
 
-  if (data.nextSteps.length > 0) {
+  // BANT Gaps branch — show any gap items that are not 'confirmed'
+  const gapLabels: Record<string, string> = {
+    budget: 'Budget',
+    authority: 'Authority',
+    need: 'Need',
+    timeline: 'Timeline',
+  }
+  const gapItems: string[] = []
+  const gap = data.dealPattern.gapAnalysis
+  for (const [key, label] of Object.entries(gapLabels)) {
+    const status = gap[key as keyof typeof gap]
+    if (status === 'missing') {
+      gapItems.push(`${label} \u2014 Not identified`)
+    } else if (status === 'implied') {
+      gapItems.push(`${label} \u2014 Implied only`)
+    }
+  }
+  if (gapItems.length > 0) {
     branches.push({
-      label: 'Next Steps',
-      items: truncateItems(
-        data.nextSteps.map((s) => s.action),
-        4
-      ),
-      color: '#00E676',
+      label: 'Gaps',
+      items: truncateItems(gapItems, 4),
+      color: '#FF5252',
     })
   }
-  if (data.objections.length > 0) {
+
+  // Next Steps or Recovery Plays — conditional on mutual confirmation
+  if (data.mutualNextSteps.status === 'confirmed') {
+    const stepItems = [
+      ...data.mutualNextSteps.repActions.map(
+        (a) => `Rep: ${a.action}${a.dueDate ? ` (${a.dueDate})` : ''}`
+      ),
+      ...data.mutualNextSteps.prospectActions.map(
+        (a) => `Prospect: ${a.action}${a.dueDate ? ` (${a.dueDate})` : ''}`
+      ),
+    ]
+    if (stepItems.length > 0) {
+      branches.push({
+        label: 'Next Steps',
+        items: truncateItems(stepItems, 4),
+        color: '#00E676',
+      })
+    }
+  } else if (data.dealPattern.recommendedActions.length > 0) {
+    branches.push({
+      label: 'Recovery Plays',
+      items: truncateItems(data.dealPattern.recommendedActions, 4),
+      color: '#FFD600',
+    })
+  }
+
+  // Objections — now from objectionDiagnostics
+  if (data.objectionDiagnostics.length > 0) {
     branches.push({
       label: 'Objections',
       items: truncateItems(
-        data.objections.map(
-          (o) => `${o.objection}${o.resolved ? ' (resolved)' : ''}`
-        ),
+        data.objectionDiagnostics.map((o) => o.surfaceObjection),
         4
       ),
       color: '#FF5252',

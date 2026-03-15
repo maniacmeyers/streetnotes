@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
       data: structured,
       email: session.email,
       date,
+      dealSegment: structured.dealSegment || 'smb',
     })
     const buffer = await renderToBuffer(
       pdfElement as unknown as React.ReactElement

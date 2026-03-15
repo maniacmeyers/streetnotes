@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import type { DebriefStep, DebriefStructuredOutput } from '@/lib/debrief/types'
+import type { DebriefStep, DebriefStructuredOutput, DealSegment } from '@/lib/debrief/types'
 import EmailGate from './email-gate'
+import SegmentSelector from './segment-selector'
 import Recorder from './recorder'
 import TranscriptReview from './transcript-review'
 import ProcessingSteps from './processing-steps'
@@ -27,6 +28,7 @@ export default function DebriefFlow() {
   const [step, setStep] = useState<DebriefStep>('email')
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
+  const [dealSegment, setDealSegment] = useState<DealSegment | null>(null)
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [audioMimeType, setAudioMimeType] = useState<string>('')
   const [durationSec, setDurationSec] = useState<number>(0)
@@ -41,6 +43,11 @@ export default function DebriefFlow() {
   const handleEmailComplete = useCallback((sid: string, em: string) => {
     setSessionId(sid)
     setEmail(em)
+    setStep('segment')
+  }, [])
+
+  const handleSegmentSelect = useCallback((segment: DealSegment) => {
+    setDealSegment(segment)
     setStep('record')
   }, [])
 
@@ -120,6 +127,7 @@ export default function DebriefFlow() {
           body: JSON.stringify({
             sessionId,
             transcript: editedTranscript,
+            dealSegment: dealSegment || 'smb',
           }),
         })
 
@@ -149,7 +157,7 @@ export default function DebriefFlow() {
         )
       }
     },
-    [sessionId]
+    [sessionId, dealSegment]
   )
 
   const handleRetryTranscription = useCallback(() => {
@@ -176,6 +184,7 @@ export default function DebriefFlow() {
     setStep('email')
     setSessionId(null)
     setEmail(null)
+    setDealSegment(null)
     setAudioBlob(null)
     setAudioMimeType('')
     setDurationSec(0)
@@ -190,6 +199,12 @@ export default function DebriefFlow() {
       {step === 'email' && (
         <motion.div key="email" {...pageTransition}>
           <EmailGate onComplete={handleEmailComplete} />
+        </motion.div>
+      )}
+
+      {step === 'segment' && (
+        <motion.div key="segment" {...pageTransition}>
+          <SegmentSelector onSelect={handleSegmentSelect} />
         </motion.div>
       )}
 
@@ -230,6 +245,7 @@ export default function DebriefFlow() {
             sessionId={sessionId!}
             email={email!}
             durationSec={durationSec}
+            dealSegment={dealSegment || 'smb'}
             onStartOver={handleStartOver}
           />
         </motion.div>
