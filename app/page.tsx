@@ -294,7 +294,7 @@ export default function LandingPage() {
         {/* ── FREE TOOL CTA ── */}
         <section className="bg-black border-b-8 border-black py-12 sm:py-16 md:py-20" aria-labelledby="free-tool-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="border-4 border-volt bg-dark p-6 sm:p-10 md:p-14 text-center relative">
+            <div className="border-4 border-volt bg-dark p-6 sm:p-10 md:p-14 text-center relative overflow-hidden">
                 {/* Background watermark */}
                 <div
                   className="absolute inset-0 flex items-center justify-center font-display text-[200px] sm:text-[300px] text-volt pointer-events-none select-none"
