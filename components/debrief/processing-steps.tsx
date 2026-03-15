@@ -56,7 +56,7 @@ export default function ProcessingSteps({
   onRetry,
 }: ProcessingStepsProps) {
   return (
-    <div className="relative flex flex-col items-center gap-8 sm:gap-12 py-8 sm:py-16">
+    <div className="relative flex flex-col items-center gap-8 sm:gap-12 py-8 sm:py-16" role="status" aria-live="polite">
       {/* Watermark */}
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
@@ -138,7 +138,7 @@ export default function ProcessingSteps({
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm flex flex-col gap-4"
         >
-          <div className="border-4 border-red-500 bg-red-500/10 p-4">
+          <div role="alert" className="border-2 sm:border-4 border-red-500 bg-red-500/10 p-3 sm:p-4">
             <p className="font-mono text-xs uppercase tracking-[0.1em] text-red-400">
               {error}
             </p>

@@ -181,12 +181,12 @@ export default function Recorder({ onComplete }: RecorderProps) {
 
       {/* Error states */}
       {recorderError && (
-        <div className="w-full max-w-md border-4 border-red-500 bg-red-500/10 p-4">
+        <div role="alert" className="w-full max-w-md border-2 sm:border-4 border-red-500 bg-red-500/10 p-3 sm:p-4">
           <p className="font-mono text-xs uppercase tracking-[0.1em] text-red-400">
             {recorderError}
           </p>
           {recorderError.includes('permission') && (
-            <p className="font-body text-sm text-gray-400 mt-2">
+            <p className="font-body text-[13px] sm:text-sm text-gray-400 mt-2">
               Open your device Settings &gt; Browser &gt; Microphone and allow
               access, then refresh this page.
             </p>
@@ -195,11 +195,11 @@ export default function Recorder({ onComplete }: RecorderProps) {
       )}
 
       {!isSupported && (
-        <div className="w-full max-w-md border-4 border-red-500 bg-red-500/10 p-4">
+        <div role="alert" className="w-full max-w-md border-2 sm:border-4 border-red-500 bg-red-500/10 p-3 sm:p-4">
           <p className="font-mono text-xs uppercase tracking-[0.1em] text-red-400">
             This browser doesn&apos;t support audio recording.
           </p>
-          <p className="font-body text-sm text-gray-400 mt-2">
+          <p className="font-body text-[13px] sm:text-sm text-gray-400 mt-2">
             Try Safari on iPhone or Chrome on Android.
           </p>
         </div>
@@ -207,7 +207,7 @@ export default function Recorder({ onComplete }: RecorderProps) {
 
       {/* Short recording warning */}
       {status === 'stopped' && durationSec < MIN_DURATION && (
-        <div className="w-full max-w-md border-4 border-yellow-500 bg-yellow-500/10 p-4">
+        <div role="alert" className="w-full max-w-md border-2 sm:border-4 border-yellow-500 bg-yellow-500/10 p-3 sm:p-4">
           <p className="font-mono text-xs uppercase tracking-[0.1em] text-yellow-400">
             Recording too short — need at least 15 seconds for a good debrief.
           </p>

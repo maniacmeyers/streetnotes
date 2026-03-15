@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'motion/react'
 import {
   FaDownload,
@@ -94,12 +94,12 @@ function Section({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 + index * 0.1, duration: 0.4 }}
+      transition={{ delay: 0.05 + index * 0.06, duration: 0.35 }}
     >
-      <div className="border-3 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
-        <div className="border-b-3 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2">
+      <div className="border-2 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+        <div className="border-b-2 sm:border-b-4 border-black px-3 py-2 sm:px-4 sm:py-3 flex items-center gap-2">
           {icon && <span className="text-black">{icon}</span>}
           <h3 className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
             {title}
@@ -127,18 +127,20 @@ function DealScoreBadge({
         : 'bg-red-500 text-white border-black'
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex items-center gap-4 sm:flex-col sm:items-center sm:gap-2">
       <div
-        className={`w-16 h-16 sm:w-20 sm:h-20 ${color} border-4 flex items-center justify-center`}
+        className={`w-16 h-16 sm:w-20 sm:h-20 ${color} border-4 flex items-center justify-center flex-shrink-0`}
       >
         <span className="font-display text-3xl sm:text-4xl">{score}</span>
       </div>
-      <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400">
-        Deal Score
-      </span>
-      <p className="font-body text-xs text-gray-500 text-center max-w-xs italic">
-        {rationale}
-      </p>
+      <div className="flex-1 sm:text-center">
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 block mb-1">
+          Deal Score
+        </span>
+        <p className="font-body text-xs text-gray-500 max-w-xs italic">
+          {rationale}
+        </p>
+      </div>
     </div>
   )
 }
@@ -152,7 +154,25 @@ export default function ResultsDisplay({
   onStartOver,
 }: ResultsDisplayProps) {
   const [downloading, setDownloading] = useState(false)
+  const [showStickyBar, setShowStickyBar] = useState(false)
+  const inlineDownloadRef = useRef<HTMLDivElement>(null)
   const d = structured
+
+  // Show sticky download bar on mobile when inline button scrolls out of view
+  useEffect(() => {
+    const target = inlineDownloadRef.current
+    if (!target) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting)
+      },
+      { threshold: 0 }
+    )
+
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [])
 
   const handleDownloadPDF = async () => {
     setDownloading(true)
@@ -181,7 +201,7 @@ export default function ResultsDisplay({
   let sectionIndex = 0
 
   return (
-    <div className="flex flex-col gap-5 sm:gap-8">
+    <div className="flex flex-col gap-4 sm:gap-8">
       {/* Results header */}
       <motion.div
         className="text-center"
@@ -207,12 +227,11 @@ export default function ResultsDisplay({
         </p>
       </motion.div>
 
-      {/* Deal Score */}
+      {/* Deal Score — horizontal layout on mobile */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.15, type: 'spring', stiffness: 300 }}
-        className="flex justify-center"
+        transition={{ delay: 0.1, type: 'spring', stiffness: 300 }}
       >
         <DealScoreBadge
           score={d.dealScore}
@@ -220,9 +239,35 @@ export default function ResultsDisplay({
         />
       </motion.div>
 
+      {/* Quick download + start over — visible early on mobile */}
+      <motion.div
+        ref={inlineDownloadRef}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.3 }}
+        className="flex gap-3"
+      >
+        <button
+          type="button"
+          onClick={handleDownloadPDF}
+          disabled={downloading}
+          className="brutalist-btn bg-volt text-black flex-1 flex items-center justify-center gap-2"
+        >
+          <FaDownload className="text-sm" />
+          {downloading ? 'Generating...' : 'Download PDF'}
+        </button>
+        <button
+          type="button"
+          onClick={onStartOver}
+          className="brutalist-btn bg-white text-black flex items-center justify-center"
+        >
+          New
+        </button>
+      </motion.div>
+
       {/* Deal Snapshot */}
       <Section index={sectionIndex++} title="Deal Snapshot">
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:gap-4">
           {[
             {
               label: 'Company',
@@ -256,8 +301,8 @@ export default function ResultsDisplay({
             },
           ].map((field) => (
             <div key={field.key}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-gray-400">
                   {field.label}
                 </span>
                 {d.dealSnapshot.confidence?.[field.key] && (
@@ -267,7 +312,7 @@ export default function ResultsDisplay({
                 )}
               </div>
               <p
-                className={`font-body text-sm ${
+                className={`font-body text-[13px] sm:text-sm ${
                   field.value === 'Not mentioned'
                     ? 'text-gray-400 italic'
                     : 'text-black font-medium'
@@ -282,10 +327,10 @@ export default function ResultsDisplay({
 
       {/* Summary */}
       <Section index={sectionIndex++} title="Summary">
-        <p className="font-body text-sm text-black/80 leading-relaxed italic">
+        <p className="font-body text-[13px] sm:text-sm text-black/80 leading-relaxed italic">
           {d.summary}
         </p>
-        <div className="mt-3">
+        <div className="mt-2 sm:mt-3">
           <ConfidenceDot level={d.overallConfidence} />
         </div>
       </Section>
@@ -299,11 +344,11 @@ export default function ResultsDisplay({
         >
           <ul className="space-y-2">
             {d.keyTakeaways.map((t, i) => (
-              <li key={i} className="flex items-start gap-3">
+              <li key={i} className="flex items-start gap-2.5">
                 <span className="flex-shrink-0 w-5 h-5 bg-volt border-2 border-black flex items-center justify-center mt-0.5">
                   <FaCheck className="text-[8px] text-black" />
                 </span>
-                <span className="font-body text-sm text-black/80">{t}</span>
+                <span className="font-body text-[13px] sm:text-sm text-black/80">{t}</span>
               </li>
             ))}
           </ul>
@@ -317,11 +362,11 @@ export default function ResultsDisplay({
           title="Objections"
           icon={<FaExclamationTriangle className="text-xs" />}
         >
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {d.objections.map((obj, i) => (
               <div
                 key={i}
-                className={`border-l-4 pl-3 py-2 ${obj.resolved ? 'border-l-volt bg-volt/5' : 'border-l-red-500 bg-red-500/5'}`}
+                className={`border-l-3 sm:border-l-4 pl-3 py-1.5 sm:py-2 ${obj.resolved ? 'border-l-volt bg-volt/5' : 'border-l-red-500 bg-red-500/5'}`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   {obj.resolved ? (
@@ -334,7 +379,7 @@ export default function ResultsDisplay({
                     </span>
                   )}
                 </div>
-                <p className="font-body text-sm text-black font-medium">
+                <p className="font-body text-[13px] sm:text-sm text-black font-medium">
                   {obj.objection}
                 </p>
                 {obj.response && obj.response !== 'Not mentioned' && (
@@ -351,17 +396,17 @@ export default function ResultsDisplay({
       {/* Next Steps */}
       {d.nextSteps.length > 0 && (
         <Section index={sectionIndex++} title="Next Steps">
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {d.nextSteps.map((step, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 border-b border-black/10 pb-3 last:border-0 last:pb-0"
+                className="flex items-start gap-2.5 sm:gap-3 border-b border-black/10 pb-2.5 sm:pb-3 last:border-0 last:pb-0"
               >
                 <div className="flex-shrink-0 mt-0.5">
                   <OwnerBadge owner={step.owner} />
                 </div>
-                <div className="flex-1">
-                  <p className="font-body text-sm text-black">{step.action}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-body text-[13px] sm:text-sm text-black">{step.action}</p>
                   {step.dueDate && step.dueDate !== 'Not mentioned' && (
                     <p className="font-mono text-[10px] text-gray-400 mt-0.5">
                       Due: {step.dueDate}
@@ -385,9 +430,9 @@ export default function ResultsDisplay({
             {d.decisionMakers.map((dm, i) => (
               <div
                 key={i}
-                className={`border-l-4 pl-3 py-2 ${SentimentBorder({ sentiment: dm.sentiment })}`}
+                className={`border-l-3 sm:border-l-4 pl-3 py-1.5 sm:py-2 ${SentimentBorder({ sentiment: dm.sentiment })}`}
               >
-                <p className="font-body text-sm text-black font-medium">
+                <p className="font-body text-[13px] sm:text-sm text-black font-medium">
                   {dm.name}
                 </p>
                 <div className="flex items-center gap-3 mt-0.5">
@@ -419,11 +464,11 @@ export default function ResultsDisplay({
           title="Buying Signals"
           icon={<FaHandshake className="text-xs" />}
         >
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {d.buyingSignals.map((signal, i) => (
               <span
                 key={i}
-                className="font-mono text-[10px] uppercase tracking-wider text-volt border-2 border-volt/40 bg-volt/10 px-3 py-1"
+                className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-volt border-2 border-volt/40 bg-volt/10 px-2.5 sm:px-3 py-1"
               >
                 {signal}
               </span>
@@ -439,11 +484,11 @@ export default function ResultsDisplay({
           title="Risks"
           icon={<FaExclamationTriangle className="text-xs" />}
         >
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {d.risks.map((risk, i) => (
               <span
                 key={i}
-                className="font-mono text-[10px] uppercase tracking-wider text-red-400 border-2 border-red-500/40 bg-red-500/10 px-3 py-1"
+                className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-red-400 border-2 border-red-500/40 bg-red-500/10 px-2.5 sm:px-3 py-1"
               >
                 {risk}
               </span>
@@ -455,11 +500,11 @@ export default function ResultsDisplay({
       {/* Competitors */}
       {d.competitorsMentioned.length > 0 && (
         <Section index={sectionIndex++} title="Competitors Mentioned">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {d.competitorsMentioned.map((comp, i) => (
               <span
                 key={i}
-                className="font-mono text-[10px] uppercase tracking-wider text-gray-600 border-2 border-gray-300 bg-gray-50 px-3 py-1"
+                className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-gray-600 border-2 border-gray-300 bg-gray-50 px-2.5 sm:px-3 py-1"
               >
                 {comp}
               </span>
@@ -470,51 +515,40 @@ export default function ResultsDisplay({
 
       {/* Mind Map */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 + sectionIndex * 0.1, duration: 0.4 }}
+        transition={{ delay: 0.05 + sectionIndex * 0.06, duration: 0.35 }}
       >
-        <div className="border-3 sm:border-4 border-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] overflow-hidden">
-          <div className="border-b-3 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 bg-white">
+        <div className="border-2 sm:border-4 border-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] overflow-hidden">
+          <div className="border-b-2 sm:border-b-4 border-black px-3 py-2 sm:px-4 sm:py-3 bg-white">
             <h3 className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
               Deal Mind Map
             </h3>
-            <p className="sm:hidden font-mono text-[8px] uppercase tracking-[0.1em] text-gray-400 mt-1">
-              Rotate to landscape for the best view
-            </p>
           </div>
           <DealMindMap data={d} />
         </div>
       </motion.div>
 
-      {/* Download PDF + Start Over */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 + (sectionIndex + 1) * 0.1, duration: 0.4 }}
-        className="flex flex-col gap-3"
-      >
-        <button
-          type="button"
-          onClick={handleDownloadPDF}
-          disabled={downloading}
-          className="brutalist-btn bg-volt text-black w-full flex items-center justify-center gap-3"
-        >
-          <FaDownload className="text-sm" />
-          {downloading ? 'Generating PDF...' : 'Download PDF'}
-        </button>
-
-        <button
-          type="button"
-          onClick={onStartOver}
-          className="font-mono text-xs uppercase tracking-[0.1em] text-gray-400 hover:text-white transition-colors py-3 min-h-[44px]"
-        >
-          Start new debrief
-        </button>
-      </motion.div>
-
       {/* Bridge CTA */}
       <BridgeCTA />
+
+      {/* Bottom spacer for sticky bar on mobile */}
+      <div className="h-16 sm:hidden" />
+
+      {/* Sticky download bar — mobile only, appears when inline button scrolls away */}
+      {showStickyBar && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden z-50 bg-dark/95 backdrop-blur-sm border-t-2 border-volt/30 px-4 py-3 pb-safe">
+          <button
+            type="button"
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+            className="brutalist-btn bg-volt text-black w-full flex items-center justify-center gap-2 border-2"
+          >
+            <FaDownload className="text-xs" />
+            {downloading ? 'Generating...' : 'Download PDF'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

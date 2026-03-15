@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   ::selection {
     background-color: #00E676;
     color: #000000;
@@ -67,12 +72,12 @@
     }
   }
   .brutalist-btn:active {
-    transform: translate(3px, 3px);
+    transform: translate(3px, 3px) scale(0.98);
     box-shadow: none;
   }
   @media (min-width: 640px) {
     .brutalist-btn:active {
-      transform: translate(4px, 4px);
+      transform: translate(4px, 4px) scale(1);
     }
   }
 

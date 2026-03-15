@@ -92,28 +92,33 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.4 }}
       >
-        <div className="flex border-3 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+        <div className="flex border-2 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+          <label htmlFor="debrief-email" className="sr-only">
+            Work email address
+          </label>
           <input
+            id="debrief-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="YOUR WORK EMAIL"
             required
+            aria-required="true"
             autoComplete="email"
             inputMode="email"
-            className="flex-1 min-w-0 px-3 py-3.5 sm:px-4 sm:py-4 font-mono text-[13px] sm:text-sm text-black placeholder:text-gray-400 uppercase tracking-wider bg-white outline-none min-h-[44px]"
+            className="flex-1 min-w-0 px-3 py-3 sm:px-4 sm:py-4 font-mono text-[13px] sm:text-sm text-black placeholder:text-gray-400 uppercase tracking-wider bg-white outline-none min-h-[44px]"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="border-l-3 sm:border-l-4 border-black bg-volt text-black font-display text-base sm:text-lg px-5 sm:px-6 py-3.5 sm:py-4 uppercase hover:bg-white transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px]"
+            className="border-l-2 sm:border-l-4 border-black bg-volt text-black font-display text-base sm:text-lg px-5 sm:px-6 py-3 sm:py-4 uppercase hover:bg-white active:bg-white transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px]"
           >
             {status === 'loading' ? '...' : 'Start'}
           </button>
         </div>
 
         {status === 'error' && (
-          <p className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-red-400 mt-3">
+          <p role="alert" className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-red-400 mt-3">
             {errorMsg}
           </p>
         )}

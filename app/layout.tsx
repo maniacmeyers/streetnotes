@@ -42,6 +42,12 @@ export default function RootLayout({
       <body
         className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} font-body min-h-screen bg-dark antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-volt focus:text-black focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:uppercase focus:font-bold focus:border-2 focus:border-black"
+        >
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>

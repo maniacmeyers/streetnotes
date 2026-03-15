@@ -27,6 +27,11 @@ export default function MicButton({
   onStop,
 }: MicButtonProps) {
   const handleClick = () => {
+    // Haptic feedback on mobile devices
+    if (navigator.vibrate) {
+      navigator.vibrate(isRecording ? [30, 30, 30] : 50)
+    }
+
     if (isRecording && canStop) {
       onStop()
     } else if (!isRecording && !disabled) {

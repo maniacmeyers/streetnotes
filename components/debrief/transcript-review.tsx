@@ -74,13 +74,13 @@ export default function TranscriptReview({
 
       {/* Transcript card */}
       <motion.div
-        className="border-3 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000]"
+        className="border-2 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000]"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
         {/* Card header */}
-        <div className="border-b-3 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between bg-white">
+        <div className="border-b-2 sm:border-b-4 border-black px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between bg-white">
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-black font-bold">
               Transcript
@@ -95,18 +95,23 @@ export default function TranscriptReview({
         </div>
 
         {/* Editable textarea */}
+        <label htmlFor="transcript-editor" className="sr-only">
+          Edit your transcript
+        </label>
         <textarea
+          id="transcript-editor"
           ref={textareaRef}
           value={edited}
           onChange={(e) => setEdited(e.target.value)}
           className="w-full px-3 py-3 sm:px-4 sm:py-4 font-mono text-[13px] sm:text-sm text-black bg-white leading-relaxed outline-none resize-none min-h-[200px]"
           spellCheck={true}
+          aria-describedby={hasEdits ? 'edit-notice' : undefined}
         />
 
         {/* Card footer */}
         {hasEdits && (
-          <div className="border-t-3 sm:border-t-4 border-black px-3 py-2 sm:px-4 bg-volt/10">
-            <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-volt">
+          <div className="border-t-2 sm:border-t-4 border-black px-3 py-2 sm:px-4 bg-volt/10">
+            <p id="edit-notice" role="status" className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-volt">
               Edits detected — your version will be used
             </p>
           </div>

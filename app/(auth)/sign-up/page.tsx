@@ -11,21 +11,21 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
   const message = params.message
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6">
+    <main id="main-content" className="flex min-h-[100dvh] flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold">Create account</h1>
-          <p className="text-base text-gray-500">Start using StreetNotes today</p>
+          <p className="text-base text-gray-600">Start using StreetNotes today</p>
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
+          <div role="alert" className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
             <p className="text-base text-red-700">{decodeURIComponent(error)}</p>
           </div>
         )}
 
         {message && (
-          <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
+          <div role="status" className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
             <p className="text-base text-green-700">{decodeURIComponent(message)}</p>
           </div>
         )}
@@ -68,7 +68,7 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
           </button>
         </form>
 
-        <p className="text-center text-base text-gray-500">
+        <p className="text-center text-base text-gray-600">
           Already have an account?{' '}
           <Link href="/login" className="text-black font-medium underline">
             Sign in

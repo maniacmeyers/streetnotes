@@ -30,7 +30,7 @@ export default function WaitlistForm({ variant = 'dark' }: { variant?: 'dark' | 
 
   if (status === 'success') {
     return (
-      <div>
+      <div role="status" aria-live="polite">
         <div className="border-4 border-black neo-shadow bg-white p-6 text-center">
           <p className="font-display text-2xl uppercase text-black">You&apos;re in.</p>
           <p className="font-body text-black/70 mt-2">We&apos;ll hit you up when it&apos;s go time.</p>
@@ -45,7 +45,11 @@ export default function WaitlistForm({ variant = 'dark' }: { variant?: 'dark' | 
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row border-4 border-black neo-shadow bg-white"
       >
+        <label htmlFor="waitlist-email" className="sr-only">
+          Work email address
+        </label>
         <input
+          id="waitlist-email"
           type="email"
           name="email"
           inputMode="email"
@@ -54,6 +58,7 @@ export default function WaitlistForm({ variant = 'dark' }: { variant?: 'dark' | 
           onChange={(e) => setEmail(e.target.value)}
           placeholder="YOUR WORK EMAIL"
           required
+          aria-required="true"
           className="flex-1 px-4 py-3.5 sm:py-4 font-mono text-sm text-black placeholder:text-gray-400 uppercase tracking-wider bg-white outline-none min-h-[44px]"
         />
         <button
@@ -65,7 +70,7 @@ export default function WaitlistForm({ variant = 'dark' }: { variant?: 'dark' | 
         </button>
       </form>
       {status === 'error' && (
-        <p className="font-mono text-xs uppercase tracking-[0.1em] text-red-500 mt-2">
+        <p role="alert" className="font-mono text-xs uppercase tracking-[0.1em] text-red-500 mt-2">
           Something went wrong. Try again.
         </p>
       )}

@@ -8,7 +8,7 @@ export default function BridgeCTA() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.8, duration: 0.5 }}
-      className="bg-volt border-3 sm:border-4 border-black shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000] p-5 sm:p-10 text-center relative overflow-hidden"
+      className="bg-volt border-2 sm:border-4 border-black shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000] p-4 sm:p-10 text-center relative overflow-hidden"
     >
       {/* Background watermark */}
       <div

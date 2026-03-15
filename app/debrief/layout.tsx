@@ -12,11 +12,11 @@ export default function DebriefLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-dark text-white overflow-x-hidden">
+    <div className="min-h-[100dvh] bg-dark text-white overflow-x-hidden">
       {/* Header */}
-      <header className="border-b-4 border-volt/30 bg-dark pt-safe">
-        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-14 sm:h-16">
-          <a href="/" className="flex items-center min-h-[44px]">
+      <header className="border-b-2 sm:border-b-4 border-volt/30 bg-dark pt-safe">
+        <nav aria-label="Debrief navigation" className="max-w-2xl mx-auto px-4 flex items-center justify-between h-14 sm:h-16">
+          <a href="/" className="flex items-center min-h-[44px]" aria-label="StreetNotes.ai home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/streetnotes_logo.png"
@@ -24,13 +24,13 @@ export default function DebriefLayout({
               className="h-8 sm:h-10 w-auto"
             />
           </a>
-          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-volt font-bold border-2 border-volt/40 px-3 py-1">
+          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-volt font-bold border-2 border-volt/40 px-3 py-1" aria-label="This is a free tool">
             Free Tool
           </span>
-        </div>
+        </nav>
       </header>
       {/* Content — extra px on mobile for neo-shadow offset */}
-      <main className="max-w-2xl mx-auto px-5 sm:px-4 py-6 sm:py-12 pb-safe">
+      <main id="main-content" className="max-w-2xl mx-auto px-5 sm:px-4 py-6 sm:py-12 pb-safe">
         {children}
       </main>
     </div>

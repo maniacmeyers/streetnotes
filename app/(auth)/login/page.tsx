@@ -12,21 +12,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const message = params.message
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6">
+    <main id="main-content" className="flex min-h-[100dvh] flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold">Sign in</h1>
-          <p className="text-base text-gray-500">Welcome back to StreetNotes</p>
+          <p className="text-base text-gray-600">Welcome back to StreetNotes</p>
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
+          <div role="alert" className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
             <p className="text-base text-red-700">{decodeURIComponent(error)}</p>
           </div>
         )}
 
         {message && (
-          <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
+          <div role="status" className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
             <p className="text-base text-green-700">{decodeURIComponent(message)}</p>
           </div>
         )}
@@ -69,15 +69,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </button>
         </form>
 
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-base text-gray-400">or</span>
-          <div className="flex-1 h-px bg-gray-200" />
+        <div className="flex items-center gap-3" role="separator" aria-orientation="horizontal">
+          <div className="flex-1 h-px bg-gray-200" aria-hidden="true" />
+          <span className="text-base text-gray-500">or</span>
+          <div className="flex-1 h-px bg-gray-200" aria-hidden="true" />
         </div>
 
         <GoogleSignInButton />
 
-        <p className="text-center text-base text-gray-500">
+        <p className="text-center text-base text-gray-600">
           Don&apos;t have an account?{' '}
           <Link href="/sign-up" className="text-black font-medium underline">
             Sign up
