@@ -79,14 +79,15 @@ export default function LandingPage() {
 
             {/* ── PRIMARY CTA: Brain Dump ── */}
             <div className="max-w-lg mb-8 sm:mb-10">
-              <div className="bg-volt border-4 border-black neo-shadow p-5 sm:p-6 relative overflow-hidden">
-                {/* Watermark */}
-                <div
-                  className="absolute -right-4 -bottom-4 font-display text-[100px] sm:text-[140px] text-black pointer-events-none select-none leading-none"
-                  style={{ opacity: 0.06 }}
-                  aria-hidden="true"
-                >
-                  MIC
+              <div className="bg-volt border-4 border-black neo-shadow p-5 sm:p-6 relative">
+                {/* Watermark — clipped independently so ElectricBorder overflow is visible */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                  <div
+                    className="absolute -right-4 -bottom-4 font-display text-[100px] sm:text-[140px] text-black select-none leading-none"
+                    style={{ opacity: 0.06 }}
+                  >
+                    MIC
+                  </div>
                 </div>
 
                 <div className="relative">
@@ -317,7 +318,7 @@ export default function LandingPage() {
                     notes, a mind map, and a downloadable PDF. No account needed.
                   </p>
 
-                  <div className="inline-block overflow-hidden">
+                  <div className="inline-block">
                     <ElectricBorder color="#00E676" speed={1} chaos={0.2} borderRadius={0} className="inline-block">
                       <a
                         href="/debrief"

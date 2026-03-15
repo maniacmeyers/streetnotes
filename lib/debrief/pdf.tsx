@@ -33,8 +33,8 @@ const GRAY_800 = '#1F2937'
 
 /* ─── Styles ─── */
 const s = StyleSheet.create({
-  /* Page */
-  page: {
+  /* ─── Cover Page ─── */
+  coverPage: {
     paddingTop: 0,
     paddingBottom: 50,
     paddingHorizontal: 0,
@@ -43,8 +43,23 @@ const s = StyleSheet.create({
     color: GRAY_700,
     backgroundColor: WHITE,
   },
-  pageContent: {
-    paddingHorizontal: 40,
+
+  /* ─── Body Page (auto-paginates) ─── */
+  bodyPage: {
+    paddingTop: 58,
+    paddingBottom: 50,
+    paddingHorizontal: 0,
+    fontFamily: 'Helvetica',
+    fontSize: 10,
+    color: GRAY_700,
+    backgroundColor: WHITE,
+  },
+
+  /* ─── Top accent bar ─── */
+  topAccent: {
+    width: '100%',
+    height: 4,
+    backgroundColor: VOLT,
   },
 
   /* ─── Cover Header ─── */
@@ -93,26 +108,48 @@ const s = StyleSheet.create({
     color: GRAY_500,
   },
 
-  /* ─── Page Header (non-cover pages) ─── */
-  pageHeader: {
+  /* ─── Fixed Header (body pages) ─── */
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: DARK,
     paddingVertical: 12,
     paddingHorizontal: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
   },
-  pageHeaderLogo: {
+  headerLogo: {
     width: 100,
     height: 25,
   },
-  pageHeaderTitle: {
+  headerTitle: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 8,
     color: GRAY_500,
     letterSpacing: 2,
     textTransform: 'uppercase',
+  },
+
+  /* ─── Footer ─── */
+  footer: {
+    position: 'absolute',
+    bottom: 16,
+    left: 40,
+    right: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  footerText: {
+    fontSize: 7,
+    color: GRAY_500,
+  },
+  footerLogo: {
+    width: 56,
+    height: 14,
   },
 
   /* ─── Deal Score ─── */
@@ -470,27 +507,6 @@ const s = StyleSheet.create({
     color: DARK,
     letterSpacing: 1,
   },
-
-  /* ─── Footer ─── */
-  footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 40,
-    right: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 7,
-    color: GRAY_500,
-  },
-  footerAccent: {
-    width: 30,
-    height: 2,
-    backgroundColor: VOLT,
-    borderRadius: 1,
-  },
 })
 
 function scoreColor(score: number): string {
@@ -519,27 +535,6 @@ function SectionHeading({ title }: { title: string }) {
   )
 }
 
-function PageFooter({ page, total }: { page: number; total: number }) {
-  return (
-    <View style={s.footer}>
-      <Text style={s.footerText}>
-        Page {page} of {total}
-      </Text>
-      <View style={s.footerAccent} />
-      <Text style={s.footerText}>streetnotes.ai  |  Confidential</Text>
-    </View>
-  )
-}
-
-function InnerPageHeader() {
-  return (
-    <View style={s.pageHeader}>
-      <Image src={LOGO_PATH} style={s.pageHeaderLogo} />
-      <Text style={s.pageHeaderTitle}>Post-Call Brain Dump</Text>
-    </View>
-  )
-}
-
 interface PDFProps {
   data: DebriefStructuredOutput
   email: string
@@ -548,12 +543,16 @@ interface PDFProps {
 
 export function DebriefPDF({ data, email, date }: PDFProps) {
   const d = data
-  const totalPages = 5
 
   return (
     <Document>
-      {/* ── PAGE 1: COVER + SNAPSHOT ── */}
-      <Page size="A4" style={s.page}>
+      {/* ══════════════════════════════════════════════════
+          COVER PAGE — Header + Deal Score + Snapshot
+          ══════════════════════════════════════════════════ */}
+      <Page size="A4" style={s.coverPage}>
+        {/* Top accent bar */}
+        <View style={s.topAccent} />
+
         {/* Cover Header with Logo */}
         <View style={s.coverHeader}>
           <View style={s.logoRow}>
@@ -610,13 +609,51 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
           ))}
         </View>
 
-        {/* Summary */}
-        <SectionHeading title="Summary" />
-        <Text style={s.summary}>{d.summary}</Text>
+        {/* Cover page footer */}
+        <View style={s.footer}>
+          <Text
+            style={s.footerText}
+            render={({ pageNumber, totalPages }) =>
+              `Page ${pageNumber} of ${totalPages}`
+            }
+          />
+          <Image src={LOGO_PATH} style={s.footerLogo} />
+          <Text style={s.footerText}>Confidential</Text>
+        </View>
+      </Page>
 
-        {/* Key Takeaways */}
+      {/* ══════════════════════════════════════════════════
+          BODY PAGES — Auto-paginating content
+          Each section uses wrap={false} to stay together
+          ══════════════════════════════════════════════════ */}
+      <Page size="A4" style={s.bodyPage}>
+        {/* Fixed header — repeats on every generated page */}
+        <View style={s.fixedHeader} fixed>
+          <Image src={LOGO_PATH} style={s.headerLogo} />
+          <Text style={s.headerTitle}>Post-Call Brain Dump</Text>
+        </View>
+
+        {/* Fixed footer — repeats on every generated page */}
+        <View style={s.footer} fixed>
+          <Text
+            style={s.footerText}
+            render={({ pageNumber, totalPages }) =>
+              `Page ${pageNumber} of ${totalPages}`
+            }
+          />
+          <Image src={LOGO_PATH} style={s.footerLogo} />
+          <Text style={s.footerText}>Confidential</Text>
+        </View>
+
+        {/* ── Summary ── */}
+        <View wrap={false}>
+          <SectionHeading title="Summary" />
+          <Text style={s.summary}>{d.summary}</Text>
+        </View>
+
+        {/* ── Key Takeaways ── */}
         {d.keyTakeaways.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Key Takeaways" />
             {d.keyTakeaways.map((t, i) => (
               <View key={i} style={s.listItem}>
@@ -626,19 +663,12 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 <Text style={s.listText}>{t}</Text>
               </View>
             ))}
-          </>
+          </View>
         )}
 
-        <PageFooter page={1} total={totalPages} />
-      </Page>
-
-      {/* ── PAGE 2: OBJECTIONS + NEXT STEPS ── */}
-      <Page size="A4" style={s.page}>
-        <InnerPageHeader />
-
-        {/* Objections */}
+        {/* ── Objections ── */}
         {d.objections.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Objections" />
             <View style={s.tableContainer}>
               <View style={s.tableHeaderRow}>
@@ -672,12 +702,12 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </View>
               ))}
             </View>
-          </>
+          </View>
         )}
 
-        {/* Next Steps */}
+        {/* ── Next Steps ── */}
         {d.nextSteps.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Next Steps" />
             <View style={s.tableContainer}>
               <View style={s.tableHeaderRow}>
@@ -720,19 +750,12 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </View>
               ))}
             </View>
-          </>
+          </View>
         )}
 
-        <PageFooter page={2} total={totalPages} />
-      </Page>
-
-      {/* ── PAGE 3: STAKEHOLDERS + SIGNALS ── */}
-      <Page size="A4" style={s.page}>
-        <InnerPageHeader />
-
-        {/* Decision Makers */}
+        {/* ── Decision Makers ── */}
         {d.decisionMakers.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Decision Makers" />
             {d.decisionMakers.map((dm, i) => (
               <View key={i} style={s.stakeholderCard}>
@@ -750,12 +773,12 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </View>
               </View>
             ))}
-          </>
+          </View>
         )}
 
-        {/* Buying Signals */}
+        {/* ── Buying Signals ── */}
         {d.buyingSignals.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Buying Signals" />
             <View style={s.tagRow}>
               {d.buyingSignals.map((sig, i) => (
@@ -764,12 +787,12 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </Text>
               ))}
             </View>
-          </>
+          </View>
         )}
 
-        {/* Risks */}
+        {/* ── Risks ── */}
         {d.risks.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Risks" />
             <View style={s.tagRow}>
               {d.risks.map((risk, i) => (
@@ -778,12 +801,12 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </Text>
               ))}
             </View>
-          </>
+          </View>
         )}
 
-        {/* Competitors */}
+        {/* ── Competitors ── */}
         {d.competitorsMentioned.length > 0 && (
-          <>
+          <View wrap={false}>
             <SectionHeading title="Competitors Mentioned" />
             <View style={s.tagRow}>
               {d.competitorsMentioned.map((comp, i) => (
@@ -792,118 +815,125 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </Text>
               ))}
             </View>
-          </>
+          </View>
         )}
 
-        <PageFooter page={3} total={totalPages} />
-      </Page>
-
-      {/* ── PAGE 4: DEAL MIND MAP ── */}
-      <Page size="A4" style={s.page}>
-        <InnerPageHeader />
-
-        <SectionHeading title="Deal Mind Map" />
-
-        {/* Central node */}
-        <View style={s.mmCentral}>
-          <Text style={s.mmCompanyText}>
-            {d.dealSnapshot.companyName || 'Deal'}
-          </Text>
-          <View
-            style={[s.mmScorePill, { backgroundColor: scoreColor(d.dealScore) }]}
-          >
-            <View style={s.mmScoreInner}>
-              <Text style={s.mmScoreText}>{d.dealScore}</Text>
+        {/* ── Deal Mind Map ── */}
+        {/* Central node kept with heading */}
+        <View wrap={false}>
+          <SectionHeading title="Deal Mind Map" />
+          <View style={s.mmCentral}>
+            <Text style={s.mmCompanyText}>
+              {d.dealSnapshot.companyName || 'Deal'}
+            </Text>
+            <View
+              style={[s.mmScorePill, { backgroundColor: scoreColor(d.dealScore) }]}
+            >
+              <View style={s.mmScoreInner}>
+                <Text style={s.mmScoreText}>{d.dealScore}</Text>
+              </View>
             </View>
           </View>
         </View>
 
-        {/* Branches */}
+        {/* Mind Map Branches — each stays together */}
         {d.nextSteps.length > 0 && (
-          <View style={[s.mmBranch, { borderLeftColor: VOLT }]}>
-            <Text style={[s.mmBranchLabel, { color: VOLT }]}>Next Steps</Text>
-            {d.nextSteps.map((step, i) => (
-              <View key={i} style={s.mmItem}>
-                <View style={[s.mmDot, { backgroundColor: VOLT }]} />
-                <Text style={s.mmItemText}>{step.action}</Text>
-              </View>
-            ))}
+          <View wrap={false}>
+            <View style={[s.mmBranch, { borderLeftColor: VOLT }]}>
+              <Text style={[s.mmBranchLabel, { color: VOLT }]}>Next Steps</Text>
+              {d.nextSteps.map((step, i) => (
+                <View key={i} style={s.mmItem}>
+                  <View style={[s.mmDot, { backgroundColor: VOLT }]} />
+                  <Text style={s.mmItemText}>{step.action}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
 
         {d.objections.length > 0 && (
-          <View style={[s.mmBranch, { borderLeftColor: RED }]}>
-            <Text style={[s.mmBranchLabel, { color: RED }]}>Objections</Text>
-            {d.objections.map((obj, i) => (
-              <View key={i} style={s.mmItem}>
-                <View style={[s.mmDot, { backgroundColor: RED }]} />
-                <Text style={s.mmItemText}>
-                  {obj.objection}
-                  {obj.resolved ? ' (Resolved)' : ''}
-                </Text>
-              </View>
-            ))}
+          <View wrap={false}>
+            <View style={[s.mmBranch, { borderLeftColor: RED }]}>
+              <Text style={[s.mmBranchLabel, { color: RED }]}>Objections</Text>
+              {d.objections.map((obj, i) => (
+                <View key={i} style={s.mmItem}>
+                  <View style={[s.mmDot, { backgroundColor: RED }]} />
+                  <Text style={s.mmItemText}>
+                    {obj.objection}
+                    {obj.resolved ? ' (Resolved)' : ''}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
 
         {d.decisionMakers.length > 0 && (
-          <View style={[s.mmBranch, { borderLeftColor: BLUE }]}>
-            <Text style={[s.mmBranchLabel, { color: BLUE }]}>Stakeholders</Text>
-            {d.decisionMakers.map((dm, i) => (
-              <View key={i} style={s.mmItem}>
-                <View style={[s.mmDot, { backgroundColor: BLUE }]} />
-                <Text style={s.mmItemText}>
-                  {dm.name} — {dm.role}
-                </Text>
-              </View>
-            ))}
+          <View wrap={false}>
+            <View style={[s.mmBranch, { borderLeftColor: BLUE }]}>
+              <Text style={[s.mmBranchLabel, { color: BLUE }]}>Stakeholders</Text>
+              {d.decisionMakers.map((dm, i) => (
+                <View key={i} style={s.mmItem}>
+                  <View style={[s.mmDot, { backgroundColor: BLUE }]} />
+                  <Text style={s.mmItemText}>
+                    {dm.name} — {dm.role}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
 
         {d.buyingSignals.length > 0 && (
-          <View style={[s.mmBranch, { borderLeftColor: VOLT }]}>
-            <Text style={[s.mmBranchLabel, { color: VOLT }]}>
-              Buying Signals
-            </Text>
-            {d.buyingSignals.map((sig, i) => (
-              <View key={i} style={s.mmItem}>
-                <View style={[s.mmDot, { backgroundColor: VOLT }]} />
-                <Text style={s.mmItemText}>{sig}</Text>
-              </View>
-            ))}
+          <View wrap={false}>
+            <View style={[s.mmBranch, { borderLeftColor: VOLT }]}>
+              <Text style={[s.mmBranchLabel, { color: VOLT }]}>
+                Buying Signals
+              </Text>
+              {d.buyingSignals.map((sig, i) => (
+                <View key={i} style={s.mmItem}>
+                  <View style={[s.mmDot, { backgroundColor: VOLT }]} />
+                  <Text style={s.mmItemText}>{sig}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
 
         {d.risks.length > 0 && (
-          <View style={[s.mmBranch, { borderLeftColor: RED }]}>
-            <Text style={[s.mmBranchLabel, { color: RED }]}>Risks</Text>
-            {d.risks.map((risk, i) => (
-              <View key={i} style={s.mmItem}>
-                <View style={[s.mmDot, { backgroundColor: RED }]} />
-                <Text style={s.mmItemText}>{risk}</Text>
-              </View>
-            ))}
+          <View wrap={false}>
+            <View style={[s.mmBranch, { borderLeftColor: RED }]}>
+              <Text style={[s.mmBranchLabel, { color: RED }]}>Risks</Text>
+              {d.risks.map((risk, i) => (
+                <View key={i} style={s.mmItem}>
+                  <View style={[s.mmDot, { backgroundColor: RED }]} />
+                  <Text style={s.mmItemText}>{risk}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
 
         {d.competitorsMentioned.length > 0 && (
-          <View style={[s.mmBranch, { borderLeftColor: GRAY_500 }]}>
-            <Text style={[s.mmBranchLabel, { color: GRAY_500 }]}>
-              Competitors
-            </Text>
-            {d.competitorsMentioned.map((comp, i) => (
-              <View key={i} style={s.mmItem}>
-                <View style={[s.mmDot, { backgroundColor: GRAY_500 }]} />
-                <Text style={s.mmItemText}>{comp}</Text>
-              </View>
-            ))}
+          <View wrap={false}>
+            <View style={[s.mmBranch, { borderLeftColor: GRAY_500 }]}>
+              <Text style={[s.mmBranchLabel, { color: GRAY_500 }]}>
+                Competitors
+              </Text>
+              {d.competitorsMentioned.map((comp, i) => (
+                <View key={i} style={s.mmItem}>
+                  <View style={[s.mmDot, { backgroundColor: GRAY_500 }]} />
+                  <Text style={s.mmItemText}>{comp}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
-
-        <PageFooter page={4} total={totalPages} />
       </Page>
 
-      {/* ── PAGE 5: CTA ── */}
+      {/* ══════════════════════════════════════════════════
+          CTA PAGE
+          ══════════════════════════════════════════════════ */}
       <Page size="A4" style={s.ctaPage}>
         <View style={s.ctaContainer}>
           <Image src={LOGO_PATH} style={s.ctaLogo} />
@@ -912,7 +942,7 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
             Now imagine this pushed{'\n'}straight to your CRM.
           </Text>
           <Text style={s.ctaSubline}>
-            Every call. Every field. No typing.{'\n'}That&apos;s StreetNotes.
+            Every call. Every field. No typing.
           </Text>
           <View style={s.ctaUrlContainer}>
             <Text style={s.ctaUrl}>streetnotes.ai</Text>
@@ -920,13 +950,14 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
         </View>
 
         <View style={s.footer}>
-          <Text style={[s.footerText, { color: GRAY_600 }]}>
-            Page 5 of {totalPages}
-          </Text>
-          <View style={s.footerAccent} />
-          <Text style={[s.footerText, { color: GRAY_600 }]}>
-            streetnotes.ai  |  Confidential
-          </Text>
+          <Text
+            style={[s.footerText, { color: GRAY_600 }]}
+            render={({ pageNumber, totalPages }) =>
+              `Page ${pageNumber} of ${totalPages}`
+            }
+          />
+          <Image src={LOGO_PATH} style={s.footerLogo} />
+          <Text style={[s.footerText, { color: GRAY_600 }]}>Confidential</Text>
         </View>
       </Page>
     </Document>
