@@ -204,16 +204,16 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
   )
 
   useEffect(() => {
-    // Respect reduced motion preference
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (motionQuery.matches) return
-
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+
+    // Reduced motion: draw one static frame, no animation loop
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const reduceMotion = motionQuery.matches
 
     // Config
     const octaves = 10
@@ -223,7 +223,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
     const frequency = 10
     const baseFlatness = 0
     const displacement = 60
-    const borderOffset = 60
+    const borderOffset = 24
 
     const updateSize = () => {
       const rect = container.getBoundingClientRect()
@@ -255,7 +255,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
     const drawElectricBorder = (currentTime: number) => {
       if (!canvas || !ctx) return
 
-      if (!isVisible) {
+      if (!isVisible && !reduceMotion) {
         lastFrameTimeRef.current = currentTime
         animationRef.current = requestAnimationFrame(drawElectricBorder)
         return
@@ -329,13 +329,19 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       ctx.closePath()
       ctx.stroke()
 
-      animationRef.current = requestAnimationFrame(drawElectricBorder)
+      if (!reduceMotion) {
+        animationRef.current = requestAnimationFrame(drawElectricBorder)
+      }
     }
 
     const resizeObserver = new ResizeObserver(() => {
       const newSize = updateSize()
       width = newSize.width
       height = newSize.height
+      // Redraw static frame on resize for reduced-motion users
+      if (reduceMotion) {
+        drawElectricBorder(performance.now())
+      }
     })
 
     resizeObserver.observe(container)
@@ -361,19 +367,19 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       </div>
 
       {/* Glow Effects */}
-      <div className="absolute inset-0 rounded-[inherit] pointer-events-none z-0" aria-hidden="true">
+      <div className="absolute inset-0 rounded-[inherit] pointer-events-none z-[3]" aria-hidden="true">
         <div
           className="absolute inset-0 rounded-[inherit] pointer-events-none"
-          style={{ border: `2px solid ${hexToRgba(color, 0.6)}`, filter: 'blur(1px)' }}
+          style={{ border: `2px solid ${hexToRgba(color, 0.8)}`, filter: 'blur(2px)' }}
         />
         <div
           className="absolute inset-0 rounded-[inherit] pointer-events-none"
-          style={{ border: `2px solid ${color}`, filter: 'blur(4px)' }}
+          style={{ border: `3px solid ${color}`, filter: 'blur(6px)' }}
         />
         <div
-          className="absolute inset-0 rounded-[inherit] pointer-events-none -z-[1] scale-110 opacity-30"
+          className="absolute -inset-3 rounded-[inherit] pointer-events-none opacity-50"
           style={{
-            filter: 'blur(32px)',
+            filter: 'blur(20px)',
             background: `linear-gradient(-30deg, ${color}, transparent, ${color})`,
           }}
         />
