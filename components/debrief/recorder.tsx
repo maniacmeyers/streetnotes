@@ -9,6 +9,7 @@ import WaveformVisualizer from './waveform-visualizer'
 
 interface RecorderProps {
   onComplete: (audioBlob: Blob, mimeType: string, durationSec: number) => void
+  onImport?: () => void
 }
 
 const MIN_DURATION = 15
@@ -27,7 +28,7 @@ const COACHING_PROMPTS = [
   'When is the next meeting?',
 ]
 
-export default function Recorder({ onComplete }: RecorderProps) {
+export default function Recorder({ onComplete, onImport }: RecorderProps) {
   const {
     status,
     durationSec,
@@ -212,6 +213,17 @@ export default function Recorder({ onComplete }: RecorderProps) {
             Recording too short — need at least 15 seconds for a good debrief.
           </p>
         </div>
+      )}
+
+      {/* Import link */}
+      {!isRecording && onImport && (
+        <button
+          type="button"
+          onClick={onImport}
+          className="font-mono text-[10px] sm:text-xs uppercase tracking-wider text-gray-500 hover:text-volt transition-colors py-2"
+        >
+          Have a call summary? Paste it here
+        </button>
       )}
     </div>
   )

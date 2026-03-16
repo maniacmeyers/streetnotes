@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import type { DebriefStep, DebriefStructuredOutput } from '@/lib/debrief/types'
 import EmailGate from './email-gate'
 import Recorder from './recorder'
+import ImportSummary from './import-summary'
 import TranscriptReview from './transcript-review'
 import ProcessingSteps from './processing-steps'
 import ResultsDisplay from './results-display'
@@ -102,11 +103,12 @@ export default function DebriefFlow() {
     }
   }
 
-  const handleTranscriptConfirm = useCallback(
-    async (editedTranscript: string) => {
+  // Shared structuring — used by both voice (after review) and import
+  const structureText = useCallback(
+    async (text: string) => {
       if (!sessionId) return
 
-      setTranscript(editedTranscript)
+      setTranscript(text)
       setStep('processing')
       setProcessingPhase('extracting')
       setProcessingError(null)
@@ -117,7 +119,7 @@ export default function DebriefFlow() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sessionId,
-            transcript: editedTranscript,
+            transcript: text,
           }),
         })
 
@@ -149,6 +151,21 @@ export default function DebriefFlow() {
     [sessionId]
   )
 
+  const handleTranscriptConfirm = useCallback(
+    (editedTranscript: string) => {
+      structureText(editedTranscript)
+    },
+    [structureText]
+  )
+
+  const handleImportSubmit = useCallback(
+    (text: string) => {
+      setDurationSec(0)
+      structureText(text)
+    },
+    [structureText]
+  )
+
   const handleRetryTranscription = useCallback(() => {
     if (audioBlob) {
       transcribeAudio(audioBlob, audioMimeType)
@@ -158,9 +175,9 @@ export default function DebriefFlow() {
 
   const handleRetryExtraction = useCallback(() => {
     if (transcript) {
-      handleTranscriptConfirm(transcript)
+      structureText(transcript)
     }
-  }, [transcript, handleTranscriptConfirm])
+  }, [transcript, structureText])
 
   const handleReRecord = useCallback(() => {
     setAudioBlob(null)
@@ -192,7 +209,19 @@ export default function DebriefFlow() {
 
       {step === 'record' && (
         <motion.div key="record" {...pageTransition}>
-          <Recorder onComplete={handleRecordingComplete} />
+          <Recorder
+            onComplete={handleRecordingComplete}
+            onImport={() => setStep('import')}
+          />
+        </motion.div>
+      )}
+
+      {step === 'import' && (
+        <motion.div key="import" {...pageTransition}>
+          <ImportSummary
+            onSubmit={handleImportSubmit}
+            onSwitchToVoice={() => setStep('record')}
+          />
         </motion.div>
       )}
 

@@ -34,7 +34,7 @@ export interface DebriefStructuredOutput {
   risks: string[]
 }
 
-export type DebriefStep = 'email' | 'record' | 'review' | 'processing' | 'results'
+export type DebriefStep = 'email' | 'record' | 'import' | 'review' | 'processing' | 'results'
 
 export interface DebriefSessionState {
   step: DebriefStep
