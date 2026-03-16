@@ -25,8 +25,8 @@ const STEPS: StepConfig[] = [
   },
   {
     key: 'extracting',
-    label: 'Extract deal intelligence',
-    activeLabel: 'Extracting deal intelligence...',
+    label: 'Structure for CRM',
+    activeLabel: 'Structuring for your CRM...',
   },
 ]
 

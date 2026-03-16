@@ -16,15 +16,15 @@ const MAX_DURATION = 180
 
 const COACHING_PROMPTS = [
   'Who was in the meeting?',
-  'What was the main topic?',
-  'Any objections or concerns raised?',
+  'Budget — was money discussed?',
+  'Authority — who makes the call?',
+  'Need — what problem are they solving?',
+  'Timeline — when do they want to move?',
   'What are the next steps?',
-  'Who are the decision makers?',
   'Any competitors mentioned?',
-  'What was the budget discussion?',
+  'Any concerns or objections?',
+  'What was the deal value?',
   'When is the next meeting?',
-  'What buying signals did you pick up?',
-  'Any risks or red flags?',
 ]
 
 export default function Recorder({ onComplete }: RecorderProps) {

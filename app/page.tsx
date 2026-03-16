@@ -318,7 +318,7 @@ export default function LandingPage() {
                     notes, a mind map, and a downloadable PDF. No account needed.
                   </p>
 
-                  <div className="inline-block">
+                  <div className="inline-block overflow-hidden">
                     <ElectricBorder color="#00E676" speed={1} chaos={0.2} borderRadius={0} className="inline-block">
                       <a
                         href="/debrief"

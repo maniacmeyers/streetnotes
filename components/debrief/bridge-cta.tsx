@@ -27,25 +27,23 @@ export default function BridgeCTA() {
         {/* Badge */}
         <div className="mb-3 sm:mb-4">
           <span className="inline-block bg-black text-volt font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] font-bold px-2.5 py-1 sm:px-3 border-2 border-black">
-            Coming Soon
+            Join the Beta
           </span>
         </div>
 
-        <h3
-          className="font-display text-[22px] sm:text-[40px] uppercase leading-[0.85] text-black mb-2 sm:mb-3"
-        >
-          Pattern recognition.
+        <h3 className="font-display text-[22px] sm:text-[40px] uppercase leading-[0.85] text-black mb-2 sm:mb-3">
+          You just talked
           <br />
-          Buyer psychology.
+          for 60 seconds.
           <br className="sm:hidden" />
-          {' '}Every call.
+          {' '}Your CRM is done.
         </h3>
 
         <p className="font-body text-base sm:text-xl text-black/70 mb-1.5 sm:mb-2">
-          Now imagine it straight in your CRM. That&apos;s StreetNotes.
+          Connect StreetNotes and this happens after every call. Automatically.
         </p>
         <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black/50 mb-5 sm:mb-6">
-          Every call. Every field. No typing.
+          No typing. No tab switching. No missed fields.
         </p>
 
         <a
@@ -55,18 +53,18 @@ export default function BridgeCTA() {
           Join the Beta
         </a>
 
-        {/* What you get vs what's missing */}
+        {/* What you got vs what StreetNotes adds */}
         <div className="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-4 text-left max-w-sm sm:max-w-md mx-auto">
           <div>
             <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-black/50 mb-1.5 sm:mb-2">
-              What you got (free)
+              What you just saw (free)
             </p>
             <ul className="space-y-0.5 sm:space-y-1">
               {[
-                'Deal pattern recognition',
-                'Buyer psychology reads',
-                'BANT gap analysis',
-                'Objection diagnostics',
+                'Structured CRM fields',
+                'Follow-up tasks extracted',
+                'Opportunity notes written',
+                'One-time PDF export',
               ].map((item) => (
                 <li
                   key={item}
@@ -80,14 +78,14 @@ export default function BridgeCTA() {
           </div>
           <div>
             <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-black/50 mb-1.5 sm:mb-2">
-              What&apos;s missing (paid)
+              With StreetNotes (paid)
             </p>
             <ul className="space-y-0.5 sm:space-y-1">
               {[
-                'CRM auto-sync',
+                'Auto-push to your CRM',
+                'Follow-ups scheduled for you',
                 'Deal history across calls',
-                'Team-wide pattern analytics',
-                'Pipeline risk scoring',
+                'Works with Salesforce + HubSpot',
               ].map((item) => (
                 <li
                   key={item}

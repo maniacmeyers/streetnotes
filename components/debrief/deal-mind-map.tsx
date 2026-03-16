@@ -1,234 +1,257 @@
 'use client'
 
+import { useMemo } from 'react'
 import type { DebriefStructuredOutput } from '@/lib/debrief/types'
 
 interface DealMindMapProps {
   data: DebriefStructuredOutput
 }
 
-interface Branch {
-  label: string
-  items: string[]
-  color: string
-}
-
-function truncateItems(items: string[], max: number): string[] {
-  if (items.length <= max) return items
-  const truncated = items.slice(0, max)
-  truncated.push(`+${items.length - max} more`)
-  return truncated
+/* ─── Colors ─── */
+const COLORS = {
+  volt: '#00E676',
+  red: '#FF5252',
+  amber: '#FFB300',
+  blue: '#448AFF',
+  gray: '#9CA3AF',
+  dark: '#1F2937',
+  white: '#FFFFFF',
+  muted: '#6B7280',
+  bg: '#F9FAFB',
+  border: '#E5E7EB',
 }
 
 function truncateText(text: string, max: number): string {
-  if (text.length <= max) return text
-  return text.substring(0, max - 1) + '\u2026'
+  return text.length > max ? text.slice(0, max - 1) + '\u2026' : text
 }
 
-/* ─── Mobile: trunk-and-branch tree ─── */
-function MobileMindMap({
-  companyName,
-  score,
-  scoreColor,
-  branches,
-}: {
-  companyName: string
-  score: number
-  scoreColor: string
-  branches: Branch[]
-}) {
-  const W = 340
-  const trunkX = 28
-  const branchX = 46
-  const itemDotX = 54
-  const itemTextX = 66
-  const centralX = 12
-  const centralW = W - 24
-  const centralH = 50
-  const centralY = 16
-  const R = 6
-  const labelH = 26
-  const itemH = 22
+interface Branch {
+  label: string
+  color: string
+  items: string[]
+}
 
-  // Pre-calculate branch positions
-  interface BranchPos {
-    labelY: number
-    midY: number
-    items: number[]
-  }
+function useBranches(data: DebriefStructuredOutput): Branch[] {
+  return useMemo(() => {
+    const branches: Branch[] = []
 
-  let y = centralY + centralH + 24
-  const positions: BranchPos[] = branches.map((branch) => {
-    const labelY = y
-    const midY = labelY + labelH / 2
-    y += labelH + 6
-    const items = branch.items.map(() => {
-      const iy = y
-      y += itemH
-      return iy
-    })
-    y += 18
-    return { labelY, midY, items }
-  })
+    // Attendees
+    if (data.attendees.length > 0 && data.attendees[0].name !== 'Not mentioned') {
+      branches.push({
+        label: 'Attendees',
+        color: COLORS.blue,
+        items: data.attendees.map(
+          (a) =>
+            `${a.name}${a.title !== 'Not mentioned' ? ` — ${a.title}` : ''}${a.role !== 'Unknown' ? ` (${a.role})` : ''}`
+        ),
+      })
+    }
 
-  const totalH = y + 8
-  const trunkEndY =
-    positions.length > 0
-      ? positions[positions.length - 1].midY
-      : centralY + centralH
+    // Follow-up tasks
+    if (data.followUpTasks.length > 0) {
+      branches.push({
+        label: 'Tasks',
+        color: COLORS.volt,
+        items: data.followUpTasks.map(
+          (t) =>
+            `${t.task}${t.dueDate !== 'Not specified' ? ` — ${t.dueDate}` : ''}`
+        ),
+      })
+    }
 
-  const svgStyle = {
-    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace',
-    textRendering: 'geometricPrecision' as const,
-  }
+    // Pain points
+    if (data.painPoints.length > 0) {
+      branches.push({
+        label: 'Pain Points',
+        color: COLORS.amber,
+        items: data.painPoints,
+      })
+    }
+
+    // Risks
+    if (data.risks.length > 0) {
+      branches.push({
+        label: 'Risks',
+        color: COLORS.red,
+        items: data.risks,
+      })
+    }
+
+    // Competitors
+    if (data.competitorsMentioned.length > 0) {
+      branches.push({
+        label: 'Competitors',
+        color: COLORS.gray,
+        items: data.competitorsMentioned,
+      })
+    }
+
+    // Products discussed
+    if (data.productsDiscussed.length > 0) {
+      branches.push({
+        label: 'Products',
+        color: COLORS.volt,
+        items: data.productsDiscussed,
+      })
+    }
+
+    return branches
+  }, [data])
+}
+
+/* ─── Mobile: Vertical trunk layout ─── */
+function MobileMindMap({ data }: DealMindMapProps) {
+  const branches = useBranches(data)
+  const companyName =
+    data.dealSnapshot.companyName !== 'Not mentioned'
+      ? data.dealSnapshot.companyName
+      : 'Deal'
+
+  const centerX = 160
+  const startY = 60
+  const branchGap = 90
+  const totalH = startY + branches.length * branchGap + 40
+  const leafXOffset = 90
+  const leafGap = 22
 
   return (
     <svg
-      viewBox={`0 0 ${W} ${totalH}`}
+      viewBox={`0 0 320 ${totalH}`}
       className="w-full"
-      style={svgStyle}
+      role="img"
+      aria-label={`Deal mind map for ${companyName}`}
     >
-      <rect width={W} height={totalH} fill="#0A0A0A" />
+      <defs>
+        <filter id="m-shadow" x="-4%" y="-4%" width="108%" height="108%">
+          <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" />
+        </filter>
+      </defs>
+
+      {/* Trunk line */}
+      <line
+        x1={centerX}
+        y1={startY + 20}
+        x2={centerX}
+        y2={totalH - 20}
+        stroke={COLORS.border}
+        strokeWidth="2"
+      />
 
       {/* Central node */}
       <rect
-        x={centralX}
-        y={centralY}
-        width={centralW}
-        height={centralH}
-        rx={R}
-        fill="#0A0A0A"
-        stroke={scoreColor}
-        strokeWidth="2.5"
+        x={centerX - 70}
+        y={startY - 22}
+        width="140"
+        height="44"
+        rx="8"
+        fill={COLORS.dark}
+        filter="url(#m-shadow)"
       />
       <text
-        x={centralX + 16}
-        y={centralY + centralH / 2 + 5}
-        fill="#FFF"
-        fontSize="14"
-        fontWeight="bold"
-        style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
+        x={centerX}
+        y={startY - 2}
+        textAnchor="middle"
+        fill={COLORS.white}
+        fontSize="11"
+        fontWeight="700"
+        fontFamily="system-ui, sans-serif"
       >
-        {truncateText(companyName, 20)}
+        {truncateText(companyName, 18)}
       </text>
-      {/* Score pill inside central node */}
-      {score > 0 && (
-        <>
-          <rect
-            x={centralX + centralW - 50}
-            y={centralY + (centralH - 30) / 2}
-            width={36}
-            height={30}
-            rx={4}
-            fill={scoreColor}
-            stroke="#000"
-            strokeWidth="1.5"
-          />
-          <text
-            x={centralX + centralW - 32}
-            y={centralY + centralH / 2 + 6}
-            textAnchor="middle"
-            fill="#000"
-            fontSize="16"
-            fontWeight="bold"
-          >
-            {score}
-          </text>
-        </>
-      )}
-
-      {/* Trunk line */}
-      {positions.length > 0 && (
-        <>
-          <line
-            x1={trunkX}
-            y1={centralY + centralH + 2}
-            x2={trunkX}
-            y2={trunkEndY}
-            stroke="#333"
-            strokeWidth="2"
-          />
-          {/* Small connector from central node left edge down to trunk */}
-          <line
-            x1={trunkX}
-            y1={centralY + centralH}
-            x2={trunkX}
-            y2={centralY + centralH + 2}
-            stroke="#444"
-            strokeWidth="2"
-          />
-        </>
-      )}
+      <text
+        x={centerX}
+        y={startY + 12}
+        textAnchor="middle"
+        fill={COLORS.volt}
+        fontSize="8"
+        fontWeight="600"
+        fontFamily="system-ui, sans-serif"
+      >
+        {truncateText(data.dealSnapshot.dealStage, 24)}
+      </text>
 
       {/* Branches */}
-      {branches.map((branch, bi) => {
-        const pos = positions[bi]
-        const labelW = branch.label.length * 7.5 + 22
+      {branches.map((branch, bIdx) => {
+        const yBase = startY + 50 + bIdx * branchGap
+        const side = bIdx % 2 === 0 ? 1 : -1
+        const branchX = centerX + side * leafXOffset
 
         return (
-          <g key={bi}>
-            {/* Trunk dot */}
-            <circle cx={trunkX} cy={pos.midY} r="4.5" fill={branch.color} />
-
-            {/* Horizontal connector */}
+          <g key={branch.label}>
+            {/* Connector from trunk to branch label */}
             <line
-              x1={trunkX + 5}
-              y1={pos.midY}
-              x2={branchX - 2}
-              y2={pos.midY}
+              x1={centerX}
+              y1={yBase}
+              x2={branchX}
+              y2={yBase}
               stroke={branch.color}
-              strokeWidth="2"
+              strokeWidth="1.5"
               opacity="0.5"
             />
 
             {/* Branch label */}
             <rect
-              x={branchX}
-              y={pos.labelY}
-              width={labelW}
-              height={labelH}
-              rx={3}
+              x={side === 1 ? branchX - 4 : branchX - 66}
+              y={yBase - 10}
+              width="70"
+              height="20"
+              rx="4"
               fill={branch.color}
-              stroke="#000"
-              strokeWidth="1.5"
+              opacity="0.12"
             />
             <text
-              x={branchX + 11}
-              y={pos.labelY + 17}
-              fill="#000"
-              fontSize="10"
-              fontWeight="bold"
-              style={{
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}
+              x={side === 1 ? branchX + 31 : branchX - 31}
+              y={yBase + 4}
+              textAnchor="middle"
+              fill={branch.color}
+              fontSize="8"
+              fontWeight="700"
+              fontFamily="system-ui, sans-serif"
+              textDecoration="none"
             >
-              {branch.label}
+              {branch.label.toUpperCase()}
             </text>
 
-            {/* Items */}
-            {branch.items.map((item, ii) => {
-              const iy = pos.items[ii]
+            {/* Leaf items (max 3 visible) */}
+            {branch.items.slice(0, 3).map((item, lIdx) => {
+              const leafY = yBase + 16 + lIdx * leafGap
+              const leafX = side === 1 ? branchX + 4 : branchX - 70
+
               return (
-                <g key={ii}>
+                <g key={lIdx}>
                   <circle
-                    cx={itemDotX}
-                    cy={iy + itemH / 2}
+                    cx={side === 1 ? branchX - 2 : branchX + 2}
+                    cy={leafY + 5}
                     r="2.5"
                     fill={branch.color}
                     opacity="0.6"
                   />
                   <text
-                    x={itemTextX}
-                    y={iy + itemH / 2 + 4}
-                    fill="#FFF"
-                    fontSize="11"
-                    opacity="0.85"
+                    x={leafX}
+                    y={leafY + 8}
+                    fill={COLORS.dark}
+                    fontSize="8"
+                    fontFamily="system-ui, sans-serif"
                   >
-                    {truncateText(item, 32)}
+                    {truncateText(item, 28)}
                   </text>
                 </g>
               )
             })}
+
+            {/* Overflow indicator */}
+            {branch.items.length > 3 && (
+              <text
+                x={side === 1 ? branchX + 4 : branchX - 70}
+                y={yBase + 16 + 3 * leafGap + 4}
+                fill={COLORS.muted}
+                fontSize="7"
+                fontStyle="italic"
+                fontFamily="system-ui, sans-serif"
+              >
+                +{branch.items.length - 3} more
+              </text>
+            )}
           </g>
         )
       })}
@@ -236,324 +259,183 @@ function MobileMindMap({
   )
 }
 
-/* ─── Desktop: horizontal radial tree ─── */
-function DesktopMindMap({
-  companyName,
-  score,
-  scoreColor,
-  branches,
-}: {
-  companyName: string
-  score: number
-  scoreColor: string
-  branches: Branch[]
-}) {
-  const W = 800
-  const R = 6
-  const centralW = 150
-  const centralH = 64
-  const branchLabelH = 30
-  const itemSlotH = 24
+/* ─── Desktop: Horizontal radial layout ─── */
+function DesktopMindMap({ data }: DealMindMapProps) {
+  const branches = useBranches(data)
+  const companyName =
+    data.dealSnapshot.companyName !== 'Not mentioned'
+      ? data.dealSnapshot.companyName
+      : 'Deal'
 
-  // Calculate height each branch needs
-  const branchHeights = branches.map(
-    (b) => branchLabelH + b.items.length * itemSlotH + 16
-  )
-  const totalBranchHeight =
-    branchHeights.reduce((a, b) => a + b, 0) +
-    (branches.length - 1) * 10
-  const H = Math.max(420, totalBranchHeight + 80)
+  const width = 800
+  const height = Math.max(400, branches.length * 80 + 80)
+  const centerX = 160
+  const centerY = height / 2
+  const branchStartX = 260
+  const leafIndent = 20
 
-  const centerX = 155
-  const centerY = H / 2
-
-  // Position branches vertically, distributed based on content height
-  let branchY = (H - totalBranchHeight) / 2
-  const branchPositions = branches.map((_, bi) => {
-    const top = branchY
-    const mid = top + branchHeights[bi] / 2
-    branchY += branchHeights[bi] + 10
-    return { top, mid }
-  })
-
-  const branchLabelX = 340
-
-  const svgStyle = {
-    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace',
-    textRendering: 'geometricPrecision' as const,
-  }
+  // Distribute branches vertically
+  const branchGap = branches.length > 1 ? (height - 100) / (branches.length - 1) : 0
+  const branchStartY = branches.length > 1 ? 50 : centerY
 
   return (
     <svg
-      viewBox={`0 0 ${W} ${H}`}
+      viewBox={`0 0 ${width} ${height}`}
       className="w-full"
-      style={svgStyle}
+      role="img"
+      aria-label={`Deal mind map for ${companyName}`}
     >
-      <rect width={W} height={H} fill="#0A0A0A" />
+      <defs>
+        <filter id="d-shadow" x="-4%" y="-4%" width="108%" height="108%">
+          <feDropShadow dx="0" dy="1" stdDeviation="3" floodOpacity="0.08" />
+        </filter>
+        <filter id="d-glow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor={COLORS.volt} floodOpacity="0.15" />
+        </filter>
+      </defs>
+
+      {/* Central node */}
+      <rect
+        x={centerX - 80}
+        y={centerY - 30}
+        width="160"
+        height="60"
+        rx="10"
+        fill={COLORS.dark}
+        filter="url(#d-glow)"
+      />
+      <text
+        x={centerX}
+        y={centerY - 4}
+        textAnchor="middle"
+        fill={COLORS.white}
+        fontSize="14"
+        fontWeight="700"
+        fontFamily="system-ui, sans-serif"
+      >
+        {truncateText(companyName, 20)}
+      </text>
+      <text
+        x={centerX}
+        y={centerY + 14}
+        textAnchor="middle"
+        fill={COLORS.volt}
+        fontSize="10"
+        fontWeight="600"
+        fontFamily="system-ui, sans-serif"
+      >
+        {truncateText(data.dealSnapshot.dealStage, 28)}
+      </text>
 
       {/* Branches */}
-      {branches.map((branch, bi) => {
-        const pos = branchPositions[bi]
-        const labelW = branch.label.length * 9 + 24
+      {branches.map((branch, bIdx) => {
+        const branchY = branchStartY + bIdx * branchGap
+
+        // Curved connector from center to branch
+        const cx1 = centerX + 80
+        const cx2 = branchStartX - 40
 
         return (
-          <g key={bi}>
-            {/* Connector from center */}
-            <line
-              x1={centerX + centralW / 2}
-              y1={centerY}
-              x2={branchLabelX}
-              y2={pos.mid}
+          <g key={branch.label}>
+            {/* Connector line */}
+            <path
+              d={`M ${centerX + 80} ${centerY} C ${cx1 + 40} ${centerY}, ${cx2} ${branchY}, ${branchStartX} ${branchY}`}
+              fill="none"
               stroke={branch.color}
-              strokeWidth="2"
-              opacity="0.3"
+              strokeWidth="1.5"
+              opacity="0.4"
             />
 
-            {/* Branch label */}
+            {/* Branch label pill */}
             <rect
-              x={branchLabelX}
-              y={pos.mid - branchLabelH / 2}
-              width={labelW}
-              height={branchLabelH}
-              rx={4}
+              x={branchStartX}
+              y={branchY - 12}
+              width="90"
+              height="24"
+              rx="6"
               fill={branch.color}
-              stroke="#000"
-              strokeWidth="2"
+              opacity="0.12"
+              stroke={branch.color}
+              strokeWidth="1"
+              strokeOpacity="0.2"
             />
             <text
-              x={branchLabelX + 12}
-              y={pos.mid + 4}
-              fill="#000"
-              fontSize="12"
-              fontWeight="bold"
-              style={{
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-              }}
+              x={branchStartX + 45}
+              y={branchY + 4}
+              textAnchor="middle"
+              fill={branch.color}
+              fontSize="9"
+              fontWeight="700"
+              fontFamily="system-ui, sans-serif"
             >
-              {branch.label}
+              {branch.label.toUpperCase()}
             </text>
 
-            {/* Items — spread evenly around branch midpoint */}
-            {branch.items.map((item, ii) => {
-              const itemX = branchLabelX + labelW + 22
-              const itemY =
-                pos.mid -
-                ((branch.items.length - 1) * itemSlotH) / 2 +
-                ii * itemSlotH
+            {/* Leaf items */}
+            {branch.items.slice(0, 4).map((item, lIdx) => {
+              const leafX = branchStartX + 100 + leafIndent
+              const leafY = branchY - 8 + lIdx * 18
 
               return (
-                <g key={ii}>
+                <g key={lIdx}>
+                  {/* Tiny connector */}
                   <line
-                    x1={branchLabelX + labelW}
-                    y1={pos.mid}
-                    x2={itemX - 6}
-                    y2={itemY + 4}
+                    x1={branchStartX + 90}
+                    y1={branchY}
+                    x2={leafX - 8}
+                    y2={leafY + 4}
                     stroke={branch.color}
-                    strokeWidth="1"
-                    opacity="0.2"
+                    strokeWidth="0.5"
+                    opacity="0.3"
                   />
                   <circle
-                    cx={itemX - 6}
-                    cy={itemY + 4}
-                    r="3"
+                    cx={leafX - 4}
+                    cy={leafY + 4}
+                    r="2.5"
                     fill={branch.color}
-                    opacity="0.55"
+                    opacity="0.6"
                   />
                   <text
-                    x={itemX + 6}
-                    y={itemY + 8}
-                    fill="#FFF"
-                    fontSize="11"
-                    opacity="0.85"
+                    x={leafX + 4}
+                    y={leafY + 8}
+                    fill={COLORS.dark}
+                    fontSize="9"
+                    fontFamily="system-ui, sans-serif"
                   >
-                    {truncateText(item, 44)}
+                    {truncateText(item, 40)}
                   </text>
                 </g>
               )
             })}
+
+            {branch.items.length > 4 && (
+              <text
+                x={branchStartX + 100 + leafIndent + 4}
+                y={branchY - 8 + 4 * 18 + 8}
+                fill={COLORS.muted}
+                fontSize="8"
+                fontStyle="italic"
+                fontFamily="system-ui, sans-serif"
+              >
+                +{branch.items.length - 4} more
+              </text>
+            )}
           </g>
         )
       })}
-
-      {/* Central node (drawn last to layer on top) */}
-      <rect
-        x={centerX - centralW / 2}
-        y={centerY - centralH / 2}
-        width={centralW}
-        height={centralH}
-        rx={R}
-        fill="#0A0A0A"
-        stroke={scoreColor}
-        strokeWidth="3"
-      />
-      <text
-        x={centerX}
-        y={score > 0 ? centerY - 8 : centerY + 5}
-        textAnchor="middle"
-        fill="#FFF"
-        fontSize="14"
-        fontWeight="bold"
-        style={{ textTransform: 'uppercase', letterSpacing: '0.04em' }}
-      >
-        {truncateText(companyName, 16)}
-      </text>
-      {score > 0 && (
-        <>
-          <circle
-            cx={centerX}
-            cy={centerY + 16}
-            r="14"
-            fill={scoreColor}
-            stroke="#000"
-            strokeWidth="2"
-          />
-          <text
-            x={centerX}
-            y={centerY + 21}
-            textAnchor="middle"
-            fill="#000"
-            fontSize="14"
-            fontWeight="bold"
-          >
-            {score}
-          </text>
-        </>
-      )}
     </svg>
   )
 }
 
+/* ─── Exported Component ─── */
 export default function DealMindMap({ data }: DealMindMapProps) {
-  const companyName =
-    data.dealSnapshot.companyName || data.dealPattern.name || 'Deal'
-
-  // Status-based color for central node border
-  const statusColor =
-    data.mutualNextSteps.status === 'confirmed'
-      ? '#00E676'
-      : data.mutualNextSteps.status === 'one-sided'
-        ? '#FFD600'
-        : '#FF5252'
-
-  // No numeric score in new schema — pass 0 to hide score pill
-  const score = 0
-  const scoreColor = statusColor
-
-  const branches: Branch[] = []
-
-  // BANT Gaps branch — show any gap items that are not 'confirmed'
-  const gapLabels: Record<string, string> = {
-    budget: 'Budget',
-    authority: 'Authority',
-    need: 'Need',
-    timeline: 'Timeline',
-  }
-  const gapItems: string[] = []
-  const gap = data.dealPattern.gapAnalysis
-  for (const [key, label] of Object.entries(gapLabels)) {
-    const status = gap[key as keyof typeof gap]
-    if (status === 'missing') {
-      gapItems.push(`${label} \u2014 Not identified`)
-    } else if (status === 'implied') {
-      gapItems.push(`${label} \u2014 Implied only`)
-    }
-  }
-  if (gapItems.length > 0) {
-    branches.push({
-      label: 'Gaps',
-      items: truncateItems(gapItems, 4),
-      color: '#FF5252',
-    })
-  }
-
-  // Next Steps or Recovery Plays — conditional on mutual confirmation
-  if (data.mutualNextSteps.status === 'confirmed') {
-    const stepItems = [
-      ...data.mutualNextSteps.repActions.map(
-        (a) => `Rep: ${a.action}${a.dueDate ? ` (${a.dueDate})` : ''}`
-      ),
-      ...data.mutualNextSteps.prospectActions.map(
-        (a) => `Prospect: ${a.action}${a.dueDate ? ` (${a.dueDate})` : ''}`
-      ),
-    ]
-    if (stepItems.length > 0) {
-      branches.push({
-        label: 'Next Steps',
-        items: truncateItems(stepItems, 4),
-        color: '#00E676',
-      })
-    }
-  } else if (data.dealPattern.recommendedActions.length > 0) {
-    branches.push({
-      label: 'Recovery Plays',
-      items: truncateItems(data.dealPattern.recommendedActions, 4),
-      color: '#FFD600',
-    })
-  }
-
-  // Objections — now from objectionDiagnostics
-  if (data.objectionDiagnostics.length > 0) {
-    branches.push({
-      label: 'Objections',
-      items: truncateItems(
-        data.objectionDiagnostics.map((o) => o.surfaceObjection),
-        4
-      ),
-      color: '#FF5252',
-    })
-  }
-  if (data.decisionMakers.length > 0) {
-    branches.push({
-      label: 'Stakeholders',
-      items: truncateItems(
-        data.decisionMakers.map((d) => `${d.name} \u2014 ${d.role}`),
-        4
-      ),
-      color: '#448AFF',
-    })
-  }
-  if (data.buyingSignals.length > 0) {
-    branches.push({
-      label: 'Buying Signals',
-      items: truncateItems(data.buyingSignals, 4),
-      color: '#00E676',
-    })
-  }
-  if (data.risks.length > 0) {
-    branches.push({
-      label: 'Risks',
-      items: truncateItems(data.risks, 4),
-      color: '#FF5252',
-    })
-  }
-  if (data.competitorsMentioned.length > 0) {
-    branches.push({
-      label: 'Competitors',
-      items: truncateItems(data.competitorsMentioned, 4),
-      color: '#9E9E9E',
-    })
-  }
-
   return (
-    <div className="w-full bg-[#0A0A0A]">
-      {/* Mobile: trunk-and-branch tree */}
-      <div className="block sm:hidden">
-        <MobileMindMap
-          companyName={companyName}
-          score={score}
-          scoreColor={scoreColor}
-          branches={branches}
-        />
+    <div className="bg-white">
+      <div className="sm:hidden">
+        <MobileMindMap data={data} />
       </div>
-      {/* Desktop: horizontal radial tree */}
       <div className="hidden sm:block">
-        <DesktopMindMap
-          companyName={companyName}
-          score={score}
-          scoreColor={scoreColor}
-          branches={branches}
-        />
+        <DesktopMindMap data={data} />
       </div>
     </div>
   )

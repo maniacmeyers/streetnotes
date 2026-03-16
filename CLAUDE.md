@@ -93,23 +93,31 @@ Full roadmap and execution plans live in `.planning/`:
 
 ## Brain Dump Lead Magnet (Post-Call Brain Dump)
 
-A free public tool at `/debrief` — the lead magnet for StreetNotes.ai.
+A free public tool at `/debrief` — the lead magnet for StreetNotes.ai. Demonstrates the core value prop: voice → structured CRM fields.
 
 ### Route
 - `app/debrief/` — Public page (no auth required), added to middleware whitelist
 
 ### Flow
-Email gate → Voice recording → AI transcription (Whisper) → User reviews/edits transcript → GPT-4o structuring → Results display + PDF download → Bridge CTA
+Email gate → Segment select → Voice recording → AI transcription (Whisper) → User reviews/edits transcript → GPT-4o CRM extraction → Results display with CRM preview + PDF download → Bridge CTA
+
+### What It Extracts (CRM-focused, NOT coaching)
+- Deal snapshot: company, stage, value, close date, next step
+- Attendees: names, titles, roles in the deal, sentiment
+- Call summary: 3-5 bullet points for CRM activity notes
+- Follow-up tasks: actions, owners, due dates, priority
+- Opportunity notes: ready-to-paste CRM description
+- Additional: competitors, products discussed, pain points, risks
 
 ### Key Files
 - `lib/debrief/types.ts` — TypeScript interfaces (DebriefStructuredOutput, DebriefStep)
 - `lib/debrief/prompts.ts` — GPT-4o system and user prompts with few-shot examples
-- `lib/debrief/pdf.tsx` — @react-pdf/renderer branded PDF generation
-- `components/debrief/` — All UI components (debrief-flow, email-gate, recorder, mic-button, waveform-visualizer, transcript-review, processing-steps, results-display, deal-mind-map, bridge-cta)
+- `lib/debrief/pdf.tsx` — @react-pdf/renderer branded PDF (tear sheet + CTA)
+- `components/debrief/` — All UI components (debrief-flow, email-gate, segment-selector, recorder, mic-button, waveform-visualizer, transcript-review, processing-steps, results-display, bridge-cta)
 - `hooks/use-audio-analyser.ts` — Web Audio API waveform hook
 - `app/api/debrief/start/` — Email gate + rate limiting + session creation
 - `app/api/debrief/transcribe/` — Public Whisper transcription
-- `app/api/debrief/structure/` — GPT-4o structured extraction
+- `app/api/debrief/structure/` — GPT-4o CRM field extraction
 - `app/api/debrief/pdf/` — PDF generation endpoint
 
 ### Database
@@ -121,8 +129,11 @@ Email gate → Voice recording → AI transcription (Whisper) → User reviews/e
 - `react-icons` — UI icons (mic, stop, download, check)
 
 ### Bridge Mechanic
-Free: structured call summary, one-off deal mind map, PDF download
-Missing (paid): CRM auto-sync, deal history, living mind map, pipeline analytics
+Free: CRM-ready structured fields, follow-up tasks, opportunity notes, one-time PDF export
+Missing (paid): auto-push to CRM, follow-ups scheduled automatically, deal history across calls, Salesforce + HubSpot integration
+
+### Important: NOT a coaching tool
+StreetNotes does NOT do deal coaching, pattern recognition, buyer psychology, or objection diagnostics. That's Gong's lane. StreetNotes extracts CRM-ready data from voice and pushes it to the CRM. The differentiator is the CRM integration, not the analysis.
 
 ## Key Decisions (Do Not Override)
 

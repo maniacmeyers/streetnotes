@@ -9,627 +9,551 @@ import {
   Image,
   StyleSheet,
 } from '@react-pdf/renderer'
-import type {
-  DebriefStructuredOutput,
-  DealSegment,
-  BANTStatus,
-  NextStepsStatus,
-} from './types'
+import type { DebriefStructuredOutput, DealSegment } from './types'
 
-/* ─── Logo path (resolved at server render time) ─── */
 const LOGO_PATH = path.join(process.cwd(), 'public', 'streetnotes_logo.png')
 
-/* ─── Color palette ─── */
-const VOLT = '#00E676'
-const AMBER = '#FFB300'
-const RED = '#FF5252'
-const BLUE = '#448AFF'
-const DARK = '#121212'
-const WHITE = '#FFFFFF'
-const TEXT_PRIMARY = '#1A1A1A'
-const TEXT_SECONDARY = '#6B7280'
-const GRAY_100 = '#F8F9FA'
-const GRAY_200 = '#E5E7EB'
-const GRAY_400 = '#9CA3AF'
-
-/* ─── Helper: status colors ─── */
-function bantDotColor(status: BANTStatus): string {
-  if (status === 'confirmed') return VOLT
-  if (status === 'implied') return AMBER
-  return RED
+/* ─── Palette ─── */
+const C = {
+  volt: '#00E676',
+  voltDark: '#00C853',
+  voltBg: '#E8F5E9',
+  red: '#EF4444',
+  redBg: '#FEF2F2',
+  amber: '#F59E0B',
+  amberBg: '#FFFBEB',
+  blue: '#3B82F6',
+  blueBg: '#EFF6FF',
+  dark: '#111827',
+  darkSoft: '#1F2937',
+  white: '#FFFFFF',
+  gray50: '#F9FAFB',
+  gray100: '#F3F4F6',
+  gray200: '#E5E7EB',
+  gray300: '#D1D5DB',
+  gray400: '#9CA3AF',
+  gray500: '#6B7280',
+  gray700: '#374151',
+  gray900: '#111827',
 }
 
-function bantLabel(status: BANTStatus): string {
-  if (status === 'confirmed') return 'Confirmed'
-  if (status === 'implied') return 'Implied'
-  return 'Not identified'
+function sentimentColor(s: string): string {
+  if (s === 'positive') return C.volt
+  if (s === 'negative') return C.red
+  if (s === 'neutral') return C.blue
+  return C.gray400
 }
 
-function nextStepsColor(status: NextStepsStatus): string {
-  if (status === 'confirmed') return VOLT
-  if (status === 'one-sided') return AMBER
-  return RED
+function priorityAccent(p: string): string {
+  if (p === 'high') return C.red
+  if (p === 'medium') return C.amber
+  return C.gray300
 }
 
-function nextStepsBgColor(status: NextStepsStatus): string {
-  if (status === 'confirmed') return '#E8F5E9'
-  if (status === 'one-sided') return '#FFF8E1'
-  return '#FFEBEE'
+function priorityBg(p: string): string {
+  if (p === 'high') return C.redBg
+  if (p === 'medium') return C.amberBg
+  return C.gray100
 }
 
-function nextStepsLabel(status: NextStepsStatus): string {
-  if (status === 'confirmed') return 'Mutual Next Steps Confirmed'
-  if (status === 'one-sided') return 'One-Sided Next Steps'
-  return 'No Next Steps Identified'
+function priorityColor(p: string): string {
+  if (p === 'high') return C.red
+  if (p === 'medium') return C.amber
+  return C.gray400
 }
 
-function sentimentColor(
-  sentiment: 'positive' | 'neutral' | 'negative' | 'unknown'
-): string {
-  if (sentiment === 'positive') return VOLT
-  if (sentiment === 'negative') return RED
-  if (sentiment === 'neutral') return BLUE
-  return TEXT_SECONDARY
-}
-
-function confidenceLabel(level: string): string {
-  if (level === 'high') return 'HIGH'
-  if (level === 'medium') return 'MEDIUM'
-  return 'LOW'
-}
-
-function confidenceColor(level: string): string {
-  if (level === 'high') return VOLT
-  if (level === 'medium') return AMBER
-  return RED
-}
-
-function segmentLabel(seg: DealSegment): string {
-  if (seg === 'smb') return 'SMB'
-  if (seg === 'mid-market') return 'Mid-Market'
-  if (seg === 'enterprise') return 'Enterprise'
-  return 'Partner / Channel'
-}
 
 /* ─── Styles ─── */
 const s = StyleSheet.create({
-  /* ─── Page 1: One-Pager ─── */
-  page1: {
+  /* Pages */
+  page: {
     paddingTop: 0,
-    paddingBottom: 50,
+    paddingBottom: 56,
     paddingHorizontal: 0,
     fontFamily: 'Helvetica',
     fontSize: 10,
-    color: TEXT_PRIMARY,
-    backgroundColor: WHITE,
+    color: C.gray700,
+    backgroundColor: C.white,
   },
 
-  topAccent: {
+  bodyPage: {
+    paddingTop: 52,
+    paddingBottom: 56,
+    paddingHorizontal: 0,
+    fontFamily: 'Helvetica',
+    fontSize: 10,
+    color: C.gray700,
+    backgroundColor: C.white,
+  },
+
+  /* Top accent */
+  topBar: {
     width: '100%',
-    height: 4,
-    backgroundColor: VOLT,
+    height: 5,
+    backgroundColor: C.volt,
   },
 
-  darkHeader: {
-    backgroundColor: DARK,
-    paddingTop: 24,
+  /* Header */
+  header: {
+    backgroundColor: C.dark,
+    paddingTop: 28,
     paddingBottom: 28,
-    paddingHorizontal: 24,
+    paddingHorizontal: 40,
   },
 
-  darkHeaderTopRow: {
+  headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 24,
+    marginBottom: 22,
   },
 
-  headerLogo: {
-    width: 100,
-    height: 25,
-  },
+  logo: { width: 110, height: 28 },
 
-  headerMeta: {
-    alignItems: 'flex-end',
-  },
+  metaCol: { alignItems: 'flex-end' },
+  metaText: { fontSize: 8, color: C.gray400, marginBottom: 1 },
 
-  headerMetaText: {
-    fontSize: 8,
-    color: GRAY_400,
-  },
-
-  patternName: {
+  docLabel: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 24,
-    color: WHITE,
-    textAlign: 'center',
+    fontSize: 8,
+    letterSpacing: 3,
+    textTransform: 'uppercase',
+    color: C.volt,
     marginBottom: 8,
   },
 
-  patternDescription: {
-    fontSize: 13,
-    color: GRAY_400,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    lineHeight: 1.5,
-    paddingHorizontal: 20,
-  },
-
-  segmentBadge: {
-    position: 'absolute',
-    bottom: 12,
-    right: 24,
-    fontSize: 7,
+  companyName: {
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    color: GRAY_400,
-    backgroundColor: '#1E1E1E',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 4,
-  },
-
-  /* ─── Next Steps Banner ─── */
-  nextStepsBanner: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    marginBottom: 16,
-  },
-
-  nextStepsStatusLabel: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 9,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    marginBottom: 6,
-  },
-
-  nextStepsAction: {
-    fontSize: 9,
-    color: TEXT_PRIMARY,
-    lineHeight: 1.5,
-    marginBottom: 2,
-    paddingLeft: 8,
-  },
-
-  recoveryScript: {
-    fontSize: 9,
-    color: TEXT_SECONDARY,
-    fontStyle: 'italic',
-    lineHeight: 1.5,
-    marginTop: 6,
-    paddingLeft: 8,
-    borderLeftWidth: 2,
-    borderLeftColor: AMBER,
-  },
-
-  /* ─── BANT Row ─── */
-  bantRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 24,
-    marginBottom: 20,
-    marginTop: 4,
-  },
-
-  bantItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-
-  bantLabel: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 7,
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-    color: TEXT_SECONDARY,
-    marginBottom: 6,
-  },
-
-  bantDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    fontSize: 30,
+    color: C.white,
+    letterSpacing: -0.5,
     marginBottom: 4,
   },
 
-  bantStatus: {
-    fontSize: 7,
-    color: TEXT_SECONDARY,
+  contactLine: {
+    fontSize: 11,
+    color: C.gray400,
+    marginBottom: 16,
   },
 
-  /* ─── Top 3 Actions ─── */
-  actionsContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 20,
-  },
-
-  actionItem: {
+  badgeRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 8,
+    gap: 8,
   },
 
-  actionNumber: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: VOLT,
-    justifyContent: 'center',
+  badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 4,
+  },
+
+  badgeText: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+
+  /* Section header bar (dark bg, white text, colored left accent) */
+  sectionHeaderBar: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 10,
+    backgroundColor: C.darkSoft,
+    marginHorizontal: 40,
+    marginTop: 0,
   },
 
-  actionNumberText: {
+  sectionHeaderAccent: {
+    width: 4,
+    alignSelf: 'stretch',
+  },
+
+  sectionHeaderText: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 9,
-    color: DARK,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    color: C.white,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
 
-  actionText: {
-    fontSize: 10,
-    color: TEXT_PRIMARY,
+  /* Section divider line */
+  sectionDivider: {
+    height: 1,
+    backgroundColor: C.gray200,
+    marginHorizontal: 40,
+  },
+
+  /* Content area (40px horizontal padding) */
+  sectionContent: {
+    paddingHorizontal: 40,
+    paddingTop: 14,
+    paddingBottom: 16,
+  },
+
+  /* Opportunity Details: left accent bar wrapper */
+  oppDetailsWrapper: {
+    flexDirection: 'row',
+    marginHorizontal: 40,
+    marginTop: 0,
+  },
+
+  oppDetailsAccent: {
+    width: 4,
+    backgroundColor: C.volt,
+  },
+
+  oppDetailsBody: {
     flex: 1,
+    paddingLeft: 16,
+    paddingTop: 14,
+    paddingBottom: 16,
+    paddingRight: 0,
+  },
+
+  /* CRM field rows */
+  fieldRow: {
+    flexDirection: 'row',
+    paddingVertical: 7,
+    borderBottomWidth: 1,
+    borderBottomColor: C.gray200,
+  },
+
+  fieldLabel: {
+    width: '28%',
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: C.gray500,
+    paddingTop: 1,
+  },
+
+  fieldValue: {
+    width: '72%',
+    fontSize: 10,
+    color: C.gray900,
+    fontFamily: 'Helvetica-Bold',
+  },
+
+  fieldValueEmpty: {
+    width: '72%',
+    fontSize: 10,
+    color: C.gray300,
+    fontStyle: 'italic',
+  },
+
+  /* Attendees */
+  attendeeCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginBottom: 6,
+    backgroundColor: C.gray50,
+    borderRadius: 4,
+  },
+
+  attendeeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+
+  attendeeName: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 10,
+    color: C.gray900,
+  },
+
+  attendeeDetail: {
+    fontSize: 9,
+    color: C.gray500,
+  },
+
+  attendeeRole: {
+    fontSize: 8,
+    fontFamily: 'Helvetica-Bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: C.voltDark,
+    backgroundColor: C.voltBg,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 3,
+  },
+
+  /* Tasks */
+  taskCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginBottom: 6,
+    backgroundColor: C.white,
+    borderRadius: 4,
+    gap: 10,
+  },
+
+  taskLeftBorder: {
+    width: 3,
+    alignSelf: 'stretch',
+    borderRadius: 2,
+  },
+
+  taskCheckbox: {
+    width: 11,
+    height: 11,
+    borderWidth: 1.5,
+    borderColor: C.gray300,
+    borderRadius: 2,
+    marginTop: 1,
+  },
+
+  taskText: {
+    flex: 1,
+    fontSize: 9,
+    color: C.gray700,
+    lineHeight: 1.4,
+  },
+
+  taskMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+
+  taskDate: {
+    fontSize: 7,
+    color: C.gray500,
+  },
+
+  taskPriority: {
+    fontSize: 7,
+    fontFamily: 'Helvetica-Bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 3,
+  },
+
+  /* Call summary */
+  summaryBullet: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 7,
+    gap: 10,
+  },
+
+  bulletCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: C.dark,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
+  },
+
+  bulletNumber: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    color: C.volt,
+  },
+
+  summaryText: {
+    flex: 1,
+    fontSize: 9,
+    color: C.gray700,
     lineHeight: 1.5,
     paddingTop: 2,
   },
 
-  /* ─── Buyer Psychology Highlight ─── */
-  psychRow: {
+  /* Notes box */
+  notesWrapper: {
     flexDirection: 'row',
-    paddingHorizontal: 24,
-    gap: 12,
-    marginBottom: 16,
+    marginHorizontal: 40,
+    marginTop: 0,
   },
 
-  psychBox: {
+  notesAccent: {
+    width: 4,
+    backgroundColor: C.volt,
+  },
+
+  notesBody: {
     flex: 1,
-    padding: 12,
-    backgroundColor: GRAY_100,
-    borderRadius: 4,
+    backgroundColor: C.gray50,
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderColor: C.gray200,
+    padding: 14,
   },
 
-  psychBoxLabel: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 8,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    marginBottom: 6,
-  },
-
-  psychQuote: {
+  notesText: {
     fontSize: 9,
-    fontStyle: 'italic',
-    color: TEXT_PRIMARY,
-    lineHeight: 1.5,
-    borderLeftWidth: 2,
-    paddingLeft: 8,
-    marginBottom: 4,
+    color: C.gray700,
+    lineHeight: 1.6,
   },
 
-  psychDetail: {
-    fontSize: 8,
-    color: TEXT_SECONDARY,
-    lineHeight: 1.4,
-    paddingLeft: 10,
-  },
-
-  /* ─── Body Page ─── */
-  bodyPage: {
-    paddingTop: 48,
-    paddingBottom: 50,
-    paddingHorizontal: 0,
-    fontFamily: 'Helvetica',
-    fontSize: 10,
-    color: TEXT_PRIMARY,
-    backgroundColor: WHITE,
-  },
-
-  /* ─── Fixed Header (body pages) ─── */
-  fixedHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: DARK,
-    paddingVertical: 10,
-    paddingHorizontal: 24,
+  /* Tags */
+  tagsSection: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  fixedHeaderLogo: {
-    width: 80,
-    height: 20,
-  },
-
-  fixedHeaderTitle: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 8,
-    color: TEXT_SECONDARY,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-  },
-
-  /* ─── Footer ─── */
-  footer: {
-    position: 'absolute',
-    bottom: 16,
-    left: 24,
-    right: 24,
-    borderTopWidth: 1,
-    borderTopColor: GRAY_200,
-    paddingTop: 6,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  footerLogo: {
-    width: 50,
-    height: 12,
-  },
-
-  footerText: {
-    fontSize: 7,
-    color: TEXT_SECONDARY,
-  },
-
-  /* ─── Section Headers ─── */
-  sectionHeader: {
-    marginTop: 20,
-    marginBottom: 10,
-    paddingHorizontal: 24,
-  },
-
-  sectionTitle: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 11,
-    letterSpacing: 0.6,
-    color: TEXT_SECONDARY,
-    textTransform: 'uppercase',
-  },
-
-  /* ─── Commitment Language ─── */
-  commitmentItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingHorizontal: 24,
-    marginBottom: 8,
-  },
-
-  commitDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 8,
-    marginTop: 3,
-  },
-
-  commitQuote: {
-    fontSize: 9,
-    fontStyle: 'italic',
-    color: TEXT_PRIMARY,
-    flex: 1,
-    lineHeight: 1.5,
-    borderLeftWidth: 2,
-    paddingLeft: 8,
-  },
-
-  commitSignificance: {
-    fontSize: 8,
-    color: TEXT_SECONDARY,
-    paddingLeft: 24,
-    marginBottom: 4,
-    lineHeight: 1.4,
-  },
-
-  fillerMeaning: {
-    fontSize: 8,
-    color: TEXT_SECONDARY,
-    paddingLeft: 24,
-    marginBottom: 2,
-    lineHeight: 1.4,
-  },
-
-  recoveryMove: {
-    fontSize: 8,
-    color: TEXT_PRIMARY,
-    paddingLeft: 24,
-    marginBottom: 8,
-    lineHeight: 1.4,
-  },
-
-  /* ─── Objection Cards ─── */
-  objectionCard: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: GRAY_200,
-  },
-
-  objectionSurface: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 10,
-    color: TEXT_PRIMARY,
-    marginBottom: 4,
-  },
-
-  objectionLabel: {
-    fontSize: 8,
-    color: TEXT_SECONDARY,
-    marginBottom: 2,
-  },
-
-  objectionBody: {
-    fontSize: 9,
-    color: TEXT_PRIMARY,
-    lineHeight: 1.5,
-    marginBottom: 4,
-  },
-
-  objectionEvidence: {
-    fontSize: 9,
-    fontStyle: 'italic',
-    color: TEXT_PRIMARY,
-    lineHeight: 1.4,
-    marginBottom: 4,
-    paddingLeft: 8,
-    borderLeftWidth: 2,
-    borderLeftColor: GRAY_200,
-  },
-
-  objectionRecovery: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 9,
-    color: TEXT_PRIMARY,
-    lineHeight: 1.5,
-  },
-
-  /* ─── Stakeholder Table ─── */
-  tableContainer: {
-    paddingHorizontal: 24,
-  },
-
-  tableHeaderRow: {
-    flexDirection: 'row',
-    backgroundColor: GRAY_100,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderBottomWidth: 2,
-    borderBottomColor: GRAY_200,
-  },
-
-  tableHeader: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 7,
-    letterSpacing: 1.5,
-    color: TEXT_SECONDARY,
-    textTransform: 'uppercase',
-  },
-
-  tableRow: {
-    flexDirection: 'row',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: GRAY_200,
-    alignItems: 'center',
-  },
-
-  tableRowAlt: {
-    backgroundColor: GRAY_100,
-  },
-
-  tableCell: {
-    fontSize: 9,
-    color: TEXT_PRIMARY,
-    lineHeight: 1.4,
-  },
-
-  sentimentDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-
-  /* ─── Page 3: Deal Reference ─── */
-  snapshotGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 24,
-    marginBottom: 20,
-  },
-
-  snapshotItem: {
-    width: '33.33%',
-    paddingVertical: 10,
-    paddingRight: 12,
-  },
-
-  snapshotLabel: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 7,
-    letterSpacing: 1.5,
-    color: TEXT_SECONDARY,
-    textTransform: 'uppercase',
-    marginBottom: 3,
-  },
-
-  snapshotValue: {
-    fontSize: 11,
-    color: TEXT_PRIMARY,
-    fontFamily: 'Helvetica-Bold',
-  },
-
-  snapshotNotMentioned: {
-    fontSize: 11,
-    color: GRAY_400,
-    fontStyle: 'italic',
-  },
-
-  summaryItem: {
-    flexDirection: 'row',
-    marginBottom: 6,
-    paddingHorizontal: 24,
-  },
-
-  summaryNumber: {
-    fontSize: 9,
-    fontFamily: 'Helvetica-Bold',
-    color: TEXT_SECONDARY,
-    width: 18,
-  },
-
-  summaryText: {
-    fontSize: 10,
-    color: TEXT_PRIMARY,
-    flex: 1,
-    lineHeight: 1.5,
-  },
-
-  /* ─── Tags ─── */
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    paddingHorizontal: 24,
+    gap: 24,
     marginTop: 4,
+  },
+
+  tagColumn: { flex: 1 },
+
+  tagColumnLabel: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    color: C.gray500,
     marginBottom: 8,
+  },
+
+  tagWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 5,
   },
 
   tag: {
     fontSize: 8,
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 0.5,
-    paddingHorizontal: 10,
+    letterSpacing: 0.3,
+    paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: 4,
+    borderWidth: 1,
   },
 
-  tagGreen: {
-    color: VOLT,
-    backgroundColor: '#E8F5E9',
+  /* Mind map */
+  mapContainer: {
+    marginHorizontal: 40,
+    marginTop: 0,
+    backgroundColor: C.dark,
+    padding: 20,
   },
 
-  tagRed: {
-    color: RED,
-    backgroundColor: '#FFEBEE',
+  mapCenter: {
+    alignSelf: 'center',
+    backgroundColor: '#0D1117',
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 6,
+    marginBottom: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: C.volt,
   },
 
-  tagGray: {
-    color: TEXT_SECONDARY,
-    backgroundColor: GRAY_100,
+  mapCenterName: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 14,
+    color: C.white,
+    marginBottom: 3,
   },
 
-  /* ─── Page 4: CTA ─── */
+  mapCenterStage: {
+    fontSize: 9,
+    color: C.volt,
+    fontFamily: 'Helvetica-Bold',
+    letterSpacing: 0.5,
+  },
+
+  mapGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+
+  mapBranch: {
+    width: '48%',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 4,
+  },
+
+  mapBranchLabel: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 7,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    marginBottom: 5,
+  },
+
+  mapBranchItem: {
+    fontSize: 8,
+    color: C.gray300,
+    lineHeight: 1.4,
+    marginBottom: 2,
+    paddingLeft: 6,
+  },
+
+  /* Footer */
+  footer: {
+    position: 'absolute',
+    bottom: 18,
+    left: 40,
+    right: 40,
+    paddingTop: 0,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+
+  footerAccentLine: {
+    height: 2,
+    backgroundColor: '#66F0A3',
+    marginBottom: 8,
+  },
+
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  footerLogo: { width: 55, height: 14 },
+  footerText: { fontSize: 7, color: C.gray400 },
+
+  /* Fixed header for body pages */
+  bodyHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: C.dark,
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  bodyHeaderLogo: { width: 80, height: 20 },
+
+  bodyHeaderTitle: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    color: C.gray400,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+
+  /* CTA Page */
   ctaPage: {
     paddingTop: 0,
     paddingBottom: 0,
     paddingHorizontal: 0,
     fontFamily: 'Helvetica',
-    backgroundColor: DARK,
+    backgroundColor: C.dark,
   },
 
   ctaContainer: {
@@ -639,23 +563,13 @@ const s = StyleSheet.create({
     padding: 60,
   },
 
-  ctaLogo: {
-    width: 200,
-    height: 50,
-    marginBottom: 40,
-  },
-
-  ctaDivider: {
-    width: '40%',
-    height: 2,
-    backgroundColor: VOLT,
-    marginBottom: 32,
-  },
+  ctaLogo: { width: 200, height: 50, marginBottom: 40 },
+  ctaDivider: { width: '40%', height: 2, backgroundColor: C.volt, marginBottom: 32 },
 
   ctaHeadline: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 16,
-    color: WHITE,
+    color: C.white,
     textAlign: 'center',
     lineHeight: 1.5,
     marginBottom: 12,
@@ -663,14 +577,14 @@ const s = StyleSheet.create({
 
   ctaSubline: {
     fontSize: 13,
-    color: GRAY_400,
+    color: C.gray400,
     textAlign: 'center',
     lineHeight: 1.6,
     marginBottom: 36,
   },
 
-  ctaUrlContainer: {
-    backgroundColor: VOLT,
+  ctaUrlBox: {
+    backgroundColor: C.volt,
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 4,
@@ -679,41 +593,60 @@ const s = StyleSheet.create({
   ctaUrl: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 14,
-    color: DARK,
+    color: C.dark,
     letterSpacing: 1,
   },
 })
 
-/* ─── Reusable Components ─── */
+/* ─── Reusable ─── */
 
-function SectionHeading({ title }: { title: string }) {
+function SectionHeader({
+  title,
+  accentColor,
+  count,
+}: {
+  title: string
+  accentColor: string
+  count?: number
+}) {
   return (
-    <View style={s.sectionHeader}>
-      <Text style={s.sectionTitle}>{title}</Text>
+    <View style={s.sectionHeaderBar}>
+      <View style={[s.sectionHeaderAccent, { backgroundColor: accentColor }]} />
+      <Text style={s.sectionHeaderText}>
+        {title}
+        {count !== undefined ? ` (${count})` : ''}
+      </Text>
     </View>
   )
+}
+
+function SectionDivider() {
+  return <View style={s.sectionDivider} />
 }
 
 function PageFooter() {
   return (
     <View style={s.footer} fixed>
-      <Image src={LOGO_PATH} style={s.footerLogo} />
-      <Text
-        style={s.footerText}
-        render={({ pageNumber, totalPages }) =>
-          `Page ${pageNumber} of ${totalPages}`
-        }
-      />
-      <Text style={s.footerText}>Confidential</Text>
+      <View style={s.footerAccentLine} />
+      <View style={s.footerRow}>
+        <Image src={LOGO_PATH} style={s.footerLogo} />
+        <Text
+          style={s.footerText}
+          render={({ pageNumber, totalPages }) =>
+            `Page ${pageNumber} of ${totalPages}`
+          }
+        />
+        <Text style={s.footerText}>Confidential</Text>
+      </View>
     </View>
   )
 }
 
-function BodyHeader() {
+function BodyPageHeader() {
   return (
-    <View style={s.fixedHeader} fixed>
-      <Image src={LOGO_PATH} style={s.fixedHeaderLogo} />
-      <Text style={s.fixedHeaderTitle}>Deal Intelligence Report</Text>
+    <View style={s.bodyHeader} fixed>
+      <Image src={LOGO_PATH} style={s.bodyHeaderLogo} />
+      <Text style={s.bodyHeaderTitle}>Deal Intelligence Report</Text>
     </View>
   )
 }
@@ -726,408 +659,472 @@ interface PDFProps {
   dealSegment: DealSegment
 }
 
-/* ─── Main Component ─── */
-export function DebriefPDF({ data, email, date, dealSegment }: PDFProps) {
+/* ─── Main ─── */
+export function DebriefPDF({ data, email, date }: PDFProps) {
   const d = data
-  const pattern = d.dealPattern
-  const gap = pattern.gapAnalysis
-  const mutual = d.mutualNextSteps
-  const commit = d.commitmentAnalysis
+  const snap = d.dealSnapshot
+  const primary = d.attendees[0]
+  const contactDisplay =
+    primary && primary.name !== 'Not mentioned'
+      ? `${primary.name}${primary.title !== 'Not mentioned' ? ` — ${primary.title}` : ''}`
+      : null
 
-  // Grab first real commitment and first filler for page 1 highlight
-  const firstCommitment = commit.realCommitments[0] ?? null
-  const firstFiller = commit.fillerSignals[0] ?? null
+  // Mind map branches
+  interface MapBranch {
+    label: string
+    color: string
+    bg: string
+    border: string
+    items: string[]
+  }
 
-  // Top 3 recommended actions (cap at 3)
-  const topActions = pattern.recommendedActions.slice(0, 3)
+  const mapBranches: MapBranch[] = []
+
+  if (d.attendees.length > 0 && d.attendees[0].name !== 'Not mentioned') {
+    mapBranches.push({
+      label: 'Attendees',
+      color: C.blue,
+      bg: '#1E293B',
+      border: '#334155',
+      items: d.attendees.map(
+        (a) => `${a.name}${a.role !== 'Unknown' ? ` (${a.role})` : ''}`
+      ),
+    })
+  }
+  if (d.followUpTasks.length > 0) {
+    mapBranches.push({
+      label: 'Tasks',
+      color: C.voltDark,
+      bg: '#0D2818',
+      border: '#145A32',
+      items: d.followUpTasks.map((t) => t.task),
+    })
+  }
+  if (d.painPoints.length > 0) {
+    mapBranches.push({
+      label: 'Pain Points',
+      color: C.amber,
+      bg: '#1C1405',
+      border: '#4A3700',
+      items: d.painPoints,
+    })
+  }
+  if (d.risks.length > 0) {
+    mapBranches.push({
+      label: 'Risks',
+      color: C.red,
+      bg: '#1C0505',
+      border: '#4A0E0E',
+      items: d.risks,
+    })
+  }
+  if (d.competitorsMentioned.length > 0) {
+    mapBranches.push({
+      label: 'Competitors',
+      color: C.gray400,
+      bg: '#1A1A1A',
+      border: '#333333',
+      items: d.competitorsMentioned,
+    })
+  }
+  if (d.productsDiscussed.length > 0) {
+    mapBranches.push({
+      label: 'Products',
+      color: C.voltDark,
+      bg: '#0D2818',
+      border: '#145A32',
+      items: d.productsDiscussed,
+    })
+  }
+
+  const hasAttendees =
+    d.attendees.length > 0 && d.attendees[0].name !== 'Not mentioned'
 
   return (
     <Document>
-      {/* ══════════════════════════════════════════════════
-          PAGE 1 — THE ONE-PAGER
-          ══════════════════════════════════════════════════ */}
-      <Page size="A4" style={s.page1}>
-        {/* Volt green accent bar */}
-        <View style={s.topAccent} />
+      {/* ═══════════════════════════════════════════
+          PAGE 1 — DEAL TEAR SHEET
+          ═══════════════════════════════════════════ */}
+      <Page size="A4" style={s.page}>
+        <View style={s.topBar} />
 
-        {/* Dark header block */}
-        <View style={s.darkHeader}>
-          <View style={s.darkHeaderTopRow}>
-            <Image src={LOGO_PATH} style={s.headerLogo} />
-            <View style={s.headerMeta}>
-              <Text style={s.headerMetaText}>{date}</Text>
-              <Text style={s.headerMetaText}>{email}</Text>
+        {/* Dark header */}
+        <View style={s.header}>
+          <View style={s.headerRow}>
+            <Image src={LOGO_PATH} style={s.logo} />
+            <View style={s.metaCol}>
+              <Text style={s.metaText}>{date}</Text>
+              <Text style={s.metaText}>{email}</Text>
             </View>
           </View>
 
-          {/* Pattern name + description */}
-          <Text style={s.patternName}>{pattern.name}</Text>
-          <Text style={s.patternDescription}>{pattern.description}</Text>
-
-          {/* Segment badge */}
-          <Text style={s.segmentBadge}>{segmentLabel(dealSegment)}</Text>
-        </View>
-
-        {/* Mutual Next Steps Banner */}
-        <View
-          style={[
-            s.nextStepsBanner,
-            { backgroundColor: nextStepsBgColor(mutual.status) },
-          ]}
-        >
-          <Text
-            style={[
-              s.nextStepsStatusLabel,
-              { color: nextStepsColor(mutual.status) },
-            ]}
-          >
-            {nextStepsLabel(mutual.status)}
+          <Text style={s.docLabel}>Deal Tear Sheet</Text>
+          <Text style={s.companyName}>
+            {snap.companyName !== 'Not mentioned'
+              ? snap.companyName
+              : 'Post-Call Summary'}
           </Text>
-
-          {mutual.repActions.map((a, i) => (
-            <Text key={`rep-${i}`} style={s.nextStepsAction}>
-              You: {a.action}{a.dueDate ? ` (by ${a.dueDate})` : ''}
-            </Text>
-          ))}
-          {mutual.prospectActions.map((a, i) => (
-            <Text key={`prospect-${i}`} style={s.nextStepsAction}>
-              Them: {a.action}{a.dueDate ? ` (by ${a.dueDate})` : ''}
-            </Text>
-          ))}
-
-          {mutual.recoveryScript && (
-            <Text style={s.recoveryScript}>
-              Recovery: {mutual.recoveryScript}
-            </Text>
+          {contactDisplay && (
+            <Text style={s.contactLine}>{contactDisplay}</Text>
           )}
-        </View>
 
-        {/* BANT Gap Row */}
-        <View style={s.bantRow}>
-          {(
-            [
-              { label: 'Budget', status: gap.budget },
-              { label: 'Authority', status: gap.authority },
-              { label: 'Need', status: gap.need },
-              { label: 'Timeline', status: gap.timeline },
-            ] as Array<{ label: string; status: BANTStatus }>
-          ).map((item) => (
-            <View key={item.label} style={s.bantItem}>
-              <Text style={s.bantLabel}>{item.label}</Text>
-              <View
-                style={[s.bantDot, { backgroundColor: bantDotColor(item.status) }]}
-              />
-              <Text style={s.bantStatus}>{bantLabel(item.status)}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Top 3 Actions */}
-        {topActions.length > 0 && (
-          <View wrap={false}>
-            <SectionHeading title="Recommended Actions" />
-            <View style={s.actionsContainer}>
-              {topActions.map((action, i) => (
-                <View key={i} style={s.actionItem}>
-                  <View style={s.actionNumber}>
-                    <Text style={s.actionNumberText}>{i + 1}</Text>
-                  </View>
-                  <Text style={s.actionText}>{action}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Buyer Psychology Highlight */}
-        {(firstCommitment || firstFiller) && (
-          <View style={s.psychRow} wrap={false}>
-            {firstCommitment && (
-              <View style={[s.psychBox, { borderTopWidth: 3, borderTopColor: VOLT }]}>
-                <Text style={[s.psychBoxLabel, { color: VOLT }]}>
-                  Strongest Signal
-                </Text>
-                <Text style={[s.psychQuote, { borderLeftColor: VOLT }]}>
-                  &ldquo;{firstCommitment.quote}&rdquo;
-                </Text>
-                <Text style={s.psychDetail}>
-                  {firstCommitment.significance}
-                </Text>
-              </View>
-            )}
-            {firstFiller && (
-              <View style={[s.psychBox, { borderTopWidth: 3, borderTopColor: AMBER }]}>
-                <Text style={[s.psychBoxLabel, { color: AMBER }]}>
-                  Watch This
-                </Text>
-                <Text style={[s.psychQuote, { borderLeftColor: AMBER }]}>
-                  &ldquo;{firstFiller.quote}&rdquo;
-                </Text>
-                <Text style={s.psychDetail}>
-                  {firstFiller.recoveryMove}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* Page 1 Footer */}
-        <PageFooter />
-      </Page>
-
-      {/* ══════════════════════════════════════════════════
-          PAGE 2 — FULL INTELLIGENCE
-          ══════════════════════════════════════════════════ */}
-      <Page size="A4" style={s.bodyPage}>
-        <BodyHeader />
-        <PageFooter />
-
-        {/* Commitment Language */}
-        {(commit.realCommitments.length > 0 || commit.fillerSignals.length > 0) && (
-          <View wrap={false}>
-            <SectionHeading title="Commitment Language" />
-
-            {/* Real commitments */}
-            {commit.realCommitments.map((c, i) => (
-              <View key={`rc-${i}`}>
-                <View style={s.commitmentItem}>
-                  <View style={[s.commitDot, { backgroundColor: VOLT }]} />
-                  <Text style={[s.commitQuote, { borderLeftColor: VOLT }]}>
-                    &ldquo;{c.quote}&rdquo;
-                  </Text>
-                </View>
-                <Text style={s.commitSignificance}>{c.significance}</Text>
-              </View>
-            ))}
-
-            {/* Filler signals */}
-            {commit.fillerSignals.map((f, i) => (
-              <View key={`fs-${i}`}>
-                <View style={s.commitmentItem}>
-                  <View style={[s.commitDot, { backgroundColor: AMBER }]} />
-                  <Text style={[s.commitQuote, { borderLeftColor: AMBER }]}>
-                    &ldquo;{f.quote}&rdquo;
-                  </Text>
-                </View>
-                <Text style={s.fillerMeaning}>{f.meaning}</Text>
-                <Text style={s.recoveryMove}>
-                  {'\u2192'} {f.recoveryMove}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Objection Diagnostics */}
-        {d.objectionDiagnostics.length > 0 && (
-          <View wrap={false}>
-            <SectionHeading title="Objection Diagnostics" />
-            {d.objectionDiagnostics.map((obj, i) => (
-              <View key={i} style={s.objectionCard}>
-                <Text style={s.objectionSurface}>{obj.surfaceObjection}</Text>
-
-                <Text style={s.objectionLabel}>Real blocker:</Text>
-                <Text style={s.objectionBody}>{obj.realBlocker}</Text>
-
-                {obj.evidence.length > 0 && (
-                  <View>
-                    <Text style={s.objectionLabel}>Evidence:</Text>
-                    {obj.evidence.map((ev, j) => (
-                      <Text key={j} style={s.objectionEvidence}>
-                        &ldquo;{ev}&rdquo;
-                      </Text>
-                    ))}
-                  </View>
-                )}
-
-                <Text style={s.objectionLabel}>Recovery play:</Text>
-                <Text style={s.objectionRecovery}>{obj.recoveryPlay}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Stakeholders Table */}
-        {d.decisionMakers.length > 0 && (
-          <View wrap={false}>
-            <SectionHeading title="Stakeholders" />
-            <View style={s.tableContainer}>
-              <View style={s.tableHeaderRow}>
-                <Text style={[s.tableHeader, { width: '35%' }]}>Name</Text>
-                <Text style={[s.tableHeader, { width: '40%' }]}>Role</Text>
-                <Text style={[s.tableHeader, { width: '25%' }]}>Sentiment</Text>
-              </View>
-              {d.decisionMakers.map((dm, i) => (
-                <View
-                  key={i}
-                  style={[s.tableRow, i % 2 === 1 ? s.tableRowAlt : {}]}
-                >
-                  <Text style={[s.tableCell, { width: '35%', fontFamily: 'Helvetica-Bold' }]}>
-                    {dm.name}
-                  </Text>
-                  <Text style={[s.tableCell, { width: '40%' }]}>
-                    {dm.role}
-                  </Text>
-                  <View
-                    style={{
-                      width: '25%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 6,
-                    }}
-                  >
-                    <View
-                      style={[
-                        s.sentimentDot,
-                        { backgroundColor: sentimentColor(dm.sentiment) },
-                      ]}
-                    />
-                    <Text style={s.tableCell}>{dm.sentiment}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-      </Page>
-
-      {/* ══════════════════════════════════════════════════
-          PAGE 3 — DEAL REFERENCE
-          ══════════════════════════════════════════════════ */}
-      <Page size="A4" style={s.bodyPage}>
-        <BodyHeader />
-        <PageFooter />
-
-        {/* Deal Snapshot — 2x3 Grid */}
-        <View wrap={false}>
-          <SectionHeading title="Deal Snapshot" />
-          <View style={s.snapshotGrid}>
-            {[
-              { label: 'Company', value: d.dealSnapshot.companyName },
-              { label: 'Contact', value: d.dealSnapshot.contactName },
-              { label: 'Title', value: d.dealSnapshot.contactTitle },
-              { label: 'Stage', value: d.dealSnapshot.dealStage },
-              { label: 'Est. Value', value: d.dealSnapshot.estimatedValue },
-              { label: 'Timeline', value: d.dealSnapshot.timeline },
-            ].map((field) => (
-              <View key={field.label} style={s.snapshotItem}>
-                <Text style={s.snapshotLabel}>{field.label}</Text>
-                <Text
-                  style={
-                    field.value === 'Not mentioned'
-                      ? s.snapshotNotMentioned
-                      : s.snapshotValue
-                  }
-                >
-                  {field.value}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Confidence */}
-        <View wrap={false} style={{ paddingHorizontal: 24, marginBottom: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 9, color: TEXT_SECONDARY, letterSpacing: 1, textTransform: 'uppercase' }}>
-              Overall Confidence:
-            </Text>
-            <View style={{
-              paddingHorizontal: 10,
-              paddingVertical: 3,
-              borderRadius: 4,
-              backgroundColor: confidenceColor(d.overallConfidence),
-            }}>
-              <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 8, color: DARK }}>
-                {confidenceLabel(d.overallConfidence)}
+          <View style={s.badgeRow}>
+            <View style={[s.badge, { backgroundColor: C.volt }]}>
+              <Text style={[s.badgeText, { color: C.dark }]}>
+                {snap.dealStage}
               </Text>
             </View>
+            {snap.estimatedValue !== 'Not mentioned' && (
+              <View style={[s.badge, { backgroundColor: '#1E293B' }]}>
+                <Text style={[s.badgeText, { color: C.white }]}>
+                  {snap.estimatedValue}
+                </Text>
+              </View>
+            )}
           </View>
         </View>
 
-        {/* Call Summary */}
-        {d.callSummary.length > 0 && (
-          <View wrap={false}>
-            <SectionHeading title="Call Summary" />
-            {d.callSummary.map((point, i) => (
-              <View key={i} style={s.summaryItem}>
-                <Text style={s.summaryNumber}>{i + 1}.</Text>
-                <Text style={s.summaryText}>{point}</Text>
+        {/* ── Opportunity Details ── */}
+        <SectionHeader title="Opportunity Details" accentColor={C.volt} />
+        <View style={s.oppDetailsWrapper}>
+          <View style={s.oppDetailsAccent} />
+          <View style={s.oppDetailsBody}>
+            {[
+              { label: 'Account', value: snap.companyName },
+              { label: 'Deal Stage', value: snap.dealStage },
+              { label: 'Amount', value: snap.estimatedValue },
+              { label: 'Close Date', value: snap.closeDate },
+              { label: 'Next Step', value: snap.nextStep },
+            ].map((f) => (
+              <View key={f.label} style={s.fieldRow}>
+                <Text style={s.fieldLabel}>{f.label}</Text>
+                <Text
+                  style={
+                    f.value === 'Not mentioned'
+                      ? s.fieldValueEmpty
+                      : s.fieldValue
+                  }
+                >
+                  {f.value}
+                </Text>
               </View>
             ))}
           </View>
+        </View>
+
+        <SectionDivider />
+
+        {/* ── Meeting Attendees ── */}
+        {hasAttendees && (
+          <View wrap={false}>
+            <SectionHeader title="Meeting Attendees" accentColor={C.blue} />
+            <View style={s.sectionContent}>
+              {d.attendees.map((att, i) => (
+                <View key={i} style={s.attendeeCard}>
+                  <View
+                    style={[
+                      s.attendeeDot,
+                      { backgroundColor: sentimentColor(att.sentiment) },
+                    ]}
+                  />
+                  <Text style={s.attendeeName}>{att.name}</Text>
+                  {att.title !== 'Not mentioned' && (
+                    <Text style={s.attendeeDetail}>{att.title}</Text>
+                  )}
+                  {att.role !== 'Unknown' && (
+                    <Text style={s.attendeeRole}>{att.role}</Text>
+                  )}
+                </View>
+              ))}
+            </View>
+            <SectionDivider />
+          </View>
         )}
 
-        {/* Buying Signals */}
-        {d.buyingSignals.length > 0 && (
+        {/* ── Follow-Up Tasks ── */}
+        {d.followUpTasks.length > 0 && (
           <View wrap={false}>
-            <SectionHeading title="Buying Signals" />
-            <View style={s.tagRow}>
-              {d.buyingSignals.map((sig, i) => (
-                <Text key={i} style={[s.tag, s.tagGreen]}>
-                  {sig}
-                </Text>
+            <SectionHeader
+              title="Follow-Up Tasks"
+              accentColor={C.amber}
+              count={d.followUpTasks.length}
+            />
+            <View style={s.sectionContent}>
+              {d.followUpTasks.map((task, i) => (
+                <View key={i} style={s.taskCard}>
+                  <View
+                    style={[
+                      s.taskLeftBorder,
+                      { backgroundColor: priorityAccent(task.priority) },
+                    ]}
+                  />
+                  <View style={s.taskCheckbox} />
+                  <Text style={s.taskText}>{task.task}</Text>
+                  <View style={s.taskMeta}>
+                    {task.dueDate !== 'Not specified' && (
+                      <Text style={s.taskDate}>{task.dueDate}</Text>
+                    )}
+                    <Text
+                      style={[
+                        s.taskPriority,
+                        {
+                          color: priorityColor(task.priority),
+                          backgroundColor: priorityBg(task.priority),
+                        },
+                      ]}
+                    >
+                      {task.priority}
+                    </Text>
+                  </View>
+                </View>
               ))}
+            </View>
+            <SectionDivider />
+          </View>
+        )}
+
+        {/* ── Call Summary ── */}
+        {d.callSummary.filter((p) => p && p.trim()).length > 0 && (
+          <View wrap={false}>
+            <SectionHeader title="Call Summary" accentColor={C.volt} />
+            <View style={s.sectionContent}>
+              {d.callSummary
+                .filter((p) => p && p.trim())
+                .map((point, i) => (
+                  <View key={i} style={s.summaryBullet} wrap={false}>
+                    <View style={s.bulletCircle}>
+                      <Text style={s.bulletNumber}>{i + 1}</Text>
+                    </View>
+                    <Text style={s.summaryText}>{point}</Text>
+                  </View>
+                ))}
             </View>
           </View>
         )}
 
-        {/* Risks */}
-        {d.risks.length > 0 && (
+        <PageFooter />
+      </Page>
+
+      {/* ═══════════════════════════════════════════
+          PAGE 2 — DEAL INTELLIGENCE
+          ═══════════════════════════════════════════ */}
+      <Page size="A4" style={s.bodyPage}>
+        <BodyPageHeader />
+        <PageFooter />
+
+        {/* ── Opportunity Notes ── */}
+        {d.opportunityNotes && (
           <View wrap={false}>
-            <SectionHeading title="Risks" />
-            <View style={s.tagRow}>
-              {d.risks.map((risk, i) => (
-                <Text key={i} style={[s.tag, s.tagRed]}>
-                  {risk}
-                </Text>
-              ))}
+            <SectionHeader title="Opportunity Notes" accentColor={C.volt} />
+            <View style={s.notesWrapper}>
+              <View style={s.notesAccent} />
+              <View style={s.notesBody}>
+                <Text style={s.notesText}>{d.opportunityNotes}</Text>
+              </View>
             </View>
+            <SectionDivider />
           </View>
         )}
 
-        {/* Competitors */}
-        {d.competitorsMentioned.length > 0 && (
+        {/* ── Deal Map ── */}
+        {mapBranches.length > 0 && (
           <View wrap={false}>
-            <SectionHeading title="Competitors Mentioned" />
-            <View style={s.tagRow}>
-              {d.competitorsMentioned.map((comp, i) => (
-                <Text key={i} style={[s.tag, s.tagGray]}>
-                  {comp}
+            <SectionHeader title="Deal Map" accentColor={C.volt} />
+            <View style={s.mapContainer}>
+              {/* Central node */}
+              <View style={s.mapCenter}>
+                <Text style={s.mapCenterName}>
+                  {snap.companyName !== 'Not mentioned'
+                    ? snap.companyName
+                    : 'Deal'}
                 </Text>
-              ))}
+                <Text style={s.mapCenterStage}>{snap.dealStage}</Text>
+              </View>
+
+              {/* Branches as cards */}
+              <View style={s.mapGrid}>
+                {mapBranches.map((branch) => (
+                  <View
+                    key={branch.label}
+                    style={[
+                      s.mapBranch,
+                      {
+                        backgroundColor: branch.bg,
+                        borderColor: branch.border,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[s.mapBranchLabel, { color: branch.color }]}
+                    >
+                      {branch.label}
+                    </Text>
+                    {branch.items.slice(0, 4).map((item, i) => (
+                      <Text key={i} style={s.mapBranchItem}>
+                        {'\u2022'} {item}
+                      </Text>
+                    ))}
+                    {branch.items.length > 4 && (
+                      <Text
+                        style={[s.mapBranchItem, { color: C.gray500, fontStyle: 'italic' }]}
+                      >
+                        +{branch.items.length - 4} more
+                      </Text>
+                    )}
+                  </View>
+                ))}
+              </View>
+            </View>
+            <SectionDivider />
+          </View>
+        )}
+
+        {/* ── Pain Points + Risks ── */}
+        {(d.painPoints.length > 0 || d.risks.length > 0) && (
+          <View wrap={false}>
+            <SectionHeader title="Signals" accentColor={C.red} />
+            <View style={s.sectionContent}>
+              <View style={s.tagsSection}>
+                {d.painPoints.length > 0 && (
+                  <View style={s.tagColumn}>
+                    <Text style={s.tagColumnLabel}>Pain Points</Text>
+                    <View style={s.tagWrap}>
+                      {d.painPoints.map((p, i) => (
+                        <Text
+                          key={i}
+                          style={[
+                            s.tag,
+                            {
+                              color: C.blue,
+                              backgroundColor: C.blueBg,
+                              borderColor: '#BFDBFE',
+                            },
+                          ]}
+                        >
+                          {p}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                )}
+                {d.risks.length > 0 && (
+                  <View style={s.tagColumn}>
+                    <Text style={s.tagColumnLabel}>Risks</Text>
+                    <View style={s.tagWrap}>
+                      {d.risks.map((r, i) => (
+                        <Text
+                          key={i}
+                          style={[
+                            s.tag,
+                            {
+                              color: C.red,
+                              backgroundColor: C.redBg,
+                              borderColor: '#FECACA',
+                            },
+                          ]}
+                        >
+                          {r}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </View>
+            </View>
+            <SectionDivider />
+          </View>
+        )}
+
+        {/* ── Competitors + Products ── */}
+        {(d.competitorsMentioned.length > 0 ||
+          d.productsDiscussed.length > 0) && (
+          <View wrap={false}>
+            <SectionHeader title="Landscape" accentColor={C.gray400} />
+            <View style={s.sectionContent}>
+              <View style={s.tagsSection}>
+                {d.competitorsMentioned.length > 0 && (
+                  <View style={s.tagColumn}>
+                    <Text style={s.tagColumnLabel}>Competitors</Text>
+                    <View style={s.tagWrap}>
+                      {d.competitorsMentioned.map((c, i) => (
+                        <Text
+                          key={i}
+                          style={[
+                            s.tag,
+                            {
+                              color: C.gray500,
+                              backgroundColor: C.gray100,
+                              borderColor: C.gray300,
+                            },
+                          ]}
+                        >
+                          {c}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                )}
+                {d.productsDiscussed.length > 0 && (
+                  <View style={s.tagColumn}>
+                    <Text style={s.tagColumnLabel}>Products Discussed</Text>
+                    <View style={s.tagWrap}>
+                      {d.productsDiscussed.map((p, i) => (
+                        <Text
+                          key={i}
+                          style={[
+                            s.tag,
+                            {
+                              color: C.voltDark,
+                              backgroundColor: C.voltBg,
+                              borderColor: '#A7F3D0',
+                            },
+                          ]}
+                        >
+                          {p}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
         )}
       </Page>
 
-      {/* ══════════════════════════════════════════════════
-          PAGE 4 — CTA
-          ══════════════════════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════
+          LAST PAGE — CTA
+          ═══════════════════════════════════════════ */}
       <Page size="A4" style={s.ctaPage}>
         <View style={s.ctaContainer}>
           <Image src={LOGO_PATH} style={s.ctaLogo} />
           <View style={s.ctaDivider} />
           <Text style={s.ctaHeadline}>
-            Pattern recognition. Buyer psychology. Gap analysis.
+            60 seconds of talking. Every CRM field filled.
           </Text>
           <Text style={s.ctaSubline}>
-            On every call. Straight to your CRM.
+            No typing. No tab switching. No missed fields.{'\n'}
+            Connect StreetNotes and this happens after every call.
           </Text>
-          <View style={s.ctaUrlContainer}>
+          <View style={s.ctaUrlBox}>
             <Text style={s.ctaUrl}>streetnotes.ai</Text>
           </View>
         </View>
 
-        <View style={[s.footer, { borderTopColor: '#2A2A2A' }]}>
-          <Image src={LOGO_PATH} style={s.footerLogo} />
-          <Text
-            style={[s.footerText, { color: TEXT_SECONDARY }]}
-            render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} of ${totalPages}`
-            }
-          />
-          <Text style={[s.footerText, { color: TEXT_SECONDARY }]}>Confidential</Text>
+        <View style={[s.footer, { left: 40, right: 40, bottom: 18 }]}>
+          <View style={[s.footerAccentLine, { backgroundColor: '#4D9E6A' }]} />
+          <View style={s.footerRow}>
+            <Image src={LOGO_PATH} style={s.footerLogo} />
+            <Text
+              style={[s.footerText, { color: C.gray400 }]}
+              render={({ pageNumber, totalPages }) =>
+                `Page ${pageNumber} of ${totalPages}`
+              }
+            />
+            <Text style={[s.footerText, { color: C.gray400 }]}>
+              Confidential
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>
