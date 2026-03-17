@@ -6,6 +6,7 @@ import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
 import MicButton from './mic-button'
 import WaveformVisualizer from './waveform-visualizer'
+import ShinyText from '@/components/shiny-text'
 
 interface RecorderProps {
   onComplete: (audioBlob: Blob, mimeType: string, durationSec: number) => void
@@ -220,9 +221,16 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
         <button
           type="button"
           onClick={onImport}
-          className="font-mono text-[10px] sm:text-xs uppercase tracking-wider text-gray-500 hover:text-volt transition-colors py-2"
+          className="font-mono text-sm sm:text-base uppercase tracking-wider hover:text-volt transition-colors py-2"
         >
-          Have a call summary? Paste it here
+          <ShinyText
+            text="Have a call summary? Paste it here"
+            color="#6b7280"
+            shineColor="#00E676"
+            speed={3}
+            spread={120}
+            className="font-mono text-sm sm:text-base uppercase tracking-wider"
+          />
         </button>
       )}
     </div>

@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import { FaMicrophone, FaStop } from 'react-icons/fa'
+import ShinyText from '@/components/shiny-text'
 
 interface MicButtonProps {
   isRecording: boolean
@@ -107,8 +108,19 @@ export default function MicButton({
             )}
           </>
         ) : (
-          <p className="font-mono text-xs uppercase tracking-[0.1em] text-gray-400">
-            {disabled ? 'Mic unavailable' : 'Tap to record'}
+          <p className="font-mono text-sm sm:text-base uppercase tracking-[0.1em]">
+            {disabled ? (
+              <span className="text-gray-400">Mic unavailable</span>
+            ) : (
+              <ShinyText
+                text="Tap to record"
+                color="#9ca3af"
+                shineColor="#00E676"
+                speed={3}
+                spread={120}
+                className="font-mono text-sm sm:text-base uppercase tracking-[0.1em]"
+              />
+            )}
           </p>
         )}
       </div>
