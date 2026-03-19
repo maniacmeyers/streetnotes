@@ -9,7 +9,7 @@ import {
   Image,
   StyleSheet,
 } from '@react-pdf/renderer'
-import type { DebriefStructuredOutput, DealSegment } from './types'
+import type { DebriefStructuredOutput, BDRStructuredOutput, DealSegment } from './types'
 
 const LOGO_PATH = path.join(process.cwd(), 'public', 'streetnotes_logo.png')
 
@@ -1101,6 +1101,254 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
           <View style={s.ctaDivider} />
           <Text style={s.ctaHeadline}>
             60 seconds of talking. Every CRM field filled.
+          </Text>
+          <Text style={s.ctaSubline}>
+            No typing. No tab switching. No missed fields.{'\n'}
+            Connect StreetNotes and this happens after every call.
+          </Text>
+          <View style={s.ctaUrlBox}>
+            <Text style={s.ctaUrl}>streetnotes.ai</Text>
+          </View>
+        </View>
+
+        <View style={[s.footer, { left: 40, right: 40, bottom: 18 }]}>
+          <View style={[s.footerAccentLine, { backgroundColor: '#4D9E6A' }]} />
+          <View style={s.footerRow}>
+            <Image src={LOGO_PATH} style={s.footerLogo} />
+            <Text
+              style={[s.footerText, { color: C.gray400 }]}
+              render={({ pageNumber, totalPages }) =>
+                `Page ${pageNumber} of ${totalPages}`
+              }
+            />
+            <Text style={[s.footerText, { color: C.gray400 }]}>
+              Confidential
+            </Text>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  )
+}
+
+/* ─── BDR Cold Call PDF ─── */
+
+const PROSPECT_STATUS_LABELS: Record<string, string> = {
+  'active-opportunity': 'Active Opportunity',
+  'future-opportunity': 'Future Opportunity',
+  'not-a-fit': 'Not a Fit',
+  'needs-more-info': 'Needs More Info',
+  'referred-elsewhere': 'Referred Elsewhere',
+}
+
+const DISPOSITION_LABELS: Record<string, string> = {
+  connected: 'Connected',
+  voicemail: 'Voicemail',
+  gatekeeper: 'Gatekeeper',
+  'no-answer': 'No Answer',
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  'active-opportunity': C.volt,
+  'future-opportunity': C.blue,
+  'not-a-fit': C.red,
+  'needs-more-info': C.amber,
+  'referred-elsewhere': '#8B5CF6',
+}
+
+interface BDRPDFProps {
+  data: BDRStructuredOutput
+  email: string
+  date: string
+}
+
+export function BDRDebriefPDF({ data, email, date }: BDRPDFProps) {
+  const d = data
+  const statusLabel = PROSPECT_STATUS_LABELS[d.prospectStatus] || d.prospectStatus
+  const statusColor = STATUS_COLORS[d.prospectStatus] || C.gray400
+  const dispositionLabel = DISPOSITION_LABELS[d.callDisposition] || d.callDisposition
+
+  return (
+    <Document>
+      {/* ═══════════════════════════════════════════
+          PAGE 1 — COLD CALL ACTIVITY LOG
+          ═══════════════════════════════════════════ */}
+      <Page size="A4" style={s.page}>
+        <View style={s.topBar} />
+
+        {/* Dark header */}
+        <View style={s.header}>
+          <View style={s.headerRow}>
+            <Image src={LOGO_PATH} style={s.logo} />
+            <View style={s.metaCol}>
+              <Text style={s.metaText}>{date}</Text>
+              <Text style={s.metaText}>{email}</Text>
+            </View>
+          </View>
+
+          <Text style={s.docLabel}>Cold Call Log</Text>
+          <Text style={s.companyName}>
+            {d.contactSnapshot.company !== 'Not mentioned'
+              ? d.contactSnapshot.company
+              : d.contactSnapshot.name !== 'Not mentioned'
+                ? d.contactSnapshot.name
+                : 'Cold Call Summary'}
+          </Text>
+          {d.contactSnapshot.name !== 'Not mentioned' && d.contactSnapshot.company !== 'Not mentioned' && (
+            <Text style={s.contactLine}>
+              {d.contactSnapshot.name}
+              {d.contactSnapshot.title !== 'Not mentioned' ? ` — ${d.contactSnapshot.title}` : ''}
+            </Text>
+          )}
+
+          <View style={s.badgeRow}>
+            <View style={[s.badge, { backgroundColor: statusColor }]}>
+              <Text style={[s.badgeText, { color: C.dark }]}>
+                {statusLabel}
+              </Text>
+            </View>
+            <View style={[s.badge, { backgroundColor: '#1E293B' }]}>
+              <Text style={[s.badgeText, { color: C.white }]}>
+                {dispositionLabel}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ── Contact Details ── */}
+        <SectionHeader title="Contact Details" accentColor={C.blue} />
+        <View style={s.oppDetailsWrapper}>
+          <View style={[s.oppDetailsAccent, { backgroundColor: C.blue }]} />
+          <View style={s.oppDetailsBody}>
+            {[
+              { label: 'Name', value: d.contactSnapshot.name },
+              { label: 'Title', value: d.contactSnapshot.title },
+              { label: 'Company', value: d.contactSnapshot.company },
+              { label: 'Direct Line', value: d.contactSnapshot.directLine },
+              { label: 'Email', value: d.contactSnapshot.email },
+              { label: 'Current Solution', value: d.currentSolution },
+            ]
+              .filter((f) => f.value !== 'Not mentioned')
+              .map((f) => (
+                <View key={f.label} style={s.fieldRow}>
+                  <Text style={s.fieldLabel}>{f.label}</Text>
+                  <Text style={s.fieldValue}>{f.value}</Text>
+                </View>
+              ))}
+          </View>
+        </View>
+
+        <SectionDivider />
+
+        {/* ── The Truth ── */}
+        <SectionHeader title="The Truth" accentColor={C.volt} />
+        <View style={s.notesWrapper}>
+          <View style={s.notesAccent} />
+          <View style={s.notesBody}>
+            <Text style={s.notesText}>{d.theTruth}</Text>
+          </View>
+        </View>
+
+        {d.prospectStatusDetail && (
+          <View style={s.sectionContent}>
+            <Text style={[s.tagColumnLabel, { marginBottom: 4 }]}>Status Detail</Text>
+            <Text style={[s.notesText, { fontSize: 9, color: C.gray500 }]}>
+              {d.prospectStatusDetail}
+            </Text>
+          </View>
+        )}
+
+        <SectionDivider />
+
+        {/* ── Next Action ── */}
+        <View wrap={false}>
+          <SectionHeader title="Next Action" accentColor={C.volt} />
+          <View style={s.sectionContent}>
+            <View style={[s.attendeeCard, { backgroundColor: C.voltBg }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.attendeeName, { fontSize: 10, marginBottom: 3 }]}>
+                  {d.nextAction.action}
+                </Text>
+                <Text style={[s.attendeeDetail, { fontSize: 8 }]}>
+                  When: {d.nextAction.when}
+                </Text>
+              </View>
+            </View>
+          </View>
+          <SectionDivider />
+        </View>
+
+        {/* ── Objections ── */}
+        {d.objections.length > 0 && (
+          <View wrap={false}>
+            <SectionHeader title="Objections" accentColor={C.amber} count={d.objections.length} />
+            <View style={s.sectionContent}>
+              {d.objections.map((obj, i) => (
+                <View key={i} style={s.summaryBullet} wrap={false}>
+                  <View style={s.bulletCircle}>
+                    <Text style={s.bulletNumber}>{i + 1}</Text>
+                  </View>
+                  <Text style={s.summaryText}>{obj}</Text>
+                </View>
+              ))}
+            </View>
+            <SectionDivider />
+          </View>
+        )}
+
+        {/* ── Referral ── */}
+        {d.referral && (
+          <View wrap={false}>
+            <SectionHeader title="Referral" accentColor="#8B5CF6" />
+            <View style={s.sectionContent}>
+              <View style={s.fieldRow}>
+                <Text style={s.fieldLabel}>Referred To</Text>
+                <Text style={s.fieldValue}>{d.referral.referredTo}</Text>
+              </View>
+              <View style={[s.fieldRow, { borderBottomWidth: 0 }]}>
+                <Text style={s.fieldLabel}>Reason</Text>
+                <Text style={s.fieldValue}>{d.referral.reason}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        <PageFooter />
+      </Page>
+
+      {/* ═══════════════════════════════════════════
+          PAGE 2 — AE BRIEFING (conditional)
+          ═══════════════════════════════════════════ */}
+      {d.aeBriefing && (
+        <Page size="A4" style={s.bodyPage}>
+          <View style={s.bodyHeader} fixed>
+            <Image src={LOGO_PATH} style={s.bodyHeaderLogo} />
+            <Text style={s.bodyHeaderTitle}>AE Briefing</Text>
+          </View>
+
+          <SectionHeader title="AE Briefing" accentColor={C.volt} />
+          <View style={s.notesWrapper}>
+            <View style={s.notesAccent} />
+            <View style={s.notesBody}>
+              <Text style={[s.notesText, { fontSize: 10, lineHeight: 1.7 }]}>
+                {d.aeBriefing}
+              </Text>
+            </View>
+          </View>
+
+          <PageFooter />
+        </Page>
+      )}
+
+      {/* ═══════════════════════════════════════════
+          LAST PAGE — CTA
+          ═══════════════════════════════════════════ */}
+      <Page size="A4" style={s.ctaPage}>
+        <View style={s.ctaContainer}>
+          <Image src={LOGO_PATH} style={s.ctaLogo} />
+          <View style={s.ctaDivider} />
+          <Text style={s.ctaHeadline}>
+            30 seconds of talking. Every call logged.
           </Text>
           <Text style={s.ctaSubline}>
             No typing. No tab switching. No missed fields.{'\n'}

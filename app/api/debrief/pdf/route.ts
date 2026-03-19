@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { createClient } from '@/lib/supabase/server'
-import { DebriefPDF } from '@/lib/debrief/pdf'
-import type { DebriefStructuredOutput } from '@/lib/debrief/types'
+import { DebriefPDF, BDRDebriefPDF } from '@/lib/debrief/pdf'
+import type { DebriefOutput } from '@/lib/debrief/types'
+import { isBDROutput } from '@/lib/debrief/types'
 import React from 'react'
 
 export const runtime = 'nodejs'
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  const structured = session.structured_output as unknown as DebriefStructuredOutput
+  const structured = session.structured_output as unknown as DebriefOutput
   const date = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -37,12 +38,23 @@ export async function GET(request: NextRequest) {
   })
 
   try {
-    const pdfElement = React.createElement(DebriefPDF, {
-      data: structured,
-      email: session.email,
-      date,
-      dealSegment: structured.dealSegment || 'smb',
-    })
+    let pdfElement: React.ReactElement
+
+    if (isBDROutput(structured)) {
+      pdfElement = React.createElement(BDRDebriefPDF, {
+        data: structured,
+        email: session.email,
+        date,
+      })
+    } else {
+      pdfElement = React.createElement(DebriefPDF, {
+        data: structured,
+        email: session.email,
+        date,
+        dealSegment: structured.dealSegment || 'smb',
+      })
+    }
+
     const buffer = await renderToBuffer(
       pdfElement as unknown as React.ReactElement
     )
@@ -54,12 +66,13 @@ export async function GET(request: NextRequest) {
       .eq('id', sessionId)
 
     const dateSlug = new Date().toISOString().split('T')[0]
+    const filePrefix = isBDROutput(structured) ? 'cold-call' : 'debrief'
 
     return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="streetnotes-debrief-${dateSlug}.pdf"`,
+        'Content-Disposition': `attachment; filename="streetnotes-${filePrefix}-${dateSlug}.pdf"`,
         'Cache-Control': 'no-store',
       },
     })

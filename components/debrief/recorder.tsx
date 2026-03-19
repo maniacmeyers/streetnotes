@@ -7,16 +7,18 @@ import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
 import MicButton from './mic-button'
 import WaveformVisualizer from './waveform-visualizer'
 import ShinyText from '@/components/shiny-text'
+import type { DealSegment } from '@/lib/debrief/types'
 
 interface RecorderProps {
   onComplete: (audioBlob: Blob, mimeType: string, durationSec: number) => void
   onImport?: () => void
+  segment?: DealSegment
 }
 
 const MIN_DURATION = 15
 const MAX_DURATION = 180
 
-const COACHING_PROMPTS = [
+const DEAL_PROMPTS = [
   'Who was in the meeting?',
   'Budget — was money discussed?',
   'Authority — who makes the call?',
@@ -29,7 +31,18 @@ const COACHING_PROMPTS = [
   'When is the next meeting?',
 ]
 
-export default function Recorder({ onComplete, onImport }: RecorderProps) {
+const BDR_PROMPTS = [
+  "Who'd you talk to?",
+  "What are they using today?",
+  "What's actually going on at this account?",
+  'Any interest? What kind?',
+  'What pushed back or concerned them?',
+  'What should happen next — and when?',
+  'Anyone else you should be talking to?',
+  'Anything the AE needs to know?',
+]
+
+export default function Recorder({ onComplete, onImport, segment }: RecorderProps) {
   const {
     status,
     durationSec,
@@ -43,6 +56,9 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
   } = useVoiceRecorder()
 
   const { analyserNode, startAnalysing, stopAnalysing } = useAudioAnalyser()
+
+  const prompts = segment === 'bdr-cold-call' ? BDR_PROMPTS : DEAL_PROMPTS
+  const isBDR = segment === 'bdr-cold-call'
 
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0)
   const [showPrompt, setShowPrompt] = useState(false)
@@ -59,7 +75,7 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
       setCurrentPromptIndex(0)
 
       promptIntervalRef.current = window.setInterval(() => {
-        setCurrentPromptIndex((prev) => (prev + 1) % COACHING_PROMPTS.length)
+        setCurrentPromptIndex((prev) => (prev + 1) % prompts.length)
       }, 6000)
     }
 
@@ -75,7 +91,7 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
         promptIntervalRef.current = null
       }
     }
-  }, [isRecording, durationSec])
+  }, [isRecording, durationSec, prompts.length])
 
   // Auto-stop at max duration
   useEffect(() => {
@@ -118,7 +134,7 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
       <div className="text-center">
         <div className="mb-3 sm:mb-4">
           <span className="inline-block bg-white border-2 sm:border-3 border-black px-2.5 py-1 sm:px-3 sm:py-1.5 rotate-1 font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000]">
-            Step 1 of 3
+            Step 2 of 3
           </span>
         </div>
         <h2
@@ -128,6 +144,12 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
           {isRecording ? (
             <>
               <span className="text-red-500">Recording</span>
+            </>
+          ) : isBDR ? (
+            <>
+              How&apos;d the
+              <br />
+              <span className="text-volt">call</span> go?
             </>
           ) : (
             <>
@@ -139,8 +161,9 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
         </h2>
         {!isRecording && (
           <p className="font-body text-base sm:text-lg text-gray-400 max-w-sm mx-auto">
-            Hit the mic and talk about the call you just had. Names, numbers,
-            objections, next steps — dump it all.
+            {isBDR
+              ? "Hit the mic and dump what just happened. Who'd you talk to, what's the situation, what's next."
+              : 'Hit the mic and talk about the call you just had. Names, numbers, objections, next steps — dump it all.'}
           </p>
         )}
       </div>
@@ -175,7 +198,7 @@ export default function Recorder({ onComplete, onImport }: RecorderProps) {
               transition={{ duration: 0.4 }}
               className="font-mono text-xs sm:text-sm text-volt/70 uppercase tracking-wider text-center"
             >
-              {COACHING_PROMPTS[currentPromptIndex]}
+              {prompts[currentPromptIndex]}
             </motion.p>
           )}
         </AnimatePresence>
