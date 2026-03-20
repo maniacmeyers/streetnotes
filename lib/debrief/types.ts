@@ -82,12 +82,37 @@ export interface BDRStructuredOutput {
   aeBriefing: string | null
 }
 
+/* ─── SPIN Scoring (Vbrick) ─── */
+
+export interface SPINScoreDetail {
+  score: number
+  evidence: string[]
+  missed: string
+}
+
+export interface SPINScore {
+  situation: SPINScoreDetail
+  problem: SPINScoreDetail
+  implication: SPINScoreDetail
+  needPayoff: SPINScoreDetail
+  composite: number
+  coachingNote: string
+}
+
+export interface VbrickBDRStructuredOutput extends BDRStructuredOutput {
+  spin: SPINScore
+}
+
 /* ─── Union + Guard ─── */
 
-export type DebriefOutput = DebriefStructuredOutput | BDRStructuredOutput
+export type DebriefOutput = DebriefStructuredOutput | BDRStructuredOutput | VbrickBDRStructuredOutput
 
 export function isBDROutput(output: DebriefOutput): output is BDRStructuredOutput {
   return 'mode' in output && output.mode === 'bdr-cold-call'
+}
+
+export function isVbrickBDROutput(output: DebriefOutput): output is VbrickBDRStructuredOutput {
+  return isBDROutput(output) && 'spin' in output
 }
 
 /* ─── Flow State ─── */

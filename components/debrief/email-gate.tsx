@@ -16,6 +16,13 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
     e.preventDefault()
     if (!email) return
 
+    // Vbrick domain validation
+    if (!email.toLowerCase().endsWith('@vbrick.com')) {
+      setStatus('error')
+      setErrorMsg('Please use your @vbrick.com email address')
+      return
+    }
+
     setStatus('loading')
     setErrorMsg('')
 
@@ -45,43 +52,42 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
       {/* Badge */}
       <motion.div
         className="mb-4 sm:mb-6"
-        initial={{ opacity: 0, rotate: -4 }}
-        animate={{ opacity: 1, rotate: -2 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.4 }}
       >
-        <span className="inline-block bg-white border-2 sm:border-3 border-black px-2.5 py-1 sm:px-3 sm:py-1.5 -rotate-2 font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000]">
-          Free tool — no signup
+        <span className="inline-block uppercase text-xs tracking-widest text-[#7ed4f7]">
+          BDR CALL INTELLIGENCE
         </span>
       </motion.div>
 
       {/* Headline */}
       <motion.h1
-        className="font-display uppercase text-[40px] sm:text-[72px] leading-[0.85] text-white mb-3 sm:mb-4"
-        style={{ textShadow: '3px 3px 0px #000000' }}
+        className="font-bold text-3xl sm:text-5xl leading-[0.9] text-white mb-3 sm:mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5 }}
       >
-        Post-Call
+        Vbrick
         <br />
-        <span className="text-volt">Brain Dump</span>
+        <span className="text-[#7ed4f7]">Command Center</span>
       </motion.h1>
 
       <motion.p
-        className="font-body text-base sm:text-xl text-gray-300 mb-1.5 sm:mb-2 max-w-sm sm:max-w-md mx-auto"
+        className="text-base sm:text-xl text-gray-400 mb-1.5 sm:mb-2 max-w-sm sm:max-w-md mx-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.4 }}
       >
-        Hit the mic. We&apos;ll write the notes.
+        Debrief every call. Get better every week.
       </motion.p>
       <motion.p
-        className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-gray-500 mb-6 sm:mb-8"
+        className="text-xs uppercase tracking-widest text-gray-500 mb-6 sm:mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.4 }}
       >
-        Because &quot;I&apos;ll enter it later&quot; is a lie.
+        Sign in with your @vbrick.com email
       </motion.p>
 
       {/* Email form */}
@@ -92,7 +98,7 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.4 }}
       >
-        <div className="flex border-2 sm:border-4 border-black bg-white shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+        <div className="flex rounded-lg border border-white/20 bg-white/5 overflow-hidden">
           <label htmlFor="debrief-email" className="sr-only">
             Work email address
           </label>
@@ -101,29 +107,29 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="YOUR WORK EMAIL"
+            placeholder="YOUR @VBRICK.COM EMAIL"
             required
             aria-required="true"
             autoComplete="email"
             inputMode="email"
-            className="flex-1 min-w-0 px-3 py-3 sm:px-4 sm:py-4 font-mono text-[13px] sm:text-sm text-black placeholder:text-gray-400 uppercase tracking-wider bg-white outline-none min-h-[44px]"
+            className="flex-1 min-w-0 px-3 py-3 sm:px-4 sm:py-4 text-sm text-white placeholder:text-gray-500 uppercase tracking-wider bg-transparent outline-none min-h-[44px]"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="border-l-2 sm:border-l-4 border-black bg-volt text-black font-display text-base sm:text-lg px-5 sm:px-6 py-3 sm:py-4 uppercase hover:bg-white active:bg-white transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px]"
+            className="bg-[#7ed4f7] text-[#061222] font-bold text-base sm:text-lg px-5 sm:px-6 py-3 sm:py-4 rounded-r-lg uppercase hover:bg-[#9de0fa] active:bg-[#9de0fa] transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px]"
           >
             {status === 'loading' ? '...' : 'Start'}
           </button>
         </div>
 
         {status === 'error' && (
-          <p role="alert" className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-red-400 mt-3">
+          <p role="alert" className="text-xs uppercase tracking-widest text-red-400 mt-3">
             {errorMsg}
           </p>
         )}
 
-        <p className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-gray-500 mt-3 sm:mt-4">
+        <p className="text-xs uppercase tracking-widest text-gray-500 mt-3 sm:mt-4">
           60 seconds. Structured deal notes. Free.
         </p>
       </motion.form>
@@ -136,18 +142,18 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         transition={{ delay: 0.7, duration: 0.5 }}
       >
         {[
-          { num: '01', label: 'Talk' },
-          { num: '02', label: 'Extract' },
-          { num: '03', label: 'Get PDF' },
+          { num: '01', label: 'Debrief' },
+          { num: '02', label: 'Score' },
+          { num: '03', label: 'Brief' },
         ].map((s) => (
           <div
             key={s.num}
-            className="border border-white/20 sm:border-2 p-2.5 sm:p-3 text-center"
+            className="border border-white/10 rounded-lg p-2.5 sm:p-3 text-center"
           >
-            <span className="font-mono text-[9px] sm:text-[10px] text-volt block">
+            <span className="text-[9px] sm:text-[10px] text-[#7ed4f7] block">
               {s.num}
             </span>
-            <span className="font-display text-sm sm:text-lg uppercase">{s.label}</span>
+            <span className="font-bold text-sm sm:text-lg uppercase">{s.label}</span>
           </div>
         ))}
       </motion.div>

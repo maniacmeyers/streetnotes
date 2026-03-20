@@ -7,6 +7,8 @@ import {
   DEBRIEF_USER_PROMPT_TEMPLATE,
   BDR_SYSTEM_PROMPT,
   BDR_USER_PROMPT_TEMPLATE,
+  VBRICK_BDR_SYSTEM_PROMPT,
+  VBRICK_BDR_USER_PROMPT_TEMPLATE,
 } from '@/lib/debrief/prompts'
 import type { DebriefOutput, BDRStructuredOutput } from '@/lib/debrief/types'
 import { isBDROutput } from '@/lib/debrief/types'
@@ -37,11 +39,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 })
     }
 
+    const isVbrick = session.email.endsWith('@vbrick.com')
     const isBDR = segment === 'bdr-cold-call'
-    const systemPrompt = isBDR ? BDR_SYSTEM_PROMPT : DEBRIEF_SYSTEM_PROMPT
-    const userPrompt = isBDR
-      ? BDR_USER_PROMPT_TEMPLATE(transcript)
-      : DEBRIEF_USER_PROMPT_TEMPLATE(transcript)
+
+    let systemPrompt: string
+    let userPrompt: string
+
+    if (isBDR && isVbrick) {
+      systemPrompt = VBRICK_BDR_SYSTEM_PROMPT
+      userPrompt = VBRICK_BDR_USER_PROMPT_TEMPLATE(transcript)
+    } else if (isBDR) {
+      systemPrompt = BDR_SYSTEM_PROMPT
+      userPrompt = BDR_USER_PROMPT_TEMPLATE(transcript)
+    } else {
+      systemPrompt = DEBRIEF_SYSTEM_PROMPT
+      userPrompt = DEBRIEF_USER_PROMPT_TEMPLATE(transcript)
+    }
 
     const openai = getOpenAIClient()
     const completion = await openai.chat.completions.create({

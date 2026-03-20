@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'motion/react'
 import { FaDownload, FaRedo } from 'react-icons/fa'
 import type { DebriefOutput, DebriefStructuredOutput, BDRStructuredOutput } from '@/lib/debrief/types'
-import { isBDROutput } from '@/lib/debrief/types'
+import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
 import DealMindMap from './deal-mind-map'
-import BridgeCTA from './bridge-cta'
+import SpinStatCard from './spin-stat-card'
 
 interface ResultsDisplayProps {
   structured: DebriefOutput
@@ -36,7 +36,7 @@ const SENTIMENT_DOT: Record<string, string> = {
 }
 
 const PROSPECT_STATUS_DISPLAY: Record<string, { label: string; color: string; bg: string }> = {
-  'active-opportunity': { label: 'Active Opportunity', color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+  'active-opportunity': { label: 'Active Opportunity', color: 'text-[#7ed4f7]', bg: 'bg-[#7ed4f7]/10' },
   'future-opportunity': { label: 'Future Opportunity', color: 'text-blue-400', bg: 'bg-blue-400/10' },
   'not-a-fit': { label: 'Not a Fit', color: 'text-red-400', bg: 'bg-red-400/10' },
   'needs-more-info': { label: 'Needs More Info', color: 'text-amber-400', bg: 'bg-amber-400/10' },
@@ -44,7 +44,7 @@ const PROSPECT_STATUS_DISPLAY: Record<string, { label: string; color: string; bg
 }
 
 const DISPOSITION_DISPLAY: Record<string, { label: string; color: string }> = {
-  connected: { label: 'Connected', color: 'text-emerald-400' },
+  connected: { label: 'Connected', color: 'text-[#7ed4f7]' },
   voicemail: { label: 'Voicemail', color: 'text-amber-400' },
   gatekeeper: { label: 'Gatekeeper', color: 'text-blue-400' },
   'no-answer': { label: 'No Answer', color: 'text-gray-400' },
@@ -150,7 +150,7 @@ function BDRResults({
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `streetnotes-cold-call-${new Date().toISOString().split('T')[0]}.pdf`
+      a.download = `vbrick-command-center-${new Date().toISOString().split('T')[0]}.pdf`
       a.target = '_blank'
       document.body.appendChild(a)
       a.click()
@@ -178,9 +178,9 @@ function BDRResults({
         className="text-center pt-3 pb-1"
       >
         <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#7ed4f7] animate-pulse" />
           <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-            Cold Call Logged
+            Call Logged
           </span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
@@ -241,7 +241,7 @@ function BDRResults({
       </motion.div>
 
       {/* ─── Prospect Status — the truth ─── */}
-      <Card title="The Truth" delay={nd()} accent="#00E676">
+      <Card title="The Truth" delay={nd()} accent="#7ed4f7">
         <p className="text-[13px] sm:text-sm text-gray-700 leading-relaxed">
           {d.theTruth}
         </p>
@@ -257,6 +257,11 @@ function BDRResults({
         )}
       </Card>
 
+      {/* ─── SPIN Stat Card (Vbrick) ─── */}
+      {isVbrickBDROutput(structured) && (
+        <SpinStatCard spin={structured.spin} />
+      )}
+
       {/* ─── CRM Activity Preview ─── */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
@@ -266,7 +271,7 @@ function BDRResults({
       >
         <div className="px-6 py-4 bg-gray-900 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#7ed4f7] shadow-[0_0_8px_rgba(126,212,247,0.5)]" />
             <h3 className="text-[13px] font-semibold text-white tracking-tight">
               CRM Activity Log
             </h3>
@@ -326,10 +331,10 @@ function BDRResults({
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: nd(), duration: 0.4 }}
-          className="bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.1)] border-2 border-volt/30 overflow-hidden"
+          className="bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.1)] border-2 border-[#7ed4f7]/30 overflow-hidden"
         >
-          <div className="px-6 py-4 bg-gray-900 flex items-center justify-between" style={{ borderLeft: '4px solid #00E676' }}>
-            <h3 className="text-[13px] font-semibold text-volt tracking-tight">
+          <div className="px-6 py-4 bg-gray-900 flex items-center justify-between" style={{ borderLeft: '4px solid #7ed4f7' }}>
+            <h3 className="text-[13px] font-semibold text-[#7ed4f7] tracking-tight">
               AE Briefing
             </h3>
             <span className="text-[10px] font-medium text-gray-400 tracking-wide">
@@ -367,9 +372,6 @@ function BDRResults({
           <Field label="Reason" value={d.referral.reason} />
         </Card>
       )}
-
-      {/* ─── Bridge CTA ─── */}
-      <BridgeCTA />
 
       {/* Mobile spacer */}
       <div className="h-16 sm:hidden" />
@@ -466,7 +468,7 @@ function DealResults({
         className="text-center pt-3 pb-1"
       >
         <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#7ed4f7] animate-pulse" />
           <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
             CRM-Ready Output
           </span>
@@ -480,7 +482,7 @@ function DealResults({
           <p className="text-sm text-gray-400 mt-1.5">{contactDisplay}</p>
         )}
         <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
-          <span className="inline-flex items-center text-[11px] font-semibold text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-md">
+          <span className="inline-flex items-center text-[11px] font-semibold text-[#7ed4f7] bg-[#7ed4f7]/10 px-2.5 py-1 rounded-md">
             {snap.dealStage}
           </span>
           <span className="text-gray-600">&middot;</span>
@@ -529,7 +531,7 @@ function DealResults({
         {/* Dark header */}
         <div className="px-6 py-4 bg-gray-900 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#7ed4f7] shadow-[0_0_8px_rgba(126,212,247,0.5)]" />
             <h3 className="text-[13px] font-semibold text-white tracking-tight">
               CRM Preview
             </h3>
@@ -668,12 +670,12 @@ function DealResults({
           title="Call Summary"
           count={d.callSummary.length}
           delay={nd()}
-          accent="#00E676"
+          accent="#7ed4f7"
         >
           <ul className="space-y-3">
             {d.callSummary.map((bullet, i) => (
               <li key={i} className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2" />
+                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#7ed4f7] mt-2" />
                 <span className="text-[13px] sm:text-sm text-gray-600 leading-relaxed">
                   {bullet}
                 </span>
@@ -787,9 +789,6 @@ function DealResults({
           </div>
         </Card>
       )}
-
-      {/* ─── Bridge CTA ─── */}
-      <BridgeCTA />
 
       {/* Mobile spacer */}
       <div className="h-16 sm:hidden" />

@@ -172,6 +172,14 @@ export default function DebriefFlow() {
     [structureText]
   )
 
+  const handleFileImport = useCallback(
+    (text: string) => {
+      setDurationSec(0)
+      structureText(text)
+    },
+    [structureText]
+  )
+
   const handleRetryTranscription = useCallback(() => {
     if (audioBlob) {
       transcribeAudio(audioBlob, audioMimeType)
@@ -225,6 +233,7 @@ export default function DebriefFlow() {
           <Recorder
             onComplete={handleRecordingComplete}
             onImport={() => setStep('import')}
+            onFileImport={handleFileImport}
             segment={segment ?? undefined}
           />
         </motion.div>

@@ -18,26 +18,29 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = email.toLowerCase().trim()
     const supabase = await createClient()
+    const isVbrick = cleanEmail.endsWith('@vbrick.com')
 
-    // Rate limit: 3 per day per email
-    const twentyFourHoursAgo = new Date(
-      Date.now() - 24 * 60 * 60 * 1000
-    ).toISOString()
+    // Rate limit: 3 per day per email (skip for Vbrick)
+    if (!isVbrick) {
+      const twentyFourHoursAgo = new Date(
+        Date.now() - 24 * 60 * 60 * 1000
+      ).toISOString()
 
-    const { count } = await supabase
-      .from('debrief_sessions')
-      .select('*', { count: 'exact', head: true })
-      .eq('email', cleanEmail)
-      .gte('created_at', twentyFourHoursAgo)
+      const { count } = await supabase
+        .from('debrief_sessions')
+        .select('*', { count: 'exact', head: true })
+        .eq('email', cleanEmail)
+        .gte('created_at', twentyFourHoursAgo)
 
-    if (count !== null && count >= 3) {
-      return NextResponse.json(
-        {
-          error:
-            "You've hit the limit — 3 debriefs per day. Come back tomorrow.",
-        },
-        { status: 429 }
-      )
+      if (count !== null && count >= 3) {
+        return NextResponse.json(
+          {
+            error:
+              "You've hit the limit — 3 debriefs per day. Come back tomorrow.",
+          },
+          { status: 429 }
+        )
+      }
     }
 
     // Create session
