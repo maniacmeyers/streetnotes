@@ -81,12 +81,73 @@ export default function SegmentSelector({ onSelect }: SegmentSelectorProps) {
         This calibrates your analysis.
       </motion.p>
 
-      {/* BDR Cold Call — full-width primary option */}
+      {/* 2x2 Deal Segment Grid */}
       <motion.div
-        className="max-w-sm sm:max-w-md mx-auto mb-4 sm:mb-5"
+        className="grid grid-cols-2 gap-3 sm:gap-4 max-w-sm sm:max-w-md mx-auto"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.4 }}
+      >
+        {dealSegments.map((segment, i) => {
+          const isSelected = selected === segment.value
+
+          return (
+            <motion.button
+              key={segment.value}
+              type="button"
+              onClick={() => handleSelect(segment.value)}
+              disabled={selected !== null && !isSelected}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + i * 0.06, duration: 0.35 }}
+              className={`
+                border-2 sm:border-4 border-black
+                p-4 sm:p-5
+                min-h-[88px] sm:min-h-[100px]
+                text-left
+                transition-all duration-100
+                cursor-pointer
+                ${
+                  isSelected
+                    ? 'bg-volt text-black shadow-none translate-x-[2px] translate-y-[2px] sm:translate-x-[4px] sm:translate-y-[4px]'
+                    : selected !== null
+                      ? 'bg-white text-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] opacity-40'
+                      : 'bg-white text-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] hover:bg-gray-50 active:shadow-none active:translate-x-[2px] active:translate-y-[2px] sm:active:translate-x-[4px] sm:active:translate-y-[4px]'
+                }
+                disabled:cursor-default
+              `}
+            >
+              <span className="font-display uppercase text-base sm:text-lg block leading-tight">
+                {segment.label}
+              </span>
+              <span className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black/60 block mt-1.5 leading-snug">
+                {segment.description}
+              </span>
+            </motion.button>
+          )
+        })}
+      </motion.div>
+
+      {/* Divider */}
+      <motion.div
+        className="max-w-sm sm:max-w-md mx-auto flex items-center gap-3 mt-4 sm:mt-5 mb-4 sm:mb-5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.65, duration: 0.3 }}
+      >
+        <div className="flex-1 h-px bg-gray-700" />
+        <span className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.15em] text-gray-600">
+          or log a cold call
+        </span>
+        <div className="flex-1 h-px bg-gray-700" />
+      </motion.div>
+
+      {/* BDR Cold Call — secondary option */}
+      <motion.div
+        className="max-w-sm sm:max-w-md mx-auto"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35, duration: 0.35 }}
+        transition={{ delay: 0.7, duration: 0.35 }}
       >
         <motion.button
           type="button"
@@ -116,67 +177,6 @@ export default function SegmentSelector({ onSelect }: SegmentSelectorProps) {
             Quick call log + AE briefing
           </span>
         </motion.button>
-      </motion.div>
-
-      {/* Divider */}
-      <motion.div
-        className="max-w-sm sm:max-w-md mx-auto flex items-center gap-3 mb-4 sm:mb-5"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.3 }}
-      >
-        <div className="flex-1 h-px bg-gray-700" />
-        <span className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.15em] text-gray-600">
-          or select deal type
-        </span>
-        <div className="flex-1 h-px bg-gray-700" />
-      </motion.div>
-
-      {/* 2x2 Deal Segment Grid */}
-      <motion.div
-        className="grid grid-cols-2 gap-3 sm:gap-4 max-w-sm sm:max-w-md mx-auto"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45, duration: 0.4 }}
-      >
-        {dealSegments.map((segment, i) => {
-          const isSelected = selected === segment.value
-
-          return (
-            <motion.button
-              key={segment.value}
-              type="button"
-              onClick={() => handleSelect(segment.value)}
-              disabled={selected !== null && !isSelected}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 + i * 0.06, duration: 0.35 }}
-              className={`
-                border-2 sm:border-4 border-black
-                p-4 sm:p-5
-                min-h-[88px] sm:min-h-[100px]
-                text-left
-                transition-all duration-100
-                cursor-pointer
-                ${
-                  isSelected
-                    ? 'bg-volt text-black shadow-none translate-x-[2px] translate-y-[2px] sm:translate-x-[4px] sm:translate-y-[4px]'
-                    : selected !== null
-                      ? 'bg-white text-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] opacity-40'
-                      : 'bg-white text-black shadow-[2px_2px_0px_#000] sm:shadow-[4px_4px_0px_#000] hover:bg-gray-50 active:shadow-none active:translate-x-[2px] active:translate-y-[2px] sm:active:translate-x-[4px] sm:active:translate-y-[4px]'
-                }
-                disabled:cursor-default
-              `}
-            >
-              <span className="font-display uppercase text-base sm:text-lg block leading-tight">
-                {segment.label}
-              </span>
-              <span className="font-mono text-[9px] sm:text-xs uppercase tracking-[0.1em] text-black/60 block mt-1.5 leading-snug">
-                {segment.description}
-              </span>
-            </motion.button>
-          )
-        })}
       </motion.div>
     </div>
   )
