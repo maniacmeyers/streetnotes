@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendNotification } from '@/lib/resend'
+import { isVbrickUser } from '@/lib/vbrick/config'
 
 export const runtime = 'nodejs'
 
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = email.toLowerCase().trim()
     const supabase = await createClient()
-    const isVbrick = cleanEmail.endsWith('@vbrick.com')
+    const isVbrick = isVbrickUser(cleanEmail)
 
     // Rate limit: 3 per day per email (skip for Vbrick)
     if (!isVbrick) {

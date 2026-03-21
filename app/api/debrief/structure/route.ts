@@ -12,6 +12,7 @@ import {
 } from '@/lib/debrief/prompts'
 import type { DebriefOutput, BDRStructuredOutput } from '@/lib/debrief/types'
 import { isBDROutput } from '@/lib/debrief/types'
+import { isVbrickUser } from '@/lib/vbrick/config'
 
 export const runtime = 'nodejs'
 export const maxDuration = 45
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 })
     }
 
-    const isVbrick = session.email.endsWith('@vbrick.com')
+    const isVbrick = isVbrickUser(session.email)
     const isBDR = segment === 'bdr-cold-call'
 
     let systemPrompt: string

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DebriefPDF, BDRDebriefPDF, VbrickBDRDebriefPDF } from '@/lib/debrief/pdf'
 import type { DebriefOutput } from '@/lib/debrief/types'
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
+import { isVbrickUser } from '@/lib/vbrick/config'
 import React from 'react'
 
 export const runtime = 'nodejs'
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
   }
 
   const structured = session.structured_output as unknown as DebriefOutput
-  const isVbrick = session.email.endsWith('@vbrick.com')
+  const isVbrick = isVbrickUser(session.email)
   const date = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',

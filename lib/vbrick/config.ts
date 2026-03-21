@@ -1,3 +1,12 @@
+export const VBRICK_ALLOWED_EMAILS = [
+  'jeff@forgetime.ai',
+]
+
+export function isVbrickUser(email: string): boolean {
+  const clean = email.toLowerCase().trim()
+  return clean.endsWith('@vbrick.com') || VBRICK_ALLOWED_EMAILS.includes(clean)
+}
+
 export const VBRICK_CONFIG = {
   productName: 'Vbrick Command Center',
   emailDomain: 'vbrick.com',

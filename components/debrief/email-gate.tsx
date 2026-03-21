@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react'
 import { motion } from 'motion/react'
+import { isVbrickUser } from '@/lib/vbrick/config'
 
 interface EmailGateProps {
   onComplete: (sessionId: string, email: string) => void
@@ -17,7 +18,7 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
     if (!email) return
 
     // Vbrick domain validation
-    if (!email.toLowerCase().endsWith('@vbrick.com')) {
+    if (!isVbrickUser(email)) {
       setStatus('error')
       setErrorMsg('Please use your @vbrick.com email address')
       return
