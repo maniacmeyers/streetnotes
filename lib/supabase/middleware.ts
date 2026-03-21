@@ -40,7 +40,7 @@ export async function updateSession(request: NextRequest) {
 
   // Allow public routes
   const isPublicRoute =
-    pathname === '/' || isAuthPage || pathname.startsWith('/auth') || pathname.startsWith('/api') || pathname.startsWith('/debrief')
+    pathname === '/' || isAuthPage || pathname.startsWith('/auth') || pathname.startsWith('/api') || pathname.startsWith('/debrief') || pathname.startsWith('/vbrick')
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone()
