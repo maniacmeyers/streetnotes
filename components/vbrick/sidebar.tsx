@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings } from 'lucide-react'
+import { Settings, ClipboardPaste } from 'lucide-react'
 import { PlayerCard } from './player-card'
 import { MicButton } from './mic-button'
 import { LuminousDivider } from './luminous-divider'
@@ -18,6 +18,7 @@ interface SidebarProps {
   onMicStart: () => void
   onMicStop: () => void
   onSettingsClick: () => void
+  onPasteTranscript: () => void
   micDisabled?: boolean
   queueContact?: {
     contactName: string
@@ -39,6 +40,7 @@ export function Sidebar({
   onMicStart,
   onMicStop,
   onSettingsClick,
+  onPasteTranscript,
   micDisabled = false,
   queueContact,
   coachingPromptIndex = 0,
@@ -110,6 +112,17 @@ export function Sidebar({
             {VBRICK_CONFIG.coachingPrompts[coachingPromptIndex % VBRICK_CONFIG.coachingPrompts.length]}
           </p>
         )}
+
+        {/* Paste / drop transcript button */}
+        {!isRecording && (
+          <button
+            onClick={onPasteTranscript}
+            className="mt-4 flex items-center gap-2 text-gray-400 text-xs font-inter hover:text-[#7ed4f7] transition-colors cursor-pointer"
+          >
+            <ClipboardPaste className="w-4 h-4" />
+            Paste Chorus Transcript
+          </button>
+        )}
       </div>
 
       <div className="flex-1" />
@@ -125,7 +138,10 @@ export function Sidebar({
         >
           <Settings className="w-5 h-5" />
         </button>
-        <p className="text-[9px] text-gray-600 font-inter italic max-w-[180px] text-right">
+        <p
+          className="text-[11px] text-[#7ed4f7] font-inter italic max-w-[200px] text-right tracking-wide"
+          style={{ textShadow: '0 0 12px rgba(126,212,247,0.4)' }}
+        >
           How you do anything is how you do everything
         </p>
       </div>

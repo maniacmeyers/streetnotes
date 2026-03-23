@@ -12,6 +12,7 @@ import { CallQueue, type QueueItem } from '@/components/vbrick/call-queue'
 import { CsvImportZone } from '@/components/vbrick/csv-import-zone'
 import { SessionReport } from '@/components/vbrick/session-report'
 import { DashboardDebriefFlow } from '@/components/vbrick/dashboard-debrief-flow'
+import { TranscriptInput } from '@/components/vbrick/transcript-input'
 import { GlassCard } from '@/components/vbrick/glass-card'
 import { LuminousDivider } from '@/components/vbrick/luminous-divider'
 import type { QueueContact } from '@/lib/vbrick/csv-parser'
@@ -58,7 +59,7 @@ interface StatsData {
   }>
 }
 
-type DashboardView = 'dashboard' | 'debrief' | 'report'
+type DashboardView = 'dashboard' | 'debrief' | 'transcript' | 'report'
 
 export default function VbrickDashboardPage() {
   const router = useRouter()
@@ -70,6 +71,7 @@ export default function VbrickDashboardPage() {
   const [isRecording, setIsRecording] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(0)
   const [coachingIdx, setCoachingIdx] = useState(0)
+  const [pastedTranscript, setPastedTranscript] = useState<string | null>(null)
 
   // Session state
   const [sessionId, setSessionId] = useState<string | null>(null)
@@ -388,6 +390,7 @@ export default function VbrickDashboardPage() {
         onMicStart={handleMicStart}
         onMicStop={handleMicStop}
         onSettingsClick={() => router.push('/vbrick/dashboard/settings')}
+        onPasteTranscript={() => setView('transcript')}
         micDisabled={view === 'debrief' && !isRecording}
         queueContact={upNextContact ? {
           contactName: upNextContact.contact_name,
@@ -406,8 +409,8 @@ export default function VbrickDashboardPage() {
           )}
 
           <div className="px-8 py-8 space-y-6 relative z-10">
-            {/* Debrief flow */}
-            {view === 'debrief' && (
+            {/* Debrief flow (from mic recording) */}
+            {view === 'debrief' && !pastedTranscript && (
               <DashboardDebriefFlow
                 email={email}
                 queueContact={upNextContact ? {
@@ -420,6 +423,38 @@ export default function VbrickDashboardPage() {
                 onCancel={() => { setView('dashboard'); setIsRecording(false) }}
                 isRecording={isRecording}
                 onRecordingStart={() => setIsRecording(true)}
+              />
+            )}
+
+            {/* Transcript paste/drop */}
+            {view === 'transcript' && (
+              <TranscriptInput
+                onSubmit={(text) => {
+                  setPastedTranscript(text)
+                  setView('debrief')
+                }}
+                onCancel={() => setView('dashboard')}
+              />
+            )}
+
+            {/* Debrief from pasted transcript */}
+            {view === 'debrief' && pastedTranscript && (
+              <DashboardDebriefFlow
+                email={email}
+                queueContact={upNextContact ? {
+                  id: upNextContact.id,
+                  contactName: upNextContact.contact_name,
+                  contactTitle: upNextContact.contact_title || undefined,
+                  company: upNextContact.company,
+                } : null}
+                onComplete={(sid, output) => {
+                  setPastedTranscript(null)
+                  handleDebriefComplete(sid, output)
+                }}
+                onCancel={() => { setView('dashboard'); setPastedTranscript(null) }}
+                isRecording={false}
+                onRecordingStart={() => {}}
+                pastedTranscript={pastedTranscript}
               />
             )}
 

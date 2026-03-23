@@ -201,11 +201,11 @@ export function VbrickSessionPDF({
         <View style={s.statsGrid}>
           <View style={s.statBox}>
             <Text style={s.statValue}>{convRate}%</Text>
-            <Text style={s.statLabel}>Conv Rate</Text>
+            <Text style={s.statLabel}>Answer to Conversation</Text>
           </View>
           <View style={s.statBox}>
             <Text style={s.statValue}>{apptRate}%</Text>
-            <Text style={s.statLabel}>Appt Rate</Text>
+            <Text style={s.statLabel}>Conversation to Appt</Text>
           </View>
           <View style={s.statBox}>
             <Text style={{ ...s.statValue, color: spinColor(averageSpin) }}>

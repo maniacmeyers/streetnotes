@@ -116,8 +116,8 @@ export function SessionReport({
         <LuminousDivider className="my-4" />
 
         <div className="grid grid-cols-3 gap-6 mb-6">
-          <StatReveal label="Conversion Rate" value={convRate} suffix="%" delay={0.75} />
-          <StatReveal label="Appointment Rate" value={apptRate} suffix="%" delay={0.9} />
+          <StatReveal label="Answer to Conversation Rate" value={convRate} suffix="%" delay={0.75} />
+          <StatReveal label="Conversation to Appointment Rate" value={apptRate} suffix="%" delay={0.9} />
           <StatReveal label="Average SPIN" value={averageSpin} decimals={1} delay={1.05} />
         </div>
 

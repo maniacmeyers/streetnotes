@@ -23,6 +23,7 @@ interface DashboardDebriefFlowProps {
   onCancel: () => void
   isRecording: boolean
   onRecordingStart: () => void
+  pastedTranscript?: string | null
 }
 
 export function DashboardDebriefFlow({
@@ -32,6 +33,7 @@ export function DashboardDebriefFlow({
   onCancel,
   isRecording,
   onRecordingStart,
+  pastedTranscript,
 }: DashboardDebriefFlowProps) {
   const [step, setStep] = useState<FlowStep>('idle')
   const [editedTranscript, setEditedTranscript] = useState('')
@@ -153,9 +155,33 @@ export function DashboardDebriefFlow({
     recorder.resetRecording()
   }
 
+  // Handle pasted transcript — skip recording, go straight to review
+  useEffect(() => {
+    if (pastedTranscript && step === 'idle') {
+      setEditedTranscript(pastedTranscript)
+      // Create a debrief session for this transcript
+      fetch('/api/debrief/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, segment: 'bdr-cold-call' }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.sessionId) {
+            setDebriefSessionId(data.sessionId)
+            setStep('review')
+          }
+        })
+        .catch(() => {
+          setError('Failed to create session')
+        })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pastedTranscript])
+
   // Auto-start recording when component mounts in recording mode
   useEffect(() => {
-    if (isRecording && step === 'idle') {
+    if (isRecording && step === 'idle' && !pastedTranscript) {
       handleStartRecording()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

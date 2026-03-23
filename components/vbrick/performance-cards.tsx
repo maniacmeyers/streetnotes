@@ -83,7 +83,7 @@ export function PerformanceCards({
         <GlassCard title="Conversion Rates">
           <div className="space-y-6">
             <StatBar
-              label="Call → Conversation"
+              label="Answer to Conversation"
               value={convRate}
               ghostValue={ghostConvRate}
               max={100}
@@ -91,7 +91,7 @@ export function PerformanceCards({
               size="prominent"
             />
             <StatBar
-              label="Conversation → Appointment"
+              label="Conversation to Appointment"
               value={apptRate}
               ghostValue={ghostApptRate}
               max={100}
