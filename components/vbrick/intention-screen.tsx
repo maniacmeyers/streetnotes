@@ -63,11 +63,18 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6"
-      style={{ background: 'linear-gradient(180deg, #061222 0%, #0a1a30 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #0c1a2e 0%, #060e1a 100%)' }}
     >
+      {/* Subtle glow */}
+      <div
+        aria-hidden="true"
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 60%)' }}
+      />
+
       {/* Mantra */}
       <motion.p
-        className="text-[11px] uppercase tracking-[0.3em] text-[#7ed4f7] font-inter mb-12"
+        className="relative text-xs uppercase tracking-[0.25em] text-blue-400/70 font-inter mb-12"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -76,20 +83,17 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
       </motion.p>
 
       {/* Question cards */}
-      <div className="w-full max-w-lg space-y-5">
+      <div className="relative w-full max-w-lg space-y-4">
         {QUESTIONS.map((q, i) => (
           <motion.div
             key={q.key}
-            className="rounded-xl border border-white/[0.08] p-6"
-            style={{
-              background: '#0d1e3a',
-              backdropFilter: 'blur(12px) saturate(150%)',
-            }}
+            className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6"
+            style={{ backdropFilter: 'blur(12px)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 + i * 0.15 }}
           >
-            <label className="block text-white font-bold text-sm mb-3 font-inter">
+            <label className="block text-white font-semibold text-sm mb-3 font-inter">
               {q.label}
             </label>
             <input
@@ -99,7 +103,7 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
                 setAnswers((prev) => ({ ...prev, [q.key]: e.target.value }))
               }
               placeholder={placeholders[q.key as keyof typeof placeholders] || ''}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-base font-inter placeholder:text-gray-500 focus:border-[#7ed4f7] focus:outline-none focus:ring-2 focus:ring-[#7ed4f7]/15 transition-colors duration-200"
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-base font-inter placeholder:text-slate-600 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all duration-200"
             />
           </motion.div>
         ))}
@@ -109,11 +113,7 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
       <motion.button
         onClick={handleSubmit}
         disabled={!allFilled || submitting}
-        className="mt-10 px-10 py-4 rounded-lg font-bold uppercase tracking-widest text-sm cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
-        style={{
-          backgroundColor: '#7ed4f7',
-          color: '#061222',
-        }}
+        className="relative mt-10 px-10 py-4 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.8 }}

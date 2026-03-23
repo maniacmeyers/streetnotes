@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'motion/react'
+import { Phone } from 'lucide-react'
 import { DispositionDot, Badge } from './badge'
 import { scoreColorClass } from '@/lib/vbrick/colors'
 import type { CallDisposition, ProspectStatus } from '@/lib/debrief/types'
@@ -46,10 +47,12 @@ function statusLabel(status?: ProspectStatus): string {
 export function RecentCalls({ calls }: { calls: RecentCall[] }) {
   if (calls.length === 0) {
     return (
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 text-center"
-        style={{ backdropFilter: 'blur(12px) saturate(150%)' }}
-      >
-        <p className="text-gray-500 text-sm font-inter">No recent calls</p>
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 text-center">
+        <Phone className="w-6 h-6 text-slate-600 mx-auto mb-2" />
+        <p className="text-slate-500 text-sm font-inter">No recent calls</p>
+        <p className="text-slate-600 text-xs font-inter mt-1">
+          Debriefed calls will appear here
+        </p>
       </div>
     )
   }
@@ -60,8 +63,7 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
         {calls.map((call) => (
           <motion.div
             key={call.id}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] transition-colors duration-200 cursor-default"
-            style={{ backdropFilter: 'blur(8px)' }}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-200 cursor-default"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
@@ -71,10 +73,10 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
             <DispositionDot disposition={call.disposition} />
 
             <div className="flex-1 min-w-0">
-              <p className="text-white font-inter font-bold text-sm truncate">
+              <p className="text-white font-inter font-semibold text-sm truncate">
                 {call.contactName}
               </p>
-              <p className="text-gray-400 text-xs font-inter truncate">
+              <p className="text-slate-500 text-xs font-inter truncate">
                 {call.company}
               </p>
             </div>
@@ -87,13 +89,13 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
 
             <span
               className={`font-fira-code font-bold text-sm min-w-[32px] text-right ${
-                call.spinScore ? scoreColorClass(call.spinScore) : 'text-gray-600'
+                call.spinScore ? scoreColorClass(call.spinScore) : 'text-slate-600'
               }`}
             >
               {call.spinScore ? call.spinScore.toFixed(1) : '—'}
             </span>
 
-            <span className="text-gray-500 text-xs font-fira-code min-w-[50px] text-right">
+            <span className="text-slate-600 text-xs font-fira-code min-w-[50px] text-right">
               {formatRelativeTime(call.timestamp)}
             </span>
           </motion.div>

@@ -19,7 +19,7 @@ import { LuminousDivider } from '@/components/vbrick/luminous-divider'
 import type { QueueContact } from '@/lib/vbrick/csv-parser'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
-import { isVbrickBdr } from '@/lib/vbrick/config'
+import { isVbrickBdr, VBRICK_CONFIG } from '@/lib/vbrick/config'
 
 interface StatsData {
   thisWeek: {
@@ -337,29 +337,48 @@ export default function VbrickDashboardPage() {
   if (!email) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center px-6 font-inter"
-        style={{ background: '#061222' }}
+        className="min-h-screen flex flex-col items-center justify-center px-6 font-inter relative"
+        style={{ background: 'linear-gradient(180deg, #0c1a2e 0%, #060e1a 100%)' }}
       >
-        <h1 className="text-[11px] uppercase tracking-[0.2em] text-[#7ed4f7] font-medium mb-8">
-          Vbrick Command Center
-        </h1>
-        <form onSubmit={handleEmailSubmit} className="w-full max-w-sm space-y-4">
-          <input
-            type="email"
-            value={emailInput}
-            onChange={(e) => setEmailInput(e.target.value)}
-            placeholder="Enter your Vbrick email"
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-base font-inter placeholder:text-gray-500 focus:border-[#7ed4f7] focus:outline-none focus:ring-2 focus:ring-[#7ed4f7]/15"
-            autoFocus
-          />
-          <button
-            type="submit"
-            className="w-full py-3 rounded-lg font-bold uppercase tracking-widest text-sm cursor-pointer transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#7ed4f7', color: '#061222' }}
-          >
-            Enter
-          </button>
-        </form>
+        {/* Subtle glow */}
+        <div
+          aria-hidden="true"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)' }}
+        />
+
+        <div className="relative w-full max-w-sm">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+            <span className="text-white font-bold text-lg tracking-tight">
+              Command Center
+            </span>
+          </div>
+          <p className="text-slate-500 text-xs text-center mb-8">
+            Powered by StreetNotes.ai
+          </p>
+
+          <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <input
+              type="email"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3.5 text-white text-base font-inter placeholder:text-slate-600 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all duration-200"
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20"
+            >
+              Enter
+            </button>
+          </form>
+        </div>
       </div>
     )
   }
@@ -371,13 +390,14 @@ export default function VbrickDashboardPage() {
 
   const localPart = email.split('@')[0]
   const firstName = localPart.split('.')[0]
-  const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+  const fallbackName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+  const displayName = VBRICK_CONFIG.bdrDisplayNames[email] || fallbackName
   const userIsBdr = isVbrickBdr(email)
   const upNextContact = queue.find(q => q.status === 'pending')
   const completedCount = queue.filter(q => q.status === 'completed' || q.status === 'skipped').length
 
   return (
-    <div className="h-screen overflow-hidden font-inter" style={{ background: '#061222' }}>
+    <div className="h-screen overflow-hidden font-inter" style={{ background: 'linear-gradient(180deg, #0c1a2e 0%, #060e1a 100%)' }}>
       {/* Sidebar */}
       <Sidebar
         name={displayName}
@@ -403,150 +423,153 @@ export default function VbrickDashboardPage() {
 
       {/* Main content */}
       <div className="ml-[320px] h-screen overflow-y-auto relative">
-        <AuroraBackground className="min-h-full">
-          {/* Recording overlay dim */}
-          {isRecording && (
-            <div className="fixed inset-0 ml-[320px] bg-black/30 z-20 pointer-events-none" />
+        {/* Subtle top gradient accent */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-0 right-0 h-80 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 30% -20%, rgba(59,130,246,0.05) 0%, transparent 60%)',
+          }}
+        />
+
+        {/* Recording overlay dim */}
+        {isRecording && (
+          <div className="fixed inset-0 ml-[320px] bg-black/30 z-20 pointer-events-none" />
+        )}
+
+        <div className="px-8 py-8 space-y-8 relative z-10">
+          {/* Debrief flow (from mic recording) */}
+          {view === 'debrief' && !pastedTranscript && (
+            <DashboardDebriefFlow
+              email={email}
+              queueContact={upNextContact ? {
+                id: upNextContact.id,
+                contactName: upNextContact.contact_name,
+                contactTitle: upNextContact.contact_title || undefined,
+                company: upNextContact.company,
+              } : null}
+              onComplete={handleDebriefComplete}
+              onCancel={() => { setView('dashboard'); setIsRecording(false) }}
+              isRecording={isRecording}
+              onRecordingStart={() => setIsRecording(true)}
+            />
           )}
 
-          <div className="px-8 py-8 space-y-6 relative z-10">
-            {/* Debrief flow (from mic recording) */}
-            {view === 'debrief' && !pastedTranscript && (
-              <DashboardDebriefFlow
-                email={email}
-                queueContact={upNextContact ? {
-                  id: upNextContact.id,
-                  contactName: upNextContact.contact_name,
-                  contactTitle: upNextContact.contact_title || undefined,
-                  company: upNextContact.company,
-                } : null}
-                onComplete={handleDebriefComplete}
-                onCancel={() => { setView('dashboard'); setIsRecording(false) }}
-                isRecording={isRecording}
-                onRecordingStart={() => setIsRecording(true)}
-              />
-            )}
+          {/* Transcript paste/drop */}
+          {view === 'transcript' && (
+            <TranscriptInput
+              onSubmit={(text) => {
+                setPastedTranscript(text)
+                setView('debrief')
+              }}
+              onCancel={() => setView('dashboard')}
+            />
+          )}
 
-            {/* Transcript paste/drop */}
-            {view === 'transcript' && (
-              <TranscriptInput
-                onSubmit={(text) => {
-                  setPastedTranscript(text)
-                  setView('debrief')
-                }}
-                onCancel={() => setView('dashboard')}
-              />
-            )}
+          {/* Debrief from pasted transcript */}
+          {view === 'debrief' && pastedTranscript && (
+            <DashboardDebriefFlow
+              email={email}
+              queueContact={upNextContact ? {
+                id: upNextContact.id,
+                contactName: upNextContact.contact_name,
+                contactTitle: upNextContact.contact_title || undefined,
+                company: upNextContact.company,
+              } : null}
+              onComplete={(sid, output) => {
+                setPastedTranscript(null)
+                handleDebriefComplete(sid, output)
+              }}
+              onCancel={() => { setView('dashboard'); setPastedTranscript(null) }}
+              isRecording={false}
+              onRecordingStart={() => {}}
+              pastedTranscript={pastedTranscript}
+            />
+          )}
 
-            {/* Debrief from pasted transcript */}
-            {view === 'debrief' && pastedTranscript && (
-              <DashboardDebriefFlow
-                email={email}
-                queueContact={upNextContact ? {
-                  id: upNextContact.id,
-                  contactName: upNextContact.contact_name,
-                  contactTitle: upNextContact.contact_title || undefined,
-                  company: upNextContact.company,
-                } : null}
-                onComplete={(sid, output) => {
-                  setPastedTranscript(null)
-                  handleDebriefComplete(sid, output)
-                }}
-                onCancel={() => { setView('dashboard'); setPastedTranscript(null) }}
-                isRecording={false}
-                onRecordingStart={() => {}}
-                pastedTranscript={pastedTranscript}
-              />
-            )}
+          {/* Session report */}
+          {view === 'report' && sessionReport && (
+            <SessionReport
+              {...sessionReport}
+              calls={queue}
+              onClose={handleCloseReport}
+            />
+          )}
 
-            {/* Session report */}
-            {view === 'report' && sessionReport && (
-              <SessionReport
-                {...sessionReport}
-                calls={queue}
-                onClose={handleCloseReport}
-              />
-            )}
-
-            {/* Dashboard content */}
-            {view === 'dashboard' && (
-              <>
-                {/* Call Queue or Import */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                >
-                  {sessionId ? (
-                    <GlassCard>
-                      <CallQueue
-                        queue={queue}
-                        totalCount={queue.length}
-                        completedCount={completedCount}
-                        onSkip={handleSkipQueueItem}
-                        onJumpTo={handleJumpTo}
-                        onEndSession={handleEndSession}
-                      />
-                    </GlassCard>
-                  ) : (
-                    <CsvImportZone onImport={handleCsvImport} />
-                  )}
-                </motion.div>
-
-                <LuminousDivider />
-
-                {/* Leaderboard */}
-                {stats && stats.allBdrs.length >= 2 && (
-                  <Leaderboard
-                    players={stats.allBdrs.map(b => ({
-                      name: b.name,
-                      convRate: b.callToConversationRate,
-                      apptRate: b.conversationToAppointmentRate,
-                      spinAvg: b.averageSpin,
-                      convTrend: b.convTrend,
-                      apptTrend: b.apptTrend,
-                      spinTrend: b.spinTrend,
-                    }))}
-                  />
+          {/* Dashboard content */}
+          {view === 'dashboard' && (
+            <>
+              {/* Call Queue or Import */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                {sessionId ? (
+                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6">
+                    <CallQueue
+                      queue={queue}
+                      totalCount={queue.length}
+                      completedCount={completedCount}
+                      onSkip={handleSkipQueueItem}
+                      onJumpTo={handleJumpTo}
+                      onEndSession={handleEndSession}
+                    />
+                  </div>
+                ) : (
+                  <CsvImportZone onImport={handleCsvImport} />
                 )}
+              </motion.div>
 
-                {/* Performance Cards — only for BDRs */}
-                {stats && userIsBdr && (
-                  <PerformanceCards
-                    playerName={displayName}
-                    spinAvg={stats.thisWeek.averageSpin}
-                    bestSpin={stats.thisWeek.bestSpin}
-                    personalBestSpin={stats.personalBests.bestSpin}
-                    ghostSpinAvg={stats.lastWeek.averageSpin}
-                    ghostBestSpin={stats.lastWeek.bestSpin}
-                    convRate={stats.thisWeek.callToConversationRate}
-                    apptRate={stats.thisWeek.conversationToAppointmentRate}
-                    ghostConvRate={stats.lastWeek.callToConversationRate}
-                    ghostApptRate={stats.lastWeek.conversationToAppointmentRate}
-                    connectedCalls={stats.thisWeek.connectedCalls}
-                    totalCalls={stats.thisWeek.totalCalls}
-                    appointments={stats.thisWeek.appointmentsBooked}
-                    scoredCalls={stats.thisWeek.totalCalls}
-                  />
-                )}
+              {/* Leaderboard */}
+              {stats && stats.allBdrs.length >= 2 && (
+                <Leaderboard
+                  players={stats.allBdrs.map(b => ({
+                    name: b.name,
+                    convRate: b.callToConversationRate,
+                    apptRate: b.conversationToAppointmentRate,
+                    spinAvg: b.averageSpin,
+                    convTrend: b.convTrend,
+                    apptTrend: b.apptTrend,
+                    spinTrend: b.spinTrend,
+                  }))}
+                />
+              )}
 
-                <LuminousDivider />
+              {/* Performance Cards — only for BDRs */}
+              {stats && userIsBdr && (
+                <PerformanceCards
+                  playerName={displayName}
+                  spinAvg={stats.thisWeek.averageSpin}
+                  bestSpin={stats.thisWeek.bestSpin}
+                  personalBestSpin={stats.personalBests.bestSpin}
+                  ghostSpinAvg={stats.lastWeek.averageSpin}
+                  ghostBestSpin={stats.lastWeek.bestSpin}
+                  convRate={stats.thisWeek.callToConversationRate}
+                  apptRate={stats.thisWeek.conversationToAppointmentRate}
+                  ghostConvRate={stats.lastWeek.callToConversationRate}
+                  ghostApptRate={stats.lastWeek.conversationToAppointmentRate}
+                  connectedCalls={stats.thisWeek.connectedCalls}
+                  totalCalls={stats.thisWeek.totalCalls}
+                  appointments={stats.thisWeek.appointmentsBooked}
+                  scoredCalls={stats.thisWeek.totalCalls}
+                />
+              )}
 
-                {/* Recent Calls */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                >
-                  <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#7ed4f7] font-inter font-medium mb-3">
-                    Recent Calls
-                  </h3>
-                  <RecentCalls calls={recentCalls} />
-                </motion.div>
-              </>
-            )}
-          </div>
-        </AuroraBackground>
+              {/* Recent Calls */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <h3 className="text-[11px] uppercase tracking-[0.2em] text-blue-400 font-inter font-medium mb-3">
+                  Recent Calls
+                </h3>
+                <RecentCalls calls={recentCalls} />
+              </motion.div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )

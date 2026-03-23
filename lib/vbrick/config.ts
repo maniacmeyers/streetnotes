@@ -54,8 +54,12 @@ export const VBRICK_CONFIG = {
     needPayoff: 2.5,
   },
 
-  bdrNames: ['Dylan', 'Kara'] as string[],
+  bdrNames: ['Butcher', 'Kara'] as string[],
   bdrEmails: ['dylan.fawsitt@vbrick.com', 'kara.pryor@vbrick.com'] as string[],
+  bdrDisplayNames: {
+    'dylan.fawsitt@vbrick.com': 'Butcher',
+    'kara.pryor@vbrick.com': 'Kara',
+  } as Record<string, string>,
 
   coachingPrompts: [
     "Who'd you talk to?",

@@ -28,16 +28,16 @@ export function MicButton({
     <div className="flex flex-col items-center gap-3">
       <style>{`
         @keyframes mic-pulse {
-          0%, 100% { box-shadow: 0 0 40px rgba(126,212,247,0.5), 0 0 80px rgba(126,212,247,0.2); }
-          50% { box-shadow: 0 0 60px rgba(126,212,247,0.7), 0 0 100px rgba(126,212,247,0.3); }
+          0%, 100% { box-shadow: 0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15); }
+          50% { box-shadow: 0 0 50px rgba(59,130,246,0.6), 0 0 90px rgba(59,130,246,0.2); }
         }
         @keyframes mic-pulse-red {
-          0%, 100% { box-shadow: 0 0 40px rgba(239,68,68,0.5); }
-          50% { box-shadow: 0 0 60px rgba(239,68,68,0.7), 0 0 100px rgba(239,68,68,0.3); }
+          0%, 100% { box-shadow: 0 0 30px rgba(239,68,68,0.4); }
+          50% { box-shadow: 0 0 50px rgba(239,68,68,0.6), 0 0 80px rgba(239,68,68,0.2); }
         }
         @keyframes mic-burst {
-          0% { box-shadow: 0 0 80px rgba(126,212,247,0.8), 0 0 120px rgba(126,212,247,0.4); }
-          100% { box-shadow: 0 0 40px rgba(126,212,247,0.5), 0 0 80px rgba(126,212,247,0.2); }
+          0% { box-shadow: 0 0 60px rgba(59,130,246,0.7), 0 0 100px rgba(59,130,246,0.3); }
+          100% { box-shadow: 0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15); }
         }
         @media (prefers-reduced-motion: reduce) {
           .mic-btn { animation: none !important; }
@@ -49,7 +49,7 @@ export function MicButton({
         {!disabled && !isRecording && (
           <motion.div
             className="absolute inset-0 rounded-full"
-            style={{ background: 'rgba(126,212,247,0.15)' }}
+            style={{ background: 'rgba(59,130,246,0.12)' }}
             initial={{ scale: 1, opacity: 0.4 }}
             animate={{ scale: 1.4, opacity: 0 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
@@ -59,16 +59,16 @@ export function MicButton({
         <button
           onClick={isRecording ? onStop : onStart}
           disabled={disabled}
-          className={`mic-btn w-[150px] h-[150px] rounded-full border-none cursor-pointer relative transition-transform duration-150 ease-out
+          className={`mic-btn w-[140px] h-[140px] rounded-full border-none cursor-pointer relative transition-transform duration-150 ease-out
             ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:scale-105'}
           `}
           style={{
-            backgroundColor: isRecording ? '#EF4444' : '#7ed4f7',
+            backgroundColor: isRecording ? '#EF4444' : '#3B82F6',
             animation: disabled
               ? 'none'
               : isRecording
               ? 'mic-pulse-red 0.8s ease-in-out infinite'
-              : 'mic-burst 0.6s ease-out forwards, mic-pulse 1.2s ease-in-out 0.6s infinite',
+              : 'mic-burst 0.5s ease-out forwards, mic-pulse 1.5s ease-in-out 0.5s infinite',
           }}
           aria-label={isRecording ? 'Stop recording' : 'Start recording'}
         >
@@ -82,7 +82,7 @@ export function MicButton({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-center"
               >
-                <Square className="w-12 h-12" style={{ color: '#FFFFFF' }} />
+                <Square className="w-11 h-11 text-white" />
               </motion.div>
             ) : (
               <motion.div
@@ -93,7 +93,7 @@ export function MicButton({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-center"
               >
-                <Mic className="w-12 h-12" style={{ color: '#061222' }} />
+                <Mic className="w-11 h-11 text-white" />
               </motion.div>
             )}
           </AnimatePresence>

@@ -14,26 +14,23 @@ interface StatBarProps {
 
 function getValueColor(value: number, max: number): string {
   const ratio = value / max
-  if (ratio <= 0.3) return 'text-red-500'
-  if (ratio <= 0.6) return 'text-amber-500'
-  if (ratio <= 0.8) return 'text-[#7ed4f7]'
-  return 'text-green-500'
+  if (ratio <= 0.3) return 'text-red-400'
+  if (ratio <= 0.6) return 'text-amber-400'
+  if (ratio <= 0.8) return 'text-blue-400'
+  return 'text-emerald-400'
 }
 
-function getFillStyle(
-  value: number,
-  ghostValue: number | undefined
-): { bg: string; shadow: string } {
-  if (ghostValue !== undefined && value > ghostValue) {
-    return {
-      bg: 'bg-[#22C55E]',
-      shadow: '0 0 8px rgba(34,197,94,0.4)',
-    }
+function getBarGradient(value: number, max: number, ghostValue?: number): string {
+  const ratio = value / max
+  const beatingGhost = ghostValue !== undefined && value > ghostValue
+
+  if (beatingGhost) {
+    return 'linear-gradient(90deg, #22C55E, #4ADE80)'
   }
-  return {
-    bg: 'bg-[#7ed4f7]',
-    shadow: '0 0 8px rgba(126,212,247,0.4)',
-  }
+  if (ratio <= 0.3) return 'linear-gradient(90deg, #EF4444, #F87171)'
+  if (ratio <= 0.6) return 'linear-gradient(90deg, #F59E0B, #FBBF24)'
+  if (ratio <= 0.8) return 'linear-gradient(90deg, #3B82F6, #60A5FA)'
+  return 'linear-gradient(90deg, #22C55E, #4ADE80)'
 }
 
 export function StatBar({
@@ -52,15 +49,14 @@ export function StatBar({
     personalBest !== undefined
       ? Math.min((personalBest / max) * 100, 100)
       : undefined
-  const fill = getFillStyle(value, ghostValue)
-  const nearPb =
-    personalBest !== undefined && value >= personalBest * 0.9
+  const nearPb = personalBest !== undefined && value >= personalBest * 0.9
+  const gradient = getBarGradient(value, max, ghostValue)
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {/* Label row */}
       <div className="flex items-baseline justify-between">
-        <span className="text-[11px] uppercase tracking-[0.2em] text-gray-400 font-inter">
+        <span className="text-[11px] uppercase tracking-[0.15em] text-slate-400 font-inter">
           {label}
         </span>
         <span
@@ -74,22 +70,29 @@ export function StatBar({
 
       {/* Bar track */}
       <div
-        className={`relative w-full rounded-full bg-white/10 overflow-hidden ${
+        className={`relative w-full rounded-full overflow-hidden ${
           size === 'prominent' ? 'h-3' : 'h-2'
         }`}
+        style={{ background: 'rgba(255,255,255,0.04)' }}
       >
         {/* Ghost bar */}
         {ghostValue !== undefined && ghostPct > 0 && (
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-white/[0.06]"
-            style={{ width: `${ghostPct}%` }}
+            className="absolute inset-y-0 left-0 rounded-full"
+            style={{
+              width: `${ghostPct}%`,
+              background: 'rgba(255,255,255,0.06)',
+            }}
           />
         )}
 
-        {/* Fill bar */}
+        {/* Fill bar with gradient */}
         <motion.div
-          className={`absolute inset-y-0 left-0 rounded-full ${fill.bg}`}
-          style={{ boxShadow: fill.shadow }}
+          className="absolute inset-y-0 left-0 rounded-full"
+          style={{
+            background: gradient,
+            boxShadow: '0 0 12px rgba(59,130,246,0.2)',
+          }}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 1.5, ease: 'easeOut' }}
@@ -102,17 +105,36 @@ export function StatBar({
             style={{ left: `${pbPct}%` }}
           >
             <div
-              className={`w-2 h-2 rounded-full bg-[#22C55E] ${
-                nearPb ? 'animate-pulse' : ''
+              className={`w-2.5 h-2.5 rounded-full border-2 border-white/20 ${
+                nearPb ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-500'
               }`}
             />
           </div>
         )}
       </div>
 
+      {/* Ghost label */}
+      {ghostValue !== undefined && ghostValue > 0 && (
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] text-slate-600 font-inter">
+            Last week: {ghostValue}
+          </span>
+          {value > ghostValue && (
+            <span className="text-[10px] text-emerald-400 font-fira-code font-medium">
+              +{(value - ghostValue).toFixed(1)}
+            </span>
+          )}
+          {value < ghostValue && (
+            <span className="text-[10px] text-red-400 font-fira-code font-medium">
+              {(value - ghostValue).toFixed(1)}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Detail text */}
       {detail && (
-        <p className="text-xs text-gray-500 font-fira-code mt-1">{detail}</p>
+        <p className="text-[10px] text-slate-500 font-fira-code">{detail}</p>
       )}
     </div>
   )

@@ -37,11 +37,12 @@ export async function GET(request: Request) {
           getLastWeekStats(bdrEmail, supabase),
           calculateStreakDays(bdrEmail, supabase),
         ])
-        const localPart = bdrEmail.split('@')[0]
-        const firstName = localPart.split('.')[0]
+        const fallbackName = bdrEmail.split('@')[0].split('.')[0]
+        const displayName = VBRICK_CONFIG.bdrDisplayNames[bdrEmail]
+          || fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1)
         return {
           email: bdrEmail,
-          name: firstName.charAt(0).toUpperCase() + firstName.slice(1),
+          name: displayName,
           ...stats,
           lastWeek: lastStats,
           streak: bdrStreak,

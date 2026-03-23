@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
-import { Upload } from 'lucide-react'
+import { Upload, FileSpreadsheet } from 'lucide-react'
 import { parseCallListCSV, type QueueContact, type ColumnMapping, DEFAULT_IMPORT_MAPPING } from '@/lib/vbrick/csv-parser'
 
 interface CsvImportZoneProps {
@@ -56,10 +56,10 @@ export function CsvImportZone({ onImport, mapping }: CsvImportZoneProps) {
   return (
     <div>
       <div
-        className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors duration-200 cursor-pointer ${
+        className={`group rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200 cursor-pointer relative overflow-hidden ${
           dragOver
-            ? 'border-[#7ed4f7] bg-[#7ed4f7]/5'
-            : 'border-white/10 hover:border-white/20'
+            ? 'border-blue-500/40 bg-blue-500/[0.04]'
+            : 'border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.01]'
         }`}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
         onDragLeave={() => setDragOver(false)}
@@ -80,12 +80,20 @@ export function CsvImportZone({ onImport, mapping }: CsvImportZoneProps) {
             if (file) handleFile(file)
           }}
         />
-        <Upload className="w-8 h-8 text-[#7ed4f7] mx-auto mb-3" />
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[#7ed4f7] font-inter font-medium mb-1">
+
+        <div className="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600/15 transition-colors">
+          {dragOver ? (
+            <FileSpreadsheet className="w-7 h-7 text-blue-400" />
+          ) : (
+            <Upload className="w-7 h-7 text-blue-400" />
+          )}
+        </div>
+
+        <p className="text-sm font-semibold text-white font-inter mb-1">
           Load Today&apos;s Call List
         </p>
-        <p className="text-xs text-gray-500 font-inter">
-          Export your Salesforce call list and drop it here
+        <p className="text-xs text-slate-500 font-inter">
+          Export your Salesforce call list and drop the CSV here
         </p>
       </div>
 

@@ -1,10 +1,9 @@
 'use client'
 
 import { motion, AnimatePresence } from 'motion/react'
-import { Settings, ClipboardPaste } from 'lucide-react'
+import { Settings, ClipboardPaste, Zap } from 'lucide-react'
 import { PlayerCard } from './player-card'
 import { MicButton } from './mic-button'
-import { LuminousDivider } from './luminous-divider'
 import { VBRICK_CONFIG } from '@/lib/vbrick/config'
 
 interface SidebarProps {
@@ -48,36 +47,50 @@ export function Sidebar({
 }: SidebarProps) {
   return (
     <motion.div
-      className="fixed left-0 top-0 h-screen flex flex-col border-r border-white/10"
+      className="fixed left-0 top-0 h-screen flex flex-col border-r border-white/[0.06]"
       style={{
         width: 320,
-        background: `radial-gradient(ellipse at 50% 30%, rgba(126,212,247,0.05) 0%, transparent 70%), #0d1e3a`,
+        background: `linear-gradient(180deg, #0c1a2e 0%, #0a1424 50%, #060e1a 100%)`,
         zIndex: 10,
       }}
       initial={{ x: -320, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
+      {/* Subtle accent glow at top */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-40 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% -20%, rgba(59,130,246,0.08) 0%, transparent 70%)',
+        }}
+      />
+
       {/* Header */}
       <motion.div
-        className="px-6 pt-6 pb-4"
+        className="relative px-6 pt-6 pb-4 flex items-center gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.4 }}
       >
-        <h1 className="text-[11px] uppercase tracking-[0.2em] text-white font-inter font-medium">
-          Vbrick Command Center
-        </h1>
-        <p className="text-[10px] text-gray-500 font-inter mt-1">
-          Powered by StreetNotes.ai
-        </p>
+        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+          <Zap className="w-4 h-4 text-white" />
+        </div>
+        <div>
+          <h1 className="text-sm font-bold text-white font-inter tracking-tight">
+            Command Center
+          </h1>
+          <p className="text-[10px] text-slate-500 font-inter">
+            Powered by StreetNotes.ai
+          </p>
+        </div>
       </motion.div>
 
-      <LuminousDivider />
+      <div className="h-px mx-6 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       {/* Player Card */}
       <motion.div
-        className="px-5 py-5"
+        className="relative px-5 py-5"
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5, ease: 'easeOut' }}
@@ -103,14 +116,14 @@ export function Sidebar({
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="text-[10px] uppercase tracking-[0.15em] text-gray-500 font-inter mb-1">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-blue-400 font-inter mb-1">
               Debriefing
             </p>
             <p className="text-white font-inter font-bold text-sm">
               {queueContact.contactName}
             </p>
             {queueContact.contactTitle && (
-              <p className="text-gray-400 text-xs font-inter">
+              <p className="text-slate-400 text-xs font-inter">
                 {queueContact.contactTitle} — {queueContact.company}
               </p>
             )}
@@ -118,7 +131,7 @@ export function Sidebar({
         )}
       </AnimatePresence>
 
-      {/* Mic Button — positioned high, right below player card */}
+      {/* Mic Button */}
       <motion.div
         className="flex flex-col items-center pt-6 pb-4"
         initial={{ opacity: 0, scale: 0.8 }}
@@ -133,12 +146,12 @@ export function Sidebar({
           disabled={micDisabled}
         />
 
-        {/* Coaching prompts during recording — crossfade */}
+        {/* Coaching prompts during recording */}
         <AnimatePresence mode="wait">
           {isRecording && (
             <motion.p
               key={coachingPromptIndex}
-              className="mt-6 text-xs text-gray-400 font-inter text-center px-6 italic max-w-[250px]"
+              className="mt-6 text-xs text-slate-400 font-inter text-center px-6 italic max-w-[250px]"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -153,7 +166,7 @@ export function Sidebar({
         {!isRecording && (
           <motion.button
             onClick={onPasteTranscript}
-            className="mt-4 flex items-center gap-2 text-gray-400 text-xs font-inter hover:text-[#7ed4f7] transition-colors cursor-pointer"
+            className="mt-4 flex items-center gap-2 text-slate-500 text-xs font-inter hover:text-blue-400 transition-colors cursor-pointer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.3 }}
@@ -166,7 +179,7 @@ export function Sidebar({
 
       <div className="flex-1" />
 
-      <LuminousDivider />
+      <div className="h-px mx-6 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       {/* Bottom */}
       <motion.div
@@ -177,15 +190,12 @@ export function Sidebar({
       >
         <button
           onClick={onSettingsClick}
-          className="text-gray-500 hover:text-gray-300 transition-colors duration-200 cursor-pointer p-1"
+          className="text-slate-600 hover:text-slate-400 transition-colors duration-200 cursor-pointer p-1"
           aria-label="Settings"
         >
           <Settings className="w-5 h-5" />
         </button>
-        <p
-          className="text-[11px] text-[#7ed4f7] font-inter italic max-w-[200px] text-right tracking-wide"
-          style={{ textShadow: '0 0 12px rgba(126,212,247,0.4)' }}
-        >
+        <p className="text-[10px] text-blue-400/60 font-inter italic max-w-[200px] text-right tracking-wide">
           How you do anything is how you do everything
         </p>
       </motion.div>
