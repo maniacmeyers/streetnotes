@@ -20,7 +20,7 @@ export default function VbrickPage() {
     const visited = getCookie('vbrick_visited')
     if (visited) {
       setShouldRedirect(true)
-      window.location.href = '/debrief'
+      window.location.href = '/vbrick/dashboard'
     } else {
       setLoading(false)
     }
@@ -28,7 +28,7 @@ export default function VbrickPage() {
 
   function handleCTA() {
     setCookie('vbrick_visited', '1', 365)
-    window.location.href = '/debrief'
+    window.location.href = '/vbrick/dashboard'
   }
 
   if (loading || shouldRedirect) {

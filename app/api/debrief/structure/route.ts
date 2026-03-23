@@ -19,7 +19,7 @@ export const maxDuration = 45
 
 export async function POST(request: Request) {
   try {
-    const { sessionId, transcript, segment } = await request.json()
+    const { sessionId, transcript, segment, contactContext } = await request.json()
 
     if (!sessionId || !transcript) {
       return NextResponse.json(
@@ -46,12 +46,22 @@ export async function POST(request: Request) {
     let systemPrompt: string
     let userPrompt: string
 
+    // If contact context is provided (from dashboard queue), prepend to transcript
+    let enrichedTranscript = transcript
+    if (contactContext && isBDR) {
+      const parts = [`BDR is calling ${contactContext.name}`]
+      if (contactContext.title) parts[0] += `, ${contactContext.title}`
+      if (contactContext.company) parts[0] += ` at ${contactContext.company}`
+      parts[0] += '.'
+      enrichedTranscript = parts[0] + '\n\n' + transcript
+    }
+
     if (isBDR && isVbrick) {
       systemPrompt = VBRICK_BDR_SYSTEM_PROMPT
-      userPrompt = VBRICK_BDR_USER_PROMPT_TEMPLATE(transcript)
+      userPrompt = VBRICK_BDR_USER_PROMPT_TEMPLATE(enrichedTranscript)
     } else if (isBDR) {
       systemPrompt = BDR_SYSTEM_PROMPT
-      userPrompt = BDR_USER_PROMPT_TEMPLATE(transcript)
+      userPrompt = BDR_USER_PROMPT_TEMPLATE(enrichedTranscript)
     } else {
       systemPrompt = DEBRIEF_SYSTEM_PROMPT
       userPrompt = DEBRIEF_USER_PROMPT_TEMPLATE(transcript)
