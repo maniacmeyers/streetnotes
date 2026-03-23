@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'motion/react'
 import AuroraBackground from '@/components/vbrick/aurora-background'
 import { Sidebar } from '@/components/vbrick/sidebar'
 import { IntentionScreen } from '@/components/vbrick/intention-screen'
@@ -471,20 +472,26 @@ export default function VbrickDashboardPage() {
             {view === 'dashboard' && (
               <>
                 {/* Call Queue or Import */}
-                {sessionId ? (
-                  <GlassCard>
-                    <CallQueue
-                      queue={queue}
-                      totalCount={queue.length}
-                      completedCount={completedCount}
-                      onSkip={handleSkipQueueItem}
-                      onJumpTo={handleJumpTo}
-                      onEndSession={handleEndSession}
-                    />
-                  </GlassCard>
-                ) : (
-                  <CsvImportZone onImport={handleCsvImport} />
-                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  {sessionId ? (
+                    <GlassCard>
+                      <CallQueue
+                        queue={queue}
+                        totalCount={queue.length}
+                        completedCount={completedCount}
+                        onSkip={handleSkipQueueItem}
+                        onJumpTo={handleJumpTo}
+                        onEndSession={handleEndSession}
+                      />
+                    </GlassCard>
+                  ) : (
+                    <CsvImportZone onImport={handleCsvImport} />
+                  )}
+                </motion.div>
 
                 <LuminousDivider />
 
@@ -526,12 +533,16 @@ export default function VbrickDashboardPage() {
                 <LuminousDivider />
 
                 {/* Recent Calls */}
-                <div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
                   <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#7ed4f7] font-inter font-medium mb-3">
                     Recent Calls
                   </h3>
                   <RecentCalls calls={recentCalls} />
-                </div>
+                </motion.div>
               </>
             )}
           </div>

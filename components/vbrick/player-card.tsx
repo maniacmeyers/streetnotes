@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'motion/react'
 import { Flame } from 'lucide-react'
 import { scoreColorClass } from '@/lib/vbrick/colors'
 import { CountUp } from './count-up'
@@ -25,11 +26,15 @@ export function PlayerCard({
   showStats = true,
 }: PlayerCardProps) {
   const streakActive = streak > 0
+  const streakMilestone = streak > 0 && (streak % 5 === 0)
 
   if (compact) {
     return (
-      <div className="rounded-xl border border-white/[0.12] bg-white/[0.06] p-4 border-l-4 border-l-[#7ed4f7]"
+      <motion.div
+        className="rounded-xl border border-white/[0.12] bg-white/[0.06] p-4 border-l-4 border-l-[#7ed4f7]"
         style={{ backdropFilter: 'blur(16px) saturate(160%)' }}
+        layout
+        transition={{ duration: 0.3 }}
       >
         <div className="flex items-center justify-between">
           <span className="font-inter font-black text-lg uppercase tracking-wide text-white">
@@ -39,17 +44,19 @@ export function PlayerCard({
             {todayCalls} calls today
           </span>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <div
+    <motion.div
       className="rounded-xl border border-white/[0.12] bg-white/[0.06] p-6 border-l-4 border-l-[#7ed4f7]"
       style={{
         backdropFilter: 'blur(16px) saturate(160%)',
         WebkitBackdropFilter: 'blur(16px) saturate(160%)',
       }}
+      layout
+      transition={{ duration: 0.3 }}
     >
       <h2 className="font-inter font-black text-2xl uppercase tracking-wide text-white">
         {name}
@@ -65,9 +72,17 @@ export function PlayerCard({
             {/* Streak */}
             <div className="text-center">
               <div className="flex items-center justify-center gap-1.5 mb-1">
-                <Flame
-                  className={`w-4 h-4 ${streakActive ? 'text-[#7ed4f7]' : 'text-gray-600'}`}
-                />
+                <motion.div
+                  animate={streakMilestone ? {
+                    scale: [1, 1.3, 1],
+                    filter: ['brightness(1)', 'brightness(1.5)', 'brightness(1)'],
+                  } : {}}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                >
+                  <Flame
+                    className={`w-4 h-4 ${streakActive ? 'text-[#7ed4f7]' : 'text-gray-600'}`}
+                  />
+                </motion.div>
                 <span className="font-fira-code font-bold text-lg text-white">
                   <CountUp value={streak} />
                 </span>
@@ -103,6 +118,6 @@ export function PlayerCard({
           </div>
         </>
       )}
-    </div>
+    </motion.div>
   )
 }
