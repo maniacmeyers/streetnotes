@@ -82,9 +82,9 @@ export function Leaderboard({ players }: LeaderboardProps) {
           <h3 className="font-inter font-black text-xl uppercase tracking-wide text-white mb-4 text-center">
             {a.name}
           </h3>
-          <KPIRow label="Conv Rate" value={a.convRate} trend={a.convTrend} suffix="%" isLeading={convLeader === 0} />
-          <KPIRow label="Appt Rate" value={a.apptRate} trend={a.apptTrend} suffix="%" isLeading={apptLeader === 0} />
-          <KPIRow label="SPIN Avg" value={a.spinAvg} trend={a.spinTrend} decimals={1} isLeading={spinLeader === 0} />
+          <KPIRow label="Conversion Rate" value={a.convRate} trend={a.convTrend} suffix="%" isLeading={convLeader === 0} />
+          <KPIRow label="Appointment Rate" value={a.apptRate} trend={a.apptTrend} suffix="%" isLeading={apptLeader === 0} />
+          <KPIRow label="SPIN Average" value={a.spinAvg} trend={a.spinTrend} decimals={1} isLeading={spinLeader === 0} />
         </motion.div>
 
         {/* VS */}
@@ -104,9 +104,9 @@ export function Leaderboard({ players }: LeaderboardProps) {
           <h3 className="font-inter font-black text-xl uppercase tracking-wide text-white mb-4 text-center">
             {b.name}
           </h3>
-          <KPIRow label="Conv Rate" value={b.convRate} trend={b.convTrend} suffix="%" isLeading={convLeader === 1} />
-          <KPIRow label="Appt Rate" value={b.apptRate} trend={b.apptTrend} suffix="%" isLeading={apptLeader === 1} />
-          <KPIRow label="SPIN Avg" value={b.spinAvg} trend={b.spinTrend} decimals={1} isLeading={spinLeader === 1} />
+          <KPIRow label="Conversion Rate" value={b.convRate} trend={b.convTrend} suffix="%" isLeading={convLeader === 1} />
+          <KPIRow label="Appointment Rate" value={b.apptRate} trend={b.apptTrend} suffix="%" isLeading={apptLeader === 1} />
+          <KPIRow label="SPIN Average" value={b.spinAvg} trend={b.spinTrend} decimals={1} isLeading={spinLeader === 1} />
         </motion.div>
       </div>
 

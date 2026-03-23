@@ -365,8 +365,9 @@ export default function VbrickDashboardPage() {
     return <IntentionScreen email={email} onComplete={handleIntentionComplete} />
   }
 
-  const name = email.split('@')[0]
-  const displayName = name.charAt(0).toUpperCase() + name.slice(1)
+  const localPart = email.split('@')[0]
+  const firstName = localPart.split('.')[0]
+  const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
   const upNextContact = queue.find(q => q.status === 'pending')
   const completedCount = queue.filter(q => q.status === 'completed' || q.status === 'skipped').length
 

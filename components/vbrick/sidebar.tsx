@@ -88,8 +88,8 @@ export function Sidebar({
         </div>
       )}
 
-      {/* Mic Button */}
-      <div className="flex-1 flex flex-col items-center justify-center">
+      {/* Mic Button — positioned high, right below player card */}
+      <div className="flex flex-col items-center pt-6 pb-4">
         <MicButton
           isRecording={isRecording}
           durationSec={durationSec}
@@ -105,6 +105,8 @@ export function Sidebar({
           </p>
         )}
       </div>
+
+      <div className="flex-1" />
 
       <LuminousDivider />
 

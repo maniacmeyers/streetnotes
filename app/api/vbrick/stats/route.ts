@@ -37,10 +37,11 @@ export async function GET(request: Request) {
           getLastWeekStats(bdrEmail, supabase),
           calculateStreakDays(bdrEmail, supabase),
         ])
-        const name = bdrEmail.split('@')[0]
+        const localPart = bdrEmail.split('@')[0]
+        const firstName = localPart.split('.')[0]
         return {
           email: bdrEmail,
-          name: name.charAt(0).toUpperCase() + name.slice(1),
+          name: firstName.charAt(0).toUpperCase() + firstName.slice(1),
           ...stats,
           lastWeek: lastStats,
           streak: bdrStreak,

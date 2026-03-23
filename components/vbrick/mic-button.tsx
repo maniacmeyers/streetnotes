@@ -42,9 +42,8 @@ export function MicButton({
       <button
         onClick={isRecording ? onStop : onStart}
         disabled={disabled}
-        className={`mic-btn w-[120px] h-[120px] rounded-full border-none cursor-pointer relative transition-transform duration-150 ease-out
+        className={`mic-btn w-[150px] h-[150px] rounded-full border-none cursor-pointer relative transition-transform duration-150 ease-out
           ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:scale-105'}
-          ${isRecording ? '' : ''}
         `}
         style={{
           backgroundColor: isRecording ? '#EF4444' : '#7ed4f7',
@@ -57,9 +56,9 @@ export function MicButton({
         aria-label={isRecording ? 'Stop recording' : 'Start recording'}
       >
         {isRecording ? (
-          <Square className="w-10 h-10 mx-auto" style={{ color: '#FFFFFF' }} />
+          <Square className="w-12 h-12 mx-auto" style={{ color: '#FFFFFF' }} />
         ) : (
-          <Mic className="w-10 h-10 mx-auto" style={{ color: '#061222' }} />
+          <Mic className="w-12 h-12 mx-auto" style={{ color: '#061222' }} />
         )}
       </button>
 
