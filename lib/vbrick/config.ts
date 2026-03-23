@@ -1,5 +1,6 @@
 export const VBRICK_ALLOWED_EMAILS = [
   'jeff@forgetime.ai',
+  'jeff@careermaniacs.com',
 ]
 
 export function isVbrickUser(email: string): boolean {
@@ -53,8 +54,8 @@ export const VBRICK_CONFIG = {
     needPayoff: 2.5,
   },
 
-  bdrNames: ['Jake', 'Mike'] as string[],
-  bdrEmails: ['jake@vbrick.com', 'mike@vbrick.com'] as string[],
+  bdrNames: ['Dylan', 'Kara'] as string[],
+  bdrEmails: ['dylan.fawsitt@vbrick.com', 'kara.pryor@vbrick.com'] as string[],
 
   coachingPrompts: [
     "Who'd you talk to?",
