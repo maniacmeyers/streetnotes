@@ -114,7 +114,7 @@ export async function PATCH(request: Request) {
       .eq('session_id', sessionId)
       .eq('status', 'completed')
 
-    let totalCalls = queue?.length || 0
+    const totalCalls = queue?.length || 0
     let connectedCount = 0
     let appointmentsCount = 0
     let spinSum = 0

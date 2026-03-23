@@ -81,7 +81,8 @@ export function parseCallListCSV(
     // Try exact match first
     if (headerMap.has(lower)) return headerMap.get(lower)!
     // Try partial match
-    for (const [key, idx] of headerMap) {
+    const entries = Array.from(headerMap.entries())
+    for (const [key, idx] of entries) {
       if (key.includes(lower) || lower.includes(key)) return idx
     }
     return -1

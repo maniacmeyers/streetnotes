@@ -25,9 +25,9 @@ export async function calculateStreakDays(email: string, supabase: SupabaseClien
 
   if (!data || data.length === 0) return 0
 
-  const uniqueDates = [...new Set(
+  const uniqueDates = Array.from(new Set(
     data.map(d => new Date(d.created_at).toISOString().split('T')[0])
-  )].sort().reverse()
+  )).sort().reverse()
 
   if (uniqueDates.length === 0) return 0
 

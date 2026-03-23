@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Loader2, Check, RotateCcw, ArrowRight } from 'lucide-react'
+import { Loader2, Check, ArrowRight } from 'lucide-react'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { GlassCardElevated } from './glass-card'
 import { LuminousDivider } from './luminous-divider'
@@ -23,7 +23,6 @@ interface DashboardDebriefFlowProps {
   onCancel: () => void
   isRecording: boolean
   onRecordingStart: () => void
-  onRecordingStop: () => void
 }
 
 export function DashboardDebriefFlow({
@@ -33,10 +32,8 @@ export function DashboardDebriefFlow({
   onCancel,
   isRecording,
   onRecordingStart,
-  onRecordingStop,
 }: DashboardDebriefFlowProps) {
   const [step, setStep] = useState<FlowStep>('idle')
-  const [transcript, setTranscript] = useState('')
   const [editedTranscript, setEditedTranscript] = useState('')
   const [structured, setStructured] = useState<DebriefOutput | null>(null)
   const [debriefSessionId, setDebriefSessionId] = useState<string | null>(null)
@@ -53,12 +50,6 @@ export function DashboardDebriefFlow({
     onRecordingStart()
     await recorder.startRecording()
   }, [recorder, onRecordingStart])
-
-  // Stop recording
-  const handleStopRecording = useCallback(() => {
-    recorder.stopRecording()
-    onRecordingStop()
-  }, [recorder, onRecordingStop])
 
   // After recording stops, process the audio
   useEffect(() => {
@@ -96,7 +87,6 @@ export function DashboardDebriefFlow({
       const transcribeData = await transcribeRes.json()
       if (!transcribeRes.ok) throw new Error(transcribeData.error || 'Transcription failed')
 
-      setTranscript(transcribeData.transcript)
       setEditedTranscript(transcribeData.transcript)
       setStep('review')
     } catch (err) {
@@ -149,7 +139,6 @@ export function DashboardDebriefFlow({
 
   function resetFlow() {
     setStep('idle')
-    setTranscript('')
     setEditedTranscript('')
     setStructured(null)
     setDebriefSessionId(null)
@@ -275,7 +264,6 @@ export function DashboardDebriefFlow({
 // Simplified results card for the dashboard context
 function VbrickResultsCard({
   structured,
-  sessionId,
 }: {
   structured: DebriefOutput
   sessionId: string

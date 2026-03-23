@@ -12,7 +12,6 @@ export async function GET(request: Request) {
 
     const supabase = await createClient()
     const today = new Date().toISOString().split('T')[0]
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
 
     const [todayResult, previousResult] = await Promise.all([
       supabase

@@ -112,6 +112,7 @@ export default function VbrickDashboardPage() {
     fetchStats()
     fetchActiveSession()
     fetchRecentCalls()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email])
 
   // Recording timer
@@ -414,7 +415,6 @@ export default function VbrickDashboardPage() {
                 onCancel={() => { setView('dashboard'); setIsRecording(false) }}
                 isRecording={isRecording}
                 onRecordingStart={() => setIsRecording(true)}
-                onRecordingStop={handleMicStop}
               />
             )}
 
