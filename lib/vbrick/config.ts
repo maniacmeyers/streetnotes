@@ -67,5 +67,10 @@ export const VBRICK_CONFIG = {
   ],
 }
 
+export function isVbrickBdr(email: string): boolean {
+  const clean = email.toLowerCase().trim()
+  return VBRICK_CONFIG.bdrEmails.includes(clean)
+}
+
 // Vbrick product context injected into AI prompts
 export const VBRICK_PRODUCT_CONTEXT = `The BDR sells Vbrick, an enterprise video platform. Core products: live streaming, video on demand (VOD), video content management, AI-powered video search, eCDN. Primary competitors: Panopto, Kaltura, Microsoft Stream, Brightcove, Qumu.`

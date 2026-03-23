@@ -12,6 +12,7 @@ interface PlayerCardProps {
   todayCalls: number
   spinAvg: number
   compact?: boolean
+  showStats?: boolean
 }
 
 export function PlayerCard({
@@ -21,6 +22,7 @@ export function PlayerCard({
   todayCalls,
   spinAvg,
   compact = false,
+  showStats = true,
 }: PlayerCardProps) {
   const streakActive = streak > 0
 
@@ -54,49 +56,53 @@ export function PlayerCard({
       </h2>
       <p className="text-gray-400 text-sm font-inter mt-0.5">{title}</p>
 
-      <LuminousDivider className="my-4" />
+      {showStats && (
+        <>
+          <LuminousDivider className="my-4" />
 
-      {/* Quick stats row */}
-      <div className="grid grid-cols-3 gap-3">
-        {/* Streak */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1.5 mb-1">
-            <Flame
-              className={`w-4 h-4 ${streakActive ? 'text-[#7ed4f7]' : 'text-gray-600'}`}
-            />
-            <span className="font-fira-code font-bold text-lg text-white">
-              <CountUp value={streak} />
-            </span>
-          </div>
-          <span className="text-[10px] uppercase tracking-widest text-gray-500 font-inter">
-            days
-          </span>
-        </div>
+          {/* Quick stats row */}
+          <div className="grid grid-cols-3 gap-3">
+            {/* Streak */}
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <Flame
+                  className={`w-4 h-4 ${streakActive ? 'text-[#7ed4f7]' : 'text-gray-600'}`}
+                />
+                <span className="font-fira-code font-bold text-lg text-white">
+                  <CountUp value={streak} />
+                </span>
+              </div>
+              <span className="text-[10px] uppercase tracking-widest text-gray-500 font-inter">
+                days
+              </span>
+            </div>
 
-        {/* Today */}
-        <div className="text-center">
-          <div className="mb-1">
-            <span className="font-fira-code font-bold text-lg text-white">
-              <CountUp value={todayCalls} />
-            </span>
-          </div>
-          <span className="text-[10px] uppercase tracking-widest text-gray-500 font-inter">
-            today
-          </span>
-        </div>
+            {/* Today */}
+            <div className="text-center">
+              <div className="mb-1">
+                <span className="font-fira-code font-bold text-lg text-white">
+                  <CountUp value={todayCalls} />
+                </span>
+              </div>
+              <span className="text-[10px] uppercase tracking-widest text-gray-500 font-inter">
+                today
+              </span>
+            </div>
 
-        {/* SPIN avg */}
-        <div className="text-center">
-          <div className="mb-1">
-            <span className={`font-fira-code font-bold text-lg ${scoreColorClass(spinAvg)}`}>
-              <CountUp value={spinAvg} decimals={1} />
-            </span>
+            {/* SPIN avg */}
+            <div className="text-center">
+              <div className="mb-1">
+                <span className={`font-fira-code font-bold text-lg ${scoreColorClass(spinAvg)}`}>
+                  <CountUp value={spinAvg} decimals={1} />
+                </span>
+              </div>
+              <span className="text-[10px] uppercase tracking-widest text-gray-500 font-inter">
+                SPIN
+              </span>
+            </div>
           </div>
-          <span className="text-[10px] uppercase tracking-widest text-gray-500 font-inter">
-            SPIN
-          </span>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   )
 }

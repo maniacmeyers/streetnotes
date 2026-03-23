@@ -17,6 +17,7 @@ import { LuminousDivider } from '@/components/vbrick/luminous-divider'
 import type { QueueContact } from '@/lib/vbrick/csv-parser'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
+import { isVbrickBdr } from '@/lib/vbrick/config'
 
 interface StatsData {
   thisWeek: {
@@ -368,6 +369,7 @@ export default function VbrickDashboardPage() {
   const localPart = email.split('@')[0]
   const firstName = localPart.split('.')[0]
   const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+  const userIsBdr = isVbrickBdr(email)
   const upNextContact = queue.find(q => q.status === 'pending')
   const completedCount = queue.filter(q => q.status === 'completed' || q.status === 'skipped').length
 
@@ -376,6 +378,8 @@ export default function VbrickDashboardPage() {
       {/* Sidebar */}
       <Sidebar
         name={displayName}
+        role={userIsBdr ? 'BDR — Vbrick' : 'Coach — Vbrick'}
+        showStats={userIsBdr}
         streak={stats?.streak || 0}
         todayCalls={stats?.todayCalls || 0}
         spinAvg={stats?.thisWeek.averageSpin || 0}
@@ -464,8 +468,8 @@ export default function VbrickDashboardPage() {
                   />
                 )}
 
-                {/* Performance Cards */}
-                {stats && (
+                {/* Performance Cards — only for BDRs */}
+                {stats && userIsBdr && (
                   <PerformanceCards
                     playerName={displayName}
                     spinAvg={stats.thisWeek.averageSpin}

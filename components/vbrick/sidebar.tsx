@@ -8,6 +8,8 @@ import { VBRICK_CONFIG } from '@/lib/vbrick/config'
 
 interface SidebarProps {
   name: string
+  role?: string
+  showStats?: boolean
   streak: number
   todayCalls: number
   spinAvg: number
@@ -27,6 +29,8 @@ interface SidebarProps {
 
 export function Sidebar({
   name,
+  role = 'BDR — Vbrick',
+  showStats = true,
   streak,
   todayCalls,
   spinAvg,
@@ -64,10 +68,12 @@ export function Sidebar({
       <div className="px-5 py-5">
         <PlayerCard
           name={name}
+          title={role}
           streak={streak}
           todayCalls={todayCalls}
           spinAvg={spinAvg}
           compact={isRecording}
+          showStats={showStats}
         />
       </div>
 
