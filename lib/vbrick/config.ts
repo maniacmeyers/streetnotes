@@ -52,6 +52,18 @@ export const VBRICK_CONFIG = {
     implication: 2,
     needPayoff: 2.5,
   },
+
+  bdrNames: ['Jake', 'Mike'] as string[],
+  bdrEmails: ['jake@vbrick.com', 'mike@vbrick.com'] as string[],
+
+  coachingPrompts: [
+    "Who'd you talk to?",
+    "What's actually going on at this account?",
+    "Did you uncover the truth?",
+    "What's their current solution?",
+    "What happens if they do nothing?",
+    "Is there a real opportunity here?",
+  ],
 }
 
 // Vbrick product context injected into AI prompts
