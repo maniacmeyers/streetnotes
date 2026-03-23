@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Plus_Jakarta_Sans, Space_Mono, Ranchers } from 'next/font/google'
+import { Plus_Jakarta_Sans, Space_Mono, Ranchers, Inter, Fira_Code } from 'next/font/google'
 import './globals.css'
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -18,6 +18,18 @@ const ranchers = Ranchers({
   subsets: ['latin'],
   variable: '--font-display',
   weight: '400',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+})
+
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--font-fira-code',
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -40,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} font-body min-h-screen bg-dark antialiased`}
+        className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} ${inter.variable} ${firaCode.variable} font-body min-h-screen bg-dark antialiased`}
       >
         <a
           href="#main-content"

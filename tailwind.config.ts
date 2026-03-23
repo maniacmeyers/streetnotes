@@ -21,6 +21,8 @@ const config: Config = {
         body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
         display: ["var(--font-display)", "cursive"],
+        inter: ["var(--font-inter)", "sans-serif"],
+        "fira-code": ["var(--font-fira-code)", "monospace"],
       },
       boxShadow: {
         neo: "8px 8px 0px #000000",
