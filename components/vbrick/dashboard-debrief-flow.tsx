@@ -51,7 +51,14 @@ export function DashboardDebriefFlow({
     await recorder.startRecording()
   }, [recorder, onRecordingStart])
 
-  // After recording stops, process the audio
+  // When parent signals recording stopped (mic button), stop the actual recorder
+  useEffect(() => {
+    if (!isRecording && step === 'recording' && recorder.status === 'recording') {
+      recorder.stopRecording()
+    }
+  }, [isRecording, step, recorder])
+
+  // After recorder produces a blob, process the audio
   useEffect(() => {
     if (recorder.status === 'stopped' && recorder.audioBlob && step === 'recording') {
       transcribeAudio(recorder.audioBlob)

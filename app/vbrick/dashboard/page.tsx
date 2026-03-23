@@ -466,6 +466,7 @@ export default function VbrickDashboardPage() {
                 {/* Performance Cards */}
                 {stats && (
                   <PerformanceCards
+                    playerName={displayName}
                     spinAvg={stats.thisWeek.averageSpin}
                     bestSpin={stats.thisWeek.bestSpin}
                     personalBestSpin={stats.personalBests.bestSpin}

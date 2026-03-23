@@ -5,6 +5,7 @@ import { GlassCard } from './glass-card'
 import { StatBar } from './stat-bar'
 
 interface PerformanceCardsProps {
+  playerName: string
   spinAvg: number
   bestSpin: number
   personalBestSpin: number
@@ -21,6 +22,7 @@ interface PerformanceCardsProps {
 }
 
 export function PerformanceCards({
+  playerName,
   spinAvg,
   bestSpin,
   personalBestSpin,
@@ -36,6 +38,10 @@ export function PerformanceCards({
   scoredCalls,
 }: PerformanceCardsProps) {
   return (
+    <div>
+      <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#7ed4f7] font-inter font-medium mb-3">
+        {playerName}&apos;s Performance
+      </h3>
     <div className="grid grid-cols-2 gap-5">
       {/* Call Performance */}
       <motion.div
@@ -97,6 +103,7 @@ export function PerformanceCards({
           </p>
         </GlassCard>
       </motion.div>
+    </div>
     </div>
   )
 }
