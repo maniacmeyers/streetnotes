@@ -6,7 +6,7 @@ import { motion } from 'motion/react'
 import { NeuCard, NeuButton, NeuBadge } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
 import type { CampaignChannel, ChannelType, FrameworkType } from '@/lib/vbrick/campaign-types'
-import { CHANNEL_LABELS, FRAMEWORK_LABELS } from '@/lib/vbrick/campaign-types'
+import { CHANNEL_LABELS } from '@/lib/vbrick/campaign-types'
 
 const CHANNEL_ICON_MAP: Record<ChannelType, React.ReactNode> = {
   cold_call: <Phone size={16} />,
@@ -25,7 +25,7 @@ interface ChannelViewerProps {
 
 export function ChannelViewer({ channels, isApprover, onApprove, onReject }: ChannelViewerProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [activeFramework, setActiveFramework] = useState<FrameworkType>('jmm')
+  const [activeFramework] = useState<FrameworkType>('maniac_method')
   const [copied, setCopied] = useState<string | null>(null)
 
   // Group channels by type, then filter by active framework
@@ -181,27 +181,8 @@ export function ChannelViewer({ channels, isApprover, onApprove, onReject }: Cha
     )
   }
 
-  // Get unique frameworks present
-  const availableFrameworks = Array.from(new Set(channels.map(c => c.framework))) as FrameworkType[]
-
   return (
     <div className="space-y-4">
-      {/* Framework toggle */}
-      {availableFrameworks.length > 1 && (
-        <div className="flex gap-2">
-          {availableFrameworks.map(fw => (
-            <NeuButton
-              key={fw}
-              variant={activeFramework === fw ? 'accent' : 'raised'}
-              size="sm"
-              onClick={() => setActiveFramework(fw)}
-            >
-              {FRAMEWORK_LABELS[fw]}
-            </NeuButton>
-          ))}
-        </div>
-      )}
-
       {/* Channel cards */}
       {filteredChannels.map(channel => {
         const isExpanded = expandedId === channel.id
@@ -218,9 +199,6 @@ export function ChannelViewer({ channels, isApprover, onApprove, onReject }: Cha
                 <div>
                   <p className="font-general-sans font-bold text-sm" style={{ color: neuTheme.colors.text.heading }}>
                     {CHANNEL_LABELS[channel.channel_type]}
-                  </p>
-                  <p className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.subtle }}>
-                    {FRAMEWORK_LABELS[channel.framework]}
                   </p>
                 </div>
               </div>

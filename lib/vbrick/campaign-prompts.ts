@@ -1,7 +1,7 @@
 /**
  * AI prompts for campaign messaging generation.
  *
- * Two frameworks: JMM (Justin Michael Method) and Career Maniacs.
+ * Two frameworks: The Maniac Method and Career Maniacs.
  * Five channels: cold call, voicemail, email sequence, LinkedIn, objection handling.
  *
  * The generation prompt takes extracted file text as context and produces
@@ -12,27 +12,18 @@ import type { ChannelType, FrameworkType } from './campaign-types'
 
 /* ─── Framework Definitions ─── */
 
-const JMM_RULES = `You are generating messaging using the Justin Michael Method (JMM). Follow these rules exactly:
+const MANIAC_METHOD_RULES = `You are generating messaging using The Maniac Method. Follow these rules exactly:
 1. No pleasantries. No "How are you?" or "Hope you're well." Skip straight to the point.
-2. Peer-to-peer positioning. Speak as an equal, not a vendor. Calm, neutral, direct.
-3. Under 90 seconds for calls, under 40 words for emails. Brevity is non-negotiable.
-4. Binary asks only. "Tuesday morning or Wednesday afternoon?" Never open-ended.
-5. Agree with every objection first. Then ask ONE question to redirect.
-6. No "I" statements in openers. Start with an observation about their world.
-7. Subject lines: lowercase, no capitalization. Signals casual internal communication.`
-
-const CAREER_MANIACS_RULES = `You are generating messaging using the Career Maniacs framework. Follow these rules exactly:
-1. The opposite of standard cold-calling. No scripts that sound like scripts.
-2. Peer-to-peer positioning. You are a peer who happens to have relevant information, not a salesperson.
-3. Calm, neutral tone. No excitement, no urgency language, no fake enthusiasm.
-4. Under 90 seconds for calls, under 40 words for emails. Every word earns its place.
-5. Binary asks. Give two specific options, never ask "would you be interested?"
-6. Agree with every objection. Then ask ONE follow-up question. Listen 95% of the time.
-7. No "I" statements in openers. Lead with their situation, their company, their challenge.`
+2. Peer-to-peer positioning. Speak as an equal, not a vendor. Calm, neutral, direct. You are a peer who happens to have relevant information, not a salesperson.
+3. Under 90 seconds for calls, under 40 words for emails. Brevity is non-negotiable. Every word earns its place.
+4. Binary asks only. "Tuesday morning or Wednesday afternoon?" Give two specific options. Never open-ended. Never ask "would you be interested?"
+5. Agree with every objection first. Then ask ONE question to redirect. Listen 95% of the time.
+6. No "I" statements in openers. Lead with their situation, their company, their challenge.
+7. Subject lines: lowercase, no capitalization. Signals casual internal communication.
+8. The opposite of standard cold-calling. No scripts that sound like scripts. No excitement, no urgency language, no fake enthusiasm.`
 
 const FRAMEWORK_RULES: Record<FrameworkType, string> = {
-  jmm: JMM_RULES,
-  career_maniacs: CAREER_MANIACS_RULES,
+  maniac_method: MANIAC_METHOD_RULES,
 }
 
 /* ─── Channel-Specific Output Schemas ─── */
@@ -169,7 +160,7 @@ export function getContactPersonalizationPrompt(
 ): { system: string; user: string } {
   const frameworkRules = FRAMEWORK_RULES[framework]
 
-  const system = `You are personalizing campaign messaging for a specific contact using the ${framework === 'jmm' ? 'Justin Michael Method' : 'Career Maniacs'} framework.
+  const system = `You are personalizing campaign messaging for a specific contact using The Maniac Method framework.
 
 ${frameworkRules}
 

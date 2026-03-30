@@ -5,7 +5,7 @@ import { User, Loader2, Copy, Check } from 'lucide-react'
 import { NeuCard, NeuButton, NeuInput } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
 import type { ChannelType, FrameworkType, CampaignChannel } from '@/lib/vbrick/campaign-types'
-import { CHANNEL_LABELS, FRAMEWORK_LABELS, SN_MODULES } from '@/lib/vbrick/campaign-types'
+import { CHANNEL_LABELS, SN_MODULES } from '@/lib/vbrick/campaign-types'
 
 interface ContactPersonalizerProps {
   campaignId: string
@@ -20,7 +20,7 @@ export function ContactPersonalizer({ campaignId, channels }: ContactPersonalize
   const [industry, setIndustry] = useState('')
   const [selectedModules, setSelectedModules] = useState<string[]>([])
   const [selectedChannel, setSelectedChannel] = useState<ChannelType>('cold_call')
-  const [selectedFramework, setSelectedFramework] = useState<FrameworkType>('jmm')
+  const [selectedFramework] = useState<FrameworkType>('maniac_method')
   const [generating, setGenerating] = useState(false)
   const [result, setResult] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -81,8 +81,6 @@ export function ContactPersonalizer({ campaignId, channels }: ContactPersonalize
     }
   }
 
-  // Get available frameworks from channels
-  const frameworks = Array.from(new Set(channels.filter(c => c.status === 'approved').map(c => c.framework))) as FrameworkType[]
   const availableChannels = Array.from(new Set(channels.filter(c => c.status === 'approved').map(c => c.channel_type))) as ChannelType[]
 
   if (availableChannels.length === 0) {
@@ -179,18 +177,6 @@ export function ContactPersonalizer({ campaignId, channels }: ContactPersonalize
               onClick={() => setSelectedChannel(ch)}
             >
               {CHANNEL_LABELS[ch]}
-            </NeuButton>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          {frameworks.map(fw => (
-            <NeuButton
-              key={fw}
-              variant={selectedFramework === fw ? 'accent' : 'raised'}
-              size="sm"
-              onClick={() => setSelectedFramework(fw)}
-            >
-              {FRAMEWORK_LABELS[fw]}
             </NeuButton>
           ))}
         </div>

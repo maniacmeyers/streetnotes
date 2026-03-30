@@ -276,7 +276,7 @@ async function seed() {
       target_audience: 'ServiceNow customers and prospects — IT leaders, ITSM managers, HR/employee experience leaders, CIO/CTO, internal communications teams — who already run ServiceNow and want to add enterprise video into their workflows, Employee Center Pro, Service Portal, and Now Assist AI.',
       created_by: 'jeff@forgetime.ai',
       status: 'draft',
-      frameworks: ['jmm', 'career_maniacs'],
+      frameworks: ['maniac_method'],
     })
     .select()
     .single()

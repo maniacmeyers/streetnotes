@@ -72,7 +72,7 @@ export async function POST(_request: Request, { params }: { params: { id: string
       .eq('id', params.id)
 
     // 5. Generate messaging for each framework x channel combination
-    const frameworks: FrameworkType[] = (campaign.frameworks as FrameworkType[]) || ['jmm', 'career_maniacs']
+    const frameworks: FrameworkType[] = (campaign.frameworks as FrameworkType[]) || ['maniac_method']
     const channels: ChannelType[] = CHANNEL_ORDER
     const results: Array<{ channel: string; framework: string; status: string }> = []
 

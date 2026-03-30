@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       target_audience: target_audience || null,
       created_by: email,
       status: 'draft',
-      frameworks: frameworks || ['jmm', 'career_maniacs'],
+      frameworks: frameworks || ['maniac_method'],
       metadata: {},
     })
     .select()

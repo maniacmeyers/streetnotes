@@ -2,7 +2,7 @@
 
 export type CampaignStatus = 'draft' | 'generating' | 'pending_approval' | 'approved' | 'active' | 'archived'
 export type ChannelType = 'cold_call' | 'voicemail' | 'email_sequence' | 'linkedin' | 'objection_handling'
-export type FrameworkType = 'jmm' | 'career_maniacs'
+export type FrameworkType = 'maniac_method'
 export type ChannelApprovalStatus = 'draft' | 'approved' | 'rejected'
 
 /* ─── Database Row Types ─── */
@@ -148,8 +148,7 @@ export const CHANNEL_ICONS: Record<ChannelType, string> = {
 }
 
 export const FRAMEWORK_LABELS: Record<FrameworkType, string> = {
-  jmm: 'Justin Michael Method',
-  career_maniacs: 'Career Maniacs',
+  maniac_method: 'The Maniac Method',
 }
 
 export const STATUS_LABELS: Record<CampaignStatus, string> = {
