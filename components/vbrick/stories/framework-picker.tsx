@@ -46,8 +46,8 @@ export function FrameworkPicker({ onSelect }: FrameworkPickerProps) {
       animate="visible"
     >
       {FRAMEWORK_OPTIONS.map((fw, i) => (
-        <motion.div key={fw.type} variants={cascadeIn} custom={i}>
-          <NeuCard hover padding="lg" className="flex flex-col items-center text-center gap-4">
+        <motion.div key={fw.type} variants={cascadeIn} custom={i} className="h-full">
+          <NeuCard hover padding="lg" className="flex flex-col items-center text-center gap-4 h-full">
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center"
               style={{
