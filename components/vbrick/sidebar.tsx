@@ -1,11 +1,12 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar } from 'lucide-react'
+import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar, Radio } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { PlayerCard } from './player-card'
 import { MicButton } from './mic-button'
+import { CoachingPanel, type CoachingSummary } from './coaching/coaching-panel'
 import { VBRICK_CONFIG } from '@/lib/vbrick/config'
 import { neuTheme } from '@/lib/vbrick/theme'
 
@@ -17,6 +18,7 @@ const navItems = [
 
 interface SidebarProps {
   name: string
+  email: string
   role?: string
   showStats?: boolean
   streak: number
@@ -35,10 +37,15 @@ interface SidebarProps {
     company: string
   } | null
   coachingPromptIndex?: number
+  isCoaching?: boolean
+  onStartCoaching?: () => void
+  onEndCoaching?: (summary: CoachingSummary | null) => void
+  callingSessionId?: string | null
 }
 
 export function Sidebar({
   name,
+  email,
   role = 'BDR — Vbrick',
   showStats = true,
   streak,
@@ -53,6 +60,10 @@ export function Sidebar({
   micDisabled = false,
   queueContact,
   coachingPromptIndex = 0,
+  isCoaching = false,
+  onStartCoaching,
+  onEndCoaching,
+  callingSessionId,
 }: SidebarProps) {
   const pathname = usePathname()
 
@@ -187,7 +198,7 @@ export function Sidebar({
         </AnimatePresence>
 
         {/* Paste transcript button */}
-        {!isRecording && (
+        {!isRecording && !isCoaching && (
           <button
             onClick={onPasteTranscript}
             className="mt-4 flex items-center gap-2 text-xs font-satoshi cursor-pointer border-none bg-transparent"
@@ -197,9 +208,34 @@ export function Sidebar({
             Paste Chorus Transcript
           </button>
         )}
+
+        {/* Start Live Coaching button */}
+        {!isRecording && !isCoaching && onStartCoaching && (
+          <button
+            onClick={onStartCoaching}
+            className="mt-3 flex items-center gap-2 text-xs font-general-sans font-semibold cursor-pointer border-none bg-transparent"
+            style={{ color: neuTheme.colors.accent.primary }}
+          >
+            <Radio className="w-4 h-4" />
+            Start Live Coaching
+          </button>
+        )}
       </div>
 
-      <div className="flex-1" />
+      {/* Live Coaching Panel */}
+      {isCoaching && onEndCoaching && (
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <CoachingPanel
+            email={email}
+            callingSessionId={callingSessionId}
+            contactName={queueContact?.contactName}
+            company={queueContact?.company}
+            onEnd={onEndCoaching}
+          />
+        </div>
+      )}
+
+      {!isCoaching && <div className="flex-1" />}
 
       {/* Bottom divider */}
       <div className="h-px mx-6" style={{ background: `linear-gradient(to right, transparent, ${neuTheme.colors.shadow}60, transparent)` }} />

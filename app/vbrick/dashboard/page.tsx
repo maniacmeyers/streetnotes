@@ -17,6 +17,8 @@ import type { QueueContact } from '@/lib/vbrick/csv-parser'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
 import { isVbrickBdr, VBRICK_CONFIG } from '@/lib/vbrick/config'
+import { PostCallSummary } from '@/components/vbrick/coaching/post-call-summary'
+import type { CoachingSummary } from '@/components/vbrick/coaching/coaching-panel'
 
 interface StatsData {
   thisWeek: {
@@ -70,6 +72,10 @@ export default function VbrickDashboardPage() {
   const [recordingDuration, setRecordingDuration] = useState(0)
   const [coachingIdx, setCoachingIdx] = useState(0)
   const [pastedTranscript, setPastedTranscript] = useState<string | null>(null)
+
+  // Coaching state
+  const [isCoaching, setIsCoaching] = useState(false)
+  const [coachingSummary, setCoachingSummary] = useState<CoachingSummary | null>(null)
 
   // Session state
   const [sessionId, setSessionId] = useState<string | null>(null)
@@ -427,6 +433,7 @@ export default function VbrickDashboardPage() {
       {/* Sidebar */}
       <Sidebar
         name={displayName}
+        email={email}
         role={userIsBdr ? 'BDR — Vbrick' : 'Coach — Vbrick'}
         showStats={userIsBdr}
         streak={stats?.streak || 0}
@@ -445,6 +452,13 @@ export default function VbrickDashboardPage() {
           company: upNextContact.company,
         } : null}
         coachingPromptIndex={coachingIdx}
+        isCoaching={isCoaching}
+        onStartCoaching={() => setIsCoaching(true)}
+        onEndCoaching={(summary) => {
+          setIsCoaching(false)
+          if (summary) setCoachingSummary(summary)
+        }}
+        callingSessionId={sessionId}
       />
 
       {/* Main content */}
@@ -510,6 +524,14 @@ export default function VbrickDashboardPage() {
               {...sessionReport}
               calls={queue}
               onClose={handleCloseReport}
+            />
+          )}
+
+          {/* Post-call coaching summary */}
+          {coachingSummary && view === 'dashboard' && (
+            <PostCallSummary
+              summary={coachingSummary}
+              onClose={() => setCoachingSummary(null)}
             />
           )}
 
