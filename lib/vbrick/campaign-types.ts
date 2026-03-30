@@ -84,10 +84,13 @@ export type ChannelContent =
 
 export interface ColdCallContent {
   opener: string
-  value_prop: string
+  pattern_interrupt: string
+  value_statement: string
   binary_ask: string
-  closing: string
-  module_variants: Record<string, { opener: string; value_prop: string; binary_ask: string }>
+  closing_booked: string
+  closing_follow_up: string
+  closing_no: string
+  module_variants: Record<string, { pattern_interrupt: string; value_statement: string }>
 }
 
 export interface VoicemailContent {

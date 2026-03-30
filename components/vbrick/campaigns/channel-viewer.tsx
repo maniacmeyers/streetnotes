@@ -46,10 +46,18 @@ export function ChannelViewer({ channels, isApprover, onApprove, onReject }: Cha
     if (channel.channel_type === 'cold_call') {
       return (
         <div className="space-y-4">
-          <ContentBlock label="Opener" text={content.opener as string} id={`${channel.id}-opener`} onCopy={handleCopy} copied={copied} />
-          <ContentBlock label="Value Prop" text={content.value_prop as string} id={`${channel.id}-vp`} onCopy={handleCopy} copied={copied} />
-          <ContentBlock label="Binary Ask" text={content.binary_ask as string} id={`${channel.id}-ask`} onCopy={handleCopy} copied={copied} />
-          <ContentBlock label="Closing" text={content.closing as string} id={`${channel.id}-close`} onCopy={handleCopy} copied={copied} />
+          <ContentBlock label="1. Opener" text={content.opener as string} id={`${channel.id}-opener`} onCopy={handleCopy} copied={copied} />
+          <ContentBlock label="2. Pattern Interrupt" text={content.pattern_interrupt as string} id={`${channel.id}-pi`} onCopy={handleCopy} copied={copied} />
+          <ContentBlock label="3. Value Statement" text={content.value_statement as string} id={`${channel.id}-vs`} onCopy={handleCopy} copied={copied} />
+          <ContentBlock label="4. Binary Ask" text={content.binary_ask as string} id={`${channel.id}-ask`} onCopy={handleCopy} copied={copied} />
+          <div className="pt-2" style={{ borderTop: `1px solid ${neuTheme.colors.shadow}20` }}>
+            <p className="font-general-sans font-semibold text-xs uppercase tracking-widest mb-2" style={{ color: neuTheme.colors.accent.primary }}>
+              Closings
+            </p>
+            <ContentBlock label="If Booked" text={content.closing_booked as string} id={`${channel.id}-close-b`} onCopy={handleCopy} copied={copied} />
+            <ContentBlock label="If Follow Up" text={content.closing_follow_up as string} id={`${channel.id}-close-f`} onCopy={handleCopy} copied={copied} />
+            <ContentBlock label="If No" text={content.closing_no as string} id={`${channel.id}-close-n`} onCopy={handleCopy} copied={copied} />
+          </div>
           {content.module_variants && (
             <div className="mt-4">
               <p className="font-general-sans font-semibold text-xs uppercase tracking-widest mb-2" style={{ color: neuTheme.colors.accent.primary }}>
