@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { neuTheme } from '@/lib/vbrick/theme'
 import { StatBar } from './stat-bar'
 import { Activity, Target } from 'lucide-react'
 
@@ -39,7 +40,10 @@ export function PerformanceCards({
 }: PerformanceCardsProps) {
   return (
     <div>
-      <h3 className="text-[11px] uppercase tracking-[0.2em] text-blue-400 font-inter font-medium mb-3">
+      <h3
+        className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium mb-3"
+        style={{ color: neuTheme.colors.accent.primary }}
+      >
         {playerName}&apos;s Performance
       </h3>
 
@@ -50,18 +54,20 @@ export function PerformanceCards({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 relative overflow-hidden">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: 'radial-gradient(ellipse at 0% 0%, rgba(59,130,246,0.03) 0%, transparent 50%)',
-              }}
-            />
+          <div
+            className="rounded-2xl p-6 relative overflow-hidden"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raised,
+            }}
+          >
             <div className="relative">
               <div className="flex items-center gap-2 mb-5">
-                <Activity className="w-4 h-4 text-blue-400" />
-                <span className="text-[11px] uppercase tracking-[0.2em] text-blue-400 font-inter font-medium">
+                <Activity className="w-4 h-4" style={{ color: neuTheme.colors.accent.primary }} />
+                <span
+                  className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium"
+                  style={{ color: neuTheme.colors.accent.primary }}
+                >
                   Call Performance
                 </span>
               </div>
@@ -82,7 +88,10 @@ export function PerformanceCards({
                 />
               </div>
               {scoredCalls !== undefined && (
-                <p className="text-[10px] text-slate-500 font-fira-code mt-5">
+                <p
+                  className="text-[10px] font-fira-code mt-5"
+                  style={{ color: neuTheme.colors.text.muted }}
+                >
                   {scoredCalls} calls scored this week
                 </p>
               )}
@@ -96,18 +105,20 @@ export function PerformanceCards({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 relative overflow-hidden">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: 'radial-gradient(ellipse at 100% 0%, rgba(34,197,94,0.03) 0%, transparent 50%)',
-              }}
-            />
+          <div
+            className="rounded-2xl p-6 relative overflow-hidden"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raised,
+            }}
+          >
             <div className="relative">
               <div className="flex items-center gap-2 mb-5">
-                <Target className="w-4 h-4 text-emerald-400" />
-                <span className="text-[11px] uppercase tracking-[0.2em] text-emerald-400 font-inter font-medium">
+                <Target className="w-4 h-4" style={{ color: neuTheme.colors.score.green }} />
+                <span
+                  className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium"
+                  style={{ color: neuTheme.colors.score.green }}
+                >
                   Conversion Rates
                 </span>
               </div>
@@ -128,7 +139,10 @@ export function PerformanceCards({
                   detail={`${appointments} of ${connectedCalls} conversations`}
                 />
               </div>
-              <p className="text-[10px] text-slate-500 font-inter mt-5">
+              <p
+                className="text-[10px] font-inter mt-5"
+                style={{ color: neuTheme.colors.text.muted }}
+              >
                 Week resets Monday
               </p>
             </div>

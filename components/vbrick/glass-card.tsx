@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
+import { neuTheme } from '@/lib/vbrick/theme'
 
 interface GlassCardProps {
   className?: string
@@ -12,14 +13,16 @@ interface GlassCardProps {
 function CardTitle({ title }: { title: string }) {
   return (
     <>
-      <span className="text-[11px] uppercase tracking-[0.2em] text-[#7ed4f7] font-medium mb-3 block">
+      <span
+        className="text-[11px] uppercase tracking-[0.2em] font-medium mb-3 block font-general-sans"
+        style={{ color: neuTheme.colors.accent.primary }}
+      >
         {title}
       </span>
       <div
         className="h-px mb-4"
         style={{
-          background:
-            'linear-gradient(90deg, transparent, rgba(126,212,247,0.2), transparent)',
+          background: `linear-gradient(90deg, transparent, ${neuTheme.colors.accent.muted}40, transparent)`,
         }}
       />
     </>
@@ -29,18 +32,15 @@ function CardTitle({ title }: { title: string }) {
 export function GlassCard({ className, children, title }: GlassCardProps) {
   return (
     <motion.div
-      className={cn(
-        'rounded-xl border border-white/[0.08] bg-white/[0.03] p-6',
-        className
-      )}
+      className={cn('rounded-xl p-6', className)}
       style={{
-        backdropFilter: 'blur(12px) saturate(150%)',
-        WebkitBackdropFilter: 'blur(12px) saturate(150%)',
+        background: neuTheme.colors.bg,
+        boxShadow: neuTheme.shadows.raised,
+        borderRadius: neuTheme.radii.md,
       }}
       whileHover={{
         y: -2,
-        borderColor: 'rgba(126,212,247,0.2)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        boxShadow: neuTheme.shadows.raisedHover,
       }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
@@ -57,18 +57,15 @@ export function GlassCardElevated({
 }: GlassCardProps) {
   return (
     <motion.div
-      className={cn(
-        'rounded-xl border border-white/[0.12] bg-white/[0.06] p-6',
-        className
-      )}
+      className={cn('rounded-xl p-6', className)}
       style={{
-        backdropFilter: 'blur(16px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(16px) saturate(160%)',
+        background: neuTheme.colors.bg,
+        boxShadow: neuTheme.shadows.raisedHover,
+        borderRadius: neuTheme.radii.lg,
       }}
       whileHover={{
         y: -3,
-        borderColor: 'rgba(126,212,247,0.25)',
-        boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
+        boxShadow: '10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff',
       }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >

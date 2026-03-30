@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { neuTheme } from '@/lib/vbrick/theme'
 
 interface StatBarProps {
   value: number
@@ -14,10 +15,10 @@ interface StatBarProps {
 
 function getValueColor(value: number, max: number): string {
   const ratio = value / max
-  if (ratio <= 0.3) return 'text-red-400'
-  if (ratio <= 0.6) return 'text-amber-400'
-  if (ratio <= 0.8) return 'text-blue-400'
-  return 'text-emerald-400'
+  if (ratio <= 0.3) return neuTheme.colors.score.red
+  if (ratio <= 0.6) return neuTheme.colors.score.amber
+  if (ratio <= 0.8) return neuTheme.colors.accent.primary
+  return neuTheme.colors.score.green
 }
 
 function getBarGradient(value: number, max: number, ghostValue?: number): string {
@@ -29,7 +30,7 @@ function getBarGradient(value: number, max: number, ghostValue?: number): string
   }
   if (ratio <= 0.3) return 'linear-gradient(90deg, #EF4444, #F87171)'
   if (ratio <= 0.6) return 'linear-gradient(90deg, #F59E0B, #FBBF24)'
-  if (ratio <= 0.8) return 'linear-gradient(90deg, #3B82F6, #60A5FA)'
+  if (ratio <= 0.8) return `linear-gradient(90deg, ${neuTheme.colors.accent.primary}, ${neuTheme.colors.accent.hover})`
   return 'linear-gradient(90deg, #22C55E, #4ADE80)'
 }
 
@@ -56,24 +57,31 @@ export function StatBar({
     <div className="space-y-2">
       {/* Label row */}
       <div className="flex items-baseline justify-between">
-        <span className="text-[11px] uppercase tracking-[0.15em] text-slate-400 font-inter">
+        <span
+          className="text-[11px] uppercase tracking-[0.15em] font-inter"
+          style={{ color: neuTheme.colors.text.muted }}
+        >
           {label}
         </span>
         <span
           className={`font-fira-code font-bold ${
             size === 'prominent' ? 'text-2xl' : 'text-lg'
-          } ${getValueColor(value, max)}`}
+          }`}
+          style={{ color: getValueColor(value, max) }}
         >
           {value}
         </span>
       </div>
 
-      {/* Bar track */}
+      {/* Bar track — inset neumorphic */}
       <div
         className={`relative w-full rounded-full overflow-hidden ${
           size === 'prominent' ? 'h-3' : 'h-2'
         }`}
-        style={{ background: 'rgba(255,255,255,0.04)' }}
+        style={{
+          background: neuTheme.colors.bg,
+          boxShadow: neuTheme.shadows.insetSm,
+        }}
       >
         {/* Ghost bar */}
         {ghostValue !== undefined && ghostPct > 0 && (
@@ -81,17 +89,17 @@ export function StatBar({
             className="absolute inset-y-0 left-0 rounded-full"
             style={{
               width: `${ghostPct}%`,
-              background: 'rgba(255,255,255,0.06)',
+              background: `${neuTheme.colors.shadow}30`,
             }}
           />
         )}
 
-        {/* Fill bar with gradient */}
+        {/* Fill bar — raised neumorphic */}
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full"
           style={{
             background: gradient,
-            boxShadow: '0 0 12px rgba(59,130,246,0.2)',
+            boxShadow: '1px 1px 3px #a3b1c6, -1px -1px 3px #ffffff',
           }}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
@@ -105,9 +113,15 @@ export function StatBar({
             style={{ left: `${pbPct}%` }}
           >
             <div
-              className={`w-2.5 h-2.5 rounded-full border-2 border-white/20 ${
-                nearPb ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-500'
+              className={`w-2.5 h-2.5 rounded-full border-2 ${
+                nearPb ? 'animate-pulse' : ''
               }`}
+              style={{
+                borderColor: `${neuTheme.colors.shadow}40`,
+                backgroundColor: nearPb
+                  ? neuTheme.colors.accent.primary
+                  : neuTheme.colors.accent.hover,
+              }}
             />
           </div>
         )}
@@ -116,16 +130,16 @@ export function StatBar({
       {/* Ghost label */}
       {ghostValue !== undefined && ghostValue > 0 && (
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-600 font-inter">
+          <span className="text-[10px] font-inter" style={{ color: neuTheme.colors.text.muted }}>
             Last week: {ghostValue}
           </span>
           {value > ghostValue && (
-            <span className="text-[10px] text-emerald-400 font-fira-code font-medium">
+            <span className="text-[10px] font-fira-code font-medium" style={{ color: neuTheme.colors.score.green }}>
               +{(value - ghostValue).toFixed(1)}
             </span>
           )}
           {value < ghostValue && (
-            <span className="text-[10px] text-red-400 font-fira-code font-medium">
+            <span className="text-[10px] font-fira-code font-medium" style={{ color: neuTheme.colors.score.red }}>
               {(value - ghostValue).toFixed(1)}
             </span>
           )}
@@ -134,7 +148,9 @@ export function StatBar({
 
       {/* Detail text */}
       {detail && (
-        <p className="text-[10px] text-slate-500 font-fira-code">{detail}</p>
+        <p className="text-[10px] font-fira-code" style={{ color: neuTheme.colors.text.muted }}>
+          {detail}
+        </p>
       )}
     </div>
   )

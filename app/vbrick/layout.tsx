@@ -10,5 +10,9 @@ export default function VbrickLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return (
+    <div className="min-h-screen" style={{ background: '#e0e5ec' }}>
+      {children}
+    </div>
+  )
 }

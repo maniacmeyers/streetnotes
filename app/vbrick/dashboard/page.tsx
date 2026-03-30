@@ -334,49 +334,78 @@ export default function VbrickDashboardPage() {
   if (!email) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center px-6 font-inter relative"
-        style={{ background: 'linear-gradient(180deg, #0c1a2e 0%, #060e1a 100%)' }}
+        style={{ background: '#e0e5ec', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}
       >
-        {/* Subtle glow */}
         <div
-          aria-hidden="true"
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)' }}
-        />
-
-        <div className="relative w-full max-w-sm">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
+          className="font-satoshi"
+          style={{
+            background: '#e0e5ec',
+            boxShadow: '6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff',
+            borderRadius: '28px',
+            padding: '32px',
+            width: '100%',
+            maxWidth: '384px',
+          }}
+        >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
+              <div
+                style={{ background: '#6366f1', width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+              >
+                <svg width={16} height={16} fill="none" stroke="white" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+              </div>
+              <span style={{ fontFamily: 'var(--font-general-sans), sans-serif', fontWeight: 700, fontSize: 18, color: '#2d3436', letterSpacing: '-0.01em' }}>
+                Command Center
+              </span>
             </div>
-            <span className="text-white font-bold text-lg tracking-tight">
-              Command Center
-            </span>
-          </div>
-          <p className="text-slate-500 text-xs text-center mb-8">
-            Powered by StreetNotes.ai
-          </p>
+            <p style={{ fontSize: 12, textAlign: 'center', marginBottom: 32, color: '#636e72', fontFamily: 'var(--font-satoshi), sans-serif' }}>
+              Powered by StreetNotes.ai
+            </p>
 
-          <form onSubmit={handleEmailSubmit} className="space-y-4">
-            <input
-              type="email"
-              value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3.5 text-white text-base font-inter placeholder:text-slate-600 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all duration-200"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="w-full py-3.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20"
-            >
-              Enter
-            </button>
-          </form>
+            <form onSubmit={handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <input
+                type="email"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="Enter your email"
+                style={{
+                  width: '100%',
+                  background: '#e0e5ec',
+                  boxShadow: 'inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff',
+                  color: '#44475a',
+                  border: 'none',
+                  borderRadius: 16,
+                  padding: '14px 20px',
+                  fontSize: 14,
+                  fontFamily: 'var(--font-satoshi), sans-serif',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+                autoFocus
+              />
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  borderRadius: 16,
+                  fontFamily: 'var(--font-general-sans), sans-serif',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  color: 'white',
+                  background: '#6366f1',
+                  boxShadow: '6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff',
+                  border: 'none',
+                  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+              >
+                Enter
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
     )
   }
 
@@ -394,7 +423,7 @@ export default function VbrickDashboardPage() {
   const completedCount = queue.filter(q => q.status === 'completed' || q.status === 'skipped').length
 
   return (
-    <div className="h-screen overflow-hidden font-inter" style={{ background: 'linear-gradient(180deg, #0c1a2e 0%, #060e1a 100%)' }}>
+    <div className="h-screen overflow-hidden font-satoshi" style={{ background: '#e0e5ec' }}>
       {/* Sidebar */}
       <Sidebar
         name={displayName}
@@ -419,19 +448,10 @@ export default function VbrickDashboardPage() {
       />
 
       {/* Main content */}
-      <div className="ml-[320px] h-screen overflow-y-auto relative">
-        {/* Subtle top gradient accent */}
-        <div
-          aria-hidden="true"
-          className="absolute top-0 left-0 right-0 h-80 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at 30% -20%, rgba(59,130,246,0.05) 0%, transparent 60%)',
-          }}
-        />
-
+      <div className="ml-[288px] h-screen overflow-y-auto relative" style={{ background: '#e0e5ec' }}>
         {/* Recording overlay dim */}
         {isRecording && (
-          <div className="fixed inset-0 ml-[320px] bg-black/30 z-20 pointer-events-none" />
+          <div className="fixed inset-0 ml-[288px] bg-black/10 z-20 pointer-events-none" />
         )}
 
         <div className="px-8 py-8 space-y-8 relative z-10">
@@ -503,7 +523,7 @@ export default function VbrickDashboardPage() {
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
                 {sessionId ? (
-                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6">
+                  <div className="rounded-2xl p-6" style={{ background: '#e0e5ec', boxShadow: '6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff', borderRadius: '20px' }}>
                     <CallQueue
                       queue={queue}
                       totalCount={queue.length}
@@ -559,7 +579,7 @@ export default function VbrickDashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
-                <h3 className="text-[11px] uppercase tracking-[0.2em] text-blue-400 font-inter font-medium mb-3">
+                <h3 className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium mb-3" style={{ color: '#6366f1' }}>
                   Recent Calls
                 </h3>
                 <RecentCalls calls={recentCalls} />

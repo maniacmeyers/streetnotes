@@ -10,9 +10,11 @@ import {
   VBRICK_BDR_SYSTEM_PROMPT,
   VBRICK_BDR_USER_PROMPT_TEMPLATE,
 } from '@/lib/debrief/prompts'
-import type { DebriefOutput, BDRStructuredOutput } from '@/lib/debrief/types'
+import type { DebriefOutput, BDRStructuredOutput, DebriefStructuredOutput } from '@/lib/debrief/types'
+import type { CIExtraction } from '@/lib/ci/types'
 import { isBDROutput } from '@/lib/debrief/types'
 import { isVbrickUser } from '@/lib/vbrick/config'
+import { processCIMentions } from '@/lib/ci/pipeline'
 
 export const runtime = 'nodejs'
 export const maxDuration = 45
@@ -102,6 +104,30 @@ export async function POST(request: Request) {
       .update({ structured_output: structured as unknown as Record<string, unknown> })
       .eq('id', sessionId)
 
+    // Process CI mentions
+    const rawCiMentions = (structured as { ciMentions?: { competitorName: string; contextQuote: string; sentiment: string; mentionCategory: string }[] }).ciMentions
+    const ciMentions = rawCiMentions as CIExtraction[] | undefined
+    if (ciMentions && ciMentions.length > 0) {
+      const isBDRCall = isBDROutput(structured)
+      const bdrData = structured as BDRStructuredOutput
+      const dealData = structured as DebriefStructuredOutput
+
+      await processCIMentions(
+        sessionId,
+        ciMentions,
+        {
+          repEmail: session.email,
+          companyName: isBDRCall
+            ? bdrData.contactSnapshot?.company
+            : dealData.dealSnapshot?.companyName,
+          dealStage: isBDRCall ? undefined : dealData.dealSnapshot?.dealStage,
+          dealSegment: isBDRCall ? 'bdr-cold-call' : dealData.dealSegment,
+          sourceType: isBDRCall ? 'bdr-call' : 'debrief',
+        },
+        supabase
+      )
+    }
+
     // Notify on completion
     if (isBDROutput(structured)) {
       const bdr = structured as BDRStructuredOutput
@@ -123,6 +149,9 @@ export async function POST(request: Request) {
           '',
           `Session: ${sessionId}`,
           `Time: ${new Date().toISOString()}`,
+          ...(ciMentions && ciMentions.length > 0
+            ? ['', `CI Intel: ${ciMentions.length} competitor mention(s) — ${ciMentions.map(m => m.competitorName).join(', ')}`]
+            : []),
         ].join('\n')
       )
     } else {
@@ -146,6 +175,9 @@ export async function POST(request: Request) {
           '',
           `Session: ${sessionId}`,
           `Time: ${new Date().toISOString()}`,
+          ...(ciMentions && ciMentions.length > 0
+            ? ['', `CI Intel: ${ciMentions.length} competitor mention(s) — ${ciMentions.map(m => m.competitorName).join(', ')}`]
+            : []),
         ].join('\n')
       )
     }

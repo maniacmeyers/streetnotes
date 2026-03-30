@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import { TrendingUp, TrendingDown, Minus, Crown } from 'lucide-react'
+import { neuTheme } from '@/lib/vbrick/theme'
 import { CountUp } from './count-up'
 
 interface PlayerKPIs {
@@ -19,9 +20,9 @@ interface LeaderboardProps {
 }
 
 function TrendArrow({ value }: { value: number }) {
-  if (value > 0.5) return <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-  if (value < -0.5) return <TrendingDown className="w-3.5 h-3.5 text-red-400" />
-  return <Minus className="w-3.5 h-3.5 text-slate-600" />
+  if (value > 0.5) return <TrendingUp className="w-3.5 h-3.5" style={{ color: neuTheme.colors.score.green }} />
+  if (value < -0.5) return <TrendingDown className="w-3.5 h-3.5" style={{ color: neuTheme.colors.score.red }} />
+  return <Minus className="w-3.5 h-3.5" style={{ color: neuTheme.colors.text.subtle }} />
 }
 
 function PlayerAvatar({ name, isLeading }: { name: string; isLeading: boolean }) {
@@ -29,11 +30,19 @@ function PlayerAvatar({ name, isLeading }: { name: string; isLeading: boolean })
   return (
     <div className="relative">
       <div
-        className={`w-12 h-12 rounded-full flex items-center justify-center font-inter font-bold text-lg ${
+        className="w-12 h-12 rounded-full flex items-center justify-center font-inter font-bold text-lg"
+        style={
           isLeading
-            ? 'bg-gradient-to-br from-blue-500 to-blue-700 text-white'
-            : 'bg-white/[0.06] text-slate-400 border border-white/[0.08]'
-        }`}
+            ? {
+                background: `linear-gradient(135deg, ${neuTheme.colors.accent.primary}, ${neuTheme.colors.accent.hover})`,
+                color: '#ffffff',
+              }
+            : {
+                background: neuTheme.colors.bg,
+                boxShadow: neuTheme.shadows.raisedSm,
+                color: neuTheme.colors.text.muted,
+              }
+        }
       >
         {initial}
       </div>
@@ -65,7 +74,6 @@ function MetricRow({
 }) {
   const aLeads = valueA > valueB
   const bLeads = valueB > valueA
-  const tied = valueA === valueB
 
   return (
     <motion.div
@@ -78,25 +86,34 @@ function MetricRow({
       <div className="flex items-center gap-2 justify-end">
         <TrendArrow value={trendA} />
         <span
-          className={`font-fira-code font-bold text-xl tabular-nums ${
-            aLeads ? 'text-blue-400' : tied ? 'text-white' : 'text-slate-400'
-          }`}
+          className="font-fira-code font-bold text-xl tabular-nums"
+          style={{
+            color: aLeads
+              ? neuTheme.colors.accent.primary
+              : neuTheme.colors.text.muted,
+          }}
         >
           <CountUp value={valueA} decimals={decimals || 0} suffix={suffix} />
         </span>
       </div>
 
       {/* Label */}
-      <span className="text-[10px] uppercase tracking-[0.12em] text-slate-500 font-inter text-center min-w-[140px]">
+      <span
+        className="text-[10px] uppercase tracking-[0.12em] font-inter text-center min-w-[140px]"
+        style={{ color: neuTheme.colors.text.muted }}
+      >
         {label}
       </span>
 
       {/* Player B value */}
       <div className="flex items-center gap-2">
         <span
-          className={`font-fira-code font-bold text-xl tabular-nums ${
-            bLeads ? 'text-blue-400' : tied ? 'text-white' : 'text-slate-400'
-          }`}
+          className="font-fira-code font-bold text-xl tabular-nums"
+          style={{
+            color: bLeads
+              ? neuTheme.colors.accent.primary
+              : neuTheme.colors.text.muted,
+          }}
         >
           <CountUp value={valueB} decimals={decimals || 0} suffix={suffix} />
         </span>
@@ -129,20 +146,20 @@ export function Leaderboard({ players }: LeaderboardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <h3 className="text-[11px] uppercase tracking-[0.2em] text-blue-400 font-inter font-medium mb-3">
+      <h3
+        className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium mb-3"
+        style={{ color: neuTheme.colors.accent.primary }}
+      >
         Head-to-Head
       </h3>
 
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 overflow-hidden relative">
-        {/* Subtle gradient accent */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.04) 0%, transparent 60%)',
-          }}
-        />
-
+      <div
+        className="rounded-2xl p-6 overflow-hidden relative"
+        style={{
+          background: neuTheme.colors.bg,
+          boxShadow: neuTheme.shadows.raised,
+        }}
+      >
         <div className="relative">
           {/* Player names */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 mb-2">
@@ -153,7 +170,10 @@ export function Leaderboard({ players }: LeaderboardProps) {
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <PlayerAvatar name={a.name} isLeading={aWins > bWins} />
-              <h4 className="font-inter font-black text-lg uppercase tracking-wide text-white">
+              <h4
+                className="font-inter font-black text-lg uppercase tracking-wide"
+                style={{ color: neuTheme.colors.text.heading }}
+              >
                 {a.name}
               </h4>
             </motion.div>
@@ -164,7 +184,10 @@ export function Leaderboard({ players }: LeaderboardProps) {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.4, type: 'spring' }}
             >
-              <span className="font-inter font-black text-2xl text-slate-600">
+              <span
+                className="font-inter font-black text-2xl"
+                style={{ color: neuTheme.colors.text.subtle }}
+              >
                 VS
               </span>
             </motion.div>
@@ -176,13 +199,21 @@ export function Leaderboard({ players }: LeaderboardProps) {
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <PlayerAvatar name={b.name} isLeading={bWins > aWins} />
-              <h4 className="font-inter font-black text-lg uppercase tracking-wide text-white">
+              <h4
+                className="font-inter font-black text-lg uppercase tracking-wide"
+                style={{ color: neuTheme.colors.text.heading }}
+              >
                 {b.name}
               </h4>
             </motion.div>
           </div>
 
-          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-3" />
+          <div
+            className="h-px my-3"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
+            }}
+          />
 
           {/* Metrics */}
           <MetricRow
@@ -215,7 +246,8 @@ export function Leaderboard({ players }: LeaderboardProps) {
         </div>
 
         <motion.p
-          className="text-[10px] text-slate-600 font-inter text-center mt-4"
+          className="text-[10px] font-inter text-center mt-4"
+          style={{ color: neuTheme.colors.text.muted }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.3 }}

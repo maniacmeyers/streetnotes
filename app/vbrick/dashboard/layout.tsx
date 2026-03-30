@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DashboardProvider } from '@/lib/vbrick/dashboard-context'
 
 export const metadata: Metadata = {
   title: 'Vbrick Command Center — Dashboard',
@@ -10,5 +11,9 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return (
+    <DashboardProvider>
+      {children}
+    </DashboardProvider>
+  )
 }

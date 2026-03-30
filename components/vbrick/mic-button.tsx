@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'motion/react'
 import { Mic, Square } from 'lucide-react'
+import { neuTheme } from '@/lib/vbrick/theme'
 
 interface MicButtonProps {
   isRecording: boolean
@@ -27,17 +28,17 @@ export function MicButton({
   return (
     <div className="flex flex-col items-center gap-3">
       <style>{`
-        @keyframes mic-pulse {
-          0%, 100% { box-shadow: 0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15); }
-          50% { box-shadow: 0 0 50px rgba(59,130,246,0.6), 0 0 90px rgba(59,130,246,0.2); }
+        @keyframes mic-pulse-neu {
+          0%, 100% { box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff, 0 0 30px rgba(99,102,241,0.3); }
+          50% { box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff, 0 0 50px rgba(99,102,241,0.5), 0 0 80px rgba(99,102,241,0.15); }
         }
-        @keyframes mic-pulse-red {
-          0%, 100% { box-shadow: 0 0 30px rgba(239,68,68,0.4); }
-          50% { box-shadow: 0 0 50px rgba(239,68,68,0.6), 0 0 80px rgba(239,68,68,0.2); }
+        @keyframes mic-pulse-red-neu {
+          0%, 100% { box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff, 0 0 30px rgba(239,68,68,0.4); }
+          50% { box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff, 0 0 50px rgba(239,68,68,0.6), 0 0 80px rgba(239,68,68,0.2); }
         }
-        @keyframes mic-burst {
-          0% { box-shadow: 0 0 60px rgba(59,130,246,0.7), 0 0 100px rgba(59,130,246,0.3); }
-          100% { box-shadow: 0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15); }
+        @keyframes mic-burst-neu {
+          0% { box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff, 0 0 60px rgba(99,102,241,0.6); }
+          100% { box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff, 0 0 30px rgba(99,102,241,0.3); }
         }
         @media (prefers-reduced-motion: reduce) {
           .mic-btn { animation: none !important; }
@@ -49,7 +50,7 @@ export function MicButton({
         {!disabled && !isRecording && (
           <motion.div
             className="absolute inset-0 rounded-full"
-            style={{ background: 'rgba(59,130,246,0.12)' }}
+            style={{ background: `${neuTheme.colors.accent.primary}1A` }}
             initial={{ scale: 1, opacity: 0.4 }}
             animate={{ scale: 1.4, opacity: 0 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
@@ -63,12 +64,15 @@ export function MicButton({
             ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:scale-105'}
           `}
           style={{
-            backgroundColor: isRecording ? '#EF4444' : '#3B82F6',
+            backgroundColor: isRecording ? '#EF4444' : neuTheme.colors.bg,
             animation: disabled
               ? 'none'
               : isRecording
-              ? 'mic-pulse-red 0.8s ease-in-out infinite'
-              : 'mic-burst 0.5s ease-out forwards, mic-pulse 1.5s ease-in-out 0.5s infinite',
+              ? 'mic-pulse-red-neu 0.8s ease-in-out infinite'
+              : 'mic-burst-neu 0.5s ease-out forwards, mic-pulse-neu 1.5s ease-in-out 0.5s infinite',
+            boxShadow: isRecording
+              ? neuTheme.shadows.pressed
+              : neuTheme.shadows.raised,
           }}
           aria-label={isRecording ? 'Stop recording' : 'Start recording'}
         >
@@ -93,7 +97,7 @@ export function MicButton({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-center"
               >
-                <Mic className="w-11 h-11 text-white" />
+                <Mic className="w-11 h-11" style={{ color: neuTheme.colors.accent.primary }} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -104,7 +108,8 @@ export function MicButton({
         {isRecording ? (
           <motion.span
             key="timer"
-            className="font-fira-code text-xl text-white font-medium"
+            className="font-fira-code text-xl font-medium"
+            style={{ color: neuTheme.colors.text.heading }}
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
@@ -115,7 +120,8 @@ export function MicButton({
         ) : (
           <motion.span
             key="label"
-            className="font-inter font-bold uppercase tracking-widest text-sm text-white"
+            className="font-inter font-bold uppercase tracking-widest text-sm"
+            style={{ color: neuTheme.colors.text.heading }}
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}

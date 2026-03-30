@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
+import { neuTheme } from '@/lib/vbrick/theme'
 
 interface IntentionScreenProps {
   email: string
@@ -63,18 +64,12 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6"
-      style={{ background: 'linear-gradient(180deg, #0c1a2e 0%, #060e1a 100%)' }}
+      style={{ background: neuTheme.colors.bg }}
     >
-      {/* Subtle glow */}
-      <div
-        aria-hidden="true"
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 60%)' }}
-      />
-
       {/* Mantra */}
       <motion.p
-        className="relative text-xs uppercase tracking-[0.25em] text-blue-400/70 font-inter mb-12"
+        className="relative text-xs uppercase tracking-[0.25em] font-inter mb-12"
+        style={{ color: `${neuTheme.colors.accent.primary}B0` }}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -87,13 +82,19 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
         {QUESTIONS.map((q, i) => (
           <motion.div
             key={q.key}
-            className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6"
-            style={{ backdropFilter: 'blur(12px)' }}
+            className="rounded-xl p-6"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raised,
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 + i * 0.15 }}
           >
-            <label className="block text-white font-semibold text-sm mb-3 font-inter">
+            <label
+              className="block font-semibold text-sm mb-3 font-inter"
+              style={{ color: neuTheme.colors.text.heading }}
+            >
               {q.label}
             </label>
             <input
@@ -103,17 +104,35 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
                 setAnswers((prev) => ({ ...prev, [q.key]: e.target.value }))
               }
               placeholder={placeholders[q.key as keyof typeof placeholders] || ''}
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-base font-inter placeholder:text-slate-600 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all duration-200"
+              className="w-full rounded-xl px-4 py-3 text-base font-inter focus:outline-none transition-all duration-200"
+              style={{
+                background: neuTheme.colors.bg,
+                boxShadow: neuTheme.shadows.inset,
+                color: neuTheme.colors.text.heading,
+                border: 'none',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = `${neuTheme.shadows.inset}, 0 0 0 2px ${neuTheme.colors.accent.primary}40`
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow = neuTheme.shadows.inset
+              }}
             />
           </motion.div>
         ))}
       </div>
 
-      {/* Submit button */}
+      {/* Submit button — neumorphic accent */}
       <motion.button
         onClick={handleSubmit}
         disabled={!allFilled || submitting}
-        className="relative mt-10 px-10 py-4 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20"
+        className="relative mt-10 px-10 py-4 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+        style={{
+          backgroundColor: neuTheme.colors.accent.primary,
+          boxShadow: neuTheme.shadows.raisedSm,
+        }}
+        whileHover={allFilled && !submitting ? { scale: 1.02, boxShadow: neuTheme.shadows.raised } : undefined}
+        whileTap={allFilled && !submitting ? { scale: 0.98, boxShadow: neuTheme.shadows.pressed } : undefined}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.8 }}

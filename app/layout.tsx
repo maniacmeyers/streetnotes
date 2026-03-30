@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Space_Mono, Ranchers, Inter, Fira_Code } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -32,6 +33,24 @@ const firaCode = Fira_Code({
   weight: ['400', '500', '600', '700'],
 })
 
+const generalSans = localFont({
+  src: [
+    { path: '../public/fonts/GeneralSans-Semibold.woff2', weight: '600', style: 'normal' },
+    { path: '../public/fonts/GeneralSans-Bold.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-general-sans',
+  display: 'swap',
+})
+
+const satoshi = localFont({
+  src: [
+    { path: '../public/fonts/Satoshi-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Satoshi-Medium.woff2', weight: '500', style: 'normal' },
+  ],
+  variable: '--font-satoshi',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: 'StreetNotes.ai — Voice-to-CRM for Sales Reps',
   description:
@@ -52,7 +71,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} ${inter.variable} ${firaCode.variable} font-body min-h-screen bg-dark antialiased`}
+        className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} ${inter.variable} ${firaCode.variable} ${generalSans.variable} ${satoshi.variable} font-body min-h-screen bg-dark antialiased`}
       >
         <a
           href="#main-content"

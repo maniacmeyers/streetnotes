@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { Upload, FileSpreadsheet } from 'lucide-react'
+import { neuTheme } from '@/lib/vbrick/theme'
 import { parseCallListCSV, type QueueContact, type ColumnMapping, DEFAULT_IMPORT_MAPPING } from '@/lib/vbrick/csv-parser'
 
 interface CsvImportZoneProps {
@@ -56,11 +57,14 @@ export function CsvImportZone({ onImport, mapping }: CsvImportZoneProps) {
   return (
     <div>
       <div
-        className={`group rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200 cursor-pointer relative overflow-hidden ${
-          dragOver
-            ? 'border-blue-500/40 bg-blue-500/[0.04]'
-            : 'border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.01]'
-        }`}
+        className="group rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200 cursor-pointer relative overflow-hidden"
+        style={{
+          background: dragOver ? neuTheme.colors.bg : neuTheme.colors.bg,
+          borderColor: dragOver ? neuTheme.colors.accent.primary : neuTheme.colors.shadow,
+          boxShadow: dragOver
+            ? `0 0 0 3px ${neuTheme.colors.accent.primary}30, ${neuTheme.shadows.inset}`
+            : neuTheme.shadows.inset,
+        }}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
@@ -81,24 +85,35 @@ export function CsvImportZone({ onImport, mapping }: CsvImportZoneProps) {
           }}
         />
 
-        <div className="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600/15 transition-colors">
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all"
+          style={{
+            background: neuTheme.colors.bg,
+            boxShadow: neuTheme.shadows.raisedSm,
+          }}
+        >
           {dragOver ? (
-            <FileSpreadsheet className="w-7 h-7 text-blue-400" />
+            <FileSpreadsheet className="w-7 h-7" style={{ color: neuTheme.colors.accent.primary }} />
           ) : (
-            <Upload className="w-7 h-7 text-blue-400" />
+            <Upload className="w-7 h-7" style={{ color: neuTheme.colors.accent.primary }} />
           )}
         </div>
 
-        <p className="text-sm font-semibold text-white font-inter mb-1">
+        <p
+          className="text-sm font-semibold font-inter mb-1"
+          style={{ color: neuTheme.colors.text.heading }}
+        >
           Load Today&apos;s Call List
         </p>
-        <p className="text-xs text-slate-500 font-inter">
+        <p className="text-xs font-inter" style={{ color: neuTheme.colors.text.muted }}>
           Export your Salesforce call list and drop the CSV here
         </p>
       </div>
 
       {error && (
-        <p className="text-red-400 text-xs font-inter mt-2 text-center">{error}</p>
+        <p className="text-xs font-inter mt-2 text-center" style={{ color: neuTheme.colors.status.danger }}>
+          {error}
+        </p>
       )}
     </div>
   )

@@ -1,10 +1,19 @@
 'use client'
 
-import { motion, AnimatePresence } from 'motion/react'
-import { Settings, ClipboardPaste, Zap } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
+import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { PlayerCard } from './player-card'
 import { MicButton } from './mic-button'
 import { VBRICK_CONFIG } from '@/lib/vbrick/config'
+import { neuTheme } from '@/lib/vbrick/theme'
+
+const navItems = [
+  { label: 'Dashboard', href: '/vbrick/dashboard', icon: LayoutDashboard },
+  { label: 'Stories', href: '/vbrick/dashboard/stories', icon: BookOpen },
+  { label: 'Intel', href: '/vbrick/dashboard/ci', icon: Radar },
+]
 
 interface SidebarProps {
   name: string
@@ -45,56 +54,46 @@ export function Sidebar({
   queueContact,
   coachingPromptIndex = 0,
 }: SidebarProps) {
-  return (
-    <motion.div
-      className="fixed left-0 top-0 h-screen flex flex-col border-r border-white/[0.06]"
-      style={{
-        width: 320,
-        background: `linear-gradient(180deg, #0c1a2e 0%, #0a1424 50%, #060e1a 100%)`,
-        zIndex: 10,
-      }}
-      initial={{ x: -320, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-    >
-      {/* Subtle accent glow at top */}
-      <div
-        aria-hidden="true"
-        className="absolute top-0 left-0 right-0 h-40 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% -20%, rgba(59,130,246,0.08) 0%, transparent 70%)',
-        }}
-      />
+  const pathname = usePathname()
 
+  return (
+    <div
+      className="fixed left-0 top-0 h-screen flex flex-col"
+      style={{
+        width: neuTheme.spacing.sidebar,
+        background: neuTheme.colors.bg,
+        zIndex: 10,
+        boxShadow: `4px 0 12px ${neuTheme.colors.shadow}40`,
+      }}
+    >
       {/* Header */}
-      <motion.div
-        className="relative px-6 pt-6 pb-4 flex items-center gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.4 }}
-      >
-        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+      <div className="px-6 pt-6 pb-4 flex items-center gap-3">
+        <div
+          className="flex items-center justify-center shrink-0"
+          style={{
+            width: 32, height: 32,
+            borderRadius: neuTheme.radii.sm,
+            background: neuTheme.colors.accent.primary,
+            boxShadow: neuTheme.shadows.raisedSm,
+          }}
+        >
           <Zap className="w-4 h-4 text-white" />
         </div>
         <div>
-          <h1 className="text-sm font-bold text-white font-inter tracking-tight">
+          <h1 className="text-sm font-semibold font-general-sans tracking-tight" style={{ color: neuTheme.colors.text.heading }}>
             Command Center
           </h1>
-          <p className="text-[10px] text-slate-500 font-inter">
+          <p className="text-[10px] font-satoshi" style={{ color: neuTheme.colors.text.muted }}>
             Powered by StreetNotes.ai
           </p>
         </div>
-      </motion.div>
+      </div>
 
-      <div className="h-px mx-6 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      {/* Divider */}
+      <div className="h-px mx-6" style={{ background: `linear-gradient(to right, transparent, ${neuTheme.colors.shadow}60, transparent)` }} />
 
       {/* Player Card */}
-      <motion.div
-        className="relative px-5 py-5"
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5, ease: 'easeOut' }}
-      >
+      <div className="px-5 py-5">
         <PlayerCard
           name={name}
           title={role}
@@ -104,7 +103,34 @@ export function Sidebar({
           compact={isRecording}
           showStats={showStats}
         />
-      </motion.div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="px-5 pb-2">
+        <div className="flex flex-col gap-2">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            const Icon = item.icon
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-3 px-4 py-2.5 font-satoshi text-sm no-underline"
+                style={{
+                  borderRadius: neuTheme.radii.sm,
+                  boxShadow: isActive ? neuTheme.shadows.insetSm : neuTheme.shadows.raisedSm,
+                  color: isActive ? neuTheme.colors.accent.primary : neuTheme.colors.text.body,
+                  fontWeight: isActive ? 600 : 400,
+                  transition: neuTheme.transitions.default,
+                }}
+              >
+                <Icon className="w-4 h-4" style={{ color: isActive ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted }} />
+                {item.label}
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
 
       {/* Queue contact info during recording */}
       <AnimatePresence>
@@ -116,14 +142,14 @@ export function Sidebar({
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="text-[10px] uppercase tracking-[0.15em] text-blue-400 font-inter mb-1">
+            <p className="text-[10px] uppercase tracking-[0.15em] font-general-sans font-semibold mb-1" style={{ color: neuTheme.colors.accent.primary }}>
               Debriefing
             </p>
-            <p className="text-white font-inter font-bold text-sm">
+            <p className="font-general-sans font-bold text-sm" style={{ color: neuTheme.colors.text.heading }}>
               {queueContact.contactName}
             </p>
             {queueContact.contactTitle && (
-              <p className="text-slate-400 text-xs font-inter">
+              <p className="text-xs font-satoshi" style={{ color: neuTheme.colors.text.body }}>
                 {queueContact.contactTitle} — {queueContact.company}
               </p>
             )}
@@ -132,12 +158,7 @@ export function Sidebar({
       </AnimatePresence>
 
       {/* Mic Button */}
-      <motion.div
-        className="flex flex-col items-center pt-6 pb-4"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.6, duration: 0.4, type: 'spring', stiffness: 200, damping: 15 }}
-      >
+      <div className="flex flex-col items-center pt-6 pb-4">
         <MicButton
           isRecording={isRecording}
           durationSec={durationSec}
@@ -149,56 +170,54 @@ export function Sidebar({
         {/* Coaching prompts during recording */}
         <AnimatePresence mode="wait">
           {isRecording && (
-            <motion.p
+            <motion.div
               key={coachingPromptIndex}
-              className="mt-6 text-xs text-slate-400 font-inter text-center px-6 italic max-w-[250px]"
+              className="mt-6 mx-5 px-4 py-3"
+              style={{ borderRadius: neuTheme.radii.sm, boxShadow: neuTheme.shadows.inset, maxWidth: 240 }}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4 }}
             >
-              {VBRICK_CONFIG.coachingPrompts[coachingPromptIndex % VBRICK_CONFIG.coachingPrompts.length]}
-            </motion.p>
+              <p className="text-xs font-satoshi text-center italic" style={{ color: neuTheme.colors.text.muted }}>
+                {VBRICK_CONFIG.coachingPrompts[coachingPromptIndex % VBRICK_CONFIG.coachingPrompts.length]}
+              </p>
+            </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Paste / drop transcript button */}
+        {/* Paste transcript button */}
         {!isRecording && (
-          <motion.button
+          <button
             onClick={onPasteTranscript}
-            className="mt-4 flex items-center gap-2 text-slate-500 text-xs font-inter hover:text-blue-400 transition-colors cursor-pointer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.3 }}
+            className="mt-4 flex items-center gap-2 text-xs font-satoshi cursor-pointer border-none bg-transparent"
+            style={{ color: neuTheme.colors.text.muted }}
           >
             <ClipboardPaste className="w-4 h-4" />
             Paste Chorus Transcript
-          </motion.button>
+          </button>
         )}
-      </motion.div>
+      </div>
 
       <div className="flex-1" />
 
-      <div className="h-px mx-6 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      {/* Bottom divider */}
+      <div className="h-px mx-6" style={{ background: `linear-gradient(to right, transparent, ${neuTheme.colors.shadow}60, transparent)` }} />
 
       {/* Bottom */}
-      <motion.div
-        className="px-6 py-4 flex items-center justify-between"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-      >
+      <div className="px-6 py-4 flex items-center justify-between">
         <button
           onClick={onSettingsClick}
-          className="text-slate-600 hover:text-slate-400 transition-colors duration-200 cursor-pointer p-1"
+          className="border-none bg-transparent cursor-pointer p-1"
+          style={{ color: neuTheme.colors.text.subtle }}
           aria-label="Settings"
         >
           <Settings className="w-5 h-5" />
         </button>
-        <p className="text-[10px] text-blue-400/60 font-inter italic max-w-[200px] text-right tracking-wide">
+        <p className="text-[10px] font-satoshi italic max-w-[200px] text-right tracking-wide" style={{ color: `${neuTheme.colors.accent.primary}99` }}>
           How you do anything is how you do everything
         </p>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 }

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'motion/react'
 import { Phone } from 'lucide-react'
+import { neuTheme } from '@/lib/vbrick/theme'
 import { DispositionDot, Badge } from './badge'
 import { scoreColorClass } from '@/lib/vbrick/colors'
 import type { CallDisposition, ProspectStatus } from '@/lib/debrief/types'
@@ -47,10 +48,18 @@ function statusLabel(status?: ProspectStatus): string {
 export function RecentCalls({ calls }: { calls: RecentCall[] }) {
   if (calls.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 text-center">
-        <Phone className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-        <p className="text-slate-500 text-sm font-inter">No recent calls</p>
-        <p className="text-slate-600 text-xs font-inter mt-1">
+      <div
+        className="rounded-2xl p-8 text-center"
+        style={{
+          background: neuTheme.colors.bg,
+          boxShadow: neuTheme.shadows.raised,
+        }}
+      >
+        <Phone className="w-6 h-6 mx-auto mb-2" style={{ color: neuTheme.colors.text.subtle }} />
+        <p className="text-sm font-inter" style={{ color: neuTheme.colors.text.muted }}>
+          No recent calls
+        </p>
+        <p className="text-xs font-inter mt-1" style={{ color: neuTheme.colors.text.subtle }}>
           Debriefed calls will appear here
         </p>
       </div>
@@ -63,20 +72,31 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
         {calls.map((call) => (
           <motion.div
             key={call.id}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-200 cursor-default"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default transition-all duration-200"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raisedSm,
+            }}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.3 }}
             layout
+            whileHover={{ boxShadow: neuTheme.shadows.raised }}
           >
             <DispositionDot disposition={call.disposition} />
 
             <div className="flex-1 min-w-0">
-              <p className="text-white font-inter font-semibold text-sm truncate">
+              <p
+                className="font-inter font-semibold text-sm truncate"
+                style={{ color: neuTheme.colors.text.heading }}
+              >
                 {call.contactName}
               </p>
-              <p className="text-slate-500 text-xs font-inter truncate">
+              <p
+                className="text-xs font-inter truncate"
+                style={{ color: neuTheme.colors.text.muted }}
+              >
                 {call.company}
               </p>
             </div>
@@ -89,13 +109,17 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
 
             <span
               className={`font-fira-code font-bold text-sm min-w-[32px] text-right ${
-                call.spinScore ? scoreColorClass(call.spinScore) : 'text-slate-600'
+                call.spinScore ? scoreColorClass(call.spinScore) : ''
               }`}
+              style={!call.spinScore ? { color: neuTheme.colors.text.subtle } : undefined}
             >
               {call.spinScore ? call.spinScore.toFixed(1) : '—'}
             </span>
 
-            <span className="text-slate-600 text-xs font-fira-code min-w-[50px] text-right">
+            <span
+              className="text-xs font-fira-code min-w-[50px] text-right"
+              style={{ color: neuTheme.colors.text.subtle }}
+            >
               {formatRelativeTime(call.timestamp)}
             </span>
           </motion.div>

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'motion/react'
 import { Phone, SkipForward, CheckCircle2 } from 'lucide-react'
+import { neuTheme } from '@/lib/vbrick/theme'
 import { DispositionDot, Badge } from './badge'
 import { scoreColorClass } from '@/lib/vbrick/colors'
 import type { CallDisposition, ProspectStatus } from '@/lib/debrief/types'
@@ -66,24 +67,36 @@ export function CallQueue({
     <div className="space-y-4">
       {/* Queue header */}
       <div className="flex items-center justify-between">
-        <span className="text-[11px] uppercase tracking-[0.2em] text-blue-400 font-inter font-medium">
+        <span
+          className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium"
+          style={{ color: neuTheme.colors.accent.primary }}
+        >
           Session — {totalCount} Calls
         </span>
         <button
           onClick={onEndSession}
-          className="text-xs text-slate-500 hover:text-white font-inter uppercase tracking-wider cursor-pointer transition-colors duration-200"
+          className="text-xs font-inter uppercase tracking-wider cursor-pointer transition-colors duration-200"
+          style={{ color: neuTheme.colors.text.muted }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = neuTheme.colors.text.heading }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = neuTheme.colors.text.muted }}
         >
           End Session
         </button>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+      {/* Progress bar — inset track + raised fill */}
+      <div
+        className="h-2 rounded-full overflow-hidden"
+        style={{
+          background: neuTheme.colors.bg,
+          boxShadow: neuTheme.shadows.insetSm,
+        }}
+      >
         <motion.div
           className="h-full rounded-full"
           style={{
-            background: 'linear-gradient(90deg, #3B82F6, #60A5FA)',
-            boxShadow: '0 0 8px rgba(59,130,246,0.3)',
+            background: `linear-gradient(90deg, ${neuTheme.colors.accent.primary}, ${neuTheme.colors.accent.hover})`,
+            boxShadow: '1px 1px 3px #a3b1c6, -1px -1px 3px #ffffff',
           }}
           initial={{ width: 0 }}
           animate={{ width: `${progressPct}%` }}
@@ -91,35 +104,50 @@ export function CallQueue({
         />
       </div>
 
-      <p className="text-xs text-slate-500 font-fira-code">
+      <p className="text-xs font-fira-code" style={{ color: neuTheme.colors.text.muted }}>
         {completedCount} of {totalCount} completed
       </p>
 
-      {/* Up Next card */}
+      {/* Up Next card — raised neumorphic */}
       {upNext && (
         <div
-          className="rounded-xl border border-blue-500/20 bg-blue-500/[0.04] p-5"
-          style={{ backdropFilter: 'blur(12px)' }}
+          className="rounded-xl p-5"
+          style={{
+            background: neuTheme.colors.bg,
+            boxShadow: neuTheme.shadows.raised,
+            borderLeft: `3px solid ${neuTheme.colors.accent.primary}`,
+          }}
         >
-          <p className="text-[10px] uppercase tracking-[0.15em] text-blue-400 font-inter mb-2">
+          <p
+            className="text-[10px] uppercase tracking-[0.15em] font-inter mb-2"
+            style={{ color: neuTheme.colors.accent.primary }}
+          >
             Up Next
           </p>
-          <h3 className="text-white font-inter font-bold text-lg">
+          <h3
+            className="font-inter font-bold text-lg"
+            style={{ color: neuTheme.colors.text.heading }}
+          >
             {upNext.contact_name}
           </h3>
           {upNext.contact_title && (
-            <p className="text-slate-400 text-sm font-inter">
+            <p className="text-sm font-inter" style={{ color: neuTheme.colors.text.muted }}>
               {upNext.contact_title} — {upNext.company}
             </p>
           )}
           {!upNext.contact_title && (
-            <p className="text-slate-400 text-sm font-inter">{upNext.company}</p>
+            <p className="text-sm font-inter" style={{ color: neuTheme.colors.text.muted }}>
+              {upNext.company}
+            </p>
           )}
 
           {upNext.phone && (
             <a
               href={`tel:${upNext.phone}`}
-              className="text-blue-400 font-fira-code text-lg mt-2 inline-block cursor-pointer hover:text-blue-300 transition-colors"
+              className="font-fira-code text-lg mt-2 inline-block cursor-pointer transition-colors"
+              style={{ color: neuTheme.colors.accent.primary }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = neuTheme.colors.accent.hover }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = neuTheme.colors.accent.primary }}
             >
               <Phone className="w-4 h-4 inline mr-1.5 -mt-0.5" />
               {upNext.phone}
@@ -127,14 +155,20 @@ export function CallQueue({
           )}
 
           {upNext.salesforce_notes && (
-            <p className="text-slate-500 text-xs font-inter mt-2 italic">
+            <p
+              className="text-xs font-inter mt-2 italic"
+              style={{ color: neuTheme.colors.text.muted }}
+            >
               {upNext.salesforce_notes}
             </p>
           )}
 
           <button
             onClick={() => onSkip(upNext.id)}
-            className="mt-3 text-slate-500 text-xs font-inter hover:text-slate-400 transition-colors cursor-pointer flex items-center gap-1"
+            className="mt-3 text-xs font-inter transition-colors cursor-pointer flex items-center gap-1"
+            style={{ color: neuTheme.colors.text.muted }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = neuTheme.colors.text.body }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = neuTheme.colors.text.muted }}
           >
             <SkipForward className="w-3 h-3" />
             Skip
@@ -144,30 +178,53 @@ export function CallQueue({
 
       {!upNext && completedCount > 0 && (
         <div className="text-center py-6">
-          <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-          <p className="text-white font-inter font-bold text-sm">All calls completed</p>
+          <CheckCircle2 className="w-8 h-8 mx-auto mb-2" style={{ color: neuTheme.colors.score.green }} />
+          <p
+            className="font-inter font-bold text-sm"
+            style={{ color: neuTheme.colors.text.heading }}
+          >
+            All calls completed
+          </p>
           <button
             onClick={onEndSession}
-            className="mt-4 px-6 py-3 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20"
+            className="mt-4 px-6 py-3 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 text-white"
+            style={{
+              backgroundColor: neuTheme.colors.accent.primary,
+              boxShadow: neuTheme.shadows.raisedSm,
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = neuTheme.colors.accent.hover }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = neuTheme.colors.accent.primary }}
           >
             End Session — Generate Report
           </button>
         </div>
       )}
 
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div
+        className="h-px"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
+        }}
+      />
 
       {/* Completed calls */}
       {completed.length > 0 && (
         <div className="space-y-1">
-          <p className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-inter mb-2">
+          <p
+            className="text-[10px] uppercase tracking-[0.15em] font-inter mb-2"
+            style={{ color: neuTheme.colors.text.muted }}
+          >
             Completed
           </p>
           <AnimatePresence>
             {completed.map((item) => (
               <motion.div
                 key={item.id}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02]"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg"
+                style={{
+                  background: neuTheme.colors.bg,
+                  boxShadow: neuTheme.shadows.raisedSm,
+                }}
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
@@ -175,9 +232,15 @@ export function CallQueue({
                 {item.disposition ? (
                   <DispositionDot disposition={item.disposition} />
                 ) : (
-                  <span className="w-2.5 h-2.5 rounded-full bg-slate-600 inline-block" />
+                  <span
+                    className="w-2.5 h-2.5 rounded-full inline-block"
+                    style={{ backgroundColor: neuTheme.colors.text.subtle }}
+                  />
                 )}
-                <span className="text-white text-sm font-inter flex-1 truncate">
+                <span
+                  className="text-sm font-inter flex-1 truncate"
+                  style={{ color: neuTheme.colors.text.heading }}
+                >
                   {item.contact_name}
                 </span>
                 {item.prospectStatus && (
@@ -185,10 +248,12 @@ export function CallQueue({
                     {item.prospectStatus.replace(/-/g, ' ')}
                   </Badge>
                 )}
-                <span className={`font-fira-code text-sm ${item.spinScore ? scoreColorClass(item.spinScore) : 'text-slate-600'}`}>
+                <span className={`font-fira-code text-sm ${item.spinScore ? scoreColorClass(item.spinScore) : ''}`}
+                  style={!item.spinScore ? { color: neuTheme.colors.text.subtle } : undefined}
+                >
                   {item.spinScore ? item.spinScore.toFixed(1) : '—'}
                 </span>
-                <span className="text-slate-500 text-xs font-fira-code">
+                <span className="text-xs font-fira-code" style={{ color: neuTheme.colors.text.muted }}>
                   {formatTime(item.completed_at)}
                 </span>
               </motion.div>
@@ -200,21 +265,38 @@ export function CallQueue({
       {/* Remaining queue */}
       {remaining.length > 0 && (
         <div className="space-y-1">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-2" />
-          <p className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-inter mb-2">
+          <div
+            className="h-px my-2"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
+            }}
+          />
+          <p
+            className="text-[10px] uppercase tracking-[0.15em] font-inter mb-2"
+            style={{ color: neuTheme.colors.text.muted }}
+          >
             Remaining
           </p>
           {remaining.map((item) => (
             <button
               key={item.id}
               onClick={() => onJumpTo(item.id)}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg opacity-50 hover:opacity-80 hover:bg-white/[0.03] transition-all duration-200 cursor-pointer w-full text-left"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg opacity-50 hover:opacity-80 transition-all duration-200 cursor-pointer w-full text-left"
+              style={{ background: neuTheme.colors.bg }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = neuTheme.shadows.raisedSm }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}
             >
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-600 inline-block" />
-              <span className="text-white text-sm font-inter flex-1 truncate">
+              <span
+                className="w-2.5 h-2.5 rounded-full inline-block"
+                style={{ backgroundColor: neuTheme.colors.text.subtle }}
+              />
+              <span
+                className="text-sm font-inter flex-1 truncate"
+                style={{ color: neuTheme.colors.text.heading }}
+              >
                 {item.contact_name}
               </span>
-              <span className="text-slate-500 text-xs font-inter truncate">
+              <span className="text-xs font-inter truncate" style={{ color: neuTheme.colors.text.muted }}>
                 {item.company}
               </span>
             </button>
