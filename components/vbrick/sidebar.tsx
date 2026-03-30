@@ -1,18 +1,21 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar, Radio } from 'lucide-react'
+import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar, Radio, PhoneOff, Megaphone } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { PlayerCard } from './player-card'
 import { MicButton } from './mic-button'
-import { CoachingPanel, type CoachingSummary } from './coaching/coaching-panel'
+import type { CoachingSummary } from './coaching/coaching-panel'
+import { NeuButton } from '@/components/vbrick/neu'
 import { VBRICK_CONFIG } from '@/lib/vbrick/config'
 import { neuTheme } from '@/lib/vbrick/theme'
 
 const navItems = [
   { label: 'Dashboard', href: '/vbrick/dashboard', icon: LayoutDashboard },
   { label: 'Stories', href: '/vbrick/dashboard/stories', icon: BookOpen },
+  { label: 'Campaigns', href: '/vbrick/dashboard/campaigns', icon: Megaphone },
   { label: 'Intel', href: '/vbrick/dashboard/ci', icon: Radar },
 ]
 
@@ -45,6 +48,7 @@ interface SidebarProps {
 
 export function Sidebar({
   name,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   email,
   role = 'BDR — Vbrick',
   showStats = true,
@@ -63,6 +67,7 @@ export function Sidebar({
   isCoaching = false,
   onStartCoaching,
   onEndCoaching,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callingSessionId,
 }: SidebarProps) {
   const pathname = usePathname()
@@ -224,17 +229,9 @@ export function Sidebar({
           )}
         </div>
 
-        {/* Live Coaching Panel */}
+        {/* Live Coaching compact indicator */}
         {isCoaching && onEndCoaching && (
-          <div className="flex-1 min-h-0 overflow-hidden">
-            <CoachingPanel
-              email={email}
-              callingSessionId={callingSessionId}
-              contactName={queueContact?.contactName}
-              company={queueContact?.company}
-              onEnd={onEndCoaching}
-            />
-          </div>
+          <CoachingCompactIndicator onEndCoaching={onEndCoaching} />
         )}
 
         {!isCoaching && <div className="flex-1" />}
@@ -258,5 +255,49 @@ export function Sidebar({
         </p>
       </div>
     </div>
+  )
+}
+
+function CoachingCompactIndicator({ onEndCoaching }: { onEndCoaching: (summary: CoachingSummary | null) => void }) {
+  const [elapsed, setElapsed] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => setElapsed((prev) => prev + 1), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const m = Math.floor(elapsed / 60)
+  const s = elapsed % 60
+  const formatted = `${m}:${s.toString().padStart(2, '0')}`
+
+  return (
+    <motion.div
+      className="mx-5 mt-2 mb-2 px-4 py-3 flex items-center justify-between"
+      style={{
+        borderRadius: neuTheme.radii.sm,
+        boxShadow: neuTheme.shadows.raisedSm,
+      }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex items-center gap-2.5">
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600" />
+        </span>
+        <div>
+          <p className="text-xs font-general-sans font-semibold" style={{ color: neuTheme.colors.text.heading }}>
+            Live Coaching
+          </p>
+          <p className="text-[10px] font-satoshi tabular-nums" style={{ color: neuTheme.colors.text.muted }}>
+            {formatted}
+          </p>
+        </div>
+      </div>
+      <NeuButton variant="icon" onClick={() => onEndCoaching(null)} style={{ width: 32, height: 32 }}>
+        <PhoneOff className="w-3.5 h-3.5" style={{ color: '#dc2626' }} />
+      </NeuButton>
+    </motion.div>
   )
 }

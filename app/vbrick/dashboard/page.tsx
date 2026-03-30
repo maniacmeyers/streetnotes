@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'motion/react'
+import { motion, AnimatePresence } from 'motion/react'
 import { Sidebar } from '@/components/vbrick/sidebar'
 import { IntentionScreen } from '@/components/vbrick/intention-screen'
 import { Leaderboard } from '@/components/vbrick/leaderboard'
@@ -18,7 +18,8 @@ import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debri
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
 import { isVbrickBdr, VBRICK_CONFIG } from '@/lib/vbrick/config'
 import { PostCallSummary } from '@/components/vbrick/coaching/post-call-summary'
-import type { CoachingSummary } from '@/components/vbrick/coaching/coaching-panel'
+import { CoachingPanel, type CoachingSummary } from '@/components/vbrick/coaching/coaching-panel'
+import { NeuCard } from '@/components/vbrick/neu'
 
 interface StatsData {
   thisWeek: {
@@ -467,6 +468,41 @@ export default function VbrickDashboardPage() {
         {isRecording && (
           <div className="fixed inset-0 ml-[288px] bg-black/10 z-20 pointer-events-none" />
         )}
+
+        {/* Live Coaching overlay */}
+        <AnimatePresence>
+          {isCoaching && (
+            <motion.div
+              className="fixed inset-0 ml-[288px] z-30 flex items-center justify-center"
+              style={{ background: 'rgba(224, 229, 236, 0.85)' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="w-full max-w-2xl mx-4"
+                initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.97 }}
+                transition={{ duration: 0.35, delay: 0.05 }}
+              >
+                <NeuCard padding="lg" radius="xl" hover={false}>
+                  <CoachingPanel
+                    email={email}
+                    callingSessionId={sessionId}
+                    contactName={upNextContact?.contact_name}
+                    company={upNextContact?.company}
+                    onEnd={(summary) => {
+                      setIsCoaching(false)
+                      if (summary) setCoachingSummary(summary)
+                    }}
+                  />
+                </NeuCard>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="px-8 py-8 space-y-8 relative z-10">
           {/* Debrief flow (from mic recording) */}

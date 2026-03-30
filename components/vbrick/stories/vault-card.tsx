@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus } from 'lucide-react'
+import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus, Trash2 } from 'lucide-react'
 import { motion } from 'motion/react'
 import { NeuCard, NeuBadge, NeuButton } from '@/components/vbrick/neu'
 import { NeuToggle } from '@/components/vbrick/neu'
@@ -32,9 +32,11 @@ interface VaultCardProps {
   onAdopt?: () => void
   /** True while adopt API is in flight */
   adopting?: boolean
+  /** Called when user wants to delete this vault entry */
+  onDelete?: () => void
 }
 
-export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false, onPractice, onAdopt, adopting = false }: VaultCardProps) {
+export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false, onPractice, onAdopt, adopting = false, onDelete }: VaultCardProps) {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -160,7 +162,7 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
         </div>
       )}
 
-      {/* Share toggle */}
+      {/* Share toggle + delete */}
       {showShare && onToggleShare && (
         <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: `1px solid ${neuTheme.colors.shadow}30` }}>
           <div className="flex items-center gap-2">
@@ -169,10 +171,41 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
               Share to team
             </span>
           </div>
-          <NeuToggle
-            checked={entry.shared_to_team}
-            onChange={() => onToggleShare()}
-          />
+          <div className="flex items-center gap-3">
+            {onDelete && expanded && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onDelete() }}
+                className="p-1.5 rounded-lg border-none cursor-pointer transition-colors duration-150"
+                style={{ background: 'transparent', color: neuTheme.colors.text.muted }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.background = '#dc262610' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = neuTheme.colors.text.muted; e.currentTarget.style.background = 'transparent' }}
+                title="Delete from vault"
+              >
+                <Trash2 size={14} />
+              </button>
+            )}
+            <NeuToggle
+              checked={entry.shared_to_team}
+              onChange={() => onToggleShare()}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Delete button standalone (when no share toggle) */}
+      {onDelete && expanded && !(showShare && onToggleShare) && (
+        <div className="flex items-center justify-end mt-4 pt-3" style={{ borderTop: `1px solid ${neuTheme.colors.shadow}30` }}>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete() }}
+            className="flex items-center gap-1.5 p-1.5 rounded-lg border-none cursor-pointer transition-colors duration-150 font-satoshi text-xs"
+            style={{ background: 'transparent', color: neuTheme.colors.text.muted }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.background = '#dc262610' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = neuTheme.colors.text.muted; e.currentTarget.style.background = 'transparent' }}
+            title="Delete from vault"
+          >
+            <Trash2 size={14} />
+            Delete
+          </button>
         </div>
       )}
     </NeuCard>

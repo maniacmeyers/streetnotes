@@ -148,6 +148,14 @@ export default function StoryVaultPage() {
     setActiveDraft({ ...activeDraft, draft_content: content })
   }
 
+  const handleDeleteVaultEntry = async (entryId: string) => {
+    const res = await fetch(`/api/vbrick/stories/vault/${entryId}`, { method: 'DELETE' })
+    if (res.ok) {
+      fetchVault()
+      fetchTeamVault()
+    }
+  }
+
   const handleToggleShare = async (entryId: string, currentlyShared: boolean) => {
     await fetch(`/api/vbrick/stories/vault/${entryId}`, {
       method: 'PATCH',
@@ -411,6 +419,7 @@ export default function StoryVaultPage() {
                       showShare
                       onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
                       onPractice={() => handlePracticeFromVault(entry)}
+                      onDelete={() => handleDeleteVaultEntry(entry.id)}
                     />
                   </motion.div>
                 ))}
@@ -438,6 +447,7 @@ export default function StoryVaultPage() {
                       showAuthor
                       onAdopt={() => handleAdoptAndPractice(entry)}
                       adopting={adoptingId === entry.id}
+                      onDelete={entry.bdr_email === email ? () => handleDeleteVaultEntry(entry.id) : undefined}
                     />
                   </motion.div>
                 ))}

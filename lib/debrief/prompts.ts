@@ -37,6 +37,30 @@ A concise narrative paragraph (3-5 sentences) summarizing the meeting in the way
 - painPoints: problems the prospect is experiencing. String array.
 - risks: things that could stall or kill the deal. String array.
 
+7. COMPETITIVE INTELLIGENCE EXTRACTION
+For every competitor, alternative solution, or incumbent vendor mentioned in the transcript, extract detailed competitive intelligence. This includes competitors mentioned by name, current solutions the prospect uses, and any tools or vendors referenced in comparison.
+
+For each mention, extract an object with:
+- competitorName: The competitor or vendor name. Normalize common abbreviations (e.g., "SFDC" to "Salesforce", "MS Stream" to "Microsoft Stream"). Use proper casing.
+- contextQuote: The relevant sentence or phrase from the transcript that mentions this competitor. Keep it verbatim or near-verbatim. 1-3 sentences max.
+- sentiment: How the prospect or rep feels about this competitor based on context:
+  - "negative" — frustration, complaints, wanting to switch away, dissatisfaction
+  - "positive" — satisfaction, praise, preference for the competitor
+  - "neutral" — factual mention without strong feeling
+- mentionCategory: What the mention is about:
+  - "pricing" — cost, pricing model, budget comparison
+  - "features" — capability comparison, feature gaps, what it does or does not do
+  - "switching" — actively evaluating a switch, in process of migrating
+  - "satisfaction" — general satisfaction or dissatisfaction with the tool
+  - "comparison" — direct comparison during an evaluation process
+  - "contract" — contract terms, renewal timing, lock-in
+  - "migration" — migration complexity, switching costs, data portability
+  - "general" — mentioned without specific context
+
+Add "ciMentions" to your output as an array of these objects. If no competitors are mentioned, use an empty array [].
+
+Include the CURRENT SOLUTION as a competitor mention if one is named. For example, if the prospect says "we use Datadog and it's expensive", extract a mention with competitorName "Datadog", sentiment "negative", mentionCategory "pricing".
+
 RULES:
 - Extract ONLY what was explicitly stated or clearly implied. NEVER fabricate company names, contact names, deal values, or dates.
 - If a field has no supporting evidence, use "Not mentioned" for strings, [] for arrays.
@@ -88,7 +112,15 @@ EXAMPLE OUTPUT (for segment "enterprise"):
   "competitorsMentioned": ["Datadog"],
   "productsDiscussed": [],
   "painPoints": ["Current tool pricing ($200K/yr)", "Migration complexity concerns"],
-  "risks": ["CTO not directly engaged yet — support is secondhand", "Migration anxiety could stall even with budget"]
+  "risks": ["CTO not directly engaged yet — support is secondhand", "Migration anxiety could stall even with budget"],
+  "ciMentions": [
+    {
+      "competitorName": "Datadog",
+      "contextQuote": "They're using Datadog right now but she said they're frustrated with the pricing — paying about 200K a year",
+      "sentiment": "negative",
+      "mentionCategory": "pricing"
+    }
+  ]
 }
 
 EXAMPLE INPUT 2:
@@ -126,7 +158,8 @@ EXAMPLE OUTPUT 2 (for segment "smb"):
   "competitorsMentioned": [],
   "productsDiscussed": [],
   "painPoints": [],
-  "risks": ["No company or contact name captured", "No specific pain or need identified", "Vague timeline with no commitment"]
+  "risks": ["No company or contact name captured", "No specific pain or need identified", "Vague timeline with no commitment"],
+  "ciMentions": []
 }
 
 Respond with valid JSON matching this exact schema. No markdown, no explanation, just the JSON object.`
@@ -192,6 +225,19 @@ What should happen next and when. This should match the truth — if they said "
 10. AE BRIEFING
 Only generate this when prospectStatus is "active-opportunity" or a meeting was explicitly booked. 3-5 sentences the AE reads before the call: who they're meeting, what the prospect cares about, what they're currently using, what objections were raised, what to lead with, what to avoid. Set to null if no handoff.
 
+11. COMPETITIVE INTELLIGENCE EXTRACTION
+For every competitor, alternative solution, or incumbent vendor mentioned in the transcript, extract detailed competitive intelligence.
+
+For each mention, extract an object with:
+- competitorName: The competitor or vendor name, properly cased. Normalize abbreviations.
+- contextQuote: Verbatim or near-verbatim 1-3 sentences from the transcript.
+- sentiment: "negative", "positive", or "neutral" based on context.
+- mentionCategory: "pricing", "features", "switching", "satisfaction", "comparison", "contract", "migration", or "general".
+
+Add "ciMentions" to your output as an array of these objects. If no competitors are mentioned, use [].
+
+Include the CURRENT SOLUTION as a competitor mention if one is named. If the prospect says "we use Panopto and the contract is up", that is a mention with competitorName "Panopto", sentiment "neutral", mentionCategory "contract".
+
 RULES:
 - Extract ONLY what was explicitly stated or clearly implied. NEVER fabricate names, companies, or details.
 - If a field has no evidence, use "Not mentioned" for strings, [] for arrays, null for objects.
@@ -226,7 +272,15 @@ EXAMPLE OUTPUT:
     "action": "Call back Marcus in August before Panopto renewal. Also reach out to Jennifer for day-to-day perspective.",
     "when": "August"
   },
-  "aeBriefing": null
+  "aeBriefing": null,
+  "ciMentions": [
+    {
+      "competitorName": "Panopto",
+      "contextQuote": "They're using Panopto right now but their contract is up in September. He said they're not actively looking but he'd be open to seeing what's out there when renewal comes up.",
+      "sentiment": "neutral",
+      "mentionCategory": "contract"
+    }
+  ]
 }
 
 EXAMPLE INPUT 2:
@@ -253,7 +307,15 @@ EXAMPLE OUTPUT 2:
     "action": "Confirm demo invite sent to Priya Sharma for Thursday 2pm. Brief Jake on the call.",
     "when": "Today"
   },
-  "aeBriefing": "Meeting with Priya Sharma, Director of L&D at TechCorp. She's the budget holder for L&D tooling. They're on Microsoft Stream and it's broken — search doesn't work, employees can't find content. She has urgency: company all-hands in 6 weeks and wants a new platform live by then. Only concern is implementation timeline. Lead with speed-to-deploy and search capabilities. Avoid long implementation timelines or phased rollout talk — she needs fast."
+  "aeBriefing": "Meeting with Priya Sharma, Director of L&D at TechCorp. She's the budget holder for L&D tooling. They're on Microsoft Stream and it's broken — search doesn't work, employees can't find content. She has urgency: company all-hands in 6 weeks and wants a new platform live by then. Only concern is implementation timeline. Lead with speed-to-deploy and search capabilities. Avoid long implementation timelines or phased rollout talk — she needs fast.",
+  "ciMentions": [
+    {
+      "competitorName": "Microsoft Stream",
+      "contextQuote": "They're doing everything through Microsoft Stream right now and it's a mess — she said their employees can't find anything and search is broken.",
+      "sentiment": "negative",
+      "mentionCategory": "satisfaction"
+    }
+  ]
 }
 
 Respond with valid JSON matching this exact schema. No markdown, no explanation, just the JSON object.`
@@ -349,6 +411,19 @@ RULES for SPIN scoring:
 - Be honest. A cold call where the BDR just pitched without asking questions should score low.
 - The coaching note must reference specific details from THIS call
 
+12. COMPETITIVE INTELLIGENCE EXTRACTION
+For every competitor, alternative solution, or incumbent vendor mentioned in the transcript, extract detailed competitive intelligence.
+
+For each mention, extract an object with:
+- competitorName: The competitor or vendor name, properly cased. Normalize abbreviations.
+- contextQuote: Verbatim or near-verbatim 1-3 sentences from the transcript.
+- sentiment: "negative", "positive", or "neutral" based on context.
+- mentionCategory: "pricing", "features", "switching", "satisfaction", "comparison", "contract", "migration", or "general".
+
+Add "ciMentions" to your output as an array of these objects. If no competitors are mentioned, use [].
+
+Include the CURRENT SOLUTION as a competitor mention if one is named.
+
 RULES:
 - Extract ONLY what was explicitly stated or clearly implied. NEVER fabricate names, companies, or details.
 - If a field has no evidence, use "Not mentioned" for strings, [] for arrays, null for objects.
@@ -390,7 +465,15 @@ EXAMPLE OUTPUT:
     "needPayoff": { "score": 0, "evidence": [], "missed": "No problem surfaced, so no need-payoff to pursue. Next call: if pain emerges, ask what a better video platform would mean for the team." },
     "composite": 1.8,
     "coachingNote": "You got the situation locked down — Panopto, September renewal, Jennifer runs it daily. But you left without any pain. Next call with Marcus or Jennifer: ask what's not working with Panopto today, or what they wish it did better."
-  }
+  },
+  "ciMentions": [
+    {
+      "competitorName": "Panopto",
+      "contextQuote": "They're using Panopto right now but their contract is up in September. He said they're not actively looking but he'd be open to seeing what's out there when renewal comes up.",
+      "sentiment": "neutral",
+      "mentionCategory": "contract"
+    }
+  ]
 }
 
 EXAMPLE INPUT 2:
@@ -425,7 +508,15 @@ EXAMPLE OUTPUT 2:
     "needPayoff": { "score": 3.0, "evidence": ["She wants to see a demo — implies she believes a new platform could solve it"], "missed": "Should have asked what it would mean for her team if employees could actually find what they need. Let her paint the picture of success." },
     "composite": 5.4,
     "coachingNote": "You got her to say search is broken and employees can't find anything — strong problem uncovering. Next step: before the demo, ask what happens when people miss content from the all-hands, and what it would mean for L&D metrics if findability improved. Let her sell the ROI story internally."
-  }
+  },
+  "ciMentions": [
+    {
+      "competitorName": "Microsoft Stream",
+      "contextQuote": "They're doing everything through Microsoft Stream right now and it's a mess — she said their employees can't find anything and search is broken.",
+      "sentiment": "negative",
+      "mentionCategory": "satisfaction"
+    }
+  ]
 }
 
 Respond with valid JSON matching this exact schema. No markdown, no explanation, just the JSON object.`

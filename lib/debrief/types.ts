@@ -1,3 +1,5 @@
+import type { CIExtraction } from '@/lib/ci/types'
+
 export type DealSegment = 'smb' | 'mid-market' | 'enterprise' | 'partner-channel' | 'bdr-cold-call'
 
 export type CallDisposition = 'connected' | 'voicemail' | 'gatekeeper' | 'no-answer'
@@ -43,6 +45,7 @@ export interface DebriefStructuredOutput {
   productsDiscussed: string[]
   painPoints: string[]
   risks: string[]
+  ciMentions: CIExtraction[]
 }
 
 /* ─── BDR Cold Call Output ─── */
@@ -80,6 +83,7 @@ export interface BDRStructuredOutput {
   }
 
   aeBriefing: string | null
+  ciMentions: CIExtraction[]
 }
 
 /* ─── SPIN Scoring (Vbrick) ─── */

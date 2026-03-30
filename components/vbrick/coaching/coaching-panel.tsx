@@ -227,8 +227,8 @@ export function CoachingPanel({ email, callingSessionId, contactName, company, o
         style={{
           borderRadius: neuTheme.radii.sm,
           boxShadow: neuTheme.shadows.insetSm,
-          maxHeight: 80,
-          fontSize: 11,
+          maxHeight: 160,
+          fontSize: 12,
           fontFamily: 'var(--font-satoshi)',
           color: neuTheme.colors.text.muted,
           lineHeight: 1.5,
@@ -271,13 +271,13 @@ export function CoachingPanel({ email, callingSessionId, contactName, company, o
                 <X className="w-3 h-3" />
               </button>
               <p
-                className="text-[10px] uppercase tracking-widest font-general-sans font-semibold mb-0.5"
+                className="text-xs uppercase tracking-widest font-general-sans font-semibold mb-0.5"
                 style={{ color: prompt.color }}
               >
                 {prompt.intent.replace(/_/g, ' ')}
               </p>
               <p
-                className="text-xs font-satoshi leading-snug pr-4"
+                className="text-sm font-satoshi leading-snug pr-4"
                 style={{ color: neuTheme.colors.text.heading }}
               >
                 {prompt.text}
