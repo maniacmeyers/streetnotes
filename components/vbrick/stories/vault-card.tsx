@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Share2, Calendar, ChevronDown, Trophy } from 'lucide-react'
+import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus } from 'lucide-react'
 import { motion } from 'motion/react'
-import { NeuCard, NeuBadge } from '@/components/vbrick/neu'
+import { NeuCard, NeuBadge, NeuButton } from '@/components/vbrick/neu'
 import { NeuToggle } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { STORY_TYPE_LABELS, type VaultEntry } from '@/lib/vbrick/story-types'
@@ -26,9 +26,15 @@ interface VaultCardProps {
   onToggleShare?: () => void
   /** Show BDR name (for team vault view) */
   showAuthor?: boolean
+  /** Called when user wants to practice this story */
+  onPractice?: () => void
+  /** Called when user wants to adopt a team story and practice it */
+  onAdopt?: () => void
+  /** True while adopt API is in flight */
+  adopting?: boolean
 }
 
-export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false }: VaultCardProps) {
+export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false, onPractice, onAdopt, adopting = false }: VaultCardProps) {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -120,6 +126,39 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
           </div>
         </div>
       </div>
+
+      {/* Practice / Adopt buttons */}
+      {(onPractice || onAdopt) && expanded && (
+        <div className="flex items-center gap-3 mt-4">
+          {onPractice && (
+            <NeuButton
+              variant="accent"
+              size="sm"
+              onClick={(e: React.MouseEvent) => { e.stopPropagation(); onPractice() }}
+            >
+              <Mic size={14} className="mr-1.5 inline-block" />
+              Practice This Story
+            </NeuButton>
+          )}
+          {onAdopt && (
+            <NeuButton
+              variant="accent"
+              size="sm"
+              onClick={(e: React.MouseEvent) => { e.stopPropagation(); onAdopt() }}
+              disabled={adopting}
+            >
+              {adopting ? (
+                <>Adding...</>
+              ) : (
+                <>
+                  <Plus size={14} className="mr-1.5 inline-block" />
+                  Add to My Vault &amp; Practice
+                </>
+              )}
+            </NeuButton>
+          )}
+        </div>
+      )}
 
       {/* Share toggle */}
       {showShare && onToggleShare && (

@@ -38,6 +38,9 @@ export default function StoryVaultPage() {
   // Score state
   const [lastScore, setLastScore] = useState<{ score: StoryScore; isNewBest: boolean; xpEarned: number } | null>(null)
 
+  // Adopt state (for team vault → practice flow)
+  const [adoptingId, setAdoptingId] = useState<string | null>(null)
+
   // XP toast
   const [xpToast, setXPToast] = useState<{ xp: number; visible: boolean }>({ xp: 0, visible: false })
 
@@ -153,6 +156,44 @@ export default function StoryVaultPage() {
     })
     fetchVault()
     fetchTeamVault()
+  }
+
+  // Practice a story from the user's personal vault
+  const handlePracticeFromVault = async (entry: VaultEntry) => {
+    if (!email) return
+
+    // Fetch the original draft to get the script content
+    const res = await fetch(`/api/vbrick/stories/drafts/${entry.story_draft_id}`)
+    if (res.ok) {
+      const data = await res.json()
+      const draft = data.draft as StoryDraft
+      setActiveDraft(draft)
+      setActiveFrameworkType(draft.story_type as StoryType)
+      setView('practice')
+    }
+  }
+
+  // Adopt a team story → create a draft copy → go to practice
+  const handleAdoptAndPractice = async (entry: VaultEntry) => {
+    if (!email) return
+    setAdoptingId(entry.id)
+
+    try {
+      const res = await fetch('/api/vbrick/stories/drafts/adopt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vault_entry_id: entry.id, email }),
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setActiveDraft(data.draft as StoryDraft)
+        setActiveFrameworkType(data.draft.story_type as StoryType)
+        setView('practice')
+      }
+    } finally {
+      setAdoptingId(null)
+    }
   }
 
   if (!email) {
@@ -369,6 +410,7 @@ export default function StoryVaultPage() {
                       entry={entry}
                       showShare
                       onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
+                      onPractice={() => handlePracticeFromVault(entry)}
                     />
                   </motion.div>
                 ))}
@@ -391,7 +433,12 @@ export default function StoryVaultPage() {
               <div className="space-y-4">
                 {teamVault.map((entry, i) => (
                   <motion.div key={entry.id} variants={cascadeIn} custom={i}>
-                    <VaultCard entry={entry} showAuthor />
+                    <VaultCard
+                      entry={entry}
+                      showAuthor
+                      onAdopt={() => handleAdoptAndPractice(entry)}
+                      adopting={adoptingId === entry.id}
+                    />
                   </motion.div>
                 ))}
               </div>
