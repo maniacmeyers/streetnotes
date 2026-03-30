@@ -391,7 +391,7 @@ export default function StoryVaultPage() {
               <div className="space-y-4">
                 {teamVault.map((entry, i) => (
                   <motion.div key={entry.id} variants={cascadeIn} custom={i}>
-                    <VaultCard entry={entry} />
+                    <VaultCard entry={entry} showAuthor />
                   </motion.div>
                 ))}
               </div>

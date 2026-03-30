@@ -1,6 +1,8 @@
 'use client'
 
-import { Share2, Calendar } from 'lucide-react'
+import { useState } from 'react'
+import { Share2, Calendar, ChevronDown, Trophy } from 'lucide-react'
+import { motion } from 'motion/react'
 import { NeuCard, NeuBadge } from '@/components/vbrick/neu'
 import { NeuToggle } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
@@ -22,55 +24,100 @@ interface VaultCardProps {
   entry: VaultEntry
   showShare?: boolean
   onToggleShare?: () => void
+  /** Show BDR name (for team vault view) */
+  showAuthor?: boolean
 }
 
-export function VaultCard({ entry, showShare = false, onToggleShare }: VaultCardProps) {
+export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false }: VaultCardProps) {
+  const [expanded, setExpanded] = useState(false)
+
   return (
     <NeuCard padding="md">
-      <div className="flex items-start justify-between gap-3">
+      {/* Header row — clickable to expand */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-start justify-between gap-3 text-left border-none bg-transparent cursor-pointer p-0"
+      >
         {/* Left: type badge + title + date */}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             <NeuBadge variant="accent">
               {STORY_TYPE_LABELS[entry.story_type]}
             </NeuBadge>
             {entry.is_personal_best && (
-              <NeuBadge variant="success" size="sm">PB</NeuBadge>
+              <span className="inline-flex items-center gap-1 text-[10px] font-satoshi font-medium" style={{ color: '#16a34a' }}>
+                <Trophy size={10} />
+                Personal Best
+              </span>
             )}
           </div>
 
           <h4
-            className="font-general-sans font-bold text-base truncate"
+            className="font-general-sans font-bold text-base"
             style={{ color: neuTheme.colors.text.heading }}
           >
             {entry.title}
           </h4>
 
-          <div className="flex items-center gap-1.5 mt-1">
-            <Calendar size={12} style={{ color: neuTheme.colors.text.subtle }} />
-            <span
-              className="font-satoshi text-xs"
-              style={{ color: neuTheme.colors.text.subtle }}
-            >
-              {formatDate(entry.created_at)}
-            </span>
+          <div className="flex items-center gap-3 mt-1">
+            <div className="flex items-center gap-1.5">
+              <Calendar size={12} style={{ color: neuTheme.colors.text.subtle }} />
+              <span className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.subtle }}>
+                {formatDate(entry.created_at)}
+              </span>
+            </div>
+            {showAuthor && (
+              <span className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.muted }}>
+                by {entry.bdr_email.split('@')[0].replace('.', ' ')}
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Right: score */}
-        <div className="flex flex-col items-center shrink-0">
-          <span
-            className="font-general-sans font-black text-3xl tabular-nums"
-            style={{ color: scoreColor(entry.composite_score) }}
+        {/* Right: score + expand chevron */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex flex-col items-center">
+            <span
+              className="font-general-sans font-black text-3xl tabular-nums"
+              style={{ color: scoreColor(entry.composite_score) }}
+            >
+              {entry.composite_score.toFixed(1)}
+            </span>
+            <span
+              className="text-[9px] uppercase tracking-widest font-satoshi"
+              style={{ color: neuTheme.colors.text.subtle }}
+            >
+              score
+            </span>
+          </div>
+          <motion.div
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.25 }}
           >
-            {entry.composite_score.toFixed(1)}
-          </span>
-          <span
-            className="text-[9px] uppercase tracking-widest font-satoshi"
-            style={{ color: neuTheme.colors.text.subtle }}
+            <ChevronDown size={18} style={{ color: neuTheme.colors.text.muted }} />
+          </motion.div>
+        </div>
+      </button>
+
+      {/* Expandable story content */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateRows: expanded ? '1fr' : '0fr',
+          transition: 'grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+      >
+        <div style={{ overflow: 'hidden' }}>
+          <div
+            className="mt-4 px-4 py-4 font-satoshi text-sm leading-relaxed whitespace-pre-wrap"
+            style={{
+              color: neuTheme.colors.text.body,
+              borderRadius: neuTheme.radii.md,
+              boxShadow: neuTheme.shadows.inset,
+            }}
           >
-            score
-          </span>
+            {entry.transcript}
+          </div>
         </div>
       </div>
 
@@ -79,10 +126,7 @@ export function VaultCard({ entry, showShare = false, onToggleShare }: VaultCard
         <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: `1px solid ${neuTheme.colors.shadow}30` }}>
           <div className="flex items-center gap-2">
             <Share2 size={14} style={{ color: neuTheme.colors.text.muted }} />
-            <span
-              className="font-satoshi text-xs"
-              style={{ color: neuTheme.colors.text.muted }}
-            >
+            <span className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.muted }}>
               Share to team
             </span>
           </div>
