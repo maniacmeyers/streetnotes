@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar, Radio, PhoneOff, Megaphone } from 'lucide-react'
+import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar, Radio, PhoneOff, Megaphone, ScrollText } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -17,6 +17,7 @@ const navItems = [
   { label: 'Stories', href: '/vbrick/dashboard/stories', icon: BookOpen },
   { label: 'Campaigns', href: '/vbrick/dashboard/campaigns', icon: Megaphone },
   { label: 'Intel', href: '/vbrick/dashboard/ci', icon: Radar },
+  { label: 'Playbook', href: '/vbrick/dashboard/playbook', icon: ScrollText },
 ]
 
 interface SidebarProps {
