@@ -71,6 +71,7 @@ export async function POST(request: Request) {
         company: string
         phone?: string
         salesforceNotes?: string
+        extraFields?: Record<string, string>
       }, i: number) => ({
         session_id: session.id,
         contact_name: c.contactName,
@@ -78,6 +79,7 @@ export async function POST(request: Request) {
         company: c.company,
         phone: c.phone || null,
         salesforce_notes: c.salesforceNotes || null,
+        extra_fields: c.extraFields && Object.keys(c.extraFields).length > 0 ? c.extraFields : {},
         queue_position: i + 1,
         status: 'pending',
       }))

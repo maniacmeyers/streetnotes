@@ -12,6 +12,7 @@ export interface QueueContact {
   company: string
   phone: string
   salesforceNotes: string
+  extraFields: Record<string, string>
 }
 
 export const DEFAULT_IMPORT_MAPPING: ColumnMapping = {
@@ -94,6 +95,11 @@ export function parseCallListCSV(
   const phoneIdx = getIndex(mapping.phone)
   const notesIdx = getIndex(mapping.notes)
 
+  // Track which column indices are mapped so we can capture the rest
+  const mappedIndices = new Set(
+    [nameIdx, titleIdx, companyIdx, phoneIdx, notesIdx].filter(i => i >= 0)
+  )
+
   if (nameIdx === -1 && companyIdx === -1) {
     return []
   }
@@ -109,12 +115,21 @@ export function parseCallListCSV(
 
     if (!name && !company) continue
 
+    // Collect all unmapped columns into extraFields
+    const extraFields: Record<string, string> = {}
+    for (let j = 0; j < headers.length; j++) {
+      if (!mappedIndices.has(j) && values[j]) {
+        extraFields[headers[j]] = values[j]
+      }
+    }
+
     contacts.push({
       contactName: name,
       contactTitle: titleIdx >= 0 ? values[titleIdx] || '' : '',
       company,
       phone: phoneIdx >= 0 ? values[phoneIdx] || '' : '',
       salesforceNotes: notesIdx >= 0 ? values[notesIdx] || '' : '',
+      extraFields,
     })
   }
 

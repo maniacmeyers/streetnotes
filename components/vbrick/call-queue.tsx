@@ -14,6 +14,7 @@ export interface QueueItem {
   company: string
   phone: string | null
   salesforce_notes: string | null
+  extra_fields: Record<string, string> | null
   queue_position: number
   status: 'pending' | 'completed' | 'skipped'
   debrief_session_id: string | null
@@ -161,6 +162,16 @@ export function CallQueue({
             >
               {upNext.salesforce_notes}
             </p>
+          )}
+
+          {upNext.extra_fields && Object.keys(upNext.extra_fields).length > 0 && (
+            <div className="mt-2 space-y-0.5">
+              {Object.entries(upNext.extra_fields).map(([key, value]) => (
+                <p key={key} className="text-xs font-inter" style={{ color: neuTheme.colors.text.muted }}>
+                  <span style={{ color: neuTheme.colors.text.body }}>{key}:</span> {value}
+                </p>
+              ))}
+            </div>
           )}
 
           <button
