@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { fetchSalesforceStages } from '@/lib/crm/salesforce'
 import { fetchHubSpotStages } from '@/lib/crm/hubspot'
+import { fetchPipedriveStages } from '@/lib/crm/pipedrive'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
 
@@ -18,10 +19,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const crmType = request.nextUrl.searchParams.get('crm') as 'salesforce' | 'hubspot'
+  const crmType = request.nextUrl.searchParams.get('crm') as 'salesforce' | 'hubspot' | 'pipedrive'
   const forceRefresh = request.nextUrl.searchParams.get('refresh') === 'true'
 
-  if (!crmType || !['salesforce', 'hubspot'].includes(crmType)) {
+  if (!crmType || !['salesforce', 'hubspot', 'pipedrive'].includes(crmType)) {
     return NextResponse.json({ error: 'Invalid CRM type' }, { status: 400 })
   }
 
@@ -46,7 +47,9 @@ export async function GET(request: NextRequest) {
   try {
     const stages = crmType === 'salesforce'
       ? await fetchSalesforceStages(supabase, user.id)
-      : await fetchHubSpotStages(supabase, user.id)
+      : crmType === 'hubspot'
+      ? await fetchHubSpotStages(supabase, user.id)
+      : await fetchPipedriveStages(supabase, user.id)
 
     // Upsert cache
     await supabase

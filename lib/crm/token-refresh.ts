@@ -27,7 +27,7 @@ interface DecryptedTokens {
 export async function getValidTokens(
   supabase: SupabaseClient,
   userId: string,
-  crmType: 'salesforce' | 'hubspot'
+  crmType: 'salesforce' | 'hubspot' | 'pipedrive'
 ): Promise<DecryptedTokens | null> {
   const { data: conn, error } = await supabase
     .from('crm_connections')
@@ -145,6 +145,49 @@ async function refreshHubSpotToken(
     .update({
       access_token: encryptedAccess,
       refresh_token: encryptedRefresh,
+      token_expires_at: expiresAt,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', conn.id)
+
+  return {
+    accessToken: tokens.access_token,
+    refreshToken: tokens.refresh_token || (conn.refresh_token ? decryptToken(conn.refresh_token) : null),
+    instanceUrl: null,
+  }
+}
+
+async function refreshPipedriveToken(
+  conn: CrmConnection,
+  supabase: SupabaseClient
+): Promise<DecryptedTokens | null> {
+  const res = await fetch('https://oauth.pipedrive.com/oauth/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: decryptToken(conn.refresh_token!),
+      client_id: process.env.PIPEDRIVE_CLIENT_ID!,
+      client_secret: process.env.PIPEDRIVE_CLIENT_SECRET!,
+    }),
+  })
+
+  if (!res.ok) {
+    console.error('Pipedrive token refresh failed:', await res.text())
+    return null
+  }
+
+  const tokens = await res.json()
+  const newAccessToken = tokens.access_token
+  const expiresAt = tokens.expires_in
+    ? new Date(Date.now() + tokens.expires_in * 1000).toISOString()
+    : null
+
+  await supabase
+    .from('crm_connections')
+    .update({
+      access_token: encryptToken(newAccessToken),
+      refresh_token: tokens.refresh_token ? encryptToken(tokens.refresh_token) : conn.refresh_token,
       token_expires_at: expiresAt,
       updated_at: new Date().toISOString(),
     })

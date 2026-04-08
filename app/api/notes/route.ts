@@ -68,7 +68,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('notes')
-    .select('id, title, status, created_at, structured_output')
+    .select('id, title, status, push_status, created_at, structured_output')
     .order('created_at', { ascending: false })
     .limit(50)
 

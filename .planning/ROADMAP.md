@@ -15,9 +15,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Auth Foundation** - Working Supabase auth, Next.js App Router scaffolding, and database schema with RLS
 - [x] **Phase 2: Voice Capture + Transcription** - Mobile voice recording with iOS format detection and Whisper transcription
 - [x] **Phase 3: AI Structuring Pipeline** - Claude structured output, CRMNote Zod schema, and note storage
-- [ ] **Phase 4: CRM OAuth Connections** - Salesforce + HubSpot OAuth flows with encrypted token storage
-- [ ] **Phase 5: CRM Push + Actions** - Create/update contacts, deals, and tasks in connected CRM with sync status
-- [ ] **Phase 6: Review UI + Dashboard** - Editable review card, dashboard launch pad, and note history view
+- [x] **Phase 4: CRM OAuth Connections** - Salesforce + HubSpot OAuth flows with encrypted token storage
+- [x] **Phase 5: CRM Push + Actions** - Create/update contacts, deals, and tasks in connected CRM with sync status
+- [x] **Phase 6: Review UI + Dashboard** - Editable review card, dashboard launch pad, and note history view
 
 ## Phase Details
 
@@ -98,12 +98,12 @@ Plans:
   3. User can create a new contact in their CRM if one is not found
   4. Follow-up tasks are automatically scheduled in the CRM from the next steps extracted in the note
   5. Each note shows a clear sync status — locally saved vs. pushed to CRM — and CRM push failures show a retry option
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: /api/crm/push Salesforce branch — Contact create/update, Opportunity create/update, Task scheduling with proactive token refresh
-- [ ] 05-02: /api/crm/push HubSpot branch — Contact/Deal/Note writes with exponential backoff on 429s and proactive 30-min token refresh
-- [ ] 05-03: CRM sync status state (saved / crm_synced: pending / success / failed) persisted in Supabase and displayed in UI
+- [x] 05-01: Salesforce push module (lib/crm/push/salesforce.ts) — Contact/Account/Opportunity CRUD via SOSL/SOQL, Task scheduling, Activity log
+- [x] 05-02: HubSpot push module (lib/crm/push/hubspot.ts) — Contact/Company/Deal/Note/Task CRUD via CRM v3 API with 429 retry
+- [x] 05-03: Migration (013_crm_push_log), /api/crm/push route, Push to CRM UI button, notes GET push_status
 
 ### Phase 6: Review UI + Dashboard
 **Goal**: The complete user-facing experience is polished — a fast launch pad to start recording, an editable review card to approve structured output, and a note history to reference past meetings
@@ -117,9 +117,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 06-01: Dashboard launch pad (prominent Record button, recent notes list)
-- [ ] 06-02: Editable review card (all CRMNote fields editable, confidence indicators visible, CRM push trigger)
-- [ ] 06-03: Note detail view (structured fields display, CRM sync status, retry CRM push option)
+- [x] 06-01: Dashboard launch pad — DashboardClient with big record FAB, RecentNotes list with push status badges, autoStart capture mode
+- [x] 06-02: Editable review card — EditableStructuredOutput component replaces read-only StructuredOutput, all CRMNote fields editable with confidence badges
+- [x] 06-03: Note detail view — /notes/[id] page with StructuredFields read-only display, SyncStatus from push log, retry push, collapsible transcript
 
 ## Progress
 
@@ -132,8 +132,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Voice Capture + Transcription | 3/3 | Completed | 2026-04-08 |
 | 3. AI Structuring Pipeline | 3/3 | Completed | 2026-04-08 |
 | 4. CRM OAuth Connections | 3/3 | Completed | 2026-04-08 |
-| 5. CRM Push + Actions | 0/3 | Not started | - |
-| 6. Review UI + Dashboard | 0/3 | Not started | - |
+| 5. CRM Push + Actions | 3/3 | Completed | 2026-04-08 |
+| 6. Review UI + Dashboard | 3/3 | Completed | 2026-04-08 |
 
 ---
 *Roadmap created: 2026-02-18*

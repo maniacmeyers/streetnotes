@@ -7,7 +7,9 @@ import {
   MAX_AUDIO_BYTES,
 } from '@/lib/audio/recording'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
-import type { CRMNote, ConfidenceLevel } from '@/lib/notes/schema'
+import type { CRMNote } from '@/lib/notes/schema'
+import type { PushResult, CrmCandidate } from '@/lib/crm/push/types'
+import EditableStructuredOutput from '@/components/notes/editable-structured-output'
 
 interface TranscribeSuccessResponse {
   transcript: string
@@ -29,151 +31,13 @@ function labelForRecorderStatus(status: string): string {
   return 'Idle'
 }
 
-function confidenceBadge(level: ConfidenceLevel) {
-  const styles: Record<ConfidenceLevel, string> = {
-    high: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    low: 'bg-red-100 text-red-800',
-  }
-  return (
-    <span className={`inline-block text-xs font-medium px-1.5 py-0.5 rounded ${styles[level]}`}>
-      {level}
-    </span>
-  )
+
+interface VoiceNoteCaptureProps {
+  autoStart?: boolean
+  onSaved?: () => void
 }
 
-function StructuredOutput({ data }: { data: CRMNote }) {
-  return (
-    <div className="flex flex-col gap-4">
-      {(data.contactName || data.company) && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">Contact / Company</h3>
-          {data.contactName && (
-            <p className="text-base">
-              {data.contactName}{' '}
-              {data.contactNameConfidence && confidenceBadge(data.contactNameConfidence)}
-            </p>
-          )}
-          {data.company && (
-            <p className="text-base text-gray-600">
-              {data.company}{' '}
-              {data.companyConfidence && confidenceBadge(data.companyConfidence)}
-            </p>
-          )}
-        </div>
-      )}
-
-      {(data.dealStage || data.estimatedValue || data.closeDate) && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">Deal Snapshot</h3>
-          <div className="grid grid-cols-1 gap-1 text-base">
-            {data.dealStage && (
-              <p>
-                Stage: <span className="font-medium">{data.dealStage}</span>{' '}
-                {data.dealStageConfidence && confidenceBadge(data.dealStageConfidence)}
-              </p>
-            )}
-            {data.estimatedValue && (
-              <p>
-                Value: <span className="font-medium">{data.estimatedValue}</span>{' '}
-                {data.estimatedValueConfidence && confidenceBadge(data.estimatedValueConfidence)}
-              </p>
-            )}
-            {data.closeDate && (
-              <p>
-                Close: <span className="font-medium">{data.closeDate}</span>{' '}
-                {data.closeDateConfidence && confidenceBadge(data.closeDateConfidence)}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {data.attendees && data.attendees.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">Attendees</h3>
-          {data.attendees.map((att, i) => (
-            <div key={i} className="text-base border-l-2 border-gray-200 pl-3 py-1">
-              <p className="font-medium">
-                {att.name || 'Unknown'}{' '}
-                {confidenceBadge(att.confidence)}
-              </p>
-              {att.title && <p className="text-gray-600">{att.title}</p>}
-              {att.role && att.role !== 'Unknown' && (
-                <p className="text-gray-500 text-sm">{att.role} · {att.sentiment}</p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {data.meetingSummary && data.meetingSummary.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">Meeting Summary</h3>
-          <ul className="list-disc list-inside text-base space-y-1">
-            {data.meetingSummary.map((point, i) => (
-              <li key={i}>{point}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {data.nextSteps && data.nextSteps.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">Next Steps</h3>
-          {data.nextSteps.map((step, i) => (
-            <div key={i} className="text-base border-l-2 border-gray-200 pl-3 py-1">
-              <p>
-                <span className="font-medium">{step.task}</span>{' '}
-                {confidenceBadge(step.confidence)}
-              </p>
-              <p className="text-gray-500 text-sm">
-                {step.owner === 'rep' ? 'You' : 'Prospect'}
-                {step.dueDate ? ` · ${step.dueDate}` : ''}
-                {' · '}
-                {step.priority} priority
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {data.opportunityNotes && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">CRM Notes</h3>
-          <p className="text-base text-gray-700">{data.opportunityNotes}</p>
-        </div>
-      )}
-
-      {data.painPoints && data.painPoints.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-base font-semibold">Pain Points</h3>
-          <ul className="list-disc list-inside text-base space-y-1">
-            {data.painPoints.map((p, i) => (
-              <li key={i}>{p}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {data.competitorsMentioned && data.competitorsMentioned.length > 0 && (
-        <p className="text-base">
-          <span className="font-semibold">Competitors:</span>{' '}
-          {data.competitorsMentioned.join(', ')}
-        </p>
-      )}
-
-      {data.productsDiscussed && data.productsDiscussed.length > 0 && (
-        <p className="text-base">
-          <span className="font-semibold">Products discussed:</span>{' '}
-          {data.productsDiscussed.join(', ')}
-        </p>
-      )}
-    </div>
-  )
-}
-
-export default function VoiceNoteCapture() {
+export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptureProps) {
   const {
     status,
     durationSec,
@@ -198,6 +62,20 @@ export default function VoiceNoteCapture() {
   const [isSaving, setIsSaving] = useState(false)
   const [savedNoteId, setSavedNoteId] = useState<string | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
+
+  const [isPushing, setIsPushing] = useState(false)
+  const [pushResult, setPushResult] = useState<PushResult | null>(null)
+  const [pushError, setPushError] = useState<string | null>(null)
+  const [pushCandidates, setPushCandidates] = useState<CrmCandidate[] | null>(null)
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (autoStart && isSupported && status === 'idle') {
+      void startRecording()
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!audioBlob) {
@@ -224,6 +102,11 @@ export default function VoiceNoteCapture() {
     setSavedNoteId(null)
     setSaveError(null)
     setIsSaving(false)
+    setPushResult(null)
+    setPushError(null)
+    setIsPushing(false)
+    setPushCandidates(null)
+    setSelectedCandidateId(null)
   }
 
   const handleTranscribe = async () => {
@@ -343,6 +226,68 @@ export default function VoiceNoteCapture() {
     }
   }
 
+  const handlePushToCRM = async (overrides?: {
+    existingContactId?: string
+    existingDealId?: string
+  }) => {
+    if (!savedNoteId) return
+
+    setIsPushing(true)
+    setPushError(null)
+    setPushResult(null)
+    if (!overrides) {
+      setPushCandidates(null)
+      setSelectedCandidateId(null)
+    }
+
+    try {
+      const res = await fetch('/api/crm/push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          noteId: savedNoteId,
+          ...overrides,
+        }),
+      })
+
+      const data = (await res.json()) as PushResult & { error?: string; crmType?: string }
+
+      if (!res.ok && !data.candidates) {
+        setPushError(data.error || 'Push failed')
+        return
+      }
+
+      if (data.errorCode === 'needs_selection' && data.candidates) {
+        setPushCandidates(data.candidates)
+        setPushError(data.error || 'Select a record')
+        return
+      }
+
+      setPushResult(data)
+      setPushCandidates(null)
+      if (data.success) onSaved?.()
+    } catch {
+      setPushError('Network error. Try again.')
+    } finally {
+      setIsPushing(false)
+    }
+  }
+
+  const handleSelectCandidate = () => {
+    if (!selectedCandidateId || !pushCandidates) return
+
+    const candidate = pushCandidates.find(c => c.id === selectedCandidateId)
+    if (!candidate) return
+
+    const overrides: { existingContactId?: string; existingDealId?: string } = {}
+    if (candidate.type === 'contact') overrides.existingContactId = candidate.id
+    if (candidate.type === 'deal') overrides.existingDealId = candidate.id
+
+    void handlePushToCRM(overrides)
+  }
+
+  const canPush = !!savedNoteId && !isPushing && !pushResult?.success
+
   const canStart =
     isSupported &&
     status !== 'recording' &&
@@ -362,7 +307,7 @@ export default function VoiceNoteCapture() {
     !!transcribeError ||
     !!structureError
 
-  const activeError = recorderError || transcribeError || structureError || saveError
+  const activeError = recorderError || transcribeError || structureError || saveError || pushError
 
   return (
     <section className="rounded-md border border-gray-200 p-4 flex flex-col gap-4">
@@ -383,7 +328,11 @@ export default function VoiceNoteCapture() {
         <p>
           Pipeline:{' '}
           <span className="font-medium">
-            {savedNoteId
+            {pushResult?.success
+              ? 'Pushed to CRM'
+              : isPushing
+              ? 'Pushing to CRM...'
+              : savedNoteId
               ? 'Saved'
               : isSaving
               ? 'Saving...'
@@ -414,9 +363,56 @@ export default function VoiceNoteCapture() {
         </div>
       )}
 
-      {savedNoteId && (
+      {pushResult?.success && (
+        <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
+          <p className="text-base text-green-700">
+            Pushed to CRM.
+            {pushResult.contactId && (
+              <> Contact {pushResult.contactCreated ? 'created' : 'found'}.</>
+            )}
+            {pushResult.dealId && (
+              <> Deal {pushResult.dealCreated ? 'created' : 'updated'}.</>
+            )}
+            {pushResult.taskIds && pushResult.taskIds.length > 0 && (
+              <> {pushResult.taskIds.length} task{pushResult.taskIds.length > 1 ? 's' : ''} created.</>
+            )}
+          </p>
+        </div>
+      )}
+
+      {savedNoteId && !pushResult?.success && (
         <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
           <p className="text-base text-green-700">Note saved. Ready for CRM push.</p>
+        </div>
+      )}
+
+      {pushCandidates && pushCandidates.length > 0 && (
+        <div className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-3 flex flex-col gap-2">
+          <p className="text-base text-yellow-800 font-medium">
+            Multiple {pushCandidates[0].type === 'contact' ? 'contacts' : 'deals'} found. Select one:
+          </p>
+          {pushCandidates.map(c => (
+            <label key={c.id} className="flex items-center gap-2 text-base cursor-pointer">
+              <input
+                type="radio"
+                name="crmCandidate"
+                value={c.id}
+                checked={selectedCandidateId === c.id}
+                onChange={() => setSelectedCandidateId(c.id)}
+                className="w-4 h-4"
+              />
+              <span className="font-medium">{c.name}</span>
+              {c.detail && <span className="text-gray-500">{c.detail}</span>}
+            </label>
+          ))}
+          <button
+            type="button"
+            onClick={handleSelectCandidate}
+            disabled={!selectedCandidateId || isPushing}
+            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
+          >
+            {isPushing ? 'Pushing...' : 'Push with selected'}
+          </button>
         </div>
       )}
 
@@ -463,6 +459,16 @@ export default function VoiceNoteCapture() {
             {isSaving ? 'Saving...' : savedNoteId ? 'Saved' : 'Save note'}
           </button>
         )}
+        {savedNoteId && !pushCandidates && (
+          <button
+            type="button"
+            onClick={() => void handlePushToCRM()}
+            disabled={!canPush}
+            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
+          >
+            {isPushing ? 'Pushing to CRM...' : pushResult?.success ? 'Pushed to CRM' : pushError ? 'Retry push' : 'Push to CRM'}
+          </button>
+        )}
         <button
           type="button"
           onClick={handleReset}
@@ -502,11 +508,14 @@ export default function VoiceNoteCapture() {
 
       {structured && (
         <div className="flex flex-col gap-2 rounded-md border border-gray-200 p-4">
-          <h3 className="text-lg font-semibold">Structured Output</h3>
+          <h3 className="text-lg font-semibold">Review &amp; Edit</h3>
           <p className="text-sm text-gray-500">
-            Fields marked with colored badges indicate extraction confidence.
+            Edit any field before saving. Colored badges show extraction confidence.
           </p>
-          <StructuredOutput data={structured} />
+          <EditableStructuredOutput
+            data={structured}
+            onChange={setStructured}
+          />
         </div>
       )}
 

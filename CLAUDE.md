@@ -59,16 +59,18 @@ useVoiceRecorder hook → MediaRecorder (MIME negotiation) → audioBlob
 - All CRM fields are optional — incomplete transcripts produce partial results, no hallucination
 
 ### Database Schema (Supabase)
-Three tables with RLS enabled — all scoped to `user_id`:
-- `notes` — voice note transcripts + structured output (JSONB) + push status
+Four tables with RLS enabled — all scoped to `user_id`:
+- `notes` — voice note transcripts + structured output (JSONB) + push_status (null/pending/success/failed)
 - `crm_connections` — Encrypted OAuth tokens per CRM type (UNIQUE on user_id + crm_type), instance_url for Salesforce
 - `deal_stage_cache` — Cached pipeline stages from connected CRM (UNIQUE on user_id + crm_type)
+- `crm_push_log` — Audit trail per push attempt (note_id, crm_type, status, CRM record IDs, errors)
 
 RLS policies use `(select auth.uid())` subquery form (evaluated once per query, not per row).
 
 Migrations:
 - `supabase/migrations/001_initial_schema.sql` — Tables, RLS, indexes
 - `supabase/migrations/002_add_instance_url.sql` — instance_url column + deal_stage_cache unique constraint
+- `supabase/migrations/013_crm_push_log.sql` — crm_push_log table + push_status column on notes
 
 ### Key Files
 - `hooks/use-voice-recorder.ts` — Custom MediaRecorder hook with MIME negotiation
@@ -93,6 +95,11 @@ Migrations:
 - `app/api/crm/stages/route.ts` — GET deal stages from connected CRM (24h cache)
 - `app/(protected)/settings/page.tsx` — Settings page (CRM connections)
 - `components/settings/crm-connections.tsx` — Connect/disconnect CRM cards with deal stage display
+- `lib/crm/push/types.ts` — Shared types for CRM push (PushResult, PushOptions, CrmCandidate, CachedStage)
+- `lib/crm/push/stage-mapper.ts` — Fuzzy deal stage mapping + value/name parsing utilities
+- `lib/crm/push/salesforce.ts` — Salesforce push (Contact/Account/Opportunity/Task CRUD via REST API v59.0)
+- `lib/crm/push/hubspot.ts` — HubSpot push (Contact/Company/Deal/Note/Task CRUD via CRM v3 API with 429 retry)
+- `app/api/crm/push/route.ts` — POST endpoint: auth → load note → get tokens → dispatch to SF/HS → log result
 - `middleware.ts` — Supabase session refresh on every request
 
 ## Environment Variables
@@ -116,7 +123,7 @@ See `.env.local.example`. Never commit `.env.local`.
 
 ## Build Progress
 
-Phases 1-4 are complete. Phase 5 (CRM Push + Actions) is next.
+Phases 1-5 are complete. Phase 6 (Review UI + Dashboard) is next.
 
 Full roadmap and execution plans live in `.planning/`:
 - `.planning/PROJECT.md` — Core requirements and decisions

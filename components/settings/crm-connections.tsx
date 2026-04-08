@@ -30,6 +30,12 @@ const CRM_CONFIG = {
     color: 'bg-orange-500',
     hoverColor: 'hover:bg-orange-600',
   },
+  pipedrive: {
+    name: 'Pipedrive',
+    connectUrl: '/api/auth/pipedrive/connect',
+    color: 'bg-green-600',
+    hoverColor: 'hover:bg-green-700',
+  },
 } as const
 
 export default function CrmConnections() {

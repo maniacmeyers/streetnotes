@@ -42,7 +42,7 @@ export async function DELETE(request: Request) {
   const url = new URL(request.url)
   const crmType = url.searchParams.get('crm')
 
-  if (!crmType || !['salesforce', 'hubspot'].includes(crmType)) {
+  if (!crmType || !['salesforce', 'hubspot', 'pipedrive'].includes(crmType)) {
     return NextResponse.json({ error: 'Invalid CRM type' }, { status: 400 })
   }
 
