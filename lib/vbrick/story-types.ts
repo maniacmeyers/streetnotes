@@ -147,6 +147,18 @@ export interface StoryFrameworkConfig {
   targetDurationSec: number
 }
 
+/* ─── Challenges ─── */
+
+export interface StoryChallenge {
+  id: string
+  vault_entry_id: string
+  created_by_email: string
+  share_token: string
+  view_count: number
+  attempt_count: number
+  created_at: string
+}
+
 /* ─── Display Helpers ─── */
 
 export const STORY_TYPE_LABELS: Record<StoryType, string> = {

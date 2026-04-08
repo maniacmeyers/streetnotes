@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus, Trash2 } from 'lucide-react'
+import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus, Trash2, Link2, CheckCircle } from 'lucide-react'
 import { motion } from 'motion/react'
 import { NeuCard, NeuBadge, NeuButton } from '@/components/vbrick/neu'
 import { NeuToggle } from '@/components/vbrick/neu'
@@ -34,10 +34,37 @@ interface VaultCardProps {
   adopting?: boolean
   /** Called when user wants to delete this vault entry */
   onDelete?: () => void
+  /** Email for creating share challenges */
+  email?: string
 }
 
-export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false, onPractice, onAdopt, adopting = false, onDelete }: VaultCardProps) {
+export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor = false, onPractice, onAdopt, adopting = false, onDelete, email }: VaultCardProps) {
   const [expanded, setExpanded] = useState(false)
+  const [challengeUrl, setChallengeUrl] = useState<string | null>(null)
+  const [creatingChallenge, setCreatingChallenge] = useState(false)
+  const [challengeCopied, setChallengeCopied] = useState(false)
+
+  async function handleCreateChallenge(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!email) return
+    setCreatingChallenge(true)
+    try {
+      const res = await fetch('/api/vbrick/stories/challenge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vault_entry_id: entry.id, email }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setChallengeUrl(data.url)
+        await navigator.clipboard.writeText(data.url)
+        setChallengeCopied(true)
+        setTimeout(() => setChallengeCopied(false), 2500)
+      }
+    } finally {
+      setCreatingChallenge(false)
+    }
+  }
 
   return (
     <NeuCard padding="md">
@@ -158,6 +185,32 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
                 </>
               )}
             </NeuButton>
+          )}
+        </div>
+      )}
+
+      {/* Challenge share */}
+      {expanded && email && (
+        <div className="flex items-center gap-2 mt-3">
+          {!challengeUrl ? (
+            <button
+              onClick={handleCreateChallenge}
+              disabled={creatingChallenge}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150"
+              style={{
+                background: neuTheme.colors.bg,
+                boxShadow: neuTheme.shadows.raisedSm,
+                color: neuTheme.colors.accent.primary,
+              }}
+            >
+              <Link2 size={12} />
+              {creatingChallenge ? 'Creating...' : 'Share Challenge'}
+            </button>
+          ) : (
+            <span className="flex items-center gap-1.5 text-xs font-satoshi" style={{ color: neuTheme.colors.accent.primary }}>
+              <CheckCircle size={12} />
+              {challengeCopied ? 'Link copied!' : 'Challenge link created'}
+            </span>
           )}
         </div>
       )}

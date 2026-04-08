@@ -14,7 +14,7 @@ interface PracticeRecorderProps {
   draftContent: string
   email: string
   storyType: StoryType
-  onComplete: (result: { score: StoryScore; isNewBest: boolean; xpEarned: number }) => void
+  onComplete: (result: { score: StoryScore; isNewBest: boolean; xpEarned: number; vaultEntryId?: string }) => void
 }
 
 function formatTime(seconds: number): string {
@@ -67,6 +67,7 @@ export function PracticeRecorder({
         score: data.score,
         isNewBest: data.is_new_best,
         xpEarned: data.xp_earned,
+        vaultEntryId: data.vault_entry_id || undefined,
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

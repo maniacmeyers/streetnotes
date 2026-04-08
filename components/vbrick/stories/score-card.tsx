@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Trophy, RotateCcw, Check, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
+import { Trophy, RotateCcw, Check, ChevronDown, ChevronUp, Sparkles, Share2, Copy, CheckCircle } from 'lucide-react'
 import { NeuCard, NeuButton, NeuBadge } from '@/components/vbrick/neu'
 import { NeuProgress } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
@@ -22,6 +22,10 @@ interface ScoreCardProps {
   xpEarned: number
   onRetry: () => void
   onSaveToVault: () => void
+  /** Vault entry ID for creating share challenges */
+  vaultEntryId?: string
+  /** Email of the current user */
+  email?: string
 }
 
 const DIMENSION_LABELS: { key: keyof StoryScore['improvements']; label: string }[] = [
@@ -37,8 +41,39 @@ function getDimensionScore(score: StoryScore, key: string): number {
   return (score as unknown as Record<string, number>)[key] ?? 0
 }
 
-export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault }: ScoreCardProps) {
+export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault, vaultEntryId, email }: ScoreCardProps) {
   const [expandedDimension, setExpandedDimension] = useState<string | null>(null)
+  const [shareUrl, setShareUrl] = useState<string | null>(null)
+  const [sharing, setSharing] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  async function handleShareChallenge() {
+    if (!vaultEntryId || !email) return
+    setSharing(true)
+    try {
+      const res = await fetch('/api/vbrick/stories/challenge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vault_entry_id: vaultEntryId, email }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setShareUrl(data.url)
+        await navigator.clipboard.writeText(data.url)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2500)
+      }
+    } finally {
+      setSharing(false)
+    }
+  }
+
+  async function handleCopyUrl() {
+    if (!shareUrl) return
+    await navigator.clipboard.writeText(shareUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2500)
+  }
 
   function toggleDimension(key: string) {
     setExpandedDimension((prev) => (prev === key ? null : key))
@@ -183,6 +218,39 @@ export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault }
           Done
         </NeuButton>
       </motion.div>
+
+      {/* Share Challenge */}
+      {vaultEntryId && email && (
+        <motion.div variants={cascadeIn} custom={4} className="flex flex-col items-center gap-2">
+          {!shareUrl ? (
+            <NeuButton
+              variant="raised"
+              size="sm"
+              onClick={handleShareChallenge}
+              disabled={sharing}
+            >
+              <Share2 size={14} className="mr-1.5 inline-block" />
+              {sharing ? 'Creating...' : 'Share Challenge'}
+            </NeuButton>
+          ) : (
+            <div className="flex items-center gap-2">
+              <input
+                readOnly
+                value={shareUrl}
+                className="text-xs font-satoshi px-3 py-2 rounded-xl truncate w-56"
+                style={{
+                  background: neuTheme.colors.bg,
+                  boxShadow: neuTheme.shadows.inset,
+                  color: neuTheme.colors.text.body,
+                }}
+              />
+              <NeuButton variant="raised" size="sm" onClick={handleCopyUrl}>
+                {copied ? <CheckCircle size={14} /> : <Copy size={14} />}
+              </NeuButton>
+            </div>
+          )}
+        </motion.div>
+      )}
     </motion.div>
   )
 }

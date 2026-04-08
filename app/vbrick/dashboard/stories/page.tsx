@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import { ArrowLeft, BookOpen, Shield, Rocket } from 'lucide-react'
+import { ArrowLeft, BookOpen, Shield, Rocket, Crown, BarChart3 } from 'lucide-react'
 import { NeuCard, NeuButton, NeuTabs } from '@/components/vbrick/neu'
 import { FrameworkPicker } from '@/components/vbrick/stories/framework-picker'
 import { DraftingWizard } from '@/components/vbrick/stories/drafting-wizard'
@@ -12,6 +12,8 @@ import { ScoreCard } from '@/components/vbrick/stories/score-card'
 import { GamificationHeader } from '@/components/vbrick/stories/gamification-header'
 import { VaultCard } from '@/components/vbrick/stories/vault-card'
 import { XPToast } from '@/components/vbrick/stories/xp-toast'
+import { StoryLeaderboard } from '@/components/vbrick/stories/story-leaderboard'
+import { PerformanceTrends } from '@/components/vbrick/stories/performance-trends'
 import { getFramework } from '@/lib/vbrick/story-frameworks'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { cascadeIn, staggerContainer } from '@/lib/vbrick/animations'
@@ -19,7 +21,7 @@ import type { StoryType, StoryDraft, VaultEntry, StoryScore } from '@/lib/vbrick
 import { STORY_TYPE_LABELS } from '@/lib/vbrick/story-types'
 
 type StoryView = 'home' | 'drafting' | 'review' | 'practice' | 'score'
-type TabId = 'create' | 'vault' | 'team'
+type TabId = 'create' | 'vault' | 'team' | 'leaderboard'
 
 export default function StoryVaultPage() {
   const [email, setEmail] = useState<string | null>(null)
@@ -36,7 +38,7 @@ export default function StoryVaultPage() {
   const [teamVault, setTeamVault] = useState<VaultEntry[]>([])
 
   // Score state
-  const [lastScore, setLastScore] = useState<{ score: StoryScore; isNewBest: boolean; xpEarned: number } | null>(null)
+  const [lastScore, setLastScore] = useState<{ score: StoryScore; isNewBest: boolean; xpEarned: number; vaultEntryId?: string } | null>(null)
 
   // Adopt state (for team vault → practice flow)
   const [adoptingId, setAdoptingId] = useState<string | null>(null)
@@ -110,7 +112,7 @@ export default function StoryVaultPage() {
 
   const handleStartPractice = () => setView('practice')
 
-  const handlePracticeComplete = (result: { score: StoryScore; isNewBest: boolean; xpEarned: number }) => {
+  const handlePracticeComplete = (result: { score: StoryScore; isNewBest: boolean; xpEarned: number; vaultEntryId?: string }) => {
     setLastScore(result)
     setView('score')
     setXPToast({ xp: result.xpEarned, visible: true })
@@ -303,6 +305,8 @@ export default function StoryVaultPage() {
           xpEarned={lastScore.xpEarned}
           onRetry={handleRetry}
           onSaveToVault={handleDone}
+          vaultEntryId={lastScore.vaultEntryId}
+          email={email || undefined}
         />
         <XPToast xp={xpToast.xp} visible={xpToast.visible} onDone={() => setXPToast(prev => ({ ...prev, visible: false }))} />
       </div>
@@ -314,6 +318,7 @@ export default function StoryVaultPage() {
     { id: 'create' as const, label: 'Draft & Practice', icon: <Rocket size={16} /> },
     { id: 'vault' as const, label: 'My Vault', icon: <Shield size={16} /> },
     { id: 'team' as const, label: 'Team Vault', icon: <BookOpen size={16} /> },
+    { id: 'leaderboard' as const, label: 'Leaderboard', icon: <Crown size={16} /> },
   ]
 
   return (
@@ -330,13 +335,24 @@ export default function StoryVaultPage() {
             <h1 className="text-2xl font-general-sans font-bold" style={{ color: neuTheme.colors.text.heading }}>
               Story Vault
             </h1>
-            <a
-              href="/vbrick/dashboard"
-              className="flex items-center gap-2 font-satoshi text-sm"
-              style={{ color: neuTheme.colors.text.muted }}
-            >
-              <ArrowLeft size={16} /> Dashboard
-            </a>
+            <div className="flex items-center gap-4">
+              {email && ['jeff@forgetime.ai', 'jeff@careermaniacs.com'].includes(email) && (
+                <a
+                  href="/vbrick/dashboard/stories/manager"
+                  className="flex items-center gap-2 font-satoshi text-xs font-medium"
+                  style={{ color: neuTheme.colors.accent.primary }}
+                >
+                  <BarChart3 size={14} /> Manager View
+                </a>
+              )}
+              <a
+                href="/vbrick/dashboard"
+                className="flex items-center gap-2 font-satoshi text-sm"
+                style={{ color: neuTheme.colors.text.muted }}
+              >
+                <ArrowLeft size={16} /> Dashboard
+              </a>
+            </div>
           </div>
           <GamificationHeader email={email} />
         </motion.div>
@@ -394,8 +410,15 @@ export default function StoryVaultPage() {
 
         {activeTab === 'vault' && (
           <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+            {/* Performance Trends */}
+            {email && (
+              <motion.div variants={cascadeIn} custom={0} className="mb-6">
+                <PerformanceTrends email={email} />
+              </motion.div>
+            )}
+
             {personalVault.length === 0 ? (
-              <motion.div variants={cascadeIn} custom={0}>
+              <motion.div variants={cascadeIn} custom={1}>
                 <NeuCard variant="inset" className="text-center py-12">
                   <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
                     No stories in your vault yet. Record a practice session to add your first story.
@@ -413,13 +436,14 @@ export default function StoryVaultPage() {
             ) : (
               <div className="space-y-4">
                 {personalVault.map((entry, i) => (
-                  <motion.div key={entry.id} variants={cascadeIn} custom={i}>
+                  <motion.div key={entry.id} variants={cascadeIn} custom={i + 1}>
                     <VaultCard
                       entry={entry}
                       showShare
                       onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
                       onPractice={() => handlePracticeFromVault(entry)}
                       onDelete={() => handleDeleteVaultEntry(entry.id)}
+                      email={email || undefined}
                     />
                   </motion.div>
                 ))}
@@ -448,12 +472,16 @@ export default function StoryVaultPage() {
                       onAdopt={() => handleAdoptAndPractice(entry)}
                       adopting={adoptingId === entry.id}
                       onDelete={entry.bdr_email === email ? () => handleDeleteVaultEntry(entry.id) : undefined}
+                      email={email || undefined}
                     />
                   </motion.div>
                 ))}
               </div>
             )}
           </motion.div>
+        )}
+        {activeTab === 'leaderboard' && email && (
+          <StoryLeaderboard currentEmail={email} />
         )}
       </div>
 

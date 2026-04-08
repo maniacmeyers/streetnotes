@@ -133,6 +133,7 @@ export async function POST(request: Request) {
       .single()
 
     const isNewBest = !existingVault || composite > (existingVault.composite_score || 0)
+    let vaultEntryId: string | null = existingVault?.id || null
 
     if (isNewBest) {
       // Mark old best as not personal best
@@ -144,7 +145,7 @@ export async function POST(request: Request) {
       }
 
       // Insert new vault entry
-      await supabase.from('story_vault_entries').insert({
+      const { data: newVaultEntry } = await supabase.from('story_vault_entries').insert({
         practice_session_id: session.id,
         story_draft_id: draftId,
         bdr_email: email,
@@ -154,7 +155,9 @@ export async function POST(request: Request) {
         composite_score: composite,
         is_personal_best: true,
         shared_to_team: false,
-      })
+      }).select('id').single()
+
+      vaultEntryId = newVaultEntry?.id || null
     }
 
     // Step 5: Update gamification
@@ -226,6 +229,7 @@ export async function POST(request: Request) {
       score: { ...score, composite },
       is_new_best: isNewBest,
       xp_earned: xpResult.total,
+      vault_entry_id: vaultEntryId,
     })
   } catch (error) {
     console.error('[practice] Error:', error)
