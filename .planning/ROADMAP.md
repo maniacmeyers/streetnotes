@@ -13,8 +13,8 @@ StreetNotes.ai is built as a strict sequential pipeline: auth must exist before 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Auth Foundation** - Working Supabase auth, Next.js App Router scaffolding, and database schema with RLS
-- [ ] **Phase 2: Voice Capture + Transcription** - Mobile voice recording with iOS format detection and Whisper transcription
-- [ ] **Phase 3: AI Structuring Pipeline** - Claude structured output, CRMNote Zod schema, and note storage
+- [x] **Phase 2: Voice Capture + Transcription** - Mobile voice recording with iOS format detection and Whisper transcription
+- [x] **Phase 3: AI Structuring Pipeline** - Claude structured output, CRMNote Zod schema, and note storage
 - [ ] **Phase 4: CRM OAuth Connections** - Salesforce + HubSpot OAuth flows with encrypted token storage
 - [ ] **Phase 5: CRM Push + Actions** - Create/update contacts, deals, and tasks in connected CRM with sync status
 - [ ] **Phase 6: Review UI + Dashboard** - Editable review card, dashboard launch pad, and note history view
@@ -51,9 +51,9 @@ Plans:
 **Plans**: 3 plans (execution-ready)
 
 Plans:
-- [ ] 02-01-PLAN.md — Recorder foundation: MIME negotiation, duration tracking hook, and recording lab route
-- [ ] 02-02-PLAN.md — OpenAI Whisper integration: authenticated `/api/transcribe`, validation, and env wiring
-- [ ] 02-03-PLAN.md — Dashboard voice UX: record/transcribe component, states, and cross-device QA checkpoint
+- [x] 02-01-PLAN.md — Recorder foundation: MIME negotiation, duration tracking hook, and recording lab route
+- [x] 02-02-PLAN.md — OpenAI Whisper integration: authenticated `/api/transcribe`, validation, and env wiring
+- [x] 02-03-PLAN.md — Dashboard voice UX: record/transcribe component, states, and cross-device QA checkpoint
 
 ### Phase 3: AI Structuring Pipeline
 **Goal**: A raw transcript is sent to Claude and returns a validated, structured CRM note — with all fields nullable and confidence indicators flagging uncertain extractions
@@ -67,9 +67,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 03-01: CRMNote Zod schema (all fields z.optional()), /api/structure Route Handler with zodOutputFormat() and Claude API
-- [ ] 03-02: Confidence indicators in structured output and system prompt with few-shot examples of incomplete notes
-- [ ] 03-03: Save structured note to Supabase notes table with transcript + structured fields + push status
+- [x] 03-01: CRMNote Zod schema (all fields z.optional()), /api/structure Route Handler with Claude tool_use and Zod validation
+- [x] 03-02: Confidence indicators in structured output and system prompt with few-shot examples of incomplete notes
+- [x] 03-03: Save structured note to Supabase notes table with transcript + structured fields + push status
 
 ### Phase 4: CRM OAuth Connections
 **Goal**: Users can connect their Salesforce or HubSpot account once in Settings, and the app securely stores encrypted tokens and fetches their actual deal pipeline stages
@@ -81,12 +81,12 @@ Plans:
   3. CRM tokens are never exposed in the browser — all token reads happen server-side with the service role key
   4. The app proactively refreshes tokens before expiry without the user experiencing a CRM failure
   5. Deal stages shown in the review UI match the user's actual CRM pipeline stages, not hardcoded defaults
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Salesforce OAuth flow (/api/auth/salesforce/connect + /api/auth/salesforce/callback) with CSRF protection, instance_url storage, and AES-256-GCM token encryption
-- [ ] 04-02: HubSpot OAuth flow (/api/auth/hubspot/connect + /api/auth/hubspot/callback) with CSRF protection and encrypted token storage
-- [ ] 04-03: Proactive token refresh logic (5-min expiry check, Supabase advisory lock), deal stage cache fetch from both CRMs, and Settings screen UI
+- [x] 04-01: Salesforce OAuth flow (/api/auth/salesforce/connect + /callback), CSRF state cookies, AES-256-GCM token encryption (lib/crm/encryption.ts), instance_url storage
+- [x] 04-02: HubSpot OAuth flow (/api/auth/hubspot/connect + /callback), CSRF state cookies, encrypted token storage, HubSpot scopes for contacts/deals/owners
+- [x] 04-03: Proactive token refresh (lib/crm/token-refresh.ts, 5-min buffer), deal stage cache fetch from SF+HS (lib/crm/salesforce.ts, lib/crm/hubspot.ts), Settings screen UI, CRM connections API
 
 ### Phase 5: CRM Push + Actions
 **Goal**: After the user confirms the review card, the structured note is pushed into their connected CRM — creating or updating contacts, deals, and follow-up tasks — and the sync status is visible
@@ -129,12 +129,12 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Auth Foundation | 3/3 | Completed | 2026-02-18 |
-| 2. Voice Capture + Transcription | 0/3 | Planning complete (ready to execute) | - |
-| 3. AI Structuring Pipeline | 0/3 | Not started | - |
-| 4. CRM OAuth Connections | 0/3 | Not started | - |
+| 2. Voice Capture + Transcription | 3/3 | Completed | 2026-04-08 |
+| 3. AI Structuring Pipeline | 3/3 | Completed | 2026-04-08 |
+| 4. CRM OAuth Connections | 3/3 | Completed | 2026-04-08 |
 | 5. CRM Push + Actions | 0/3 | Not started | - |
 | 6. Review UI + Dashboard | 0/3 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-18*
-*Last updated: 2026-03-07 after Phase 2 execution planning refresh*
+*Last updated: 2026-04-08 after Phase 4 completion*

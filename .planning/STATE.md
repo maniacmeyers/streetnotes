@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** A sales rep finishes a meeting, talks into their phone for 60 seconds, reviews the structured output, hits confirm, and their CRM is updated — no manual data entry.
-**Current focus:** Phase 2 — Voice Capture + Transcription
+**Current focus:** Phase 5 — CRM Push + Actions
 
 ## Current Position
 
-Phase: 2 of 6 (Voice Capture + Transcription)
+Phase: 5 of 6 (CRM Push + Actions)
 Plan: 0 of 3 in current phase
-Status: Planning complete (ready to execute)
-Last activity: 2026-03-07 — Created 02-01/02-02/02-03 execution plans
+Status: Not started (ready to plan)
+Last activity: 2026-04-08 — Phase 4 complete (SF+HS OAuth, encryption, token refresh, deal stages, Settings UI)
 
-Progress: [█░░░░░░░░░] ~17% (3 of ~18 total plans estimated)
+Progress: [███████░░░] ~67% (12 of ~18 total plans estimated)
 
 ## Performance Metrics
 
@@ -28,7 +28,9 @@ Progress: [█░░░░░░░░░] ~17% (3 of ~18 total plans estimated)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-auth-foundation | 3/3 | ~6 min | ~2 min |
-| 02-voice-capture-transcription | 0/3 | 0 min | - |
+| 02-voice-capture-transcription | 3/3 | complete | - |
+| 03-ai-structuring-pipeline | 3/3 | complete | - |
+| 04-crm-oauth-connections | 3/3 | complete | - |
 
 **Recent Trend:**
 - Last 5 plans: ~2 min avg
@@ -55,9 +57,11 @@ Recent decisions affecting current work:
 - [Phase 2]: Use a custom `useVoiceRecorder` hook first, then integrate `/api/transcribe` in a second step for cleaner debugging
 - [Phase 2]: Keep transcription in standalone `/api/transcribe` route (not merged with structuring) for retry isolation
 - [Phase 2]: Require authenticated access for transcription endpoint and enforce 25MB limit client/server side
-- [Phase 4]: Use next-auth@5 beta for OAuth orchestration — has built-in Salesforce + HubSpot providers
-- [Phase 4]: Encrypt CRM tokens with AES-256-GCM (or Supabase Vault) — RLS alone is insufficient
-- [Phase 4]: Proactive token refresh at 5-min-before-expiry, not reactive 401 retry — prevents race conditions
+- [Phase 4]: Direct OAuth flows (no next-auth) — Supabase handles user auth; CRM OAuth is just API token acquisition via standard redirect + code exchange
+- [Phase 4]: AES-256-GCM encryption for CRM tokens in lib/crm/encryption.ts — CRM_ENCRYPTION_KEY env var (64-char hex)
+- [Phase 4]: Proactive token refresh at 5-min-before-expiry in lib/crm/token-refresh.ts — prevents race conditions
+- [Phase 4]: CSRF protection via httpOnly state cookies (sf_oauth_state / hs_oauth_state) with 10-min expiry
+- [Phase 4]: Deal stage cache in deal_stage_cache table with 24h TTL and UNIQUE(user_id, crm_type) constraint
 
 ### Pending Todos
 
@@ -70,12 +74,11 @@ Recent decisions affecting current work:
 - [Phase 2]: OpenAI API key not yet configured for local transcription testing
 - [Phase 2]: iOS Safari recording QA still required on real device (simulator is insufficient)
 - [Phase 2]: Hosting timeout constraints may affect long audio transcription; route plan sets `maxDuration = 60`
-- [Phase 4]: jsforce v3 refresh event handling in stateless Route Handlers needs confirmation during Phase 4 planning
-- [Phase 4]: Salesforce sandbox vs. production auth endpoint strategy needs explicit env variable plan
+- [Phase 5]: jsforce v3 may be useful for Phase 5 CRUD operations — evaluate during planning
 - [Phase 6]: HubSpot public app vs. private app decision affects OAuth scope requirements — decide before Phase 6 planning
 
 ## Session Continuity
 
-Last session: 2026-03-07T23:00:00Z
-Stopped at: Phase 2 planning refresh complete; execution not started
-Resume file: .planning/phases/02-voice-capture-transcription/02-01-PLAN.md
+Last session: 2026-04-08
+Stopped at: Phase 4 complete; Phase 5 ready to begin
+Resume file: .planning/ROADMAP.md (Phase 5 section)

@@ -24,7 +24,7 @@ npm start            # Start production server
 - **Backend:** Next.js API Routes (monorepo, no separate server)
 - **Database/Auth:** Supabase (PostgreSQL + Auth via `@supabase/ssr`)
 - **Transcription:** OpenAI Whisper API (`whisper-1` model)
-- **AI Structuring:** Anthropic Claude API (Phase 3 — not yet implemented)
+- **AI Structuring:** Anthropic Claude API (`@anthropic-ai/sdk`, Sonnet 4.6 via tool_use)
 - **CRM Targets:** Salesforce (jsforce v3) + HubSpot (`@hubspot/api-client`) — Phase 4+
 - **Voice Capture:** Native MediaRecorder API (custom hook, no library)
 
@@ -43,31 +43,56 @@ Three utility files — use the correct one based on context:
 
 **Critical:** Always use `getUser()` server-side, never `getSession()` (can be spoofed).
 
-### Voice Pipeline (current state)
+### Voice → Structure → Save Pipeline
 ```
 useVoiceRecorder hook → MediaRecorder (MIME negotiation) → audioBlob
   → POST /api/transcribe (FormData) → OpenAI Whisper → transcript text
+  → POST /api/structure (JSON) → Claude Sonnet tool_use → CRMNote (Zod-validated)
+  → POST /api/notes (JSON) → Supabase notes table (transcript + structured JSONB)
 ```
 - MIME negotiation at record-start: Safari produces `audio/mp4`, Chrome produces `audio/webm;codecs=opus`
 - 25MB file size limit enforced client-side and server-side
 - Audio discarded after transcription (no storage)
 - `/api/transcribe` is authenticated and isolated from structuring for retry independence
+- `/api/structure` uses Claude tool_use with a JSON schema to force structured output, then validates with Zod
+- Confidence indicators (high/medium/low) flag uncertain extractions for user review
+- All CRM fields are optional — incomplete transcripts produce partial results, no hallucination
 
 ### Database Schema (Supabase)
 Three tables with RLS enabled — all scoped to `user_id`:
 - `notes` — voice note transcripts + structured output (JSONB) + push status
-- `crm_connections` — OAuth tokens per CRM type (UNIQUE on user_id + crm_type)
-- `deal_stage_cache` — Cached pipeline stages from connected CRM
+- `crm_connections` — Encrypted OAuth tokens per CRM type (UNIQUE on user_id + crm_type), instance_url for Salesforce
+- `deal_stage_cache` — Cached pipeline stages from connected CRM (UNIQUE on user_id + crm_type)
 
 RLS policies use `(select auth.uid())` subquery form (evaluated once per query, not per row).
 
-Migration: `supabase/migrations/001_initial_schema.sql`
+Migrations:
+- `supabase/migrations/001_initial_schema.sql` — Tables, RLS, indexes
+- `supabase/migrations/002_add_instance_url.sql` — instance_url column + deal_stage_cache unique constraint
 
 ### Key Files
 - `hooks/use-voice-recorder.ts` — Custom MediaRecorder hook with MIME negotiation
 - `lib/audio/recording.ts` — Audio format utilities, MIME type preferences, size limits
 - `lib/openai/server.ts` — Singleton OpenAI client + sales vocabulary Whisper prompt
-- `components/voice-note-capture.tsx` — Record → transcribe UI component
+- `lib/anthropic/server.ts` — Singleton Anthropic client (server-only)
+- `lib/notes/schema.ts` — CRMNote Zod schema with confidence indicators
+- `lib/notes/input-schema.ts` — JSON Schema for Claude tool_use input
+- `lib/notes/prompts.ts` — System prompt + few-shot examples for CRM extraction
+- `components/voice-note-capture.tsx` — Record → transcribe → structure → save UI component
+- `app/api/structure/route.ts` — Claude structuring endpoint (auth + tool_use + Zod validation)
+- `app/api/notes/route.ts` — Note CRUD (save transcript + structured output to Supabase)
+- `lib/crm/encryption.ts` — AES-256-GCM encrypt/decrypt for CRM tokens (CRM_ENCRYPTION_KEY env var)
+- `lib/crm/token-refresh.ts` — Proactive token refresh (5-min buffer before expiry) for SF + HS
+- `lib/crm/salesforce.ts` — Salesforce deal stage fetching via Opportunity describe API
+- `lib/crm/hubspot.ts` — HubSpot deal pipeline/stage fetching via CRM v3 API
+- `app/api/auth/salesforce/connect/route.ts` — Initiate Salesforce OAuth (CSRF state cookie + redirect)
+- `app/api/auth/salesforce/callback/route.ts` — Handle SF callback (code exchange, encrypt tokens, store)
+- `app/api/auth/hubspot/connect/route.ts` — Initiate HubSpot OAuth (CSRF state cookie + redirect)
+- `app/api/auth/hubspot/callback/route.ts` — Handle HS callback (code exchange, encrypt tokens, store)
+- `app/api/crm/connections/route.ts` — GET connected CRMs (no tokens exposed), DELETE to disconnect
+- `app/api/crm/stages/route.ts` — GET deal stages from connected CRM (24h cache)
+- `app/(protected)/settings/page.tsx` — Settings page (CRM connections)
+- `components/settings/crm-connections.tsx` — Connect/disconnect CRM cards with deal stage display
 - `middleware.ts` — Supabase session refresh on every request
 
 ## Environment Variables
@@ -76,13 +101,22 @@ Migration: `supabase/migrations/001_initial_schema.sql`
 NEXT_PUBLIC_SUPABASE_URL=<supabase-project-url>
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<supabase-anon-key>
 OPENAI_API_KEY=<openai-api-key>
+ANTHROPIC_API_KEY=<anthropic-api-key>
+CRM_ENCRYPTION_KEY=<64-char-hex-string>
+SALESFORCE_CLIENT_ID=<salesforce-connected-app-client-id>
+SALESFORCE_CLIENT_SECRET=<salesforce-connected-app-client-secret>
+SALESFORCE_REDIRECT_URI=http://localhost:3000/api/auth/salesforce/callback
+SALESFORCE_AUTH_URL=https://login.salesforce.com
+HUBSPOT_CLIENT_ID=<hubspot-app-client-id>
+HUBSPOT_CLIENT_SECRET=<hubspot-app-client-secret>
+HUBSPOT_REDIRECT_URI=http://localhost:3000/api/auth/hubspot/callback
 ```
 
 See `.env.local.example`. Never commit `.env.local`.
 
 ## Build Progress
 
-Phase 1 (Auth Foundation) is complete. Phase 2 (Voice Capture + Transcription) is planned and ready to execute. Phases 3-6 are not started.
+Phases 1-4 are complete. Phase 5 (CRM Push + Actions) is next.
 
 Full roadmap and execution plans live in `.planning/`:
 - `.planning/PROJECT.md` — Core requirements and decisions
