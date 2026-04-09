@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'motion/react'
+import { neuTheme } from '@/lib/vbrick/theme'
+
+const t = neuTheme
 
 interface NoteListItem {
   id: string
@@ -31,26 +35,38 @@ function timeAgo(dateStr: string): string {
 }
 
 function PushBadge({ status }: { status: string | null }) {
-  if (!status) return <span className="text-xs text-gray-400">Draft</span>
-  if (status === 'success')
-    return <span className="text-xs text-green-600 font-medium">Pushed</span>
-  if (status === 'failed')
-    return <span className="text-xs text-red-600 font-medium">Failed</span>
-  if (status === 'pending')
-    return <span className="text-xs text-yellow-600 font-medium">Pending</span>
+  const base = 'font-inter text-[10px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-md'
+  if (!status) return (
+    <span className={base} style={{ color: t.colors.text.subtle, background: `${t.colors.text.subtle}15` }}>Draft</span>
+  )
+  if (status === 'success') return (
+    <span className={base} style={{ color: t.colors.score.green, background: `${t.colors.score.green}15` }}>Pushed</span>
+  )
+  if (status === 'failed') return (
+    <span className={base} style={{ color: t.colors.score.red, background: `${t.colors.score.red}15` }}>Failed</span>
+  )
+  if (status === 'pending') return (
+    <span className={base} style={{ color: t.colors.score.amber, background: `${t.colors.score.amber}15` }}>Pending</span>
+  )
   return null
 }
 
 function Skeleton() {
   return (
-    <div className="flex flex-col gap-1 animate-pulse">
+    <div className="space-y-2">
       {[1, 2, 3].map(i => (
-        <div key={i} className="flex items-center justify-between px-3 py-3 min-h-[44px]">
-          <div className="flex flex-col gap-1.5 flex-1">
-            <div className="h-4 bg-gray-200 rounded w-3/4" />
-            <div className="h-3 bg-gray-100 rounded w-1/4" />
+        <div
+          key={i}
+          className="rounded-xl px-4 py-3 animate-pulse"
+          style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1.5 flex-1">
+              <div className="h-4 rounded w-3/4" style={{ background: t.colors.shadow }} />
+              <div className="h-3 rounded w-1/4" style={{ background: `${t.colors.shadow}80` }} />
+            </div>
+            <div className="h-3 rounded w-12 ml-3" style={{ background: `${t.colors.shadow}60` }} />
           </div>
-          <div className="h-3 bg-gray-100 rounded w-12 ml-3" />
         </div>
       ))}
     </div>
@@ -74,31 +90,61 @@ export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
 
   if (notes.length === 0) {
     return (
-      <p className="text-sm text-gray-400 text-center py-8">
-        No notes yet. Tap the mic to capture your first one.
-      </p>
+      <div
+        className="rounded-2xl p-8 text-center"
+        style={{ background: t.colors.bg, boxShadow: t.shadows.raised }}
+      >
+        <p className="font-inter text-sm" style={{ color: t.colors.text.muted }}>
+          No notes yet
+        </p>
+        <p className="font-inter text-xs mt-1" style={{ color: t.colors.text.subtle }}>
+          Tap the mic to capture your first one
+        </p>
+      </div>
     )
   }
 
   return (
-    <div className="flex flex-col">
-      {notes.map(note => (
-        <Link
-          key={note.id}
-          href={`/notes/${note.id}`}
-          className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 min-h-[44px] border-b border-gray-100 last:border-0"
-        >
-          <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-            <p className="text-base font-medium truncate">
-              {note.title || 'Untitled'}
-            </p>
-            <p className="text-sm text-gray-500">{timeAgo(note.created_at)}</p>
-          </div>
-          <div className="flex-shrink-0 ml-3">
-            <PushBadge status={note.push_status} />
-          </div>
-        </Link>
-      ))}
+    <div className="space-y-2">
+      <AnimatePresence mode="popLayout">
+        {notes.map((note, i) => (
+          <motion.div
+            key={note.id}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ delay: i * 0.04, duration: 0.3 }}
+            layout
+          >
+            <Link
+              href={`/notes/${note.id}`}
+              className="flex items-center justify-between px-4 py-3 rounded-xl min-h-[44px] transition-all duration-200"
+              style={{
+                background: t.colors.bg,
+                boxShadow: t.shadows.raisedSm,
+              }}
+            >
+              <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                <p
+                  className="font-inter font-semibold text-sm truncate"
+                  style={{ color: t.colors.text.heading }}
+                >
+                  {note.title || 'Untitled'}
+                </p>
+                <p
+                  className="font-fira-code text-xs"
+                  style={{ color: t.colors.text.subtle }}
+                >
+                  {timeAgo(note.created_at)}
+                </p>
+              </div>
+              <div className="flex-shrink-0 ml-3">
+                <PushBadge status={note.push_status} />
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   )
 }

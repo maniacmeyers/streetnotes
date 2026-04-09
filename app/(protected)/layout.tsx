@@ -14,7 +14,7 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <main className="max-w-md mx-auto min-h-screen flex flex-col pt-safe pb-safe">
+    <main className="max-w-md mx-auto min-h-[100dvh] flex flex-col" style={{ background: '#e0e5ec' }}>
       {children}
     </main>
   )

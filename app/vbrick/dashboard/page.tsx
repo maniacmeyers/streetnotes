@@ -9,11 +9,10 @@ import { Leaderboard } from '@/components/vbrick/leaderboard'
 import { PerformanceCards } from '@/components/vbrick/performance-cards'
 import { RecentCalls, type RecentCall } from '@/components/vbrick/recent-calls'
 import { CallQueue, type QueueItem } from '@/components/vbrick/call-queue'
-import { CsvImportZone } from '@/components/vbrick/csv-import-zone'
+// CSV import removed — call lists are no longer imported
 import { SessionReport } from '@/components/vbrick/session-report'
 import { DashboardDebriefFlow } from '@/components/vbrick/dashboard-debrief-flow'
 import { TranscriptInput } from '@/components/vbrick/transcript-input'
-import type { QueueContact } from '@/lib/vbrick/csv-parser'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
 import { isVbrickBdr, VBRICK_CONFIG } from '@/lib/vbrick/config'
@@ -186,23 +185,6 @@ export default function VbrickDashboardPage() {
     const today = new Date().toISOString().split('T')[0]
     localStorage.setItem(`vbrick_intention_${today}`, '1')
     setShowIntention(false)
-  }
-
-  async function handleCsvImport(contacts: QueueContact[]) {
-    if (!email) return
-    try {
-      const res = await fetch('/api/vbrick/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, contacts }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setSessionId(data.sessionId)
-        sessionStartRef.current = new Date()
-        await fetchActiveSession()
-      }
-    } catch {}
   }
 
   function handleMicStart() {
@@ -574,13 +556,13 @@ export default function VbrickDashboardPage() {
           {/* Dashboard content */}
           {view === 'dashboard' && (
             <>
-              {/* Call Queue or Import */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                {sessionId ? (
+              {/* Call Queue */}
+              {sessionId && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
                   <div className="rounded-2xl p-6" style={{ background: '#e0e5ec', boxShadow: '6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff', borderRadius: '20px' }}>
                     <CallQueue
                       queue={queue}
@@ -591,10 +573,8 @@ export default function VbrickDashboardPage() {
                       onEndSession={handleEndSession}
                     />
                   </div>
-                ) : (
-                  <CsvImportZone onImport={handleCsvImport} />
-                )}
-              </motion.div>
+                </motion.div>
+              )}
 
               {/* Leaderboard */}
               {stats && stats.allBdrs.length >= 2 && (
