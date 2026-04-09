@@ -24,6 +24,12 @@ export default function LandingPage() {
           {/* Right side */}
           <div className="flex items-center gap-2 sm:gap-4">
             <a
+              href="/login"
+              className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold text-gray-400 hover:text-white min-h-[44px] flex items-center px-2 sm:px-3 transition-colors duration-100"
+            >
+              Login
+            </a>
+            <a
               href="/debrief"
               className="hidden sm:flex font-mono text-xs uppercase tracking-widest font-bold text-volt border-2 border-volt/40 px-4 py-2 cursor-pointer min-h-[44px] items-center hover:bg-volt/10 transition-colors duration-100"
             >

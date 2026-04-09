@@ -103,7 +103,7 @@ export default function TranscriptReview({
           ref={textareaRef}
           value={edited}
           onChange={(e) => setEdited(e.target.value)}
-          className="w-full px-3 py-3 sm:px-4 sm:py-4 font-mono text-[13px] sm:text-sm text-black bg-white leading-relaxed outline-none resize-none min-h-[200px]"
+          className="w-full px-3 py-3 sm:px-4 sm:py-4 font-mono text-base sm:text-sm text-black bg-white leading-relaxed outline-none resize-none min-h-[200px]"
           spellCheck={true}
           aria-describedby={hasEdits ? 'edit-notice' : undefined}
         />

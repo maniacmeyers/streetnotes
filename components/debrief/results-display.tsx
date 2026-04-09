@@ -3,10 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'motion/react'
 import { FaDownload, FaRedo } from 'react-icons/fa'
-import type { DebriefOutput, DebriefStructuredOutput, BDRStructuredOutput } from '@/lib/debrief/types'
-import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
+import type { DebriefOutput, DebriefStructuredOutput } from '@/lib/debrief/types'
 import DealMindMap from './deal-mind-map'
-import SpinStatCard from './spin-stat-card'
+import CompletenessScore from './completeness-score'
 
 interface ResultsDisplayProps {
   structured: DebriefOutput
@@ -33,21 +32,6 @@ const SENTIMENT_DOT: Record<string, string> = {
   neutral: 'bg-gray-400',
   negative: 'bg-red-500',
   unknown: 'bg-gray-300',
-}
-
-const PROSPECT_STATUS_DISPLAY: Record<string, { label: string; color: string; bg: string }> = {
-  'active-opportunity': { label: 'Active Opportunity', color: 'text-[#7ed4f7]', bg: 'bg-[#7ed4f7]/10' },
-  'future-opportunity': { label: 'Future Opportunity', color: 'text-blue-400', bg: 'bg-blue-400/10' },
-  'not-a-fit': { label: 'Not a Fit', color: 'text-red-400', bg: 'bg-red-400/10' },
-  'needs-more-info': { label: 'Needs More Info', color: 'text-amber-400', bg: 'bg-amber-400/10' },
-  'referred-elsewhere': { label: 'Referred Elsewhere', color: 'text-purple-400', bg: 'bg-purple-400/10' },
-}
-
-const DISPOSITION_DISPLAY: Record<string, { label: string; color: string }> = {
-  connected: { label: 'Connected', color: 'text-[#7ed4f7]' },
-  voicemail: { label: 'Voicemail', color: 'text-amber-400' },
-  gatekeeper: { label: 'Gatekeeper', color: 'text-blue-400' },
-  'no-answer': { label: 'No Answer', color: 'text-gray-400' },
 }
 
 /* ─── Card ─── */
@@ -104,292 +88,6 @@ function Field({ label, value }: { label: string; value: string }) {
       >
         {value}
       </span>
-    </div>
-  )
-}
-
-/* ─── BDR Results ─── */
-function BDRResults({
-  structured,
-  sessionId,
-  email,
-  durationSec,
-  onStartOver,
-}: {
-  structured: BDRStructuredOutput
-  sessionId: string
-  email: string
-  durationSec: number
-  onStartOver: () => void
-}) {
-  const [downloading, setDownloading] = useState(false)
-  const [showStickyBar, setShowStickyBar] = useState(false)
-  const inlineDownloadRef = useRef<HTMLDivElement>(null)
-
-  const d = structured
-  const statusDisplay = PROSPECT_STATUS_DISPLAY[d.prospectStatus] || PROSPECT_STATUS_DISPLAY['needs-more-info']
-  const dispositionDisplay = DISPOSITION_DISPLAY[d.callDisposition] || DISPOSITION_DISPLAY['connected']
-
-  useEffect(() => {
-    const target = inlineDownloadRef.current
-    if (!target) return
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowStickyBar(!entry.isIntersecting),
-      { threshold: 0 }
-    )
-    observer.observe(target)
-    return () => observer.disconnect()
-  }, [])
-
-  const handleDownloadPDF = async () => {
-    setDownloading(true)
-    try {
-      const res = await fetch(`/api/debrief/pdf?sessionId=${sessionId}`)
-      if (!res.ok) throw new Error('PDF generation failed')
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `vbrick-command-center-${new Date().toISOString().split('T')[0]}.pdf`
-      a.target = '_blank'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch {
-      window.open(`/api/debrief/pdf?sessionId=${sessionId}`, '_blank')
-    } finally {
-      setDownloading(false)
-    }
-  }
-
-  let delay = 0.08
-  const nd = () => {
-    delay += 0.05
-    return delay
-  }
-
-  return (
-    <div className="flex flex-col gap-5 sm:gap-6 max-w-2xl mx-auto pb-4">
-      {/* ─── Header ─── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center pt-3 pb-1"
-      >
-        <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#7ed4f7] animate-pulse" />
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-            Call Logged
-          </span>
-        </div>
-        <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
-          {d.contactSnapshot.company !== 'Not mentioned'
-            ? d.contactSnapshot.company
-            : d.contactSnapshot.name !== 'Not mentioned'
-              ? d.contactSnapshot.name
-              : 'Cold Call Summary'}
-        </h1>
-        {d.contactSnapshot.name !== 'Not mentioned' && d.contactSnapshot.company !== 'Not mentioned' && (
-          <p className="text-sm text-gray-400 mt-1.5">
-            {d.contactSnapshot.name}
-            {d.contactSnapshot.title !== 'Not mentioned' ? `, ${d.contactSnapshot.title}` : ''}
-          </p>
-        )}
-        <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
-          <span className={`inline-flex items-center text-[11px] font-semibold ${statusDisplay.color} ${statusDisplay.bg} px-2.5 py-1 rounded-md`}>
-            {statusDisplay.label}
-          </span>
-          <span className="text-gray-600">&middot;</span>
-          <span className={`text-[11px] font-semibold ${dispositionDisplay.color}`}>
-            {dispositionDisplay.label}
-          </span>
-          <span className="text-gray-600">&middot;</span>
-          <span className="text-[11px] text-gray-500">{email}</span>
-          <span className="text-gray-600">&middot;</span>
-          <span className="text-[11px] text-gray-500">
-            {durationSec > 0 ? `${Math.round(durationSec / 60)}m ${durationSec % 60}s` : 'Imported'}
-          </span>
-        </div>
-      </motion.div>
-
-      {/* ─── Action bar ─── */}
-      <motion.div
-        ref={inlineDownloadRef}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.06, duration: 0.3 }}
-        className="flex gap-2.5"
-      >
-        <button
-          type="button"
-          onClick={handleDownloadPDF}
-          disabled={downloading}
-          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold py-3.5 px-5 rounded-xl shadow-md hover:bg-gray-800 hover:shadow-lg transition-all disabled:opacity-50"
-        >
-          <FaDownload className="text-xs" />
-          {downloading ? 'Generating...' : 'Download PDF'}
-        </button>
-        <button
-          type="button"
-          onClick={onStartOver}
-          className="flex items-center justify-center gap-2 bg-white text-gray-500 text-sm font-medium py-3.5 px-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
-        >
-          <FaRedo className="text-[10px]" />
-          New
-        </button>
-      </motion.div>
-
-      {/* ─── Prospect Status — the truth ─── */}
-      <Card title="The Truth" delay={nd()} accent="#7ed4f7">
-        <p className="text-[13px] sm:text-sm text-gray-700 leading-relaxed">
-          {d.theTruth}
-        </p>
-        {d.prospectStatusDetail && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-1.5">
-              Status Detail
-            </p>
-            <p className="text-[13px] sm:text-sm text-gray-600 leading-relaxed">
-              {d.prospectStatusDetail}
-            </p>
-          </div>
-        )}
-      </Card>
-
-      {/* ─── SPIN Stat Card (Vbrick) ─── */}
-      {isVbrickBDROutput(structured) && (
-        <SpinStatCard spin={structured.spin} />
-      )}
-
-      {/* ─── CRM Activity Preview ─── */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: nd(), duration: 0.45 }}
-        className="bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.1)] border border-gray-200/80 overflow-hidden"
-      >
-        <div className="px-6 py-4 bg-gray-900 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#7ed4f7] shadow-[0_0_8px_rgba(126,212,247,0.5)]" />
-            <h3 className="text-[13px] font-semibold text-white tracking-tight">
-              CRM Activity Log
-            </h3>
-          </div>
-          <span className="text-[10px] font-medium text-gray-400 tracking-wide">
-            How this looks in your CRM
-          </span>
-        </div>
-
-        <div className="divide-y divide-gray-100">
-          <div className="px-6 py-5">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">
-              Call Activity
-            </p>
-            <Field label="Disposition" value={dispositionDisplay.label} />
-            <Field label="Contact" value={d.contactSnapshot.name} />
-            {d.contactSnapshot.title !== 'Not mentioned' && (
-              <Field label="Title" value={d.contactSnapshot.title} />
-            )}
-            <Field label="Company" value={d.contactSnapshot.company} />
-            {d.contactSnapshot.directLine !== 'Not mentioned' && (
-              <Field label="Direct Line" value={d.contactSnapshot.directLine} />
-            )}
-            {d.contactSnapshot.email !== 'Not mentioned' && (
-              <Field label="Email" value={d.contactSnapshot.email} />
-            )}
-            <Field label="Current Solution" value={d.currentSolution} />
-            <Field label="Status" value={statusDisplay.label} />
-          </div>
-
-          {/* Next Action */}
-          <div className="px-6 py-5 bg-gray-50">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-3">
-              Next Action
-            </p>
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-[13px] sm:text-sm text-gray-800 font-medium leading-relaxed">
-                {d.nextAction.action}
-              </p>
-              <p className="text-[11px] text-gray-400 mt-1.5">
-                When: {d.nextAction.when}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-center">
-          <span className="text-[10px] text-gray-300 tracking-wide">
-            Powered by <span className="font-semibold text-gray-400">StreetNotes</span>
-          </span>
-        </div>
-      </motion.div>
-
-      {/* ─── AE Briefing (conditional) ─── */}
-      {d.aeBriefing && (
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: nd(), duration: 0.4 }}
-          className="bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.1)] border-2 border-[#7ed4f7]/30 overflow-hidden"
-        >
-          <div className="px-6 py-4 bg-gray-900 flex items-center justify-between" style={{ borderLeft: '4px solid #7ed4f7' }}>
-            <h3 className="text-[13px] font-semibold text-[#7ed4f7] tracking-tight">
-              AE Briefing
-            </h3>
-            <span className="text-[10px] font-medium text-gray-400 tracking-wide">
-              Share with your AE before the meeting
-            </span>
-          </div>
-          <div className="px-6 py-5">
-            <p className="text-[13px] sm:text-sm text-gray-700 leading-relaxed">
-              {d.aeBriefing}
-            </p>
-          </div>
-        </motion.div>
-      )}
-
-      {/* ─── Objections ─── */}
-      {d.objections.length > 0 && (
-        <Card title="Objections" count={d.objections.length} delay={nd()} accent="#F59E0B">
-          <ul className="space-y-3">
-            {d.objections.map((obj, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-amber-400 mt-2" />
-                <span className="text-[13px] sm:text-sm text-gray-600 leading-relaxed">
-                  {obj}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-
-      {/* ─── Referral ─── */}
-      {d.referral && (
-        <Card title="Referral" delay={nd()} accent="#8B5CF6">
-          <Field label="Referred To" value={d.referral.referredTo} />
-          <Field label="Reason" value={d.referral.reason} />
-        </Card>
-      )}
-
-      {/* Mobile spacer */}
-      <div className="h-16 sm:hidden" />
-
-      {/* Sticky download bar */}
-      {showStickyBar && (
-        <div className="fixed bottom-0 left-0 right-0 sm:hidden z-50 bg-gray-900/95 backdrop-blur-md border-t border-gray-700/80 px-4 py-3 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.25)]">
-          <button
-            type="button"
-            onClick={handleDownloadPDF}
-            disabled={downloading}
-            className="w-full flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-semibold py-3.5 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50"
-          >
-            <FaDownload className="text-xs" />
-            {downloading ? 'Generating...' : 'Download PDF'}
-          </button>
-        </div>
-      )}
     </div>
   )
 }
@@ -520,6 +218,9 @@ function DealResults({
           New
         </button>
       </motion.div>
+
+      {/* ─── Debrief Completeness ─── */}
+      <CompletenessScore data={d} />
 
       {/* ─── CRM PREVIEW ─── */}
       <motion.div
@@ -819,18 +520,6 @@ export default function ResultsDisplay({
   durationSec,
   onStartOver,
 }: ResultsDisplayProps) {
-  if (isBDROutput(structured)) {
-    return (
-      <BDRResults
-        structured={structured}
-        sessionId={sessionId}
-        email={email}
-        durationSec={durationSec}
-        onStartOver={onStartOver}
-      />
-    )
-  }
-
   return (
     <DealResults
       structured={structured as DebriefStructuredOutput}

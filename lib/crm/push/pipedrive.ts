@@ -21,69 +21,9 @@ async function pdFetch(
   })
 }
 
-export async function pushToPipedrive(
-  tokens: DecryptedTokens,
-  note: CRMNote,
-  _options: PushOptions
-): Promise<PushResult> {
-  const results: PushResult = {
-    contact: null,
-    deal: null,
-    task: null,
-    errors: [],
-  }
-
-  try {
-    // Handle contact
-    if (note.contact?.name) {
-      try {
-        const contactRes = await pdFetch(tokens, `/persons/search?term=${encodeURIComponent(note.contact.name)}`)
-        
-        if (contactRes.ok) {
-          const data = await contactRes.json()
-          const persons = data.data?.items || []
-          
-          if (persons.length > 0 && persons[0].item?.type === 'person') {
-            results.contact = {
-              id: persons[0].item.id.toString(),
-              url: `https://app.pipedrive.com/person/${persons[0].item.id}`,
-              action: 'found',
-            }
-          }
-        }
-      } catch (err) {
-        const errMsg = err instanceof Error ? err.message : 'unknown error'
-        results.errors.push(`Contact search error: ${errMsg}`)
-      }
-    }
-
-    // Handle deal
-    if (note.deal?.name) {
-      try {
-        const dealRes = await pdFetch(tokens, `/deals/search?term=${encodeURIComponent(note.deal.name)}`)
-        
-        if (dealRes.ok) {
-          const data = await dealRes.json()
-          const deals = data.data?.items || []
-          
-          if (deals.length > 0 && deals[0].item?.type === 'deal') {
-            results.deal = {
-              id: deals[0].item.id.toString(),
-              url: `https://app.pipedrive.com/deal/${deals[0].item.id}`,
-              action: 'found',
-            }
-          }
-        }
-      } catch (err) {
-        const errMsg = err instanceof Error ? err.message : 'unknown error'
-        results.errors.push(`Deal search error: ${errMsg}`)
-      }
-    }
-
-    return results
-  } catch (err) {
-    const errMsg = err instanceof Error ? err.message : 'unknown error'
-    results.errors.push(`Push failed: ${errMsg}`)
-    return results
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function pushToPipedrive(tokens: DecryptedTokens, note: CRMNote, options: PushOptions): Promise<PushResult> {
+  // Pipedrive integration placeholder — not yet implemented
+  void [pdFetch, PD_API, tokens, note, options]
+  return { success: false, error: 'Pipedrive integration not yet implemented', errorCode: 'api_error' }
 }

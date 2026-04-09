@@ -1,17 +1,8 @@
 import type { CIExtraction } from '@/lib/ci/types'
 
-export type DealSegment = 'smb' | 'mid-market' | 'enterprise' | 'partner-channel' | 'bdr-cold-call'
+export type DealSegment = 'smb' | 'mid-market' | 'enterprise' | 'partner-channel'
 
-export type CallDisposition = 'connected' | 'voicemail' | 'gatekeeper' | 'no-answer'
-
-export type ProspectStatus =
-  | 'active-opportunity'
-  | 'future-opportunity'
-  | 'not-a-fit'
-  | 'needs-more-info'
-  | 'referred-elsewhere'
-
-/* ─── AE / Deal Debrief Output ─── */
+/* ─── Structured Debrief Output ─── */
 
 export interface DebriefStructuredOutput {
   dealSegment: DealSegment
@@ -48,51 +39,35 @@ export interface DebriefStructuredOutput {
   ciMentions: CIExtraction[]
 }
 
-/* ─── BDR Cold Call Output ─── */
+export type DebriefOutput = DebriefStructuredOutput
+
+/* ─── BDR Types (used by Vbrick dashboard — not part of core debrief) ─── */
+
+export type CallDisposition = 'connected' | 'voicemail' | 'gatekeeper' | 'no-answer'
+
+export type ProspectStatus =
+  | 'active-opportunity'
+  | 'future-opportunity'
+  | 'not-a-fit'
+  | 'needs-more-info'
+  | 'referred-elsewhere'
 
 export interface BDRStructuredOutput {
   mode: 'bdr-cold-call'
-
   callDisposition: CallDisposition
-
-  contactSnapshot: {
-    name: string
-    title: string
-    company: string
-    directLine: string
-    email: string
-  }
-
+  contactSnapshot: { name: string; title: string; company: string; directLine: string; email: string }
   currentSolution: string
-
   theTruth: string
-
   prospectStatus: ProspectStatus
   prospectStatusDetail: string
-
   objections: string[]
-
-  referral: {
-    referredTo: string
-    reason: string
-  } | null
-
-  nextAction: {
-    action: string
-    when: string
-  }
-
+  referral: { referredTo: string; reason: string } | null
+  nextAction: { action: string; when: string }
   aeBriefing: string | null
   ciMentions: CIExtraction[]
 }
 
-/* ─── SPIN Scoring (Vbrick) ─── */
-
-export interface SPINScoreDetail {
-  score: number
-  evidence: string[]
-  missed: string
-}
+export interface SPINScoreDetail { score: number; evidence: string[]; missed: string }
 
 export interface SPINScore {
   situation: SPINScoreDetail
@@ -107,27 +82,22 @@ export interface VbrickBDRStructuredOutput extends BDRStructuredOutput {
   spin: SPINScore
 }
 
-/* ─── Union + Guard ─── */
-
-export type DebriefOutput = DebriefStructuredOutput | BDRStructuredOutput | VbrickBDRStructuredOutput
-
-export function isBDROutput(output: DebriefOutput): output is BDRStructuredOutput {
-  return 'mode' in output && output.mode === 'bdr-cold-call'
+export function isBDROutput(output: unknown): output is BDRStructuredOutput {
+  return typeof output === 'object' && output !== null && 'mode' in output && (output as BDRStructuredOutput).mode === 'bdr-cold-call'
 }
 
-export function isVbrickBDROutput(output: DebriefOutput): output is VbrickBDRStructuredOutput {
+export function isVbrickBDROutput(output: unknown): output is VbrickBDRStructuredOutput {
   return isBDROutput(output) && 'spin' in output
 }
 
 /* ─── Flow State ─── */
 
-export type DebriefStep = 'email' | 'segment' | 'record' | 'import' | 'review' | 'processing' | 'results'
+export type DebriefStep = 'email' | 'record' | 'import' | 'review' | 'processing' | 'results'
 
 export interface DebriefSessionState {
   step: DebriefStep
   sessionId: string | null
   email: string | null
-  segment: DealSegment | null
   audioBlob: Blob | null
   transcript: string | null
   editedTranscript: string | null

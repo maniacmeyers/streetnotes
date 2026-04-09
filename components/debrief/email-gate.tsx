@@ -2,7 +2,6 @@
 
 import { useState, FormEvent } from 'react'
 import { motion } from 'motion/react'
-import { isVbrickUser } from '@/lib/vbrick/config'
 
 interface EmailGateProps {
   onComplete: (sessionId: string, email: string) => void
@@ -16,13 +15,6 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!email) return
-
-    // Vbrick domain validation
-    if (!isVbrickUser(email)) {
-      setStatus('error')
-      setErrorMsg('Please use your @vbrick.com email address')
-      return
-    }
 
     setStatus('loading')
     setErrorMsg('')
@@ -57,8 +49,8 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.4 }}
       >
-        <span className="inline-block uppercase text-xs tracking-widest text-[#7ed4f7]">
-          BDR CALL INTELLIGENCE
+        <span className="inline-block uppercase text-xs tracking-widest text-volt">
+          STREETNOTES.AI
         </span>
       </motion.div>
 
@@ -69,9 +61,9 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5 }}
       >
-        Vbrick
+        Post-Call
         <br />
-        <span className="text-[#7ed4f7]">Command Center</span>
+        <span className="text-volt">Brain Dump</span>
       </motion.h1>
 
       <motion.p
@@ -80,7 +72,7 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.4 }}
       >
-        Debrief every call. Get better every week.
+        60 seconds of talking. Structured CRM notes.
       </motion.p>
       <motion.p
         className="text-xs uppercase tracking-widest text-gray-500 mb-6 sm:mb-8"
@@ -88,7 +80,7 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.4 }}
       >
-        Sign in with your @vbrick.com email
+        Enter your work email to start
       </motion.p>
 
       {/* Email form */}
@@ -108,17 +100,17 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="YOUR @VBRICK.COM EMAIL"
+            placeholder="YOUR WORK EMAIL"
             required
             aria-required="true"
             autoComplete="email"
             inputMode="email"
-            className="flex-1 min-w-0 px-3 py-3 sm:px-4 sm:py-4 text-sm text-white placeholder:text-gray-500 uppercase tracking-wider bg-transparent outline-none min-h-[44px]"
+            className="flex-1 min-w-0 px-3 py-3 sm:px-4 sm:py-4 text-base sm:text-sm text-white placeholder:text-gray-500 uppercase tracking-wider bg-transparent outline-none min-h-[44px]"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="bg-[#7ed4f7] text-[#061222] font-bold text-base sm:text-lg px-5 sm:px-6 py-3 sm:py-4 rounded-r-lg uppercase hover:bg-[#9de0fa] active:bg-[#9de0fa] transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px]"
+            className="bg-volt text-black font-bold text-base sm:text-lg px-5 sm:px-6 py-3 sm:py-4 rounded-r-lg uppercase hover:bg-volt/90 active:bg-volt/80 transition-colors duration-100 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px]"
           >
             {status === 'loading' ? '...' : 'Start'}
           </button>
@@ -143,15 +135,15 @@ export default function EmailGate({ onComplete }: EmailGateProps) {
         transition={{ delay: 0.7, duration: 0.5 }}
       >
         {[
-          { num: '01', label: 'Debrief' },
-          { num: '02', label: 'Score' },
-          { num: '03', label: 'Brief' },
+          { num: '01', label: 'Talk' },
+          { num: '02', label: 'Extract' },
+          { num: '03', label: 'Review' },
         ].map((s) => (
           <div
             key={s.num}
             className="border border-white/10 rounded-lg p-2.5 sm:p-3 text-center"
           >
-            <span className="text-[9px] sm:text-[10px] text-[#7ed4f7] block">
+            <span className="text-[9px] sm:text-[10px] text-volt block">
               {s.num}
             </span>
             <span className="font-bold text-sm sm:text-lg uppercase">{s.label}</span>

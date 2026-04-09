@@ -8,13 +8,11 @@ import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
 import MicButton from './mic-button'
 import WaveformVisualizer from './waveform-visualizer'
 import FileDropZone from './file-drop-zone'
-import type { DealSegment } from '@/lib/debrief/types'
 
 interface RecorderProps {
   onComplete: (audioBlob: Blob, mimeType: string, durationSec: number) => void
   onImport?: () => void
   onFileImport: (text: string) => void
-  segment?: DealSegment
 }
 
 type RecorderMode = 'choose' | 'record' | 'import'
@@ -22,7 +20,7 @@ type RecorderMode = 'choose' | 'record' | 'import'
 const MIN_DURATION = 15
 const MAX_DURATION = 180
 
-const DEAL_PROMPTS = [
+const PROMPTS = [
   'Who was in the meeting?',
   'Budget — was money discussed?',
   'Authority — who makes the call?',
@@ -35,18 +33,7 @@ const DEAL_PROMPTS = [
   'When is the next meeting?',
 ]
 
-const BDR_PROMPTS = [
-  "Who'd you talk to?",
-  "What are they using today?",
-  "What's actually going on at this account?",
-  'Any interest? What kind?',
-  'What pushed back or concerned them?',
-  'What should happen next — and when?',
-  'Anyone else you should be talking to?',
-  'Anything the AE needs to know?',
-]
-
-export default function Recorder({ onComplete, onFileImport, segment }: RecorderProps) {
+export default function Recorder({ onComplete, onFileImport }: RecorderProps) {
   const {
     status,
     durationSec,
@@ -60,9 +47,6 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
   } = useVoiceRecorder()
 
   const { analyserNode, startAnalysing, stopAnalysing } = useAudioAnalyser()
-
-  const prompts = segment === 'bdr-cold-call' ? BDR_PROMPTS : DEAL_PROMPTS
-  const isBDR = segment === 'bdr-cold-call'
 
   const [mode, setMode] = useState<RecorderMode>('choose')
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0)
@@ -80,7 +64,7 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
       setCurrentPromptIndex(0)
 
       promptIntervalRef.current = window.setInterval(() => {
-        setCurrentPromptIndex((prev) => (prev + 1) % prompts.length)
+        setCurrentPromptIndex((prev) => (prev + 1) % PROMPTS.length)
       }, 6000)
     }
 
@@ -96,7 +80,7 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
         promptIntervalRef.current = null
       }
     }
-  }, [isRecording, durationSec, prompts.length])
+  }, [isRecording, durationSec])
 
   // Auto-stop at max duration
   useEffect(() => {
@@ -138,15 +122,11 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
     return (
       <div className="flex flex-col items-center gap-5 sm:gap-8">
         <div className="text-center">
-          <p className="text-[#7ed4f7] font-mono text-xs uppercase tracking-widest mb-3">
+          <p className="text-volt font-mono text-xs uppercase tracking-widest mb-3">
             Step 2 of 3
           </p>
           <h2 className="font-bold text-[28px] sm:text-[40px] leading-tight text-white mb-2">
-            {isBDR ? (
-              <>How&apos;d the <span className="text-[#7ed4f7]">call</span> go?</>
-            ) : (
-              <>Tell me about <span className="text-[#7ed4f7]">the call</span></>
-            )}
+            Tell me about <span className="text-volt">the call</span>
           </h2>
           <p className="text-base text-gray-400 max-w-md mx-auto">
             Record a quick voice debrief or import a transcript from your call tool.
@@ -161,10 +141,10 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
             onClick={() => setMode('record')}
-            className="group bg-white/5 rounded-lg border border-white/10 hover:border-[#7ed4f7] transition-all p-6 sm:p-8 flex flex-col items-center gap-4 text-center"
+            className="group bg-white/5 rounded-lg border border-white/10 hover:border-volt transition-all p-6 sm:p-8 flex flex-col items-center gap-4 text-center"
           >
-            <div className="w-14 h-14 rounded-full bg-white/5 group-hover:bg-[#7ed4f7]/10 flex items-center justify-center transition-colors">
-              <FaMicrophone className="text-xl text-white/60 group-hover:text-[#7ed4f7] transition-colors" />
+            <div className="w-14 h-14 rounded-full bg-white/5 group-hover:bg-volt/10 flex items-center justify-center transition-colors">
+              <FaMicrophone className="text-xl text-white/60 group-hover:text-volt transition-colors" />
             </div>
             <div>
               <p className="text-white font-medium text-sm mb-1">Record a Debrief</p>
@@ -181,10 +161,10 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12 }}
             onClick={() => setMode('import')}
-            className="group bg-white/5 rounded-lg border border-white/10 hover:border-[#7ed4f7] transition-all p-6 sm:p-8 flex flex-col items-center gap-4 text-center"
+            className="group bg-white/5 rounded-lg border border-white/10 hover:border-volt transition-all p-6 sm:p-8 flex flex-col items-center gap-4 text-center"
           >
-            <div className="w-14 h-14 rounded-full bg-white/5 group-hover:bg-[#7ed4f7]/10 flex items-center justify-center transition-colors">
-              <FaUpload className="text-xl text-white/60 group-hover:text-[#7ed4f7] transition-colors" />
+            <div className="w-14 h-14 rounded-full bg-white/5 group-hover:bg-volt/10 flex items-center justify-center transition-colors">
+              <FaUpload className="text-xl text-white/60 group-hover:text-volt transition-colors" />
             </div>
             <div>
               <p className="text-white font-medium text-sm mb-1">Import from Chorus / Teams</p>
@@ -203,11 +183,11 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
     return (
       <div className="flex flex-col items-center gap-5 sm:gap-8">
         <div className="text-center">
-          <p className="text-[#7ed4f7] font-mono text-xs uppercase tracking-widest mb-3">
+          <p className="text-volt font-mono text-xs uppercase tracking-widest mb-3">
             Step 2 of 3
           </p>
           <h2 className="font-bold text-[24px] sm:text-[36px] leading-tight text-white mb-2">
-            Import your <span className="text-[#7ed4f7]">transcript</span>
+            Import your <span className="text-volt">transcript</span>
           </h2>
           <p className="text-sm text-gray-400 max-w-sm mx-auto">
             From Chorus, Teams, Zoom, Gong, or any tool that records your calls.
@@ -221,7 +201,7 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
         <button
           type="button"
           onClick={() => setMode('choose')}
-          className="text-white/40 text-xs hover:text-white/60 transition-colors font-mono uppercase tracking-wider"
+          className="text-white/40 text-xs hover:text-white/60 transition-colors font-mono uppercase tracking-wider py-3 min-h-[44px] flex items-center justify-center"
         >
           Back to options
         </button>
@@ -229,28 +209,24 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
     )
   }
 
-  // Record mode — existing mic/waveform UI with enterprise styling
+  // Record mode
   return (
     <div className="flex flex-col items-center gap-5 sm:gap-8">
       {/* Header */}
       <div className="text-center">
-        <p className="text-[#7ed4f7] font-mono text-xs uppercase tracking-widest mb-3">
+        <p className="text-volt font-mono text-xs uppercase tracking-widest mb-3">
           Step 2 of 3
         </p>
         <h2 className="font-bold text-[28px] sm:text-[40px] leading-tight text-white mb-2">
           {isRecording ? (
             <span className="text-red-500">Recording</span>
-          ) : isBDR ? (
-            <>How&apos;d the <span className="text-[#7ed4f7]">call</span> go?</>
           ) : (
-            <>Tell me about <span className="text-[#7ed4f7]">the call</span></>
+            <>Tell me about <span className="text-volt">the call</span></>
           )}
         </h2>
         {!isRecording && (
           <p className="text-base sm:text-lg text-gray-400 max-w-sm mx-auto">
-            {isBDR
-              ? "Hit the mic and dump what just happened. Who'd you talk to, what's the situation, what's next."
-              : 'Hit the mic and talk about the call you just had. Names, numbers, objections, next steps.'}
+            Hit the mic and talk about the call you just had. Names, numbers, objections, next steps.
           </p>
         )}
       </div>
@@ -283,9 +259,9 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4 }}
-              className="font-mono text-xs sm:text-sm text-[#7ed4f7]/70 uppercase tracking-wider text-center"
+              className="font-mono text-xs sm:text-sm text-volt/70 uppercase tracking-wider text-center"
             >
-              {prompts[currentPromptIndex]}
+              {PROMPTS[currentPromptIndex]}
             </motion.p>
           )}
         </AnimatePresence>
@@ -331,7 +307,7 @@ export default function Recorder({ onComplete, onFileImport, segment }: Recorder
         <button
           type="button"
           onClick={() => setMode('choose')}
-          className="text-white/40 text-xs hover:text-white/60 transition-colors font-mono uppercase tracking-wider"
+          className="text-white/40 text-xs hover:text-white/60 transition-colors font-mono uppercase tracking-wider py-3 min-h-[44px] flex items-center justify-center"
         >
           Back to options
         </button>

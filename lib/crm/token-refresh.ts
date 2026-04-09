@@ -157,6 +157,7 @@ async function refreshHubSpotToken(
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function refreshPipedriveToken(
   conn: CrmConnection,
   supabase: SupabaseClient

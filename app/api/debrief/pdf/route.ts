@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { createClient } from '@/lib/supabase/server'
-import { DebriefPDF, BDRDebriefPDF, VbrickBDRDebriefPDF } from '@/lib/debrief/pdf'
+import { DebriefPDF } from '@/lib/debrief/pdf'
 import type { DebriefOutput } from '@/lib/debrief/types'
-import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
-import { isVbrickUser } from '@/lib/vbrick/config'
 import React from 'react'
 
 export const runtime = 'nodejs'
@@ -32,7 +30,6 @@ export async function GET(request: NextRequest) {
   }
 
   const structured = session.structured_output as unknown as DebriefOutput
-  const isVbrick = isVbrickUser(session.email)
   const date = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -40,28 +37,12 @@ export async function GET(request: NextRequest) {
   })
 
   try {
-    let pdfElement: React.ReactElement
-
-    if (isVbrickBDROutput(structured)) {
-      pdfElement = React.createElement(VbrickBDRDebriefPDF, {
-        data: structured,
-        email: session.email,
-        date,
-      })
-    } else if (isBDROutput(structured)) {
-      pdfElement = React.createElement(BDRDebriefPDF, {
-        data: structured,
-        email: session.email,
-        date,
-      })
-    } else {
-      pdfElement = React.createElement(DebriefPDF, {
-        data: structured,
-        email: session.email,
-        date,
-        dealSegment: structured.dealSegment || 'smb',
-      })
-    }
+    const pdfElement = React.createElement(DebriefPDF, {
+      data: structured,
+      email: session.email,
+      date,
+      dealSegment: structured.dealSegment || 'smb',
+    })
 
     const buffer = await renderToBuffer(
       pdfElement as unknown as React.ReactElement
@@ -74,16 +55,12 @@ export async function GET(request: NextRequest) {
       .eq('id', sessionId)
 
     const dateSlug = new Date().toISOString().split('T')[0]
-    const filePrefix = isVbrick
-      ? 'vbrick-command-center'
-      : isBDROutput(structured) ? 'cold-call' : 'debrief'
-    const filenameBase = isVbrick ? 'vbrick-command-center' : 'streetnotes'
 
     return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${filenameBase}-${filePrefix}-${dateSlug}.pdf"`,
+        'Content-Disposition': `attachment; filename="streetnotes-debrief-${dateSlug}.pdf"`,
         'Cache-Control': 'no-store',
       },
     })

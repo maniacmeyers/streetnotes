@@ -2,9 +2,8 @@
 
 import { useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import type { DebriefStep, DebriefOutput, DealSegment } from '@/lib/debrief/types'
+import type { DebriefStep, DebriefOutput } from '@/lib/debrief/types'
 import EmailGate from './email-gate'
-import SegmentSelector from './segment-selector'
 import Recorder from './recorder'
 import ImportSummary from './import-summary'
 import TranscriptReview from './transcript-review'
@@ -29,7 +28,6 @@ export default function DebriefFlow() {
   const [step, setStep] = useState<DebriefStep>('email')
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
-  const [segment, setSegment] = useState<DealSegment | null>(null)
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [audioMimeType, setAudioMimeType] = useState<string>('')
   const [durationSec, setDurationSec] = useState<number>(0)
@@ -42,11 +40,6 @@ export default function DebriefFlow() {
   const handleEmailComplete = useCallback((sid: string, em: string) => {
     setSessionId(sid)
     setEmail(em)
-    setStep('segment')
-  }, [])
-
-  const handleSegmentSelect = useCallback((seg: DealSegment) => {
-    setSegment(seg)
     setStep('record')
   }, [])
 
@@ -125,7 +118,6 @@ export default function DebriefFlow() {
           body: JSON.stringify({
             sessionId,
             transcript: text,
-            segment,
           }),
         })
 
@@ -154,7 +146,7 @@ export default function DebriefFlow() {
         )
       }
     },
-    [sessionId, segment]
+    [sessionId]
   )
 
   const handleTranscriptConfirm = useCallback(
@@ -204,7 +196,6 @@ export default function DebriefFlow() {
     setStep('email')
     setSessionId(null)
     setEmail(null)
-    setSegment(null)
     setAudioBlob(null)
     setAudioMimeType('')
     setDurationSec(0)
@@ -222,19 +213,12 @@ export default function DebriefFlow() {
         </motion.div>
       )}
 
-      {step === 'segment' && (
-        <motion.div key="segment" {...pageTransition}>
-          <SegmentSelector onSelect={handleSegmentSelect} />
-        </motion.div>
-      )}
-
       {step === 'record' && (
         <motion.div key="record" {...pageTransition}>
           <Recorder
             onComplete={handleRecordingComplete}
             onImport={() => setStep('import')}
             onFileImport={handleFileImport}
-            segment={segment ?? undefined}
           />
         </motion.div>
       )}
