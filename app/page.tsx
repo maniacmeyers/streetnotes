@@ -65,16 +65,16 @@ export default function LandingPage() {
             {/* Headline */}
             <h1
               id="hero-heading"
-              className="font-display uppercase text-[40px] sm:text-[64px] md:text-[100px] lg:text-[130px] xl:text-[150px] leading-[0.85] text-white mb-6 sm:mb-8"
+              className="font-display uppercase text-[32px] sm:text-[64px] md:text-[100px] lg:text-[130px] xl:text-[150px] leading-[0.85] text-white mb-6 sm:mb-8"
               style={{
                 textShadow: '4px 4px 0px #000000',
               }}
             >
               Stop losing
-              <br />
-              deals in the
-              <br />
-              <span className="text-volt">parking lot</span>
+              <br className="hidden sm:block" />
+              {' '}deals in the
+              <br className="hidden sm:block" />
+              {' '}<span className="text-volt">parking lot</span>
             </h1>
 
             {/* Subheadline */}
@@ -85,7 +85,7 @@ export default function LandingPage() {
 
             {/* ── PRIMARY CTA: Brain Dump ── */}
             <div className="max-w-lg mb-8 sm:mb-10">
-              <div className="bg-volt border-4 border-black neo-shadow p-5 sm:p-6 relative">
+              <div className="bg-volt border-3 sm:border-4 border-black neo-shadow-sm sm:neo-shadow p-4 sm:p-6 relative">
                 {/* Watermark — clipped independently so ElectricBorder overflow is visible */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
                   <div
@@ -147,7 +147,7 @@ export default function LandingPage() {
               <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold">
                 The problem
               </span>
-              <h2 id="problem-heading" className="font-display text-[32px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2">
+              <h2 id="problem-heading" className="font-display text-[28px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2">
                 Your CRM is{' '}
                 <span className="text-volt">lying to you</span>
               </h2>
@@ -162,7 +162,7 @@ export default function LandingPage() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold block mb-3">
                   The old way
                 </span>
-                <p className="font-display text-[26px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-white/60">
+                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-white/60">
                   8 calls. 6pm. Still typing.
                 </p>
                 <p className="font-body text-gray-300 mt-3 sm:mt-4 text-base sm:text-lg">
@@ -174,7 +174,7 @@ export default function LandingPage() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-black/60 font-bold block mb-3">
                   The StreetNotes way
                 </span>
-                <p className="font-display text-[26px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-black">
+                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-black">
                   8 calls. Done in 60 seconds.
                 </p>
                 <p className="font-body text-black/70 mt-3 sm:mt-4 text-base sm:text-lg">
@@ -190,7 +190,7 @@ export default function LandingPage() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold block mb-3">
                   Monday forecast call
                 </span>
-                <p className="font-display text-[26px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-white/60">
+                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-white/60">
                   &quot;Uh... let me check&quot;
                 </p>
                 <p className="font-body text-gray-300 mt-3 sm:mt-4 text-base sm:text-lg">
@@ -202,7 +202,7 @@ export default function LandingPage() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-black/60 font-bold block mb-3">
                   Monday forecast call
                 </span>
-                <p className="font-display text-[26px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-black">
+                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-black">
                   &quot;Pull it up&quot;
                 </p>
                 <p className="font-body text-black/70 mt-3 sm:mt-4 text-base sm:text-lg">
@@ -219,14 +219,14 @@ export default function LandingPage() {
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold">
               How it works
             </span>
-            <h2 id="how-heading" className="font-display text-[28px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2 mb-10 sm:mb-16">
+            <h2 id="how-heading" className="font-display text-[24px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2 mb-10 sm:mb-16">
               Three steps. Sixty seconds.{' '}
               <span className="text-volt">Done.</span>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {/* Step 1 */}
-              <div className="relative bg-white border-4 sm:border-8 border-black neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
+              <div className="relative bg-white border-3 sm:border-8 border-black neo-shadow-sm sm:neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
                 <div className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 rotate-[-2deg]">
                   <span className="bg-volt text-black font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] border-3 sm:border-4 border-black px-2 sm:px-3 py-0.5 sm:py-1">
                     Step 01
@@ -248,7 +248,7 @@ export default function LandingPage() {
               </div>
 
               {/* Step 2 */}
-              <div className="relative bg-white border-4 sm:border-8 border-black neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
+              <div className="relative bg-white border-3 sm:border-8 border-black neo-shadow-sm sm:neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
                 <div className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 rotate-[2deg]">
                   <span className="bg-volt text-black font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] border-3 sm:border-4 border-black px-2 sm:px-3 py-0.5 sm:py-1">
                     Step 02
@@ -271,7 +271,7 @@ export default function LandingPage() {
               </div>
 
               {/* Step 3 */}
-              <div className="relative bg-white border-4 sm:border-8 border-black neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
+              <div className="relative bg-white border-3 sm:border-8 border-black neo-shadow-sm sm:neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
                 <div className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 rotate-[-1deg]">
                   <span className="bg-volt text-black font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] border-3 sm:border-4 border-black px-2 sm:px-3 py-0.5 sm:py-1">
                     Step 03
@@ -315,7 +315,7 @@ export default function LandingPage() {
                     Free — no signup required
                   </span>
 
-                  <h2 id="free-tool-heading" className="font-display text-[28px] sm:text-[48px] md:text-[64px] uppercase leading-[0.85] text-white mb-4">
+                  <h2 id="free-tool-heading" className="font-display text-[24px] sm:text-[48px] md:text-[64px] uppercase leading-[0.85] text-white mb-4">
                     Try it <span className="text-volt">right now</span>
                   </h2>
 
@@ -349,9 +349,9 @@ export default function LandingPage() {
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-500 font-bold">
               What changes
             </span>
-            <h2 id="benefits-heading" className="font-display text-[26px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-black mt-2 mb-10 sm:mb-16">
+            <h2 id="benefits-heading" className="font-display text-[22px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-black mt-2 mb-10 sm:mb-16">
               What would you do with 6-8 hours back{' '}
-              <span className="text-volt bg-black px-3 sm:px-4 inline-block mt-1 sm:mt-0">
+              <span className="text-volt bg-black px-2 sm:px-4 inline-block mt-1 sm:mt-0">
                 every week?
               </span>
             </h2>
@@ -409,7 +409,7 @@ export default function LandingPage() {
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold">
               Why us
             </span>
-            <h2 id="credibility-heading" className="font-display text-[32px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2 mb-6 sm:mb-8">
+            <h2 id="credibility-heading" className="font-display text-[24px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2 mb-6 sm:mb-8">
               Built by people who&apos;ve actually{' '}
               <span className="text-volt">successfully carried a quota</span>
             </h2>
@@ -452,7 +452,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2
               id="final-cta-heading"
-              className="font-display text-[36px] sm:text-[56px] md:text-[80px] lg:text-[100px] uppercase leading-[0.85] text-black mb-4"
+              className="font-display text-[28px] sm:text-[56px] md:text-[80px] lg:text-[100px] uppercase leading-[0.85] text-black mb-4"
               style={{
                 textShadow: '3px 3px 0px rgba(0,0,0,0.1)',
               }}
