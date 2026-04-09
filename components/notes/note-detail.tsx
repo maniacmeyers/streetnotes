@@ -214,6 +214,26 @@ function StructuredFields({ data }: { data: CRMNote }) {
   )
 }
 
+function DetailSkeleton() {
+  return (
+    <div className="px-6 py-8 flex flex-col gap-6 animate-pulse">
+      <div className="flex items-center justify-between">
+        <div className="h-5 bg-gray-200 rounded w-16" />
+        <div className="h-4 bg-gray-100 rounded w-20" />
+      </div>
+      <div className="h-6 bg-gray-200 rounded w-2/3" />
+      <div className="h-16 bg-gray-100 rounded" />
+      <div className="rounded-md border border-gray-200 p-4 flex flex-col gap-3">
+        <div className="h-4 bg-gray-200 rounded w-1/3" />
+        <div className="h-4 bg-gray-100 rounded w-full" />
+        <div className="h-4 bg-gray-100 rounded w-2/3" />
+        <div className="h-4 bg-gray-200 rounded w-1/3 mt-2" />
+        <div className="h-4 bg-gray-100 rounded w-full" />
+      </div>
+    </div>
+  )
+}
+
 export default function NoteDetail({ noteId }: { noteId: string }) {
   const router = useRouter()
   const [note, setNote] = useState<NoteData | null>(null)
@@ -273,26 +293,21 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
     }
   }
 
-  if (loading) {
-    return (
-      <main className="px-6 py-8">
-        <p className="text-gray-400 text-center py-12">Loading...</p>
-      </main>
-    )
-  }
+  if (loading) return <DetailSkeleton />
 
   if (error || !note) {
     return (
-      <main className="px-6 py-8 flex flex-col gap-4">
+      <div className="px-6 py-8 flex flex-col gap-4">
         <p className="text-red-600">{error || 'Note not found'}</p>
         <button
           type="button"
           onClick={() => router.push('/dashboard')}
           className="text-base text-gray-500 hover:text-gray-700 min-h-[44px]"
+          aria-label="Back to dashboard"
         >
           &larr; Back to dashboard
         </button>
-      </main>
+      </div>
     )
   }
 
@@ -300,13 +315,14 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
   const canPush = !isPushing && note.push_status !== 'success' && note.push_status !== 'pending'
 
   return (
-    <main className="px-6 py-8 flex flex-col gap-6">
+    <div className="px-6 py-8 flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => router.push('/dashboard')}
           className="text-base text-gray-500 hover:text-gray-700 min-w-[44px] min-h-[44px] flex items-center"
+          aria-label="Back to dashboard"
         >
           &larr; Back
         </button>
@@ -356,9 +372,11 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
           <button
             type="button"
             onClick={() => setShowTranscript(!showTranscript)}
+            aria-expanded={showTranscript}
+            aria-label={showTranscript ? 'Hide transcript' : 'Show transcript'}
             className="text-sm text-gray-500 hover:text-gray-700 min-h-[44px] flex items-center gap-1"
           >
-            {showTranscript ? '▾' : '▸'} Transcript
+            <span aria-hidden="true">{showTranscript ? '▾' : '▸'}</span> Transcript
           </button>
           {showTranscript && (
             <p className="text-base text-gray-700 mt-2 whitespace-pre-wrap">
@@ -367,6 +385,6 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
           )}
         </div>
       )}
-    </main>
+    </div>
   )
 }

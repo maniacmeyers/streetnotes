@@ -22,7 +22,12 @@ function timeAgo(dateStr: string): string {
   const diffDay = Math.floor(diffHr / 24)
   if (diffDay === 1) return 'Yesterday'
   if (diffDay < 7) return `${diffDay}d ago`
-  return new Date(dateStr).toLocaleDateString()
+  const date = new Date(dateStr)
+  const thisYear = new Date().getFullYear()
+  if (date.getFullYear() === thisYear) {
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  }
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function PushBadge({ status }: { status: string | null }) {
@@ -34,6 +39,22 @@ function PushBadge({ status }: { status: string | null }) {
   if (status === 'pending')
     return <span className="text-xs text-yellow-600 font-medium">Pending</span>
   return null
+}
+
+function Skeleton() {
+  return (
+    <div className="flex flex-col gap-1 animate-pulse">
+      {[1, 2, 3].map(i => (
+        <div key={i} className="flex items-center justify-between px-3 py-3 min-h-[44px]">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <div className="h-4 bg-gray-200 rounded w-3/4" />
+            <div className="h-3 bg-gray-100 rounded w-1/4" />
+          </div>
+          <div className="h-3 bg-gray-100 rounded w-12 ml-3" />
+        </div>
+      ))}
+    </div>
+  )
 }
 
 export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
@@ -49,9 +70,7 @@ export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
       .finally(() => setLoading(false))
   }, [refreshKey])
 
-  if (loading) {
-    return <p className="text-sm text-gray-400 text-center py-8">Loading notes...</p>
-  }
+  if (loading) return <Skeleton />
 
   if (notes.length === 0) {
     return (

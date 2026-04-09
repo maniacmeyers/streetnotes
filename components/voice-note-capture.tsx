@@ -23,21 +23,13 @@ function formatDuration(durationSec: number): string {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 }
 
-function labelForRecorderStatus(status: string): string {
-  if (status === 'requesting_permission') return 'Requesting mic access'
-  if (status === 'recording') return 'Recording'
-  if (status === 'stopped') return 'Ready to transcribe'
-  if (status === 'error') return 'Recorder error'
-  return 'Idle'
-}
-
-
 interface VoiceNoteCaptureProps {
   autoStart?: boolean
   onSaved?: () => void
+  onProgress?: (hasWork: boolean) => void
 }
 
-export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptureProps) {
+export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: VoiceNoteCaptureProps) {
   const {
     status,
     durationSec,
@@ -68,6 +60,12 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
   const [pushError, setPushError] = useState<string | null>(null)
   const [pushCandidates, setPushCandidates] = useState<CrmCandidate[] | null>(null)
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
+
+  // Track whether there's work in progress (for back-confirmation)
+  const hasWork = !!(audioBlob || transcript || structured || savedNoteId)
+  useEffect(() => {
+    onProgress?.(hasWork)
+  }, [hasWork, onProgress])
 
   useEffect(() => {
     if (autoStart && isSupported && status === 'idle') {
@@ -286,68 +284,64 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
     void handlePushToCRM(overrides)
   }
 
-  const canPush = !!savedNoteId && !isPushing && !pushResult?.success
-
-  const canStart =
-    isSupported &&
-    status !== 'recording' &&
-    status !== 'requesting_permission' &&
-    !isTranscribing &&
-    !isStructuring
-  const canStop = status === 'recording' && !isTranscribing
-  const canTranscribe = !!audioBlob && status !== 'recording' && !isTranscribing && !isStructuring
-  const canStructure = !!transcript && !isStructuring && !isTranscribing
-  const canSave = !!structured && !isSaving && !savedNoteId
-  const canReset =
-    status !== 'idle' ||
-    !!audioBlob ||
-    !!transcript ||
-    !!structured ||
-    !!recorderError ||
-    !!transcribeError ||
-    !!structureError
+  // Determine which stage we're in for progressive button display
+  const isRecording = status === 'recording'
+  const hasStopped = status === 'stopped' && !!audioBlob
+  const hasTranscript = !!transcript && !isTranscribing
+  const hasStructured = !!structured && !isStructuring
+  const hasSaved = !!savedNoteId
+  const hasPushed = !!pushResult?.success
 
   const activeError = recorderError || transcribeError || structureError || saveError || pushError
 
+  // Pipeline label
+  const pipelineLabel = hasPushed
+    ? 'Pushed to CRM'
+    : isPushing
+      ? 'Pushing to CRM...'
+      : hasSaved
+        ? 'Saved — ready to push'
+        : isSaving
+          ? 'Saving...'
+          : hasStructured
+            ? 'Structured — review below'
+            : isStructuring
+              ? 'Structuring...'
+              : hasTranscript
+                ? 'Transcribed'
+                : isTranscribing
+                  ? 'Transcribing...'
+                  : isRecording
+                    ? 'Recording...'
+                    : 'Ready'
+
   return (
-    <section className="rounded-md border border-gray-200 p-4 flex flex-col gap-4">
+    <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold">Capture meeting note</h2>
-        <p className="text-base text-gray-500">
-          Record, transcribe, and structure your meeting into CRM-ready fields.
-        </p>
+        <p className="text-sm text-gray-500">{pipelineLabel}</p>
       </div>
 
-      <div className="rounded-md bg-gray-50 border border-gray-200 px-3 py-2 text-base">
-        <p>
-          Recorder: <span className="font-medium">{labelForRecorderStatus(status)}</span>
-        </p>
-        <p>
-          Duration: <span className="font-medium">{formatDuration(durationSec)}</span>
-        </p>
-        <p>
-          Pipeline:{' '}
-          <span className="font-medium">
-            {pushResult?.success
-              ? 'Pushed to CRM'
-              : isPushing
-              ? 'Pushing to CRM...'
-              : savedNoteId
-              ? 'Saved'
-              : isSaving
-              ? 'Saving...'
-              : structured
-              ? 'Structured — review below'
-              : isStructuring
-              ? 'Structuring...'
-              : transcript
-              ? 'Transcribed'
-              : isTranscribing
-              ? 'Transcribing...'
-              : 'Idle'}
-          </span>
-        </p>
-      </div>
+      {/* Recording state: duration + stop */}
+      {isRecording && (
+        <div className="flex flex-col items-center gap-4 py-4">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-2xl font-mono font-bold">
+              {formatDuration(durationSec)}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={stopRecording}
+            className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 active:bg-red-800 flex items-center justify-center shadow-lg transition-transform active:scale-95"
+            aria-label="Stop recording"
+          >
+            <span className="w-6 h-6 rounded-sm bg-white" />
+          </button>
+          <p className="text-sm text-gray-500">Tap to stop</p>
+        </div>
+      )}
 
       {!isSupported && (
         <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
@@ -363,6 +357,7 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
         </div>
       )}
 
+      {/* Success banners */}
       {pushResult?.success && (
         <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
           <p className="text-base text-green-700">
@@ -380,26 +375,27 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
         </div>
       )}
 
-      {savedNoteId && !pushResult?.success && (
+      {hasSaved && !pushResult?.success && !isPushing && (
         <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
-          <p className="text-base text-green-700">Note saved. Ready for CRM push.</p>
+          <p className="text-base text-green-700">Note saved.</p>
         </div>
       )}
 
+      {/* Candidate selection picker */}
       {pushCandidates && pushCandidates.length > 0 && (
         <div className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-3 flex flex-col gap-2">
           <p className="text-base text-yellow-800 font-medium">
             Multiple {pushCandidates[0].type === 'contact' ? 'contacts' : 'deals'} found. Select one:
           </p>
           {pushCandidates.map(c => (
-            <label key={c.id} className="flex items-center gap-2 text-base cursor-pointer">
+            <label key={c.id} className="flex items-center gap-2 text-base cursor-pointer min-h-[44px]">
               <input
                 type="radio"
                 name="crmCandidate"
                 value={c.id}
                 checked={selectedCandidateId === c.id}
                 onChange={() => setSelectedCandidateId(c.id)}
-                className="w-4 h-4"
+                className="w-5 h-5"
               />
               <span className="font-medium">{c.name}</span>
               {c.detail && <span className="text-gray-500">{c.detail}</span>}
@@ -416,81 +412,17 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-3">
-        <button
-          type="button"
-          onClick={() => void startRecording()}
-          disabled={!canStart}
-          className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
-        >
-          Start recording
-        </button>
-        <button
-          type="button"
-          onClick={stopRecording}
-          disabled={!canStop}
-          className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium disabled:text-gray-400"
-        >
-          Stop recording
-        </button>
-        <button
-          type="button"
-          onClick={() => void handleTranscribe()}
-          disabled={!canTranscribe}
-          className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium disabled:text-gray-400"
-        >
-          {isTranscribing ? 'Transcribing...' : 'Transcribe'}
-        </button>
-        <button
-          type="button"
-          onClick={() => void handleStructure()}
-          disabled={!canStructure}
-          className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
-        >
-          {isStructuring ? 'Structuring...' : 'Structure for CRM'}
-        </button>
-        {structured && (
-          <button
-            type="button"
-            onClick={() => void handleSave()}
-            disabled={!canSave}
-            className="min-h-[44px] rounded-md bg-green-700 text-white text-base font-medium disabled:bg-gray-400"
-          >
-            {isSaving ? 'Saving...' : savedNoteId ? 'Saved' : 'Save note'}
-          </button>
-        )}
-        {savedNoteId && !pushCandidates && (
-          <button
-            type="button"
-            onClick={() => void handlePushToCRM()}
-            disabled={!canPush}
-            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
-          >
-            {isPushing ? 'Pushing to CRM...' : pushResult?.success ? 'Pushed to CRM' : pushError ? 'Retry push' : 'Push to CRM'}
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={handleReset}
-          disabled={!canReset}
-          className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium disabled:text-gray-400"
-        >
-          Reset
-        </button>
-      </div>
-
-      {audioBlob && (
-        <div className="flex flex-col gap-2 text-base">
+      {/* Audio preview (after recording stops) */}
+      {audioBlob && !isRecording && (
+        <div className="flex flex-col gap-2 text-sm text-gray-500">
           <p>
-            Recorded file:{' '}
-            <span className="font-medium">
-              {formatBytes(audioBlob.size)} ({mimeType || audioBlob.type || 'unknown'})
-            </span>
+            {formatBytes(audioBlob.size)} · {mimeType || audioBlob.type || 'unknown'}
           </p>
           {audioPreviewUrl && <audio controls src={audioPreviewUrl} className="w-full" />}
         </div>
       )}
 
+      {/* Transcript (shown after transcription) */}
       {transcript && (
         <div className="flex flex-col gap-2">
           <label htmlFor="transcript" className="text-base font-medium">
@@ -506,6 +438,7 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
         </div>
       )}
 
+      {/* Editable structured output */}
       {structured && (
         <div className="flex flex-col gap-2 rounded-md border border-gray-200 p-4">
           <h3 className="text-lg font-semibold">Review &amp; Edit</h3>
@@ -519,18 +452,143 @@ export default function VoiceNoteCapture({ autoStart, onSaved }: VoiceNoteCaptur
         </div>
       )}
 
+      {/* Progressive action buttons — only show the next relevant action */}
+      <div className="flex flex-col gap-3">
+        {/* Stage: idle or error with no audio — start recording */}
+        {!isRecording && !audioBlob && !transcript && !structured && isSupported && (
+          <button
+            type="button"
+            onClick={() => void startRecording()}
+            disabled={status === 'requesting_permission'}
+            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
+          >
+            {status === 'requesting_permission' ? 'Requesting mic...' : 'Start recording'}
+          </button>
+        )}
+
+        {/* Stage: audio recorded — transcribe */}
+        {hasStopped && !transcript && !isTranscribing && (
+          <button
+            type="button"
+            onClick={() => void handleTranscribe()}
+            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium"
+          >
+            Transcribe
+          </button>
+        )}
+
+        {/* Stage: transcribing */}
+        {isTranscribing && (
+          <button
+            type="button"
+            disabled
+            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
+          >
+            Transcribing...
+          </button>
+        )}
+
+        {/* Stage: transcribed — structure */}
+        {hasTranscript && !structured && !isStructuring && (
+          <button
+            type="button"
+            onClick={() => void handleStructure()}
+            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium"
+          >
+            Structure for CRM
+          </button>
+        )}
+
+        {/* Stage: structuring */}
+        {isStructuring && (
+          <button
+            type="button"
+            disabled
+            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
+          >
+            Structuring...
+          </button>
+        )}
+
+        {/* Stage: structured — save */}
+        {hasStructured && !hasSaved && !isSaving && (
+          <button
+            type="button"
+            onClick={() => void handleSave()}
+            className="min-h-[44px] rounded-md bg-green-700 text-white text-base font-medium"
+          >
+            Save note
+          </button>
+        )}
+
+        {/* Stage: saving */}
+        {isSaving && (
+          <button
+            type="button"
+            disabled
+            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
+          >
+            Saving...
+          </button>
+        )}
+
+        {/* Stage: saved — push to CRM */}
+        {hasSaved && !pushResult?.success && !isPushing && !pushCandidates && (
+          <button
+            type="button"
+            onClick={() => void handlePushToCRM()}
+            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium"
+          >
+            {pushError ? 'Retry push to CRM' : 'Push to CRM'}
+          </button>
+        )}
+
+        {/* Stage: pushing */}
+        {isPushing && !pushCandidates && (
+          <button
+            type="button"
+            disabled
+            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
+          >
+            Pushing to CRM...
+          </button>
+        )}
+
+        {/* Done button — after save (skip push) or after push success */}
+        {(hasSaved || hasPushed) && onSaved && (
+          <button
+            type="button"
+            onClick={onSaved}
+            className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium text-gray-700"
+          >
+            Done
+          </button>
+        )}
+
+        {/* Reset — always available when there's work */}
+        {hasWork && !isRecording && (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium text-gray-400"
+          >
+            Start over
+          </button>
+        )}
+      </div>
+
       <p className="sr-only" aria-live="polite">
         {isSaving
           ? 'Saving note'
           : savedNoteId
-          ? 'Note saved'
-          : isStructuring
-          ? 'Structuring transcript'
-          : isTranscribing
-          ? 'Transcription in progress'
-          : transcript
-          ? 'Transcription complete'
-          : activeError || ''}
+            ? 'Note saved'
+            : isStructuring
+              ? 'Structuring transcript'
+              : isTranscribing
+                ? 'Transcription in progress'
+                : transcript
+                  ? 'Transcription complete'
+                  : activeError || ''}
       </p>
     </section>
   )
