@@ -7,9 +7,11 @@ import {
   MAX_AUDIO_BYTES,
 } from '@/lib/audio/recording'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
+import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
 import type { CRMNote } from '@/lib/notes/schema'
 import type { PushResult, CrmCandidate } from '@/lib/crm/push/types'
 import EditableStructuredOutput from '@/components/notes/editable-structured-output'
+import MicInstrument from '@/components/mic-instrument'
 import { BrutalCard, BrutalButton } from '@/components/streetnotes/brutal'
 
 interface TranscribeSuccessResponse {
@@ -18,11 +20,8 @@ interface TranscribeSuccessResponse {
   sizeBytes: number
 }
 
-function formatDuration(durationSec: number): string {
-  const minutes = Math.floor(durationSec / 60)
-  const seconds = durationSec % 60
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-}
+const MAX_RECORDING_SEC = 300 // 5 minutes cap
+const MIN_RECORDING_SEC = 3
 
 interface VoiceNoteCaptureProps {
   autoStart?: boolean
@@ -38,10 +37,13 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
     mimeType,
     error: recorderError,
     isSupported,
+    mediaStream,
     startRecording,
     stopRecording,
     resetRecording,
   } = useVoiceRecorder()
+
+  const { analyserNode, startAnalysing, stopAnalysing } = useAudioAnalyser()
 
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [transcript, setTranscript] = useState('')
@@ -75,6 +77,25 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
     // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Wire analyser to the recorder's live stream (reuse the same stream —
+  // a second getUserMedia call kills the first one on iOS WebKit).
+  useEffect(() => {
+    const isRecording = status === 'recording'
+    if (isRecording && mediaStream) {
+      startAnalysing(mediaStream).catch(() => {})
+    }
+    if (!isRecording) {
+      stopAnalysing()
+    }
+  }, [status, mediaStream, startAnalysing, stopAnalysing])
+
+  // Auto-stop at max duration
+  useEffect(() => {
+    if (status === 'recording' && durationSec >= MAX_RECORDING_SEC) {
+      stopRecording()
+    }
+  }, [status, durationSec, stopRecording])
 
   useEffect(() => {
     if (!audioBlob) {
@@ -316,6 +337,9 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
                     ? 'Recording...'
                     : 'Ready'
 
+  const canStop = isRecording && durationSec >= MIN_RECORDING_SEC
+  const showInstrument = isRecording || (!audioBlob && !transcript && !structured && isSupported && status !== 'requesting_permission')
+
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
@@ -330,26 +354,21 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
         </p>
       </div>
 
-      {/* Recording state: duration + stop */}
-      {isRecording && (
-        <div className="flex flex-col items-center gap-4 py-6">
-          <div className="flex items-center gap-3">
-            <span className="w-3 h-3 bg-red-500 animate-pulse" />
-            <span className="font-display text-5xl text-white tabular-nums leading-none">
-              {formatDuration(durationSec)}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={stopRecording}
-            className="w-20 h-20 bg-red-600 border-4 border-black shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 flex items-center justify-center transition-transform duration-100"
-            aria-label="Stop recording"
-          >
-            <span className="w-6 h-6 bg-white" />
-          </button>
-          <p className="font-mono text-[10px] uppercase tracking-widest font-bold text-gray-400">
-            Tap to stop
-          </p>
+      {/* Mic instrument — idle entry point + recording state */}
+      {showInstrument && (
+        <div className="flex flex-col items-center py-6 sm:py-8">
+          <MicInstrument
+            isRecording={isRecording}
+            disabled={!isSupported}
+            canStop={canStop}
+            durationSec={durationSec}
+            maxDurationSec={MAX_RECORDING_SEC}
+            minDurationSec={MIN_RECORDING_SEC}
+            analyserNode={analyserNode}
+            onStart={() => void startRecording()}
+            onStop={stopRecording}
+            idleLabel="Tap to record"
+          />
         </div>
       )}
 
@@ -482,16 +501,10 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
 
       {/* Progressive action buttons — only show the next relevant action */}
       <div className="flex flex-col gap-3">
-        {/* Stage: idle or error with no audio — start recording */}
-        {!isRecording && !audioBlob && !transcript && !structured && isSupported && (
-          <BrutalButton
-            type="button"
-            onClick={() => void startRecording()}
-            disabled={status === 'requesting_permission'}
-            variant="volt"
-            size="lg"
-          >
-            {status === 'requesting_permission' ? 'Requesting mic...' : 'Start recording'}
+        {/* Stage: requesting mic permission */}
+        {status === 'requesting_permission' && (
+          <BrutalButton type="button" disabled variant="primary" size="lg">
+            Requesting mic...
           </BrutalButton>
         )}
 

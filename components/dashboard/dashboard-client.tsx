@@ -2,12 +2,12 @@
 
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { Settings, ChevronLeft, Mic } from 'lucide-react'
+import { Settings, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import VoiceNoteCapture from '@/components/voice-note-capture'
 import RecentNotes from '@/components/dashboard/recent-notes'
 import SignOutButton from '@/components/sign-out-button'
-import ElectricBorder from '@/components/electric-border'
+import MicInstrument from '@/components/mic-instrument'
 import { BrutalCard } from '@/components/streetnotes/brutal'
 
 interface DashboardStats {
@@ -139,25 +139,24 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
           </BrutalCard>
         </motion.div>
 
-        {/* Mic button — center, prominent, electric-border wrapped */}
+        {/* Mic instrument — the centerpiece */}
         <motion.div
-          className="flex flex-col items-center py-10"
+          className="flex flex-col items-center py-8 sm:py-10"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
-          <div className="relative">
-            <ElectricBorder color="#00E676" speed={1} chaos={0.3} borderRadius={0}>
-              <button
-                type="button"
-                onClick={() => setIsCapturing(true)}
-                className="w-[160px] h-[160px] flex items-center justify-center bg-black border-4 border-black cursor-pointer hover:bg-dark active:bg-dark transition-colors duration-100"
-                aria-label="Record new note"
-              >
-                <Mic className="w-14 h-14 text-volt" />
-              </button>
-            </ElectricBorder>
-          </div>
+          <MicInstrument
+            isRecording={false}
+            disabled={false}
+            canStop={false}
+            durationSec={0}
+            maxDurationSec={300}
+            analyserNode={null}
+            onStart={() => setIsCapturing(true)}
+            onStop={() => {}}
+            idleLabel="Tap to debrief"
+          />
 
           <p
             className="font-display uppercase text-3xl text-white mt-5 leading-none"
@@ -166,7 +165,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
             Debrief
           </p>
           <p className="font-body italic text-sm text-gray-300 mt-2">
-            Tap to record your post-call notes
+            Talk for 60 seconds after your call
           </p>
         </motion.div>
 

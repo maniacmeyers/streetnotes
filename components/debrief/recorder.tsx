@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { FaMicrophone, FaUpload } from 'react-icons/fa'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
-import MicButton from './mic-button'
+import MicInstrument from '@/components/mic-instrument'
 import FileDropZone from './file-drop-zone'
 
 interface RecorderProps {
@@ -231,12 +231,13 @@ export default function Recorder({ onComplete, onFileImport }: RecorderProps) {
       </div>
 
       {/* Mic Instrument (waveform lives inside) */}
-      <MicButton
+      <MicInstrument
         isRecording={isRecording}
         disabled={!isSupported}
         canStop={canStop}
         durationSec={durationSec}
         maxDurationSec={MAX_DURATION}
+        minDurationSec={MIN_DURATION}
         analyserNode={analyserNode}
         onStart={handleStart}
         onStop={handleStop}
