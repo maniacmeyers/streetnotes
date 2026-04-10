@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   try {
     const openai = getOpenAIClient()
     const transcription = await openai.audio.transcriptions.create({
-      model: 'whisper-1',
+      model: 'gpt-4o-transcribe',
       file: audio,
       prompt: SALES_WHISPER_PROMPT,
     })

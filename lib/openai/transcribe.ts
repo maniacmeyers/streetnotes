@@ -1,13 +1,13 @@
 import { getOpenAIClient, SALES_WHISPER_PROMPT } from './server'
 
 /**
- * Shared Whisper transcription utility.
- * Used by both the debrief transcribe route and story vault practice recording.
+ * Shared transcription utility — uses gpt-4o-transcribe for best-in-class
+ * accuracy on sales audio (proper nouns, dollar amounts, accents, noise).
  */
 export async function transcribeAudio(audio: File): Promise<string> {
   const openai = getOpenAIClient()
   const transcription = await openai.audio.transcriptions.create({
-    model: 'whisper-1',
+    model: 'gpt-4o-transcribe',
     file: audio,
     prompt: SALES_WHISPER_PROMPT,
   })
