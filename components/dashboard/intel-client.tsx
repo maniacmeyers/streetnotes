@@ -3,13 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { RefreshCw, FileText, Radar } from 'lucide-react'
-import { neuTheme } from '@/lib/vbrick/theme'
-import { CompetitorTracker } from '@/components/vbrick/ci/competitor-tracker'
-import { QuoteWall } from '@/components/vbrick/ci/quote-wall'
-import { TrendChart } from '@/components/vbrick/ci/trend-chart'
+import { CompetitorTracker, QuoteWall, TrendChart } from '@/components/streetnotes/ci'
+import { BrutalCard, BrutalButton, BrutalTabs } from '@/components/streetnotes/brutal'
 import type { QuoteFeedItem } from '@/lib/ci/types'
-
-const t = neuTheme
 
 type CITab = 'competitors' | 'quotes' | 'trends'
 
@@ -32,8 +28,12 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
   const [loading, setLoading] = useState(true)
 
   const [allMentions, setAllMentions] = useState<QuoteFeedItem[]>([])
-  const [competitorData, setCompetitorData] = useState<Array<{ name: string; count: number; sentiment: { positive: number; negative: number; neutral: number } }>>([])
-  const [trendData, setTrendData] = useState<Array<{ competitorName: string; trend: Array<{ weekLabel: string; count: number }> }>>([])
+  const [competitorData, setCompetitorData] = useState<
+    Array<{ name: string; count: number; sentiment: { positive: number; negative: number; neutral: number } }>
+  >([])
+  const [trendData, setTrendData] = useState<
+    Array<{ competitorName: string; trend: Array<{ weekLabel: string; count: number }> }>
+  >([])
   const [weeklyBrief, setWeeklyBrief] = useState<WeeklyBrief | null>(null)
   const [showBrief, setShowBrief] = useState(false)
   const [generatingBrief, setGeneratingBrief] = useState(false)
@@ -87,112 +87,104 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
   const topCompetitor = competitorData.length > 0 ? competitorData[0]?.name : 'None yet'
 
   const tabs = [
-    { id: 'competitors' as CITab, label: 'Tracked' },
-    { id: 'quotes' as CITab, label: 'Quotes' },
-    { id: 'trends' as CITab, label: 'Trends' },
+    { id: 'competitors', label: 'Tracked' },
+    { id: 'quotes', label: 'Quotes' },
+    { id: 'trends', label: 'Trends' },
   ]
 
   return (
     <div className="px-4 pt-safe pb-4">
       {/* Header */}
-      <div className="h-16 flex items-center justify-between">
-        <h1 className="font-inter font-bold text-lg" style={{ color: t.colors.text.heading }}>
-          Competitive Intel
+      <div className="h-20 flex items-end justify-between pb-2 gap-3">
+        <h1
+          className="font-display uppercase text-2xl sm:text-3xl text-white leading-[0.85]"
+          style={{ textShadow: '3px 3px 0px #000000' }}
+        >
+          Comp <span className="text-volt">Intel</span>
         </h1>
         <div className="flex items-center gap-2">
           <button
             onClick={generateBrief}
             disabled={generatingBrief}
-            className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50"
-            style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
+            className="w-11 h-11 flex items-center justify-center bg-black border-4 border-black shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-transform duration-100 disabled:opacity-50"
             aria-label="Generate weekly brief"
           >
-            <FileText className="w-4 h-4" style={{ color: t.colors.accent.primary }} />
+            <FileText className="w-4 h-4 text-volt" />
           </button>
           <button
             onClick={fetchData}
-            className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200"
-            style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
+            className="w-11 h-11 flex items-center justify-center bg-black border-4 border-black shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-transform duration-100"
             aria-label="Refresh data"
           >
-            <RefreshCw className="w-4 h-4" style={{ color: t.colors.text.muted }} />
+            <RefreshCw className="w-4 h-4 text-volt" />
           </button>
         </div>
       </div>
 
       {/* Stats row */}
       <motion.div
-        className="grid grid-cols-2 gap-3 mb-5"
+        className="grid grid-cols-2 gap-3 mb-5 mt-3"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.4 }}
       >
-        <div
-          className="rounded-2xl p-4 text-center"
-          style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
-        >
-          <p className="font-fira-code font-bold text-2xl" style={{ color: t.colors.accent.primary }}>
-            {totalMentions}
-          </p>
-          <p className="font-inter text-[11px] uppercase tracking-[0.15em] mt-1" style={{ color: t.colors.text.muted }}>
+        <BrutalCard variant="volt" padded={false} className="p-4 text-center">
+          <p className="font-display text-4xl text-black leading-none">{totalMentions}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold mt-2 text-black">
             Mentions
           </p>
-        </div>
-        <div
-          className="rounded-2xl p-4 text-center"
-          style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
-        >
-          <p className="font-inter font-bold text-sm truncate" style={{ color: t.colors.text.heading }}>
+        </BrutalCard>
+        <BrutalCard variant="white" padded={false} className="p-4 text-center">
+          <p className="font-display uppercase text-lg text-black truncate leading-none">
             {topCompetitor}
           </p>
-          <p className="font-inter text-[11px] uppercase tracking-[0.15em] mt-1" style={{ color: t.colors.text.muted }}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold mt-2 text-black">
             Top Competitor
           </p>
-        </div>
+        </BrutalCard>
       </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-5">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="flex-1 py-3 rounded-xl font-inter text-sm font-bold uppercase tracking-wider transition-all duration-200 min-h-[44px]"
-              style={{
-                background: t.colors.bg,
-                boxShadow: isActive ? t.shadows.insetSm : t.shadows.raisedSm,
-                color: isActive ? t.colors.accent.primary : t.colors.text.muted,
-              }}
-            >
-              {tab.label}
-            </button>
-          )
-        })}
+      <div className="mb-5">
+        <BrutalTabs items={tabs} activeId={activeTab} onChange={(id) => setActiveTab(id as CITab)} />
       </div>
 
       {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Radar className="w-8 h-8 animate-spin" style={{ color: t.colors.accent.primary }} />
+          <Radar className="w-8 h-8 animate-spin text-volt" />
         </div>
       ) : (
         <AnimatePresence mode="wait">
           {activeTab === 'competitors' && (
-            <motion.div key="competitors" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <motion.div
+              key="competitors"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >
               <CompetitorTracker data={competitorData} />
             </motion.div>
           )}
 
           {activeTab === 'quotes' && (
-            <motion.div key="quotes" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <motion.div
+              key="quotes"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >
               <QuoteWall mentions={allMentions} />
             </motion.div>
           )}
 
           {activeTab === 'trends' && (
-            <motion.div key="trends" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <motion.div
+              key="trends"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >
               <TrendChart data={trendData} />
             </motion.div>
           )}
@@ -208,55 +200,47 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div
-              className="absolute inset-0 bg-black/30"
-              onClick={() => setShowBrief(false)}
-            />
+            <div className="absolute inset-0 bg-black/70" onClick={() => setShowBrief(false)} />
             <motion.div
-              className="relative w-full max-w-md rounded-t-3xl p-6 pb-safe max-h-[80vh] overflow-y-auto"
-              style={{ background: t.colors.bg, boxShadow: '0 -4px 20px rgba(0,0,0,0.15)' }}
+              className="relative w-full max-w-md bg-white border-t-8 border-x-4 border-black p-6 pb-safe max-h-[80vh] overflow-y-auto"
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
-              <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ background: t.colors.shadow }} />
-              <h2 className="font-inter font-bold text-lg mb-1" style={{ color: t.colors.text.heading }}>
-                Weekly Intel Brief
+              <div className="w-16 h-1 bg-black mx-auto mb-4" />
+              <h2 className="font-display uppercase text-2xl text-black leading-none mb-1">
+                Weekly Brief
               </h2>
-              <p className="font-inter text-sm mb-4" style={{ color: t.colors.accent.primary }}>
+              <p className="font-body italic text-sm text-black/70 mb-5">
                 {weeklyBrief.headline}
               </p>
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-inter font-bold text-[11px] uppercase tracking-[0.15em] mb-1" style={{ color: t.colors.text.muted }}>
+                  <h3 className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-black/60 mb-1">
                     Competitor Movement
                   </h3>
-                  <p className="font-inter text-sm" style={{ color: t.colors.text.body }}>
-                    {weeklyBrief.competitor_movement}
-                  </p>
+                  <p className="font-body text-sm text-black">{weeklyBrief.competitor_movement}</p>
                 </div>
 
                 <div>
-                  <h3 className="font-inter font-bold text-[11px] uppercase tracking-[0.15em] mb-1" style={{ color: t.colors.text.muted }}>
+                  <h3 className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-black/60 mb-1">
                     Rep Highlights
                   </h3>
-                  <p className="font-inter text-sm" style={{ color: t.colors.text.body }}>
-                    {weeklyBrief.rep_highlights}
-                  </p>
+                  <p className="font-body text-sm text-black">{weeklyBrief.rep_highlights}</p>
                 </div>
 
                 {weeklyBrief.suggested_actions.length > 0 && (
                   <div>
-                    <h3 className="font-inter font-bold text-[11px] uppercase tracking-[0.15em] mb-2" style={{ color: t.colors.text.muted }}>
+                    <h3 className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-black/60 mb-2">
                       Suggested Actions
                     </h3>
                     <ul className="space-y-1.5">
                       {weeklyBrief.suggested_actions.map((action, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: t.colors.accent.primary }} />
-                          <span className="font-inter text-sm" style={{ color: t.colors.text.body }}>{action}</span>
+                          <span className="w-2 h-2 bg-volt border border-black mt-1.5 flex-shrink-0" />
+                          <span className="font-body text-sm text-black">{action}</span>
                         </li>
                       ))}
                     </ul>
@@ -264,13 +248,14 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
                 )}
               </div>
 
-              <button
+              <BrutalButton
                 onClick={() => setShowBrief(false)}
-                className="w-full mt-6 py-3 rounded-xl font-inter font-bold text-sm uppercase tracking-wider min-h-[44px]"
-                style={{ background: t.colors.accent.primary, color: '#fff' }}
+                variant="volt"
+                size="md"
+                className="w-full mt-6"
               >
                 Done
-              </button>
+              </BrutalButton>
             </motion.div>
           </motion.div>
         )}
