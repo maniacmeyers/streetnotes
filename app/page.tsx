@@ -1,44 +1,58 @@
 import WaitlistForm from '@/components/waitlist-form'
 import ShinyText from '@/components/shiny-text'
-import ElectricBorder from '@/components/electric-border'
 import Logo from '@/components/brand/logo'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-[100dvh] bg-dark text-white overflow-x-hidden">
+    <div className="min-h-[100dvh] bg-[#061222] text-white overflow-x-hidden relative">
+      {/* ── AMBIENT BACKGROUND WASH ── */}
+      <div
+        aria-hidden="true"
+        className="fixed top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] pointer-events-none opacity-60 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse at top, rgba(0,230,118,0.15) 0%, rgba(0,230,118,0.04) 35%, transparent 60%)',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="fixed bottom-0 right-0 w-[800px] h-[800px] pointer-events-none opacity-40 z-0"
+        style={{
+          background:
+            'radial-gradient(circle at bottom right, rgba(0,230,118,0.1) 0%, transparent 60%)',
+        }}
+      />
+
       {/* ── HEADER NAV ── */}
-      <header className="sticky top-0 z-50 bg-dark border-b-4 border-volt/30">
+      <header className="sticky top-0 z-50 border-b border-volt/20 bg-[#061222]/80 backdrop-blur-xl">
         <nav
           aria-label="Main navigation"
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20"
         >
-          {/* Logo */}
           <Logo size="lg" priority />
 
-
-          {/* Right side */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             <a
               href="/login"
-              className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold text-gray-400 hover:text-white min-h-[44px] flex items-center px-2 sm:px-3 transition-colors duration-100"
+              className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold text-white/60 hover:text-white min-h-[44px] flex items-center px-2 sm:px-3 transition-colors duration-150"
             >
               Login
             </a>
             <a
               href="/debrief"
-              className="hidden sm:flex font-mono text-xs uppercase tracking-widest font-bold text-volt border-2 border-volt/40 px-4 py-2 cursor-pointer min-h-[44px] items-center hover:bg-volt/10 transition-colors duration-100"
+              className="hidden sm:flex glass rounded-xl font-mono text-xs uppercase tracking-widest font-bold text-volt px-4 py-2 cursor-pointer min-h-[44px] items-center hover:border-volt/40 transition-all duration-200"
             >
               Try Free Tool
             </a>
             <a
               href="/debrief"
-              className="sm:hidden font-mono text-[10px] uppercase tracking-wider font-bold bg-volt/10 text-volt border border-volt/40 min-h-[44px] flex items-center px-3"
+              className="sm:hidden glass rounded-lg font-mono text-[10px] uppercase tracking-wider font-bold text-volt min-h-[44px] flex items-center px-3"
             >
               Free Tool
             </a>
             <a
               href="#waitlist"
-              className="header-cta font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black border-2 sm:border-4 border-black px-3 py-1.5 sm:px-5 sm:py-2.5 cursor-pointer min-h-[44px] flex items-center transition-transform duration-100"
+              className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black rounded-xl px-4 py-2.5 sm:px-5 sm:py-3 cursor-pointer min-h-[44px] flex items-center transition-all duration-200 shadow-glow-volt hover:shadow-glow-volt-lg"
             >
               Join Beta
             </a>
@@ -46,13 +60,14 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <main id="main-content">
+      <main id="main-content" className="relative z-10">
         {/* ── HERO SECTION ── */}
-        <section className="relative border-b-8 border-black bg-dark" aria-labelledby="hero-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-24 lg:py-32">
-            {/* Sticker badge */}
+        <section className="relative" aria-labelledby="hero-heading">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 md:py-28 lg:py-36">
+            {/* Eyebrow */}
             <div className="mb-6 sm:mb-8">
-              <span className="sticker -rotate-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
+              <span className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt">
+                <span className="w-1.5 h-1.5 rounded-full bg-volt animate-pulse" />
                 For reps who&apos;d rather sell than type
               </span>
             </div>
@@ -60,147 +75,132 @@ export default function LandingPage() {
             {/* Headline */}
             <h1
               id="hero-heading"
-              className="font-display uppercase text-[32px] sm:text-[64px] md:text-[100px] lg:text-[130px] xl:text-[150px] leading-[0.85] text-white mb-6 sm:mb-8"
-              style={{
-                textShadow: '4px 4px 0px #000000',
-              }}
+              className="font-bold text-[44px] sm:text-[80px] md:text-[112px] lg:text-[140px] leading-[0.9] text-white mb-6 sm:mb-8 tracking-tight"
             >
               Stop losing
-              <br className="hidden sm:block" />
-              {' '}deals in the
-              <br className="hidden sm:block" />
-              {' '}<span className="text-volt">parking lot</span>
+              <br className="hidden sm:block" />{' '}
+              deals in the
+              <br className="hidden sm:block" />{' '}
+              <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
+                parking lot
+              </span>
             </h1>
 
             {/* Subheadline */}
-            <p className="font-body text-lg sm:text-xl md:text-2xl italic text-gray-300 max-w-2xl mb-8 sm:mb-12">
+            <p className="font-body text-lg sm:text-xl md:text-2xl text-white/70 max-w-2xl mb-10 sm:mb-14 leading-relaxed">
               StreetNotes turns your voice into CRM data. Finish the meeting. Hit
               record. Your CRM updates itself.
             </p>
 
-            {/* ── PRIMARY CTA: Brain Dump ── */}
-            <div className="max-w-lg mb-8 sm:mb-10">
-              <div className="bg-volt border-3 sm:border-4 border-black neo-shadow-sm sm:neo-shadow p-4 sm:p-6 relative">
-                {/* Watermark — clipped independently so ElectricBorder overflow is visible */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-                  <div
-                    className="absolute -right-4 -bottom-4 font-display text-[100px] sm:text-[140px] text-black select-none leading-none"
-                    style={{ opacity: 0.06 }}
-                  >
-                    MIC
-                  </div>
+            {/* ── PRIMARY CTA: Free Tool Glass Card ── */}
+            <div className="max-w-xl mb-10 sm:mb-12">
+              <div className="glass-volt rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+                {/* Watermark */}
+                <div className="absolute -right-6 -bottom-8 font-bold text-[140px] sm:text-[180px] leading-none text-volt/5 pointer-events-none select-none">
+                  MIC
                 </div>
 
                 <div className="relative">
-                  <span className="inline-block bg-black text-volt font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] font-bold px-2.5 py-1 mb-3 sm:mb-4">
-                    Free — no signup needed
+                  <span className="inline-block glass-inset rounded-lg text-volt font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] font-bold px-3 py-1.5 mb-4">
+                    Free — no signup required
                   </span>
 
-                  <h2 className="font-display text-[24px] sm:text-[36px] md:text-[44px] uppercase leading-[0.85] text-black mb-2 sm:mb-3">
-                    Try it right now
+                  <h2 className="font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-3 leading-tight">
+                    Try it <span className="text-volt">right now</span>
                   </h2>
-                  <p className="font-body text-sm sm:text-base text-black/70 mb-4 sm:mb-5 max-w-sm">
-                    60 seconds of talking. Structured deal notes, objections, next steps, and a PDF. Free.
+                  <p className="font-body text-sm sm:text-base text-white/70 mb-6 max-w-md leading-relaxed">
+                    60 seconds of talking. Structured deal notes, objections, next
+                    steps, and a PDF. Free.
                   </p>
 
-                  <ElectricBorder color="#00E676" speed={1} chaos={0.2} borderRadius={0} className="inline-block">
-                    <a
-                      href="/debrief"
-                      className="inline-flex items-center font-display text-base sm:text-xl uppercase bg-black text-volt border-4 border-black px-6 sm:px-8 py-3 sm:py-4 cursor-pointer hover:bg-dark active:bg-dark transition-colors duration-100 min-h-[44px]"
-                    >
-                      Start a Brain Dump →
-                    </a>
-                  </ElectricBorder>
+                  <a
+                    href="/debrief"
+                    className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-7 py-4 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
+                  >
+                    Start a Brain Dump
+                    <span aria-hidden="true">→</span>
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* ── SECONDARY CTA: Waitlist ── */}
-            <div id="waitlist" className="max-w-lg">
-              <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.1em] text-gray-300 mb-2 sm:mb-3">
+            {/* ── SECONDARY: Waitlist ── */}
+            <div id="waitlist" className="max-w-xl">
+              <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.15em] text-white/50 mb-3">
                 Already sold? Join the beta.
               </p>
               <WaitlistForm />
             </div>
           </div>
-
-          {/* Background watermark */}
-          <div
-            className="absolute top-1/2 right-0 -translate-y-1/2 font-display text-[400px] text-white pointer-events-none select-none hidden lg:block"
-            style={{ opacity: 0.03 }}
-            aria-hidden="true"
-          >
-            REC
-          </div>
         </section>
 
         {/* ── PROBLEM: OLD WAY vs BETTER WAY ── */}
-        <section className="border-b-8 border-black" aria-labelledby="problem-heading">
-          {/* Section label */}
-          <div className="bg-dark px-4 sm:px-6 lg:px-8 py-6 sm:py-8 border-b-4 border-black">
-            <div className="max-w-7xl mx-auto">
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold">
-                The problem
+        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="problem-heading">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
+              The problem
+            </span>
+            <h2
+              id="problem-heading"
+              className="font-bold text-[32px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
+            >
+              Your CRM is{' '}
+              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
+                lying to you
               </span>
-              <h2 id="problem-heading" className="font-display text-[28px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2">
-                Your CRM is{' '}
-                <span className="text-volt">lying to you</span>
-              </h2>
-            </div>
-          </div>
+            </h2>
 
-          {/* Comparison rows */}
-          <div className="divide-y-4 divide-black">
-            {/* Row 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="bg-black p-5 sm:p-8 lg:p-10 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold block mb-3">
+            {/* Comparison rows */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              {/* Row 1: Old */}
+              <div className="glass rounded-2xl p-6 sm:p-8 lg:p-10">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-bold block mb-3">
                   The old way
                 </span>
-                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-white/60">
+                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white/50 mb-4">
                   8 calls. 6pm. Still typing.
                 </p>
-                <p className="font-body text-gray-300 mt-3 sm:mt-4 text-base sm:text-lg">
+                <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
                   You enter the bare minimum. Contact name. &quot;Good call.&quot;
                   Move on.
                 </p>
               </div>
-              <div className="bg-volt p-5 sm:p-8 lg:p-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-black/60 font-bold block mb-3">
+              {/* Row 1: New */}
+              <div className="glass-volt rounded-2xl p-6 sm:p-8 lg:p-10">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt font-bold block mb-3">
                   The StreetNotes way
                 </span>
-                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-black">
+                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white mb-4">
                   8 calls. Done in 60 seconds.
                 </p>
-                <p className="font-body text-black/70 mt-3 sm:mt-4 text-base sm:text-lg">
-                  Hit record. Talk. Your CRM is updated with rich detail before
-                  you start the car.
+                <p className="font-body text-white/70 text-base sm:text-lg leading-relaxed">
+                  Hit record. Talk. Your CRM is updated with rich detail before you
+                  start the car.
                 </p>
               </div>
-            </div>
 
-            {/* Row 2 */}
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="bg-black p-5 sm:p-8 lg:p-10 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold block mb-3">
+              {/* Row 2: Old */}
+              <div className="glass rounded-2xl p-6 sm:p-8 lg:p-10">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-bold block mb-3">
                   Monday forecast call
                 </span>
-                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-white/60">
+                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white/50 mb-4">
                   &quot;Uh... let me check&quot;
                 </p>
-                <p className="font-body text-gray-300 mt-3 sm:mt-4 text-base sm:text-lg">
+                <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
                   Your pipeline data is garbage because you only entered the
                   minimum.
                 </p>
               </div>
-              <div className="bg-volt p-5 sm:p-8 lg:p-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-black/60 font-bold block mb-3">
+              {/* Row 2: New */}
+              <div className="glass-volt rounded-2xl p-6 sm:p-8 lg:p-10">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt font-bold block mb-3">
                   Monday forecast call
                 </span>
-                <p className="font-display text-[22px] sm:text-[40px] md:text-[52px] lg:text-[60px] uppercase leading-[0.85] text-black">
+                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white mb-4">
                   &quot;Pull it up&quot;
                 </p>
-                <p className="font-body text-black/70 mt-3 sm:mt-4 text-base sm:text-lg">
+                <p className="font-body text-white/70 text-base sm:text-lg leading-relaxed">
                   Walk in confident. Every deal, every detail, already in the CRM.
                 </p>
               </div>
@@ -208,218 +208,195 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── HOW IT WORKS: PROCESS BLUEPRINT ── */}
-        <section className="bg-dark border-b-8 border-black py-12 sm:py-16 md:py-24" aria-labelledby="how-heading">
+        {/* ── HOW IT WORKS ── */}
+        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="how-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
               How it works
             </span>
-            <h2 id="how-heading" className="font-display text-[24px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2 mb-10 sm:mb-16">
+            <h2
+              id="how-heading"
+              className="font-bold text-[32px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
+            >
               Three steps. Sixty seconds.{' '}
-              <span className="text-volt">Done.</span>
+              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
+                Done.
+              </span>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-              {/* Step 1 */}
-              <div className="relative bg-white border-3 sm:border-8 border-black neo-shadow-sm sm:neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
-                <div className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 rotate-[-2deg]">
-                  <span className="bg-volt text-black font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] border-3 sm:border-4 border-black px-2 sm:px-3 py-0.5 sm:py-1">
-                    Step 01
-                  </span>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+              {[
+                {
+                  step: '01',
+                  title: 'Finish your meeting',
+                  body: 'Walk to the car. Grab your phone.',
+                },
+                {
+                  step: '02',
+                  title: 'Hit record. Talk.',
+                  body: 'Tell StreetNotes what happened — in your own words. The AI asks the right follow-up questions. No forms. No typing.',
+                },
+                {
+                  step: '03',
+                  title: 'Review. Confirm. Done.',
+                  body: 'StreetNotes populates every CRM field — contact, company, notes, next steps, deal stage — directly inside your CRM. Review the structured data, tap confirm, and it\'s live.',
+                },
+              ].map((s) => (
                 <div
-                  className="absolute inset-0 flex items-center justify-center font-display text-[120px] sm:text-[200px] text-black pointer-events-none select-none"
-                  style={{ opacity: 0.03 }}
-                  aria-hidden="true"
+                  key={s.step}
+                  className="glass rounded-2xl p-6 sm:p-8 relative overflow-hidden"
                 >
-                  1
+                  {/* Giant step number watermark */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -right-4 -top-8 font-bold text-[160px] sm:text-[200px] leading-none text-white/[0.03] pointer-events-none select-none"
+                  >
+                    {s.step.replace('0', '')}
+                  </div>
+                  <div className="relative">
+                    <span className="inline-block glass-inset rounded-lg text-volt font-mono text-[10px] uppercase tracking-[0.15em] font-bold px-2.5 py-1 mb-4">
+                      Step {s.step}
+                    </span>
+                    <h3 className="font-bold text-xl sm:text-2xl md:text-3xl text-white mb-3 leading-tight">
+                      {s.title}
+                    </h3>
+                    <p className="font-body text-white/60 text-sm sm:text-base leading-relaxed">
+                      {s.body}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase text-black mb-3 sm:mb-4 relative">
-                  Finish your meeting
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg relative">
-                  Walk to the car. Grab your phone.
-                </p>
-              </div>
-
-              {/* Step 2 */}
-              <div className="relative bg-white border-3 sm:border-8 border-black neo-shadow-sm sm:neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
-                <div className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 rotate-[2deg]">
-                  <span className="bg-volt text-black font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] border-3 sm:border-4 border-black px-2 sm:px-3 py-0.5 sm:py-1">
-                    Step 02
-                  </span>
-                </div>
-                <div
-                  className="absolute inset-0 flex items-center justify-center font-display text-[120px] sm:text-[200px] text-black pointer-events-none select-none"
-                  style={{ opacity: 0.03 }}
-                  aria-hidden="true"
-                >
-                  2
-                </div>
-                <h3 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase text-black mb-3 sm:mb-4 relative">
-                  Hit record. Talk.
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg relative">
-                  Tell StreetNotes what happened — in your own words. The AI asks
-                  the right follow-up questions. No forms. No typing.
-                </p>
-              </div>
-
-              {/* Step 3 */}
-              <div className="relative bg-white border-3 sm:border-8 border-black neo-shadow-sm sm:neo-shadow-white p-5 pt-10 sm:p-8 sm:pt-12">
-                <div className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 rotate-[-1deg]">
-                  <span className="bg-volt text-black font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] border-3 sm:border-4 border-black px-2 sm:px-3 py-0.5 sm:py-1">
-                    Step 03
-                  </span>
-                </div>
-                <div
-                  className="absolute inset-0 flex items-center justify-center font-display text-[120px] sm:text-[200px] text-black pointer-events-none select-none"
-                  style={{ opacity: 0.03 }}
-                  aria-hidden="true"
-                >
-                  3
-                </div>
-                <h3 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase text-black mb-3 sm:mb-4 relative">
-                  Review. Confirm. Done.
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg relative">
-                  StreetNotes populates every CRM field — contact, company, notes,
-                  next steps, deal stage — directly inside your CRM. Review the
-                  structured data, tap confirm, and it&apos;s live. Fully integrated. No copy-paste.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* ── FREE TOOL CTA ── */}
-        <section className="bg-black border-b-8 border-black py-12 sm:py-16 md:py-20" aria-labelledby="free-tool-heading">
+        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="free-tool-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="border-4 border-volt bg-dark p-6 sm:p-10 md:p-14 text-center relative">
-                {/* Background watermark */}
-                <div
-                  className="absolute inset-0 flex items-center justify-center font-display text-[200px] sm:text-[300px] text-volt pointer-events-none select-none"
-                  style={{ opacity: 0.03 }}
-                  aria-hidden="true"
+            <div className="glass-volt rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
+              {/* Giant watermark */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 flex items-center justify-center font-bold text-[220px] sm:text-[320px] text-volt/[0.04] pointer-events-none select-none leading-none"
+              >
+                MIC
+              </div>
+
+              <div className="relative">
+                <span className="inline-flex items-center gap-2 glass-inset rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-volt animate-pulse" />
+                  Free — no signup required
+                </span>
+
+                <h2
+                  id="free-tool-heading"
+                  className="font-bold text-[32px] sm:text-[56px] md:text-[72px] text-white mb-5 leading-[0.9] tracking-tight"
                 >
-                  MIC
-                </div>
-
-                <div className="relative">
-                  <span className="sticker -rotate-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold mb-6 inline-block">
-                    Free — no signup required
+                  Try it{' '}
+                  <span className="text-volt drop-shadow-[0_0_30px_rgba(0,230,118,0.45)]">
+                    right now
                   </span>
+                </h2>
 
-                  <h2 id="free-tool-heading" className="font-display text-[24px] sm:text-[48px] md:text-[64px] uppercase leading-[0.85] text-white mb-4">
-                    Try it <span className="text-volt">right now</span>
-                  </h2>
-
-                  <p className="font-body text-base sm:text-lg md:text-xl text-gray-300 max-w-xl mx-auto mb-8">
-                    Our Post-Call Brain Dump turns 60 seconds of talking into structured deal
-                    notes, a mind map, and a downloadable PDF. No account needed.
-                  </p>
-
-                  <div className="inline-block overflow-hidden">
-                    <ElectricBorder color="#00E676" speed={1} chaos={0.2} borderRadius={0} className="inline-block">
-                      <a
-                        href="/debrief"
-                        className="inline-flex items-center font-display text-lg sm:text-xl uppercase bg-black text-volt border-4 border-black px-8 py-4 cursor-pointer hover:bg-dark active:bg-dark transition-colors duration-100 min-h-[44px]"
-                      >
-                        Start a Brain Dump →
-                      </a>
-                    </ElectricBorder>
-                  </div>
-
-                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 mt-4">
-                    60 seconds. Structured deal notes. Free forever.
-                  </p>
-                </div>
-              </div>
-          </div>
-        </section>
-
-        {/* ── BENEFITS ── */}
-        <section className="bg-white border-b-8 border-black py-12 sm:py-16 md:py-24" aria-labelledby="benefits-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-500 font-bold">
-              What changes
-            </span>
-            <h2 id="benefits-heading" className="font-display text-[22px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-black mt-2 mb-10 sm:mb-16">
-              What would you do with 6-8 hours back{' '}
-              <span className="text-volt bg-black px-2 sm:px-4 inline-block mt-1 sm:mt-0">
-                every week?
-              </span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              {/* Benefit 1 */}
-              <div className="border-3 sm:border-4 border-black p-5 sm:p-8 neo-shadow-sm bg-white cursor-pointer active:translate-x-1 active:translate-y-1 active:shadow-none sm:hover:translate-x-1 sm:hover:translate-y-1 sm:hover:shadow-none transition-transform duration-100">
-                <h3 className="font-display text-xl sm:text-2xl md:text-3xl uppercase text-black mb-2 sm:mb-3">
-                  CRM stays full
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg">
-                  Rich deal data after every call — not the bare minimum you typed
-                  at a red light.
+                <p className="font-body text-base sm:text-lg md:text-xl text-white/70 max-w-xl mx-auto mb-10 leading-relaxed">
+                  Our Post-Call Brain Dump turns 60 seconds of talking into structured
+                  deal notes, a mind map, and a downloadable PDF. No account needed.
                 </p>
-              </div>
 
-              {/* Benefit 2 */}
-              <div className="border-3 sm:border-4 border-black p-5 sm:p-8 neo-shadow-sm bg-white cursor-pointer active:translate-x-1 active:translate-y-1 active:shadow-none sm:hover:translate-x-1 sm:hover:translate-y-1 sm:hover:shadow-none transition-transform duration-100">
-                <h3 className="font-display text-xl sm:text-2xl md:text-3xl uppercase text-black mb-2 sm:mb-3">
-                  Forecast calls. Confident.
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg">
-                  Your pipeline is accurate because the data actually made it into
-                  the CRM.
-                </p>
-              </div>
+                <a
+                  href="/debrief"
+                  className="inline-flex items-center gap-2 font-bold text-lg sm:text-xl bg-volt text-black rounded-xl px-8 py-4 sm:px-10 sm:py-5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
+                >
+                  Start a Brain Dump
+                  <span aria-hidden="true">→</span>
+                </a>
 
-              {/* Benefit 3 */}
-              <div className="border-3 sm:border-4 border-black p-5 sm:p-8 neo-shadow-sm bg-white cursor-pointer active:translate-x-1 active:translate-y-1 active:shadow-none sm:hover:translate-x-1 sm:hover:translate-y-1 sm:hover:shadow-none transition-transform duration-100">
-                <h3 className="font-display text-xl sm:text-2xl md:text-3xl uppercase text-black mb-2 sm:mb-3">
-                  Deal mind map
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg">
-                  A living story of every deal that builds with each meeting — so
-                  you never lose the thread.
-                </p>
-              </div>
-
-              {/* Benefit 4 */}
-              <div className="border-3 sm:border-4 border-black p-5 sm:p-8 neo-shadow-sm bg-white cursor-pointer active:translate-x-1 active:translate-y-1 active:shadow-none sm:hover:translate-x-1 sm:hover:translate-y-1 sm:hover:shadow-none transition-transform duration-100">
-                <h3 className="font-display text-xl sm:text-2xl md:text-3xl uppercase text-black mb-2 sm:mb-3">
-                  Works with your stack
-                </h3>
-                <p className="font-body text-black/70 text-base sm:text-lg">
-                  Salesforce. HubSpot. Microsoft Dynamics. Zoho CRM. More coming based on what you tell us.
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mt-5">
+                  60 seconds. Structured deal notes. Free forever.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── CREDIBILITY ── */}
-        <section className="bg-black border-b-8 border-black py-12 sm:py-16 md:py-24" aria-labelledby="credibility-heading">
+        {/* ── BENEFITS ── */}
+        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="benefits-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-gray-400 font-bold">
-              Why us
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
+              What changes
             </span>
-            <h2 id="credibility-heading" className="font-display text-[24px] sm:text-[48px] md:text-[64px] lg:text-[80px] uppercase leading-[0.85] text-white mt-2 mb-6 sm:mb-8">
-              Built by people who&apos;ve actually{' '}
-              <span className="text-volt">successfully carried a quota</span>
+            <h2
+              id="benefits-heading"
+              className="font-bold text-[30px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
+            >
+              What would you do with 6-8 hours back{' '}
+              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
+                every week?
+              </span>
             </h2>
 
-            <div className="max-w-3xl">
-              <p className="font-body text-lg sm:text-xl md:text-2xl text-gray-300 mb-4 sm:mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+              {[
+                {
+                  title: 'CRM stays full',
+                  body: 'Rich deal data after every call — not the bare minimum you typed at a red light.',
+                },
+                {
+                  title: 'Forecast calls. Confident.',
+                  body: 'Your pipeline is accurate because the data actually made it into the CRM.',
+                },
+                {
+                  title: 'Deal mind map',
+                  body: 'A living story of every deal that builds with each meeting — so you never lose the thread.',
+                },
+                {
+                  title: 'Works with your stack',
+                  body: 'Salesforce. HubSpot. Microsoft Dynamics. Zoho CRM. More coming based on what you tell us.',
+                },
+              ].map((b) => (
+                <div
+                  key={b.title}
+                  className="glass rounded-2xl p-6 sm:p-8 hover:border-volt/30 hover:shadow-glow-volt transition-all duration-300 cursor-default"
+                >
+                  <h3 className="font-bold text-xl sm:text-2xl md:text-3xl text-white mb-3 leading-tight">
+                    {b.title}
+                  </h3>
+                  <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
+                    {b.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── CREDIBILITY ── */}
+        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="credibility-heading">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
+              Why us
+            </span>
+            <h2
+              id="credibility-heading"
+              className="font-bold text-[28px] sm:text-[52px] md:text-[68px] lg:text-[84px] leading-[0.9] text-white mt-3 mb-8 sm:mb-12 tracking-tight"
+            >
+              Built by people who&apos;ve actually{' '}
+              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
+                successfully carried a quota
+              </span>
+            </h2>
+
+            <div className="glass rounded-2xl p-6 sm:p-10 md:p-12 max-w-3xl">
+              <p className="font-body text-lg sm:text-xl md:text-2xl text-white/80 mb-5 leading-relaxed">
                 We&apos;re not a SaaS team that read about sales in a blog post.
               </p>
-              <p className="font-body text-base sm:text-lg text-gray-400 mb-4 sm:mb-6">
+              <p className="font-body text-base sm:text-lg text-white/60 mb-5 leading-relaxed">
                 45 years of combined SMB, mid-market, and enterprise sales and
                 sales leadership experience. 28x President&apos;s Clubs. We&apos;ve
                 been the rep in the parking lot, typing half-assed notes into the
                 CRM before the next meeting.
               </p>
-              <p className="font-body text-base sm:text-lg text-gray-400 mb-6 sm:mb-8">
+              <p className="font-body text-base sm:text-lg text-white/60 mb-8 leading-relaxed">
                 <ShinyText
                   text="We built StreetNotes because no one else did."
                   color="#9ca3af"
@@ -432,57 +409,56 @@ export default function LandingPage() {
                 the day, you&apos;re still the one updating the CRM.
               </p>
 
-              <div className="inline-block">
-                <span className="sticker rotate-[2deg] font-mono text-xs sm:text-sm text-black font-bold uppercase tracking-[0.1em]">
-                  We fixed that.
-                </span>
-              </div>
+              <span className="inline-block glass-inset rounded-lg font-mono text-xs sm:text-sm text-volt font-bold uppercase tracking-[0.15em] px-4 py-2">
+                We fixed that.
+              </span>
             </div>
-
           </div>
         </section>
 
         {/* ── FINAL CTA ── */}
-        <section className="bg-volt border-b-8 border-black py-12 sm:py-16 md:py-24" aria-labelledby="final-cta-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="border-t border-volt/10 py-16 sm:py-28 relative" aria-labelledby="final-cta-heading">
+          {/* Ambient glow */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none opacity-60"
+            style={{
+              background:
+                'radial-gradient(ellipse at center, rgba(0,230,118,0.18) 0%, transparent 60%)',
+            }}
+          />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
             <h2
               id="final-cta-heading"
-              className="font-display text-[28px] sm:text-[56px] md:text-[80px] lg:text-[100px] uppercase leading-[0.85] text-black mb-4"
-              style={{
-                textShadow: '3px 3px 0px rgba(0,0,0,0.1)',
-              }}
+              className="font-bold text-[40px] sm:text-[80px] md:text-[112px] lg:text-[140px] leading-[0.9] text-white mb-6 tracking-tight"
             >
-              Voice-to-CRM
+              Voice<span className="text-volt">-to-</span>CRM
             </h2>
-            <p className="font-body text-lg sm:text-xl md:text-2xl italic text-black/70 mb-8 sm:mb-12 max-w-2xl mx-auto">
+            <p className="font-body text-lg sm:text-xl md:text-2xl text-white/60 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
               Because &quot;I&apos;ll enter it later&quot; is how deals die.
             </p>
 
             {/* Waitlist form */}
-            <div className="max-w-lg mx-auto">
-              <WaitlistForm variant="light" />
+            <div className="max-w-xl mx-auto">
+              <WaitlistForm />
             </div>
           </div>
         </section>
       </main>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-dark border-t-4 border-black py-6 sm:py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+      <footer className="border-t border-volt/10 py-8 sm:py-10 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/streetnotes_logo.png"
-              alt="StreetNotes.ai"
-              className="h-8 sm:h-10 w-auto"
-            />
+            <Logo size="sm" href={null} />
             <ShinyText
               text="— a ForgeTime.ai product"
               color="#4b5563"
               shineColor="#00E676"
               speed={3}
               spread={120}
-              className="font-mono text-[10px] uppercase tracking-[0.1em]"
+              className="font-mono text-[10px] uppercase tracking-[0.15em]"
             />
           </div>
           <ShinyText
@@ -492,7 +468,7 @@ export default function LandingPage() {
             speed={3}
             spread={120}
             delay={1.5}
-            className="font-mono text-[10px] uppercase tracking-[0.1em]"
+            className="font-mono text-[10px] uppercase tracking-[0.15em]"
           />
         </div>
       </footer>
