@@ -20,7 +20,7 @@ export default function GoogleSignInButton() {
     <button
       onClick={handleSignIn}
       type="button"
-      className="min-h-[44px] w-full flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 text-base font-medium text-gray-700 hover:bg-gray-50"
+      className="min-h-[48px] w-full flex items-center justify-center gap-3 bg-white border-4 border-black shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-transform duration-100 px-4 font-mono text-xs sm:text-sm uppercase tracking-widest font-bold text-black"
     >
       <svg
         width="18"

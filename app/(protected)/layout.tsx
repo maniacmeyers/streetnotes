@@ -15,8 +15,8 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="min-h-[100dvh]" style={{ background: '#e0e5ec' }}>
-      <main className="max-w-md mx-auto pb-20">
+    <div className="min-h-[100dvh] bg-dark text-white">
+      <main className="max-w-md mx-auto pb-24">
         {children}
       </main>
       <BottomNav />
