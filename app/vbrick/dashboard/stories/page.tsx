@@ -11,6 +11,7 @@ import { PracticeRecorder } from '@/components/vbrick/stories/practice-recorder'
 import { ScoreCard } from '@/components/vbrick/stories/score-card'
 import { GamificationHeader } from '@/components/vbrick/stories/gamification-header'
 import { VaultCard } from '@/components/vbrick/stories/vault-card'
+import { SwipeToDelete } from '@/components/vbrick/swipe-to-delete'
 import { XPToast } from '@/components/vbrick/stories/xp-toast'
 import { StoryLeaderboard } from '@/components/vbrick/stories/story-leaderboard'
 import { PerformanceTrends } from '@/components/vbrick/stories/performance-trends'
@@ -436,15 +437,17 @@ export default function StoryVaultPage() {
             ) : (
               <div className="space-y-4">
                 {personalVault.map((entry, i) => (
-                  <motion.div key={entry.id} variants={cascadeIn} custom={i + 1}>
-                    <VaultCard
-                      entry={entry}
-                      showShare
-                      onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
-                      onPractice={() => handlePracticeFromVault(entry)}
-                      onDelete={() => handleDeleteVaultEntry(entry.id)}
-                      email={email || undefined}
-                    />
+                  <motion.div key={entry.id} variants={cascadeIn} custom={i + 1} layout>
+                    <SwipeToDelete onDelete={() => handleDeleteVaultEntry(entry.id)}>
+                      <VaultCard
+                        entry={entry}
+                        showShare
+                        onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
+                        onPractice={() => handlePracticeFromVault(entry)}
+                        onDelete={() => handleDeleteVaultEntry(entry.id)}
+                        email={email || undefined}
+                      />
+                    </SwipeToDelete>
                   </motion.div>
                 ))}
               </div>
@@ -465,15 +468,20 @@ export default function StoryVaultPage() {
             ) : (
               <div className="space-y-4">
                 {teamVault.map((entry, i) => (
-                  <motion.div key={entry.id} variants={cascadeIn} custom={i}>
-                    <VaultCard
-                      entry={entry}
-                      showAuthor
-                      onAdopt={() => handleAdoptAndPractice(entry)}
-                      adopting={adoptingId === entry.id}
-                      onDelete={entry.bdr_email === email ? () => handleDeleteVaultEntry(entry.id) : undefined}
-                      email={email || undefined}
-                    />
+                  <motion.div key={entry.id} variants={cascadeIn} custom={i} layout>
+                    <SwipeToDelete
+                      onDelete={() => handleDeleteVaultEntry(entry.id)}
+                      disabled={entry.bdr_email !== email}
+                    >
+                      <VaultCard
+                        entry={entry}
+                        showAuthor
+                        onAdopt={() => handleAdoptAndPractice(entry)}
+                        adopting={adoptingId === entry.id}
+                        onDelete={entry.bdr_email === email ? () => handleDeleteVaultEntry(entry.id) : undefined}
+                        email={email || undefined}
+                      />
+                    </SwipeToDelete>
                   </motion.div>
                 ))}
               </div>

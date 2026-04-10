@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { ArrowLeft, Plus, Trophy } from 'lucide-react'
+import { ArrowLeft, Plus, Trophy, Trash2 } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { FrameworkPicker } from '@/components/vbrick/stories/framework-picker'
 import { DraftingWizard } from '@/components/vbrick/stories/drafting-wizard'
@@ -12,6 +12,7 @@ import { ScoreCard } from '@/components/vbrick/stories/score-card'
 import { VaultCard } from '@/components/vbrick/stories/vault-card'
 import { GamificationHeader } from '@/components/vbrick/stories/gamification-header'
 import { XPToast } from '@/components/vbrick/stories/xp-toast'
+import { SwipeToDelete } from '@/components/vbrick/swipe-to-delete'
 import { getFramework } from '@/lib/vbrick/story-frameworks'
 import type { StoryType, StoryDraft, VaultEntry, StoryScore } from '@/lib/vbrick/story-types'
 import { STORY_TYPE_LABELS } from '@/lib/vbrick/story-types'
@@ -94,6 +95,11 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   const handleDeleteVault = async (id: string) => {
     await fetch(`/api/vbrick/stories/vault/${id}`, { method: 'DELETE' })
     fetchVault()
+  }
+
+  const handleDeleteDraft = async (id: string) => {
+    await fetch(`/api/vbrick/stories/drafts/${id}`, { method: 'DELETE' })
+    fetchDrafts()
   }
 
   const handlePracticeVault = async (entry: VaultEntry) => {
@@ -237,40 +243,77 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                   My Drafts
                 </h3>
                 <div className="space-y-2">
-                  {drafts.map((draft) => (
-                    <button
-                      key={draft.id}
-                      onClick={() => {
-                        setActiveDraft(draft)
-                        setActiveFrameworkType(draft.story_type)
-                        if (draft.status === 'draft') {
-                          setView('drafting')
-                        } else {
-                          setView('review')
-                        }
-                      }}
-                      className="w-full text-left px-4 py-3 rounded-xl transition-all duration-200 min-h-[44px]"
-                      style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
-                    >
-                      <p className="font-inter font-semibold text-sm" style={{ color: t.colors.text.heading }}>
-                        {draft.title}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="font-inter text-xs" style={{ color: t.colors.text.subtle }}>
-                          {STORY_TYPE_LABELS[draft.story_type]}
-                        </span>
-                        <span
-                          className="font-inter text-[10px] font-bold uppercase px-2 py-0.5 rounded-md"
-                          style={{
-                            color: draft.status === 'completed' ? t.colors.score.green : t.colors.accent.primary,
-                            background: draft.status === 'completed' ? `${t.colors.score.green}15` : `${t.colors.accent.primary}15`,
-                          }}
-                        >
-                          {draft.status}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {drafts.map((draft) => (
+                      <motion.div
+                        key={draft.id}
+                        layout
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <SwipeToDelete onDelete={() => handleDeleteDraft(draft.id)} radius={12}>
+                          <div
+                            className="flex items-center gap-2 rounded-xl transition-all duration-200"
+                            style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveDraft(draft)
+                                setActiveFrameworkType(draft.story_type)
+                                if (draft.status === 'draft') {
+                                  setView('drafting')
+                                } else {
+                                  setView('review')
+                                }
+                              }}
+                              className="flex-1 text-left px-4 py-3 min-h-[44px] bg-transparent border-none"
+                            >
+                              <p className="font-inter font-semibold text-sm" style={{ color: t.colors.text.heading }}>
+                                {draft.title}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="font-inter text-xs" style={{ color: t.colors.text.subtle }}>
+                                  {STORY_TYPE_LABELS[draft.story_type]}
+                                </span>
+                                <span
+                                  className="font-inter text-[10px] font-bold uppercase px-2 py-0.5 rounded-md"
+                                  style={{
+                                    color: draft.status === 'completed' ? t.colors.score.green : t.colors.accent.primary,
+                                    background: draft.status === 'completed' ? `${t.colors.score.green}15` : `${t.colors.accent.primary}15`,
+                                  }}
+                                >
+                                  {draft.status}
+                                </span>
+                              </div>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDeleteDraft(draft.id)
+                              }}
+                              aria-label="Delete draft"
+                              className="flex items-center justify-center w-11 h-11 mr-1 rounded-lg border-none bg-transparent cursor-pointer transition-colors duration-150"
+                              style={{ color: t.colors.text.muted }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = '#dc2626'
+                                e.currentTarget.style.background = '#dc262610'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.color = t.colors.text.muted
+                                e.currentTarget.style.background = 'transparent'
+                              }}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </SwipeToDelete>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               </div>
             )}
@@ -294,14 +337,26 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
               </div>
             ) : (
               <div className="space-y-3">
-                {personalVault.map((entry) => (
-                  <VaultCard
-                    key={entry.id}
-                    entry={entry}
-                    onPractice={() => handlePracticeVault(entry)}
-                    onDelete={() => handleDeleteVault(entry.id)}
-                  />
-                ))}
+                <AnimatePresence initial={false}>
+                  {personalVault.map((entry) => (
+                    <motion.div
+                      key={entry.id}
+                      layout
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <SwipeToDelete onDelete={() => handleDeleteVault(entry.id)}>
+                        <VaultCard
+                          entry={entry}
+                          onPractice={() => handlePracticeVault(entry)}
+                          onDelete={() => handleDeleteVault(entry.id)}
+                        />
+                      </SwipeToDelete>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             )}
           </motion.div>
