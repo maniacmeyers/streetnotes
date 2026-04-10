@@ -125,6 +125,148 @@
     animation: pulse-ring 1.2s ease-out infinite;
   }
 
+  /* ─────────────────────────────────────────────────────────
+     GLASS SYSTEM — Neo-brutalist glass: dark-mode frosted
+     surfaces with bezel + lift shadow. Layered on top of
+     brutalist borders so the existing visual language stays
+     intact while adding depth.
+     ───────────────────────────────────────────────────────── */
+  .glass {
+    position: relative;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
+      0 20px 60px -20px rgba(0, 0, 0, 0.6),
+      0 8px 20px -8px rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-volt {
+    position: relative;
+    background: linear-gradient(
+      145deg,
+      rgba(0, 230, 118, 0.10) 0%,
+      rgba(0, 230, 118, 0.03) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(0, 230, 118, 0.22);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
+      0 0 40px rgba(0, 230, 118, 0.12),
+      0 20px 60px -20px rgba(0, 0, 0, 0.6);
+    transition:
+      transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glass-volt:hover {
+    border-color: rgba(0, 230, 118, 0.5);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
+      0 0 60px rgba(0, 230, 118, 0.25),
+      0 24px 70px -20px rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
+  }
+
+  .glass-inset {
+    background: linear-gradient(
+      145deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      inset 0 2px 6px rgba(0, 0, 0, 0.5),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Conic gradient timer dial — fills clockwise from top */
+  .timer-dial {
+    background: conic-gradient(
+      from 0deg,
+      #00E676 0%,
+      #00E676 var(--timer-progress, 0%),
+      rgba(255, 255, 255, 0.06) var(--timer-progress, 0%),
+      rgba(255, 255, 255, 0.06) 100%
+    );
+    mask: radial-gradient(
+      circle at center,
+      transparent 0,
+      transparent calc(50% - 6px),
+      black calc(50% - 6px),
+      black 50%,
+      transparent 50%
+    );
+    -webkit-mask: radial-gradient(
+      circle at center,
+      transparent 0,
+      transparent calc(50% - 6px),
+      black calc(50% - 6px),
+      black 50%,
+      transparent 50%
+    );
+  }
+
+  /* Slow rotating orbit ring for the mic instrument */
+  @keyframes orbit-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .orbit-ring {
+    animation: orbit-spin 24s linear infinite;
+  }
+
+  /* Breathing glow for idle mic */
+  @keyframes breathe {
+    0%, 100% {
+      box-shadow:
+        0 0 40px rgba(0, 230, 118, 0.25),
+        0 0 80px rgba(0, 230, 118, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 0 rgba(0, 0, 0, 0.5);
+    }
+    50% {
+      box-shadow:
+        0 0 60px rgba(0, 230, 118, 0.4),
+        0 0 120px rgba(0, 230, 118, 0.18),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 0 rgba(0, 0, 0, 0.5);
+    }
+  }
+  .breathe-volt {
+    animation: breathe 3.5s ease-in-out infinite;
+  }
+  @keyframes breathe-red {
+    0%, 100% {
+      box-shadow:
+        0 0 50px rgba(239, 68, 68, 0.45),
+        0 0 100px rgba(239, 68, 68, 0.2),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+    }
+    50% {
+      box-shadow:
+        0 0 80px rgba(239, 68, 68, 0.7),
+        0 0 160px rgba(239, 68, 68, 0.3),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    }
+  }
+  .breathe-red {
+    animation: breathe-red 1.6s ease-in-out infinite;
+  }
+
   @keyframes waveform-bar {
     0%, 100% { transform: scaleY(0.3); }
     50% { transform: scaleY(1); }
@@ -179,8 +321,11 @@
 
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .pulse-ring {
-    animation: none;
+  .pulse-ring,
+  .orbit-ring,
+  .breathe-volt,
+  .breathe-red {
+    animation: none !important;
   }
 
   * {

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Logo from '@/components/brand/logo'
 
 export const metadata: Metadata = {
   title: 'StreetNotes.ai — Post-Call Brain Dump',
@@ -14,12 +15,10 @@ export default function DebriefLayout({
   return (
     <div className="min-h-[100dvh] bg-[#061222] text-white overflow-x-hidden">
       {/* Header */}
-      <header className="border-b border-volt/30 bg-[#061222] pt-safe">
+      <header className="sticky top-0 z-40 border-b border-volt/20 bg-[#061222]/80 backdrop-blur-xl pt-safe">
         <nav aria-label="Debrief navigation" className="max-w-2xl mx-auto px-4 flex items-center justify-between h-14 sm:h-16">
-          <span className="text-white font-bold uppercase text-sm tracking-widest">
-            STREETNOTES.AI
-          </span>
-          <span className="text-xs text-gray-500">
+          <Logo size="sm" priority />
+          <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] text-volt/80 border border-volt/30 px-2 py-1">
             Free Tool
           </span>
         </nav>

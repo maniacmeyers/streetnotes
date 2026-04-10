@@ -6,7 +6,6 @@ import { FaMicrophone, FaUpload } from 'react-icons/fa'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
 import MicButton from './mic-button'
-import WaveformVisualizer from './waveform-visualizer'
 import FileDropZone from './file-drop-zone'
 
 interface RecorderProps {
@@ -133,7 +132,7 @@ export default function Recorder({ onComplete, onFileImport }: RecorderProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-lg">
           {/* Record card */}
           <motion.button
             type="button"
@@ -141,14 +140,14 @@ export default function Recorder({ onComplete, onFileImport }: RecorderProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
             onClick={() => setMode('record')}
-            className="group bg-white/5 rounded-lg border border-white/10 hover:border-volt transition-all p-6 sm:p-8 flex flex-col items-center gap-4 text-center"
+            className="group glass-volt rounded-2xl p-8 sm:p-10 flex flex-col items-center gap-5 text-center cursor-pointer"
           >
-            <div className="w-14 h-14 rounded-full bg-white/5 group-hover:bg-volt/10 flex items-center justify-center transition-colors">
-              <FaMicrophone className="text-xl text-white/60 group-hover:text-volt transition-colors" />
+            <div className="w-16 h-16 rounded-full glass-inset flex items-center justify-center group-hover:shadow-glow-volt transition-shadow duration-300">
+              <FaMicrophone className="text-2xl text-volt drop-shadow-lg" />
             </div>
             <div>
-              <p className="text-white font-medium text-sm mb-1">Record a Debrief</p>
-              <p className="text-white/40 text-xs">
+              <p className="text-white font-bold text-base mb-1.5">Record a Debrief</p>
+              <p className="text-white/50 text-xs leading-relaxed">
                 Talk for 60 seconds after your call
               </p>
             </div>
@@ -161,15 +160,15 @@ export default function Recorder({ onComplete, onFileImport }: RecorderProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12 }}
             onClick={() => setMode('import')}
-            className="group bg-white/5 rounded-lg border border-white/10 hover:border-volt transition-all p-6 sm:p-8 flex flex-col items-center gap-4 text-center"
+            className="group glass rounded-2xl p-8 sm:p-10 flex flex-col items-center gap-5 text-center cursor-pointer hover:border-white/25 transition-all"
           >
-            <div className="w-14 h-14 rounded-full bg-white/5 group-hover:bg-volt/10 flex items-center justify-center transition-colors">
-              <FaUpload className="text-xl text-white/60 group-hover:text-volt transition-colors" />
+            <div className="w-16 h-16 rounded-full glass-inset flex items-center justify-center group-hover:shadow-glow-volt transition-shadow duration-300">
+              <FaUpload className="text-2xl text-white/70 group-hover:text-volt transition-colors" />
             </div>
             <div>
-              <p className="text-white font-medium text-sm mb-1">Import from Chorus / Teams</p>
-              <p className="text-white/40 text-xs">
-                Drop your transcript file
+              <p className="text-white font-bold text-base mb-1.5">Import a Transcript</p>
+              <p className="text-white/50 text-xs leading-relaxed">
+                Chorus, Teams, Zoom, Gong
               </p>
             </div>
           </motion.button>
@@ -231,20 +230,14 @@ export default function Recorder({ onComplete, onFileImport }: RecorderProps) {
         )}
       </div>
 
-      {/* Waveform */}
-      <div className="w-full max-w-md">
-        <WaveformVisualizer
-          analyserNode={analyserNode}
-          isRecording={isRecording}
-        />
-      </div>
-
-      {/* Mic Button */}
+      {/* Mic Instrument (waveform lives inside) */}
       <MicButton
         isRecording={isRecording}
         disabled={!isSupported}
         canStop={canStop}
         durationSec={durationSec}
+        maxDurationSec={MAX_DURATION}
+        analyserNode={analyserNode}
         onStart={handleStart}
         onStop={handleStop}
       />

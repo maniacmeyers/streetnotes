@@ -71,7 +71,7 @@ export default function ProcessingSteps({
       </div>
 
       {/* Steps */}
-      <div className="relative flex flex-col gap-6 w-full max-w-sm">
+      <div className="relative glass rounded-2xl p-8 flex flex-col gap-6 w-full max-w-sm">
         {STEPS.map((stepConfig, i) => {
           const state = error ? 'active' : getStepState(stepConfig.key, phase)
 

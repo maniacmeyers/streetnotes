@@ -1,6 +1,7 @@
 import WaitlistForm from '@/components/waitlist-form'
 import ShinyText from '@/components/shiny-text'
 import ElectricBorder from '@/components/electric-border'
+import Logo from '@/components/brand/logo'
 
 export default function LandingPage() {
   return (
@@ -12,14 +13,8 @@ export default function LandingPage() {
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20"
         >
           {/* Logo */}
-          <a href="/" className="flex items-center min-h-[44px]" aria-label="StreetNotes.ai home">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/streetnotes_logo.png"
-              alt="StreetNotes.ai"
-              className="h-10 sm:h-14 md:h-16 w-auto"
-            />
-          </a>
+          <Logo size="lg" priority />
+
 
           {/* Right side */}
           <div className="flex items-center gap-2 sm:gap-4">

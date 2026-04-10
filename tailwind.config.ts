@@ -45,6 +45,20 @@ const config: Config = {
         "neu-inset": "inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff",
         "neu-inset-sm": "inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff",
         "neu-pressed": "inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff",
+        // Glass lift shadows — depth without brutalism's hard edge
+        "glass-lift":
+          "0 20px 60px -20px rgba(0, 0, 0, 0.6), 0 8px 20px -8px rgba(0, 0, 0, 0.4)",
+        "glass-lift-lg":
+          "0 30px 80px -20px rgba(0, 0, 0, 0.7), 0 12px 30px -10px rgba(0, 0, 0, 0.5)",
+        "glow-volt":
+          "0 0 40px rgba(0, 230, 118, 0.35), 0 0 80px rgba(0, 230, 118, 0.15)",
+        "glow-volt-lg":
+          "0 0 60px rgba(0, 230, 118, 0.5), 0 0 120px rgba(0, 230, 118, 0.25), 0 30px 80px -20px rgba(0, 230, 118, 0.3)",
+        "glow-red":
+          "0 0 40px rgba(239, 68, 68, 0.45), 0 0 80px rgba(239, 68, 68, 0.2)",
+      },
+      backdropBlur: {
+        xs: "2px",
       },
       borderWidth: {
         "3": "3px",
