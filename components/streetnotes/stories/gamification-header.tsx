@@ -155,7 +155,7 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt">
               Daily Challenge
             </p>
-            <p className="font-body text-sm text-white truncate mt-0.5">
+            <p className="font-body text-sm text-white leading-snug mt-0.5 break-words">
               {daily_challenge.description}
             </p>
           </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { ArrowLeft, Plus, Trophy, Trash2 } from 'lucide-react'
+import { ArrowLeft, Plus, Trophy, Trash2, BookOpen } from 'lucide-react'
 import {
   FrameworkPicker,
   DraftingWizard,
@@ -20,7 +20,7 @@ import type { StoryType, StoryDraft, VaultEntry, StoryScore } from '@/lib/vbrick
 import { STORY_TYPE_LABELS } from '@/lib/vbrick/story-types'
 
 type StoryView = 'home' | 'drafting' | 'review' | 'practice' | 'score'
-type TabId = 'create' | 'vault'
+type TabId = 'create' | 'vault' | 'team'
 
 export default function StoriesClient({ userEmail }: { userEmail: string }) {
   const email = userEmail
@@ -31,6 +31,8 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   const [activeDraft, setActiveDraft] = useState<StoryDraft | null>(null)
   const [activeFrameworkType, setActiveFrameworkType] = useState<StoryType | null>(null)
   const [personalVault, setPersonalVault] = useState<VaultEntry[]>([])
+  const [teamVault, setTeamVault] = useState<VaultEntry[]>([])
+  const [adoptingId, setAdoptingId] = useState<string | null>(null)
   const [lastScore, setLastScore] = useState<{ score: StoryScore; isNewBest: boolean; xpEarned: number; vaultEntryId?: string } | null>(null)
   const [xpToast, setXPToast] = useState<{ xp: number; visible: boolean }>({ xp: 0, visible: false })
 
@@ -50,10 +52,19 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
     }
   }, [email])
 
+  const fetchTeamVault = useCallback(async () => {
+    const res = await fetch('/api/vbrick/stories/vault/team')
+    if (res.ok) {
+      const data = await res.json()
+      setTeamVault(data.vault || [])
+    }
+  }, [])
+
   useEffect(() => {
     fetchDrafts()
     fetchVault()
-  }, [fetchDrafts, fetchVault])
+    fetchTeamVault()
+  }, [fetchDrafts, fetchVault, fetchTeamVault])
 
   const handleFrameworkSelect = async (type: StoryType) => {
     setActiveFrameworkType(type)
@@ -90,11 +101,23 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
     setLastScore(null)
     fetchDrafts()
     fetchVault()
+    fetchTeamVault()
   }
 
   const handleDeleteVault = async (id: string) => {
     await fetch(`/api/vbrick/stories/vault/${id}`, { method: 'DELETE' })
     fetchVault()
+    fetchTeamVault()
+  }
+
+  const handleToggleShare = async (id: string, currentlyShared: boolean) => {
+    await fetch(`/api/vbrick/stories/vault/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shared_to_team: !currentlyShared }),
+    })
+    fetchVault()
+    fetchTeamVault()
   }
 
   const handleDeleteDraft = async (id: string) => {
@@ -103,15 +126,20 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   }
 
   const handlePracticeVault = async (entry: VaultEntry) => {
-    const res = await fetch('/api/vbrick/stories/drafts/adopt', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vault_entry_id: entry.id, email }),
-    })
-    if (res.ok) {
-      const data = await res.json()
-      setActiveDraft(data.draft)
-      setView('practice')
+    setAdoptingId(entry.id)
+    try {
+      const res = await fetch('/api/vbrick/stories/drafts/adopt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vault_entry_id: entry.id, email }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setActiveDraft(data.draft)
+        setView('practice')
+      }
+    } finally {
+      setAdoptingId(null)
     }
   }
 
@@ -188,7 +216,8 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   // Home view with tabs
   const tabs = [
     { id: 'create', label: 'Create', icon: <Plus className="w-4 h-4" /> },
-    { id: 'vault', label: 'Vault', icon: <Trophy className="w-4 h-4" /> },
+    { id: 'vault', label: 'My Vault', icon: <Trophy className="w-4 h-4" /> },
+    { id: 'team', label: 'Team', icon: <BookOpen className="w-4 h-4" /> },
   ]
 
   return (
@@ -327,10 +356,54 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                       >
                         <VaultCard
                           entry={entry}
+                          showShare
+                          onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
                           onPractice={() => handlePracticeVault(entry)}
                           onDelete={() => handleDeleteVault(entry.id)}
+                          email={email}
                         />
                       </SwipeToDelete>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {activeTab === 'team' && (
+          <motion.div key="team" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            {teamVault.length === 0 ? (
+              <div className="glass rounded-2xl p-8 text-center mt-2">
+                <BookOpen
+                  className="w-10 h-10 mx-auto mb-3 text-volt"
+                  style={{ filter: 'drop-shadow(0 0 12px rgba(0, 230, 118, 0.5))' }}
+                />
+                <p className="font-bold text-xl text-white">No team stories yet</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-white/50 mt-2">
+                  Share one of your best from My Vault to start the library
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <AnimatePresence initial={false}>
+                  {teamVault.map((entry) => (
+                    <motion.div
+                      key={entry.id}
+                      layout
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <VaultCard
+                        entry={entry}
+                        showAuthor
+                        onAdopt={() => handlePracticeVault(entry)}
+                        adopting={adoptingId === entry.id}
+                        onDelete={entry.bdr_email === email ? () => handleDeleteVault(entry.id) : undefined}
+                        email={email}
+                      />
                     </motion.div>
                   ))}
                 </AnimatePresence>
