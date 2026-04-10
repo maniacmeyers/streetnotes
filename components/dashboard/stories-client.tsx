@@ -13,7 +13,7 @@ import {
   GamificationHeader,
   XPToast,
 } from '@/components/streetnotes/stories'
-import { BrutalTabs, BrutalBadge } from '@/components/streetnotes/brutal'
+import { GlassTabs } from '@/components/ui/glass-tabs'
 import { SwipeToDelete } from '@/components/vbrick/swipe-to-delete'
 import { getFramework } from '@/lib/vbrick/story-frameworks'
 import type { StoryType, StoryDraft, VaultEntry, StoryScore } from '@/lib/vbrick/story-types'
@@ -118,11 +118,11 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   // Sub-views
   if (view !== 'home') {
     return (
-      <div className="px-4 pt-safe pb-4">
+      <div className="px-4 pt-6 pb-4">
         <button
           type="button"
           onClick={handleBack}
-          className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest font-bold text-gray-400 hover:text-volt min-h-[44px] mb-4"
+          className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest font-bold text-white/50 hover:text-volt min-h-[44px] mb-4 cursor-pointer transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -192,25 +192,25 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   ]
 
   return (
-    <div className="px-4 pt-safe pb-4">
+    <div className="px-4 pt-6 pb-4">
       {/* Header */}
-      <div className="h-20 flex items-end pb-2">
-        <h1
-          className="font-display uppercase text-3xl sm:text-4xl text-white leading-[0.85]"
-          style={{ textShadow: '3px 3px 0px #000000' }}
-        >
-          Story <span className="text-volt">Vault</span>
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
+          Practice & Perform
+        </p>
+        <h1 className="font-bold text-3xl text-white leading-tight mt-1">
+          Story <span className="text-volt drop-shadow-[0_0_16px_rgba(0,230,118,0.4)]">Vault</span>
         </h1>
       </div>
 
       {/* Gamification */}
-      <div className="mt-3">
+      <div className="mt-5">
         <GamificationHeader email={email} />
       </div>
 
       {/* Tabs */}
       <div className="mt-5 mb-5">
-        <BrutalTabs items={tabs} activeId={activeTab} onChange={(id) => setActiveTab(id as TabId)} />
+        <GlassTabs items={tabs} activeId={activeTab} onChange={(id) => setActiveTab(id as TabId)} />
       </div>
 
       <AnimatePresence mode="wait">
@@ -222,67 +222,73 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
             {/* My Drafts */}
             {drafts.length > 0 && (
               <div className="mt-6">
-                <h3 className="font-mono text-[11px] uppercase tracking-[0.15em] font-bold text-gray-400 mb-3">
+                <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt/80 mb-3">
                   My Drafts
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <AnimatePresence initial={false}>
-                    {drafts.map((draft) => (
-                      <motion.div
-                        key={draft.id}
-                        layout
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                        transition={{ duration: 0.25 }}
-                      >
-                        <SwipeToDelete
-                          onDelete={() => handleDeleteDraft(draft.id)}
-                          variant="brutal"
+                    {drafts.map((draft) => {
+                      const statusBadge =
+                        draft.status === 'completed'
+                          ? 'text-volt border-volt/40 bg-volt/10'
+                          : 'text-white/60 border-white/15 bg-white/5'
+                      return (
+                        <motion.div
+                          key={draft.id}
+                          layout
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          transition={{ duration: 0.25 }}
                         >
-                          <div className="flex items-center gap-2 bg-white border-4 border-black shadow-neo-sm">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setActiveDraft(draft)
-                                setActiveFrameworkType(draft.story_type)
-                                if (draft.status === 'draft') {
-                                  setView('drafting')
-                                } else {
-                                  setView('review')
-                                }
-                              }}
-                              className="flex-1 text-left px-4 py-3 min-h-[56px] bg-transparent border-none"
-                            >
-                              <p className="font-display uppercase text-base text-black leading-[0.9]">
-                                {draft.title}
-                              </p>
-                              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                                <span className="font-mono text-[10px] uppercase tracking-wider text-black/60 font-bold">
-                                  {STORY_TYPE_LABELS[draft.story_type]}
-                                </span>
-                                <BrutalBadge
-                                  variant={draft.status === 'completed' ? 'black' : 'white'}
-                                >
-                                  {draft.status}
-                                </BrutalBadge>
-                              </div>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleDeleteDraft(draft.id)
-                              }}
-                              aria-label="Delete draft"
-                              className="flex items-center justify-center w-11 h-11 mr-1 border-2 border-black bg-white text-black hover:bg-red-600 hover:text-white cursor-pointer transition-colors duration-150"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </SwipeToDelete>
-                      </motion.div>
-                    ))}
+                          <SwipeToDelete
+                            onDelete={() => handleDeleteDraft(draft.id)}
+                            variant="brutal"
+                          >
+                            <div className="glass rounded-xl flex items-center gap-2 hover:border-volt/30 transition-all">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveDraft(draft)
+                                  setActiveFrameworkType(draft.story_type)
+                                  if (draft.status === 'draft') {
+                                    setView('drafting')
+                                  } else {
+                                    setView('review')
+                                  }
+                                }}
+                                className="flex-1 text-left px-4 py-3 min-h-[56px] bg-transparent border-none cursor-pointer rounded-xl"
+                              >
+                                <p className="font-bold text-sm text-white leading-tight">
+                                  {draft.title}
+                                </p>
+                                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/50 font-bold">
+                                    {STORY_TYPE_LABELS[draft.story_type]}
+                                  </span>
+                                  <span
+                                    className={`font-mono text-[9px] uppercase tracking-[0.15em] font-bold px-2 py-0.5 rounded border ${statusBadge}`}
+                                  >
+                                    {draft.status}
+                                  </span>
+                                </div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleDeleteDraft(draft.id)
+                                }}
+                                aria-label="Delete draft"
+                                className="flex items-center justify-center w-11 h-11 mr-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 cursor-pointer transition-colors duration-150"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </SwipeToDelete>
+                        </motion.div>
+                      )
+                    })}
                   </AnimatePresence>
                 </div>
               </div>
@@ -293,10 +299,13 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
         {activeTab === 'vault' && (
           <motion.div key="vault" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
             {personalVault.length === 0 ? (
-              <div className="bg-white border-4 border-black shadow-neo-sm p-8 text-center mt-2">
-                <Trophy className="w-10 h-10 mx-auto mb-3 text-black" />
-                <p className="font-display uppercase text-xl text-black">No stories vaulted yet</p>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-black/60 mt-2">
+              <div className="glass rounded-2xl p-8 text-center mt-2">
+                <Trophy
+                  className="w-10 h-10 mx-auto mb-3 text-volt"
+                  style={{ filter: 'drop-shadow(0 0 12px rgba(0, 230, 118, 0.5))' }}
+                />
+                <p className="font-bold text-xl text-white">No stories vaulted yet</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-white/50 mt-2">
                   Record a personal best to save it here
                 </p>
               </div>

@@ -1,33 +1,27 @@
 'use client'
 
 import { useMemo } from 'react'
+import {
+  Users,
+  CheckSquare,
+  AlertTriangle,
+  Flame,
+  Swords,
+  Package,
+  Building2,
+} from 'lucide-react'
 import type { DebriefStructuredOutput } from '@/lib/debrief/types'
 
 interface DealMindMapProps {
   data: DebriefStructuredOutput
 }
 
-/* ─── Colors ─── */
-const COLORS = {
-  volt: '#00E676',
-  red: '#FF5252',
-  amber: '#FFB300',
-  blue: '#448AFF',
-  gray: '#9CA3AF',
-  dark: '#1F2937',
-  white: '#FFFFFF',
-  muted: '#6B7280',
-  bg: '#F9FAFB',
-  border: '#E5E7EB',
-}
-
-function truncateText(text: string, max: number): string {
-  return text.length > max ? text.slice(0, max - 1) + '\u2026' : text
-}
-
 interface Branch {
+  key: string
   label: string
   color: string
+  accentBg: string
+  Icon: typeof Users
   items: string[]
 }
 
@@ -35,23 +29,29 @@ function useBranches(data: DebriefStructuredOutput): Branch[] {
   return useMemo(() => {
     const branches: Branch[] = []
 
-    // Attendees
     if (data.attendees.length > 0 && data.attendees[0].name !== 'Not mentioned') {
       branches.push({
+        key: 'attendees',
         label: 'Attendees',
-        color: COLORS.blue,
+        color: '#3B82F6',
+        accentBg: 'rgba(59, 130, 246, 0.08)',
+        Icon: Users,
         items: data.attendees.map(
           (a) =>
-            `${a.name}${a.title !== 'Not mentioned' ? ` — ${a.title}` : ''}${a.role !== 'Unknown' ? ` (${a.role})` : ''}`
+            `${a.name}${a.title !== 'Not mentioned' ? ` — ${a.title}` : ''}${
+              a.role !== 'Unknown' ? ` (${a.role})` : ''
+            }`
         ),
       })
     }
 
-    // Follow-up tasks
     if (data.followUpTasks.length > 0) {
       branches.push({
+        key: 'tasks',
         label: 'Tasks',
-        color: COLORS.volt,
+        color: '#10B981',
+        accentBg: 'rgba(16, 185, 129, 0.08)',
+        Icon: CheckSquare,
         items: data.followUpTasks.map(
           (t) =>
             `${t.task}${t.dueDate !== 'Not specified' ? ` — ${t.dueDate}` : ''}`
@@ -59,38 +59,46 @@ function useBranches(data: DebriefStructuredOutput): Branch[] {
       })
     }
 
-    // Pain points
     if (data.painPoints.length > 0) {
       branches.push({
+        key: 'pains',
         label: 'Pain Points',
-        color: COLORS.amber,
+        color: '#F59E0B',
+        accentBg: 'rgba(245, 158, 11, 0.08)',
+        Icon: Flame,
         items: data.painPoints,
       })
     }
 
-    // Risks
     if (data.risks.length > 0) {
       branches.push({
+        key: 'risks',
         label: 'Risks',
-        color: COLORS.red,
+        color: '#EF4444',
+        accentBg: 'rgba(239, 68, 68, 0.08)',
+        Icon: AlertTriangle,
         items: data.risks,
       })
     }
 
-    // Competitors
     if (data.competitorsMentioned.length > 0) {
       branches.push({
+        key: 'competitors',
         label: 'Competitors',
-        color: COLORS.gray,
+        color: '#8B5CF6',
+        accentBg: 'rgba(139, 92, 246, 0.08)',
+        Icon: Swords,
         items: data.competitorsMentioned,
       })
     }
 
-    // Products discussed
     if (data.productsDiscussed.length > 0) {
       branches.push({
+        key: 'products',
         label: 'Products',
-        color: COLORS.volt,
+        color: '#0EA5E9',
+        accentBg: 'rgba(14, 165, 233, 0.08)',
+        Icon: Package,
         items: data.productsDiscussed,
       })
     }
@@ -99,343 +107,120 @@ function useBranches(data: DebriefStructuredOutput): Branch[] {
   }, [data])
 }
 
-/* ─── Mobile: Vertical trunk layout ─── */
-function MobileMindMap({ data }: DealMindMapProps) {
-  const branches = useBranches(data)
-  const companyName =
-    data.dealSnapshot.companyName !== 'Not mentioned'
-      ? data.dealSnapshot.companyName
-      : 'Deal'
-
-  const centerX = 160
-  const startY = 60
-  const branchGap = 90
-  const totalH = startY + branches.length * branchGap + 40
-  const leafXOffset = 90
-  const leafGap = 22
-
-  return (
-    <svg
-      viewBox={`0 0 320 ${totalH}`}
-      className="w-full"
-      role="img"
-      aria-label={`Deal mind map for ${companyName}`}
-    >
-      <defs>
-        <filter id="m-shadow" x="-4%" y="-4%" width="108%" height="108%">
-          <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" />
-        </filter>
-      </defs>
-
-      {/* Trunk line */}
-      <line
-        x1={centerX}
-        y1={startY + 20}
-        x2={centerX}
-        y2={totalH - 20}
-        stroke={COLORS.border}
-        strokeWidth="2"
-      />
-
-      {/* Central node */}
-      <rect
-        x={centerX - 70}
-        y={startY - 22}
-        width="140"
-        height="44"
-        rx="8"
-        fill={COLORS.dark}
-        filter="url(#m-shadow)"
-      />
-      <text
-        x={centerX}
-        y={startY - 2}
-        textAnchor="middle"
-        fill={COLORS.white}
-        fontSize="11"
-        fontWeight="700"
-        fontFamily="system-ui, sans-serif"
-      >
-        {truncateText(companyName, 18)}
-      </text>
-      <text
-        x={centerX}
-        y={startY + 12}
-        textAnchor="middle"
-        fill={COLORS.volt}
-        fontSize="8"
-        fontWeight="600"
-        fontFamily="system-ui, sans-serif"
-      >
-        {truncateText(data.dealSnapshot.dealStage, 24)}
-      </text>
-
-      {/* Branches */}
-      {branches.map((branch, bIdx) => {
-        const yBase = startY + 50 + bIdx * branchGap
-        const side = bIdx % 2 === 0 ? 1 : -1
-        const branchX = centerX + side * leafXOffset
-
-        return (
-          <g key={branch.label}>
-            {/* Connector from trunk to branch label */}
-            <line
-              x1={centerX}
-              y1={yBase}
-              x2={branchX}
-              y2={yBase}
-              stroke={branch.color}
-              strokeWidth="1.5"
-              opacity="0.5"
-            />
-
-            {/* Branch label */}
-            <rect
-              x={side === 1 ? branchX - 4 : branchX - 66}
-              y={yBase - 10}
-              width="70"
-              height="20"
-              rx="4"
-              fill={branch.color}
-              opacity="0.12"
-            />
-            <text
-              x={side === 1 ? branchX + 31 : branchX - 31}
-              y={yBase + 4}
-              textAnchor="middle"
-              fill={branch.color}
-              fontSize="8"
-              fontWeight="700"
-              fontFamily="system-ui, sans-serif"
-              textDecoration="none"
-            >
-              {branch.label.toUpperCase()}
-            </text>
-
-            {/* Leaf items (max 3 visible) */}
-            {branch.items.slice(0, 3).map((item, lIdx) => {
-              const leafY = yBase + 16 + lIdx * leafGap
-              const leafX = side === 1 ? branchX + 4 : branchX - 70
-
-              return (
-                <g key={lIdx}>
-                  <circle
-                    cx={side === 1 ? branchX - 2 : branchX + 2}
-                    cy={leafY + 5}
-                    r="2.5"
-                    fill={branch.color}
-                    opacity="0.6"
-                  />
-                  <text
-                    x={leafX}
-                    y={leafY + 8}
-                    fill={COLORS.dark}
-                    fontSize="8"
-                    fontFamily="system-ui, sans-serif"
-                  >
-                    {truncateText(item, 28)}
-                  </text>
-                </g>
-              )
-            })}
-
-            {/* Overflow indicator */}
-            {branch.items.length > 3 && (
-              <text
-                x={side === 1 ? branchX + 4 : branchX - 70}
-                y={yBase + 16 + 3 * leafGap + 4}
-                fill={COLORS.muted}
-                fontSize="7"
-                fontStyle="italic"
-                fontFamily="system-ui, sans-serif"
-              >
-                +{branch.items.length - 3} more
-              </text>
-            )}
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
-/* ─── Desktop: Horizontal radial layout ─── */
-function DesktopMindMap({ data }: DealMindMapProps) {
-  const branches = useBranches(data)
-  const companyName =
-    data.dealSnapshot.companyName !== 'Not mentioned'
-      ? data.dealSnapshot.companyName
-      : 'Deal'
-
-  const width = 800
-  const height = Math.max(400, branches.length * 80 + 80)
-  const centerX = 160
-  const centerY = height / 2
-  const branchStartX = 260
-  const leafIndent = 20
-
-  // Distribute branches vertically
-  const branchGap = branches.length > 1 ? (height - 100) / (branches.length - 1) : 0
-  const branchStartY = branches.length > 1 ? 50 : centerY
-
-  return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="w-full"
-      role="img"
-      aria-label={`Deal mind map for ${companyName}`}
-    >
-      <defs>
-        <filter id="d-shadow" x="-4%" y="-4%" width="108%" height="108%">
-          <feDropShadow dx="0" dy="1" stdDeviation="3" floodOpacity="0.08" />
-        </filter>
-        <filter id="d-glow" x="-10%" y="-10%" width="120%" height="120%">
-          <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor={COLORS.volt} floodOpacity="0.15" />
-        </filter>
-      </defs>
-
-      {/* Central node */}
-      <rect
-        x={centerX - 80}
-        y={centerY - 30}
-        width="160"
-        height="60"
-        rx="10"
-        fill={COLORS.dark}
-        filter="url(#d-glow)"
-      />
-      <text
-        x={centerX}
-        y={centerY - 4}
-        textAnchor="middle"
-        fill={COLORS.white}
-        fontSize="14"
-        fontWeight="700"
-        fontFamily="system-ui, sans-serif"
-      >
-        {truncateText(companyName, 20)}
-      </text>
-      <text
-        x={centerX}
-        y={centerY + 14}
-        textAnchor="middle"
-        fill={COLORS.volt}
-        fontSize="10"
-        fontWeight="600"
-        fontFamily="system-ui, sans-serif"
-      >
-        {truncateText(data.dealSnapshot.dealStage, 28)}
-      </text>
-
-      {/* Branches */}
-      {branches.map((branch, bIdx) => {
-        const branchY = branchStartY + bIdx * branchGap
-
-        // Curved connector from center to branch
-        const cx1 = centerX + 80
-        const cx2 = branchStartX - 40
-
-        return (
-          <g key={branch.label}>
-            {/* Connector line */}
-            <path
-              d={`M ${centerX + 80} ${centerY} C ${cx1 + 40} ${centerY}, ${cx2} ${branchY}, ${branchStartX} ${branchY}`}
-              fill="none"
-              stroke={branch.color}
-              strokeWidth="1.5"
-              opacity="0.4"
-            />
-
-            {/* Branch label pill */}
-            <rect
-              x={branchStartX}
-              y={branchY - 12}
-              width="90"
-              height="24"
-              rx="6"
-              fill={branch.color}
-              opacity="0.12"
-              stroke={branch.color}
-              strokeWidth="1"
-              strokeOpacity="0.2"
-            />
-            <text
-              x={branchStartX + 45}
-              y={branchY + 4}
-              textAnchor="middle"
-              fill={branch.color}
-              fontSize="9"
-              fontWeight="700"
-              fontFamily="system-ui, sans-serif"
-            >
-              {branch.label.toUpperCase()}
-            </text>
-
-            {/* Leaf items */}
-            {branch.items.slice(0, 4).map((item, lIdx) => {
-              const leafX = branchStartX + 100 + leafIndent
-              const leafY = branchY - 8 + lIdx * 18
-
-              return (
-                <g key={lIdx}>
-                  {/* Tiny connector */}
-                  <line
-                    x1={branchStartX + 90}
-                    y1={branchY}
-                    x2={leafX - 8}
-                    y2={leafY + 4}
-                    stroke={branch.color}
-                    strokeWidth="0.5"
-                    opacity="0.3"
-                  />
-                  <circle
-                    cx={leafX - 4}
-                    cy={leafY + 4}
-                    r="2.5"
-                    fill={branch.color}
-                    opacity="0.6"
-                  />
-                  <text
-                    x={leafX + 4}
-                    y={leafY + 8}
-                    fill={COLORS.dark}
-                    fontSize="9"
-                    fontFamily="system-ui, sans-serif"
-                  >
-                    {truncateText(item, 40)}
-                  </text>
-                </g>
-              )
-            })}
-
-            {branch.items.length > 4 && (
-              <text
-                x={branchStartX + 100 + leafIndent + 4}
-                y={branchY - 8 + 4 * 18 + 8}
-                fill={COLORS.muted}
-                fontSize="8"
-                fontStyle="italic"
-                fontFamily="system-ui, sans-serif"
-              >
-                +{branch.items.length - 4} more
-              </text>
-            )}
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
-/* ─── Exported Component ─── */
 export default function DealMindMap({ data }: DealMindMapProps) {
-  return (
-    <div className="bg-white">
-      <div className="sm:hidden">
-        <MobileMindMap data={data} />
+  const branches = useBranches(data)
+  const companyName =
+    data.dealSnapshot.companyName !== 'Not mentioned'
+      ? data.dealSnapshot.companyName
+      : 'Deal'
+  const stage =
+    data.dealSnapshot.dealStage !== 'Not mentioned'
+      ? data.dealSnapshot.dealStage
+      : null
+
+  if (branches.length === 0) {
+    return (
+      <div className="text-center py-8 px-4">
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.15em]">
+          No details extracted
+        </p>
+        <p className="text-xs text-gray-300 mt-1.5">
+          Try recording with more context
+        </p>
       </div>
-      <div className="hidden sm:block">
-        <DesktopMindMap data={data} />
+    )
+  }
+
+  return (
+    <div className="py-2 px-1 sm:px-2">
+      {/* Central node: company + stage */}
+      <div className="flex justify-center">
+        <div
+          className="inline-flex flex-col items-center bg-gray-900 text-white rounded-xl px-5 py-3 shadow-[0_4px_16px_rgba(0,0,0,0.12),0_2px_4px_rgba(0,0,0,0.08)] max-w-full"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <Building2 size={14} className="text-[#7ed4f7] flex-shrink-0" />
+            <span className="font-semibold text-sm truncate max-w-[240px]">
+              {companyName}
+            </span>
+          </div>
+          {stage && (
+            <span className="text-[10px] font-semibold text-[#7ed4f7] uppercase tracking-[0.1em] mt-1 truncate max-w-[240px]">
+              {stage}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Trunk line down to branches */}
+      <div className="flex justify-center" aria-hidden="true">
+        <div className="w-px h-5 bg-gray-300" />
+      </div>
+
+      {/* Branch grid — 1 col on mobile, 2 cols on sm+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+        {branches.map((branch) => {
+          const Icon = branch.Icon
+          return (
+            <div
+              key={branch.key}
+              className="rounded-xl p-3.5 border border-gray-200/80 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] relative overflow-hidden"
+              style={{
+                borderLeft: `3px solid ${branch.color}`,
+              }}
+            >
+              {/* Subtle color wash in background */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: branch.accentBg }}
+              />
+
+              {/* Header: icon + label + count */}
+              <div className="relative flex items-center justify-between mb-2.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div
+                    className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
+                    style={{ background: branch.color }}
+                  >
+                    <Icon size={13} className="text-white" strokeWidth={2.5} />
+                  </div>
+                  <span
+                    className="text-[10px] font-bold uppercase tracking-[0.12em] truncate"
+                    style={{ color: branch.color }}
+                  >
+                    {branch.label}
+                  </span>
+                </div>
+                <span
+                  className="text-[9px] font-bold text-white rounded-full px-1.5 py-0.5 flex-shrink-0 min-w-[18px] text-center"
+                  style={{ background: branch.color }}
+                >
+                  {branch.items.length}
+                </span>
+              </div>
+
+              {/* Items list */}
+              <ul className="relative space-y-1.5">
+                {branch.items.map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2"
+                  >
+                    <span
+                      className="w-1 h-1 rounded-full flex-shrink-0 mt-[7px]"
+                      style={{ background: branch.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="text-[12px] sm:text-[13px] text-gray-700 leading-snug break-words min-w-0 flex-1">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

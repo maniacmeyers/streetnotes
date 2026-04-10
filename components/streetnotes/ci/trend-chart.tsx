@@ -9,7 +9,6 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts'
-import { BrutalCard } from '@/components/streetnotes/brutal'
 
 interface TrendPoint {
   weekLabel: string
@@ -30,11 +29,11 @@ const LINE_PALETTE = [
   '#00E676', // volt
   '#FFFFFF', // white
   '#FFB800', // amber
-  '#dc2626', // red
-  '#6366f1',
-  '#ec4899',
-  '#f97316',
-  '#06b6d4',
+  '#f87171', // red
+  '#818cf8', // indigo
+  '#f472b6', // pink
+  '#fb923c', // orange
+  '#22d3ee', // cyan
 ]
 
 interface MergedPoint {
@@ -65,13 +64,22 @@ interface CustomTooltipProps {
 function ChartTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-black border-4 border-volt p-3 font-mono text-xs">
-      <p className="font-bold mb-1 uppercase tracking-wider text-volt">{label}</p>
+    <div
+      className="glass rounded-xl p-3 font-mono text-xs"
+      style={{
+        background: 'rgba(6, 18, 34, 0.9)',
+        backdropFilter: 'blur(16px)',
+      }}
+    >
+      <p className="font-bold mb-1.5 uppercase tracking-[0.15em] text-volt">{label}</p>
       {payload.map((entry) => (
-        <div key={entry.name} className="flex items-center gap-2">
-          <span className="w-2 h-2 border border-white" style={{ background: entry.color }} />
-          <span className="text-white">
-            {entry.name}: {entry.value}
+        <div key={entry.name} className="flex items-center gap-2 mt-1">
+          <span
+            className="w-2 h-2 rounded-full"
+            style={{ background: entry.color, boxShadow: `0 0 6px ${entry.color}60` }}
+          />
+          <span className="text-white/80">
+            {entry.name}: <span className="text-white font-bold">{entry.value}</span>
           </span>
         </div>
       ))}
@@ -82,35 +90,39 @@ function ChartTooltip({ active, payload, label }: CustomTooltipProps) {
 export function TrendChart({ data, loading }: TrendChartProps) {
   if (loading) {
     return (
-      <BrutalCard variant="black" padded>
-        <div className="animate-pulse h-64 bg-gray-800" />
-      </BrutalCard>
+      <div className="glass rounded-2xl p-6">
+        <div className="animate-pulse h-64 bg-white/5 rounded-xl" />
+      </div>
     )
   }
 
   if (data.length === 0) {
     return (
-      <BrutalCard variant="white" padded>
-        <p className="font-mono text-xs uppercase tracking-wider font-bold text-black/60 text-center">
+      <div className="glass rounded-2xl p-8 text-center">
+        <p className="font-mono text-xs uppercase tracking-wider font-bold text-white/50">
           No trend data yet.
         </p>
-      </BrutalCard>
+      </div>
     )
   }
 
   const merged = mergeData(data)
 
   return (
-    <BrutalCard variant="black" padded>
+    <div className="glass rounded-2xl p-5 sm:p-6">
       {/* Legend */}
       <div className="flex items-center flex-wrap gap-3 mb-4">
         {data.map((series, i) => (
           <div key={series.competitorName} className="flex items-center gap-1.5">
             <span
-              className="w-3 h-3 border-2 border-white"
-              style={{ background: LINE_PALETTE[i % LINE_PALETTE.length] }}
+              className="w-2.5 h-2.5 rounded-full"
+              style={{
+                background: LINE_PALETTE[i % LINE_PALETTE.length],
+                boxShadow:
+                  i === 0 ? '0 0 8px rgba(0, 230, 118, 0.6)' : undefined,
+              }}
             />
-            <span className="font-mono text-[10px] uppercase tracking-wider font-bold text-white">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70">
               {series.competitorName}
             </span>
           </div>
@@ -119,33 +131,33 @@ export function TrendChart({ data, loading }: TrendChartProps) {
 
       <ResponsiveContainer width="100%" height={260}>
         <LineChart data={merged} margin={{ top: 4, right: 12, bottom: 4, left: -8 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#FFFFFF20" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
           <XAxis
             dataKey="weekLabel"
-            tick={{ fontSize: 11, fill: '#FFFFFF80', fontFamily: 'var(--font-mono)' }}
-            axisLine={{ stroke: '#FFFFFF30' }}
+            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-mono)' }}
+            axisLine={{ stroke: 'rgba(255,255,255,0.15)' }}
             tickLine={false}
           />
           <YAxis
             allowDecimals={false}
-            tick={{ fontSize: 11, fill: '#FFFFFF80', fontFamily: 'var(--font-mono)' }}
+            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-mono)' }}
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip content={<ChartTooltip />} />
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(0,230,118,0.3)', strokeWidth: 1 }} />
           {data.map((series, i) => (
             <Line
               key={series.competitorName}
               type="monotone"
               dataKey={series.competitorName}
               stroke={LINE_PALETTE[i % LINE_PALETTE.length]}
-              strokeWidth={3}
+              strokeWidth={2.5}
               dot={{ r: 3, fill: LINE_PALETTE[i % LINE_PALETTE.length], strokeWidth: 0 }}
-              activeDot={{ r: 5, strokeWidth: 2, stroke: '#000000' }}
+              activeDot={{ r: 5, strokeWidth: 2, stroke: 'rgba(6, 18, 34, 1)' }}
             />
           ))}
         </LineChart>
       </ResponsiveContainer>
-    </BrutalCard>
+    </div>
   )
 }

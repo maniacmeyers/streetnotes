@@ -13,14 +13,19 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { motion } from 'motion/react'
-import { BrutalCard, BrutalButton, BrutalBadge, BrutalToggle } from '@/components/streetnotes/brutal'
+import { BrutalToggle } from '@/components/streetnotes/brutal'
 import { STORY_TYPE_LABELS, type VaultEntry } from '@/lib/vbrick/story-types'
 
 function scoreColor(score: number): string {
-  if (score <= 3) return '#dc2626'
-  if (score <= 6) return '#d97706'
-  if (score <= 8) return '#00E676'
+  if (score <= 3) return '#f87171'
+  if (score <= 6) return '#fbbf24'
   return '#00E676'
+}
+
+function scoreGlow(score: number): string {
+  if (score <= 3) return '0 0 16px rgba(248, 113, 113, 0.4)'
+  if (score <= 6) return '0 0 16px rgba(251, 191, 36, 0.4)'
+  return '0 0 16px rgba(0, 230, 118, 0.5)'
 }
 
 function formatDate(iso: string): string {
@@ -79,7 +84,7 @@ export function VaultCard({
   }
 
   return (
-    <BrutalCard variant="white" padded>
+    <div className="glass rounded-2xl p-5">
       {/* Header row — clickable to expand */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -87,30 +92,33 @@ export function VaultCard({
       >
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <BrutalBadge variant="white">
+            <span className="inline-block glass-inset rounded-md px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
               {STORY_TYPE_LABELS[entry.story_type]}
-            </BrutalBadge>
+            </span>
             {entry.is_personal_best && (
-              <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider font-bold text-volt">
+              <span
+                className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt"
+                style={{ textShadow: '0 0 8px rgba(0, 230, 118, 0.6)' }}
+              >
                 <Trophy size={10} />
                 Personal Best
               </span>
             )}
           </div>
 
-          <h4 className="font-display uppercase text-xl text-black leading-[0.9]">
+          <h4 className="font-bold text-lg text-white leading-tight">
             {entry.title}
           </h4>
 
           <div className="flex items-center gap-3 mt-2">
             <div className="flex items-center gap-1.5">
-              <Calendar size={12} className="text-black/60" />
-              <span className="font-mono text-[10px] uppercase tracking-wider text-black/60">
+              <Calendar size={11} className="text-white/40" />
+              <span className="font-mono text-[10px] uppercase tracking-wider text-white/50">
                 {formatDate(entry.created_at)}
               </span>
             </div>
             {showAuthor && (
-              <span className="font-mono text-[10px] uppercase tracking-wider text-black/70 font-bold">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-white/60 font-bold">
                 by {entry.bdr_email.split('@')[0].replace('.', ' ')}
               </span>
             )}
@@ -121,17 +129,20 @@ export function VaultCard({
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex flex-col items-center">
             <span
-              className="font-display text-4xl tabular-nums leading-none"
-              style={{ color: scoreColor(entry.composite_score) }}
+              className="font-bold text-4xl tabular-nums leading-none"
+              style={{
+                color: scoreColor(entry.composite_score),
+                textShadow: scoreGlow(entry.composite_score),
+              }}
             >
               {entry.composite_score.toFixed(1)}
             </span>
-            <span className="text-[9px] uppercase tracking-widest font-mono font-bold text-black/60 mt-1">
+            <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-white/40 mt-1">
               score
             </span>
           </div>
           <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.25 }}>
-            <ChevronDown size={18} className="text-black" />
+            <ChevronDown size={18} className="text-white/60" />
           </motion.div>
         </div>
       </button>
@@ -145,7 +156,7 @@ export function VaultCard({
         }}
       >
         <div style={{ overflow: 'hidden' }}>
-          <div className="mt-4 px-4 py-4 bg-black border-4 border-black font-body text-sm leading-relaxed whitespace-pre-wrap text-white">
+          <div className="mt-4 glass-inset rounded-xl px-4 py-4 font-body text-sm leading-relaxed whitespace-pre-wrap text-white/85">
             {entry.transcript}
           </div>
         </div>
@@ -155,27 +166,27 @@ export function VaultCard({
       {(onPractice || onAdopt) && expanded && (
         <div className="flex flex-wrap items-center gap-2 mt-4">
           {onPractice && (
-            <BrutalButton
-              variant="volt"
-              size="sm"
+            <button
+              type="button"
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation()
                 onPractice()
               }}
+              className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-xs uppercase tracking-[0.15em] px-4 py-2.5 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-volt min-h-[44px]"
             >
               <Mic size={14} />
               Practice
-            </BrutalButton>
+            </button>
           )}
           {onAdopt && (
-            <BrutalButton
-              variant="volt"
-              size="sm"
+            <button
+              type="button"
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation()
                 onAdopt()
               }}
               disabled={adopting}
+              className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-xs uppercase tracking-[0.15em] px-4 py-2.5 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-volt disabled:opacity-50 min-h-[44px]"
             >
               {adopting ? (
                 'Adding...'
@@ -185,7 +196,7 @@ export function VaultCard({
                   Add &amp; Practice
                 </>
               )}
-            </BrutalButton>
+            </button>
           )}
         </div>
       )}
@@ -197,13 +208,13 @@ export function VaultCard({
             <button
               onClick={handleCreateChallenge}
               disabled={creatingChallenge}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border-2 border-black font-mono text-[10px] uppercase tracking-widest font-bold text-black hover:bg-volt cursor-pointer transition-colors duration-150 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all disabled:opacity-50"
             >
               <Link2 size={12} />
               {creatingChallenge ? 'Creating...' : 'Share Challenge'}
             </button>
           ) : (
-            <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest font-bold text-volt">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt">
               <CheckCircle size={12} />
               {challengeCopied ? 'Link copied!' : 'Challenge link created'}
             </span>
@@ -213,10 +224,10 @@ export function VaultCard({
 
       {/* Share toggle + delete */}
       {showShare && onToggleShare && (
-        <div className="flex items-center justify-between mt-4 pt-3 border-t-2 border-black/20">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
           <div className="flex items-center gap-2">
-            <Share2 size={14} className="text-black" />
-            <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-black">
+            <Share2 size={14} className="text-white/50" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/60">
               Share to team
             </span>
           </div>
@@ -227,7 +238,7 @@ export function VaultCard({
                   e.stopPropagation()
                   onDelete()
                 }}
-                className="p-1.5 border-2 border-black cursor-pointer transition-colors duration-150 bg-white hover:bg-red-600 hover:text-white text-black"
+                className="glass rounded-md p-1.5 cursor-pointer transition-all hover:border-red-400/40 hover:text-red-400 text-white/60"
                 title="Delete from vault"
                 aria-label="Delete from vault"
               >
@@ -241,13 +252,13 @@ export function VaultCard({
 
       {/* Delete button standalone */}
       {onDelete && expanded && !(showShare && onToggleShare) && (
-        <div className="flex items-center justify-end mt-4 pt-3 border-t-2 border-black/20">
+        <div className="flex items-center justify-end mt-4 pt-4 border-t border-white/10">
           <button
             onClick={(e) => {
               e.stopPropagation()
               onDelete()
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 border-2 border-black cursor-pointer transition-colors duration-150 bg-white hover:bg-red-600 hover:text-white text-black font-mono text-[10px] uppercase tracking-widest font-bold"
+            className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2 cursor-pointer transition-all hover:border-red-400/40 hover:text-red-400 text-white/60 font-mono text-[10px] uppercase tracking-[0.15em] font-bold"
             title="Delete from vault"
             aria-label="Delete from vault"
           >
@@ -256,6 +267,6 @@ export function VaultCard({
           </button>
         </div>
       )}
-    </BrutalCard>
+    </div>
   )
 }

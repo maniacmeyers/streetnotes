@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Search } from 'lucide-react'
-import { BrutalCard, BrutalBadge, BrutalInput } from '@/components/streetnotes/brutal'
 import type { QuoteFeedItem } from '@/lib/ci/types'
 
 interface QuoteWallProps {
@@ -11,10 +10,10 @@ interface QuoteWallProps {
   loading?: boolean
 }
 
-const SENTIMENT_DOT: Record<string, string> = {
-  positive: '#00E676',
-  negative: '#dc2626',
-  neutral: '#9ca3af',
+const SENTIMENT_DOT: Record<string, { color: string; glow: string }> = {
+  positive: { color: '#00E676', glow: '0 0 10px rgba(0, 230, 118, 0.6)' },
+  negative: { color: '#f87171', glow: '0 0 10px rgba(248, 113, 113, 0.5)' },
+  neutral: { color: '#9ca3af', glow: 'none' },
 }
 
 function formatDate(dateStr: string): string {
@@ -41,12 +40,12 @@ export function QuoteWall({ mentions, loading }: QuoteWallProps) {
   if (loading) {
     return (
       <div className="space-y-3">
-        <div className="h-12 bg-gray-800 border-4 border-black animate-pulse" />
+        <div className="h-12 glass rounded-xl animate-pulse" />
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-white border-4 border-black p-4">
+          <div key={i} className="glass rounded-xl p-4">
             <div className="animate-pulse space-y-2">
-              <div className="h-3 bg-gray-300 w-full" />
-              <div className="h-3 bg-gray-300 w-3/4" />
+              <div className="h-3 bg-white/10 rounded w-full" />
+              <div className="h-3 bg-white/10 rounded w-3/4" />
             </div>
           </div>
         ))}
@@ -60,64 +59,69 @@ export function QuoteWall({ mentions, loading }: QuoteWallProps) {
       <div className="relative">
         <Search
           size={16}
-          className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-black/60 z-10"
+          className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/40 z-10"
         />
-        <BrutalInput
+        <input
+          type="text"
           placeholder="Search quotes, competitors, accounts..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-11"
+          className="w-full glass rounded-xl pl-11 pr-4 py-3 font-mono text-sm text-white placeholder:text-white/40 outline-none focus:border-volt/40 transition-all min-h-[44px]"
         />
       </div>
 
       {/* Quotes */}
       <AnimatePresence initial={false}>
         {filtered.length === 0 ? (
-          <BrutalCard variant="white" padded>
-            <p className="font-mono text-xs uppercase tracking-wider font-bold text-black/60 text-center">
+          <div className="glass rounded-2xl p-8 text-center">
+            <p className="font-mono text-xs uppercase tracking-wider font-bold text-white/50">
               {mentions.length === 0 ? 'No quotes collected yet.' : 'No matches for that search.'}
             </p>
-          </BrutalCard>
+          </div>
         ) : (
-          filtered.map((item, idx) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ delay: idx * 0.03, duration: 0.25 }}
-            >
-              <BrutalCard variant="white" padded>
-                <p className="font-body text-sm mb-3 leading-relaxed text-black italic">
+          filtered.map((item, idx) => {
+            const dot = SENTIMENT_DOT[item.sentiment] ?? SENTIMENT_DOT.neutral
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ delay: idx * 0.03, duration: 0.25 }}
+                className="glass rounded-xl p-5"
+              >
+                <p className="font-body text-sm mb-4 leading-relaxed text-white/85 italic">
                   &ldquo;{item.contextQuote}&rdquo;
                 </p>
 
                 <div className="flex items-center flex-wrap gap-2">
-                  <BrutalBadge variant="black">{item.competitorName}</BrutalBadge>
+                  <span className="inline-flex items-center glass-inset rounded-md px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
+                    {item.competitorName}
+                  </span>
 
                   <span
-                    className="inline-block w-3 h-3 border-2 border-black flex-shrink-0"
-                    style={{ background: SENTIMENT_DOT[item.sentiment] }}
+                    className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ background: dot.color, boxShadow: dot.glow }}
                     title={item.sentiment}
                   />
 
                   {item.accountName && (
-                    <span className="font-display uppercase text-xs text-black leading-none">
+                    <span className="font-bold text-xs text-white leading-none">
                       {item.accountName}
                     </span>
                   )}
 
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-black/60 font-bold">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/50 font-bold">
                     {item.repName || item.repEmail}
                   </span>
 
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-black/50">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/40">
                     {formatDate(item.createdAt)}
                   </span>
                 </div>
-              </BrutalCard>
-            </motion.div>
-          ))
+              </motion.div>
+            )
+          })
         )}
       </AnimatePresence>
     </div>

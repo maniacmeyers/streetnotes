@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { BrutalCard } from '@/components/streetnotes/brutal'
 
 interface CompetitorRow {
   name: string
@@ -23,17 +22,17 @@ const SENTIMENT_COLORS = {
 export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
   if (loading) {
     return (
-      <BrutalCard variant="white" padded>
+      <div className="glass rounded-2xl p-6">
         <div className="animate-pulse space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center gap-4">
-              <div className="h-4 w-28 bg-gray-300" />
-              <div className="flex-1 h-3 bg-gray-300" />
-              <div className="h-4 w-8 bg-gray-300" />
+              <div className="h-4 w-28 bg-white/10 rounded" />
+              <div className="flex-1 h-3 bg-white/10 rounded" />
+              <div className="h-4 w-8 bg-white/10 rounded" />
             </div>
           ))}
         </div>
-      </BrutalCard>
+      </div>
     )
   }
 
@@ -41,18 +40,18 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
 
   if (sorted.length === 0) {
     return (
-      <BrutalCard variant="white" padded>
-        <p className="font-mono text-xs uppercase tracking-wider font-bold text-black/60 text-center">
+      <div className="glass rounded-2xl p-8 text-center">
+        <p className="font-mono text-xs uppercase tracking-wider font-bold text-white/50">
           No competitor data yet.
         </p>
-      </BrutalCard>
+      </div>
     )
   }
 
   const maxCount = sorted[0]?.count || 1
 
   return (
-    <BrutalCard variant="white" padded>
+    <div className="glass rounded-2xl p-6">
       <div className="space-y-4">
         {sorted.map((row, idx) => {
           const total =
@@ -64,16 +63,19 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
 
           return (
             <div key={row.name} className="flex items-center gap-3">
-              <span className="font-display uppercase text-sm text-black w-28 truncate flex-shrink-0 leading-none">
+              <span className="font-bold text-sm text-white w-28 truncate flex-shrink-0 leading-none">
                 {row.name}
               </span>
 
               <div className="flex-1">
                 <motion.div
-                  className="h-6 border-2 border-black overflow-hidden flex bg-white"
+                  className="h-6 rounded-md overflow-hidden flex border border-white/15"
                   style={{
                     width: `${barWidth}%`,
                     minWidth: 24,
+                    background: 'rgba(255,255,255,0.04)',
+                    boxShadow:
+                      'inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 2px rgba(0,0,0,0.4)',
                   }}
                   initial={{ width: 0 }}
                   animate={{ width: `${barWidth}%` }}
@@ -82,7 +84,11 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
                   {posPct > 0 && (
                     <div
                       className="h-full"
-                      style={{ width: `${posPct}%`, background: SENTIMENT_COLORS.positive }}
+                      style={{
+                        width: `${posPct}%`,
+                        background: SENTIMENT_COLORS.positive,
+                        boxShadow: '0 0 12px rgba(0, 230, 118, 0.6)',
+                      }}
                     />
                   )}
                   {negPct > 0 && (
@@ -100,7 +106,7 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
                 </motion.div>
               </div>
 
-              <span className="font-display text-lg tabular-nums text-black w-10 text-right flex-shrink-0 leading-none">
+              <span className="font-bold text-lg tabular-nums text-white w-10 text-right flex-shrink-0 leading-none">
                 {row.count}
               </span>
             </div>
@@ -109,19 +115,22 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 mt-5 pt-3 border-t-2 border-black/20">
+      <div className="flex items-center gap-4 mt-5 pt-4 border-t border-white/10">
         {(['positive', 'negative', 'neutral'] as const).map((s) => (
           <div key={s} className="flex items-center gap-1.5">
             <span
-              className="w-3 h-3 border-2 border-black"
-              style={{ background: SENTIMENT_COLORS[s] }}
+              className="w-2.5 h-2.5 rounded-full"
+              style={{
+                background: SENTIMENT_COLORS[s],
+                boxShadow: s === 'positive' ? '0 0 8px rgba(0, 230, 118, 0.6)' : undefined,
+              }}
             />
-            <span className="font-mono text-[10px] uppercase tracking-wider font-bold text-black">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/60">
               {s}
             </span>
           </div>
         ))}
       </div>
-    </BrutalCard>
+    </div>
   )
 }
