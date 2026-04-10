@@ -3,21 +3,21 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { ArrowLeft, Plus, Trophy, Trash2 } from 'lucide-react'
-import { neuTheme } from '@/lib/vbrick/theme'
-import { FrameworkPicker } from '@/components/vbrick/stories/framework-picker'
-import { DraftingWizard } from '@/components/vbrick/stories/drafting-wizard'
-import { DraftReview } from '@/components/vbrick/stories/draft-review'
-import { PracticeRecorder } from '@/components/vbrick/stories/practice-recorder'
-import { ScoreCard } from '@/components/vbrick/stories/score-card'
-import { VaultCard } from '@/components/vbrick/stories/vault-card'
-import { GamificationHeader } from '@/components/vbrick/stories/gamification-header'
-import { XPToast } from '@/components/vbrick/stories/xp-toast'
+import {
+  FrameworkPicker,
+  DraftingWizard,
+  DraftReview,
+  PracticeRecorder,
+  ScoreCard,
+  VaultCard,
+  GamificationHeader,
+  XPToast,
+} from '@/components/streetnotes/stories'
+import { BrutalTabs, BrutalBadge } from '@/components/streetnotes/brutal'
 import { SwipeToDelete } from '@/components/vbrick/swipe-to-delete'
 import { getFramework } from '@/lib/vbrick/story-frameworks'
 import type { StoryType, StoryDraft, VaultEntry, StoryScore } from '@/lib/vbrick/story-types'
 import { STORY_TYPE_LABELS } from '@/lib/vbrick/story-types'
-
-const t = neuTheme
 
 type StoryView = 'home' | 'drafting' | 'review' | 'practice' | 'score'
 type TabId = 'create' | 'vault'
@@ -122,8 +122,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
         <button
           type="button"
           onClick={handleBack}
-          className="flex items-center gap-1 font-inter text-sm font-medium min-h-[44px] mb-4"
-          style={{ color: t.colors.text.muted }}
+          className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest font-bold text-gray-400 hover:text-volt min-h-[44px] mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -188,43 +187,30 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
 
   // Home view with tabs
   const tabs = [
-    { id: 'create' as TabId, label: 'Create', icon: Plus },
-    { id: 'vault' as TabId, label: 'Vault', icon: Trophy },
+    { id: 'create', label: 'Create', icon: <Plus className="w-4 h-4" /> },
+    { id: 'vault', label: 'Vault', icon: <Trophy className="w-4 h-4" /> },
   ]
 
   return (
     <div className="px-4 pt-safe pb-4">
       {/* Header */}
-      <div className="h-16 flex items-center">
-        <h1 className="font-inter font-bold text-lg" style={{ color: t.colors.text.heading }}>
-          Story Vault
+      <div className="h-20 flex items-end pb-2">
+        <h1
+          className="font-display uppercase text-3xl sm:text-4xl text-white leading-[0.85]"
+          style={{ textShadow: '3px 3px 0px #000000' }}
+        >
+          Story <span className="text-volt">Vault</span>
         </h1>
       </div>
 
       {/* Gamification */}
-      <GamificationHeader email={email} />
+      <div className="mt-3">
+        <GamificationHeader email={email} />
+      </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mt-4 mb-5">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id
-          const Icon = tab.icon
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-inter text-sm font-bold uppercase tracking-wider transition-all duration-200 min-h-[44px]"
-              style={{
-                background: t.colors.bg,
-                boxShadow: isActive ? t.shadows.insetSm : t.shadows.raisedSm,
-                color: isActive ? t.colors.accent.primary : t.colors.text.muted,
-              }}
-            >
-              <Icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          )
-        })}
+      <div className="mt-5 mb-5">
+        <BrutalTabs items={tabs} activeId={activeTab} onChange={(id) => setActiveTab(id as TabId)} />
       </div>
 
       <AnimatePresence mode="wait">
@@ -236,10 +222,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
             {/* My Drafts */}
             {drafts.length > 0 && (
               <div className="mt-6">
-                <h3
-                  className="font-inter font-bold text-[11px] uppercase tracking-[0.15em] mb-3"
-                  style={{ color: t.colors.text.muted }}
-                >
+                <h3 className="font-mono text-[11px] uppercase tracking-[0.15em] font-bold text-gray-400 mb-3">
                   My Drafts
                 </h3>
                 <div className="space-y-2">
@@ -253,11 +236,11 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                         exit={{ opacity: 0, height: 0, marginTop: 0 }}
                         transition={{ duration: 0.25 }}
                       >
-                        <SwipeToDelete onDelete={() => handleDeleteDraft(draft.id)} radius={12}>
-                          <div
-                            className="flex items-center gap-2 rounded-xl transition-all duration-200"
-                            style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
-                          >
+                        <SwipeToDelete
+                          onDelete={() => handleDeleteDraft(draft.id)}
+                          variant="brutal"
+                        >
+                          <div className="flex items-center gap-2 bg-white border-4 border-black shadow-neo-sm">
                             <button
                               type="button"
                               onClick={() => {
@@ -269,24 +252,20 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                                   setView('review')
                                 }
                               }}
-                              className="flex-1 text-left px-4 py-3 min-h-[44px] bg-transparent border-none"
+                              className="flex-1 text-left px-4 py-3 min-h-[56px] bg-transparent border-none"
                             >
-                              <p className="font-inter font-semibold text-sm" style={{ color: t.colors.text.heading }}>
+                              <p className="font-display uppercase text-base text-black leading-[0.9]">
                                 {draft.title}
                               </p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="font-inter text-xs" style={{ color: t.colors.text.subtle }}>
+                              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                <span className="font-mono text-[10px] uppercase tracking-wider text-black/60 font-bold">
                                   {STORY_TYPE_LABELS[draft.story_type]}
                                 </span>
-                                <span
-                                  className="font-inter text-[10px] font-bold uppercase px-2 py-0.5 rounded-md"
-                                  style={{
-                                    color: draft.status === 'completed' ? t.colors.score.green : t.colors.accent.primary,
-                                    background: draft.status === 'completed' ? `${t.colors.score.green}15` : `${t.colors.accent.primary}15`,
-                                  }}
+                                <BrutalBadge
+                                  variant={draft.status === 'completed' ? 'black' : 'white'}
                                 >
                                   {draft.status}
-                                </span>
+                                </BrutalBadge>
                               </div>
                             </button>
                             <button
@@ -296,16 +275,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                                 handleDeleteDraft(draft.id)
                               }}
                               aria-label="Delete draft"
-                              className="flex items-center justify-center w-11 h-11 mr-1 rounded-lg border-none bg-transparent cursor-pointer transition-colors duration-150"
-                              style={{ color: t.colors.text.muted }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.color = '#dc2626'
-                                e.currentTarget.style.background = '#dc262610'
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.color = t.colors.text.muted
-                                e.currentTarget.style.background = 'transparent'
-                              }}
+                              className="flex items-center justify-center w-11 h-11 mr-1 border-2 border-black bg-white text-black hover:bg-red-600 hover:text-white cursor-pointer transition-colors duration-150"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -323,15 +293,10 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
         {activeTab === 'vault' && (
           <motion.div key="vault" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
             {personalVault.length === 0 ? (
-              <div
-                className="rounded-2xl p-8 text-center mt-2"
-                style={{ background: t.colors.bg, boxShadow: t.shadows.raised }}
-              >
-                <Trophy className="w-8 h-8 mx-auto mb-3" style={{ color: t.colors.text.subtle }} />
-                <p className="font-inter text-sm" style={{ color: t.colors.text.muted }}>
-                  No stories vaulted yet
-                </p>
-                <p className="font-inter text-xs mt-1" style={{ color: t.colors.text.subtle }}>
+              <div className="bg-white border-4 border-black shadow-neo-sm p-8 text-center mt-2">
+                <Trophy className="w-10 h-10 mx-auto mb-3 text-black" />
+                <p className="font-display uppercase text-xl text-black">No stories vaulted yet</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-black/60 mt-2">
                   Record a personal best to save it here
                 </p>
               </div>
@@ -347,7 +312,10 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       transition={{ duration: 0.25 }}
                     >
-                      <SwipeToDelete onDelete={() => handleDeleteVault(entry.id)}>
+                      <SwipeToDelete
+                        onDelete={() => handleDeleteVault(entry.id)}
+                        variant="brutal"
+                      >
                         <VaultCard
                           entry={entry}
                           onPractice={() => handlePracticeVault(entry)}

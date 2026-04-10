@@ -26,6 +26,8 @@ interface SwipeToDeleteProps {
   confirmLabel?: string
   /** Border radius applied to the red action background, matches the card */
   radius?: number
+  /** Visual style variant: 'neu' (default, soft) or 'brutal' (hard borders) */
+  variant?: 'neu' | 'brutal'
 }
 
 /**
@@ -42,6 +44,7 @@ export function SwipeToDelete({
   children,
   confirmLabel = 'Delete',
   radius = 16,
+  variant = 'neu',
 }: SwipeToDeleteProps) {
   const id = useId()
   const controls = useAnimationControls()
@@ -202,6 +205,9 @@ export function SwipeToDelete({
     return <>{children}</>
   }
 
+  const isBrutal = variant === 'brutal'
+  const effectiveRadius = isBrutal ? 0 : radius
+
   return (
     <div ref={containerRef} className="relative" style={{ touchAction: 'pan-y' }}>
       {/* Red delete action revealed behind the row */}
@@ -213,20 +219,24 @@ export function SwipeToDelete({
         }}
         aria-label={confirmLabel}
         disabled={isDeleting}
-        className="absolute top-0 right-0 bottom-0 flex items-center justify-center gap-1.5 border-none cursor-pointer"
+        className={`absolute top-0 right-0 bottom-0 flex items-center justify-center gap-1.5 cursor-pointer ${
+          isBrutal
+            ? 'border-l-4 border-t-4 border-b-4 border-black font-mono uppercase tracking-widest font-bold text-xs'
+            : 'border-none font-inter text-xs font-bold'
+        }`}
         style={{
           width: ACTION_WIDTH,
           background: '#dc2626',
           color: '#ffffff',
-          borderTopRightRadius: radius,
-          borderBottomRightRadius: radius,
+          borderTopRightRadius: effectiveRadius,
+          borderBottomRightRadius: effectiveRadius,
           pointerEvents: isOpen ? 'auto' : 'none',
           opacity: isOpen ? 1 : 0.9,
           transition: 'opacity 0.15s',
         }}
       >
         <Trash2 size={16} />
-        <span className="font-inter text-xs font-bold">{confirmLabel}</span>
+        <span>{confirmLabel}</span>
       </button>
 
       {/* The row itself — draggable */}
