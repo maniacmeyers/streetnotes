@@ -8,6 +8,9 @@ import {
   structureUserPrompt,
 } from '@/lib/notes/prompts'
 import { createClient } from '@/lib/supabase/server'
+import { getUserMemory } from '@/lib/user-memory/server'
+import { buildClaudeContextBlock, EMPTY_USER_MEMORY } from '@/lib/user-memory/scoring'
+import { reconcileCRMNote } from '@/lib/user-memory/reconcile'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -38,13 +41,50 @@ export async function POST(request: Request) {
     return jsonError('Missing or empty transcript', 400)
   }
 
+  // Learning is best-effort — never blocks the core extraction path.
+  let memory = EMPTY_USER_MEMORY
+  try {
+    memory = await getUserMemory(user.id)
+  } catch (err) {
+    if (process.env.DEBUG_USER_MEMORY) {
+      console.error('[structure] getUserMemory failed, continuing without:', err)
+    }
+  }
+
+  const contextBlock = buildClaudeContextBlock(memory)
+  if (process.env.DEBUG_USER_MEMORY && contextBlock) {
+    console.log('[structure] injecting user context:\n', contextBlock)
+  }
+
+  const systemBlocks: Array<{
+    type: 'text'
+    text: string
+    cache_control?: { type: 'ephemeral' }
+  }> = [
+    {
+      type: 'text',
+      text: STRUCTURE_SYSTEM_PROMPT,
+      cache_control: { type: 'ephemeral' },
+    },
+  ]
+  if (contextBlock) {
+    systemBlocks.push({
+      type: 'text',
+      text: `## USER CONTEXT
+
+${contextBlock}
+
+When the transcript is ambiguous, prefer names and entities from USER CONTEXT. Example: if "Mike" is mentioned and Known Contacts includes "Mike Johnson", extract "Mike Johnson". Never invent values that aren't in the transcript — USER CONTEXT only helps you disambiguate what the rep actually said.`,
+    })
+  }
+
   try {
     const client = getAnthropicClient()
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6-20250514',
       max_tokens: 4096,
-      system: STRUCTURE_SYSTEM_PROMPT,
+      system: systemBlocks,
       messages: [
         ...STRUCTURE_FEW_SHOT_EXAMPLES.map((ex) => ({
           role: ex.role,
@@ -74,7 +114,9 @@ export async function POST(request: Request) {
       return jsonError('AI returned invalid structure', 502)
     }
 
-    return NextResponse.json({ structured: parsed.data })
+    const reconciled = reconcileCRMNote(parsed.data, memory)
+
+    return NextResponse.json({ structured: reconciled })
   } catch (error) {
     console.error('Structure API error:', error)
     if (

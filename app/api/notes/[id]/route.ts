@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { invalidateUserMemory } from '@/lib/user-memory/server'
 
 export const runtime = 'nodejs'
 
@@ -83,6 +84,8 @@ export async function PATCH(
     console.error('Supabase update error:', error)
     return jsonError('Failed to update note', 500)
   }
+
+  invalidateUserMemory(user.id)
 
   return NextResponse.json({ success: true })
 }

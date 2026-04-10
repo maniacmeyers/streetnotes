@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { invalidateUserMemory } from '@/lib/user-memory/server'
 
 export const runtime = 'nodejs'
 
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
       title,
       raw_transcript: transcript,
       structured_output: structured,
+      original_structured_output: structured,
       status: 'draft',
     })
     .select('id, created_at')
@@ -52,6 +54,8 @@ export async function POST(request: Request) {
     console.error('Supabase insert error:', error)
     return jsonError('Failed to save note', 500)
   }
+
+  invalidateUserMemory(user.id)
 
   return NextResponse.json({ id: data.id, createdAt: data.created_at })
 }

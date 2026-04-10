@@ -56,6 +56,20 @@ RULES:
 - Keep everything tight. Reps scan CRM records, they don't read novels.
 - When confidence is low, still extract but flag it — let the user decide whether to keep it.`
 
+export function buildSystemPromptWithContext(
+  base: string,
+  contextBlock: string
+): string {
+  if (!contextBlock) return base
+  return `${base}
+
+## USER CONTEXT
+
+${contextBlock}
+
+When the transcript is ambiguous, prefer names and entities from USER CONTEXT. Example: if "Mike" is mentioned and Known Contacts includes "Mike Johnson", extract "Mike Johnson". Never invent values that aren't in the transcript — USER CONTEXT only helps you disambiguate what the rep actually said.`
+}
+
 export const STRUCTURE_FEW_SHOT_EXAMPLES = [
   {
     role: 'user' as const,
