@@ -10,6 +10,7 @@ import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import type { CRMNote } from '@/lib/notes/schema'
 import type { PushResult, CrmCandidate } from '@/lib/crm/push/types'
 import EditableStructuredOutput from '@/components/notes/editable-structured-output'
+import { BrutalCard, BrutalButton } from '@/components/streetnotes/brutal'
 
 interface TranscribeSuccessResponse {
   transcript: string
@@ -318,49 +319,60 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-semibold">Capture meeting note</h2>
-        <p className="text-sm text-gray-500">{pipelineLabel}</p>
+        <h2
+          className="font-display uppercase text-3xl text-white leading-[0.85]"
+          style={{ textShadow: '2px 2px 0px #000000' }}
+        >
+          Capture note
+        </h2>
+        <p className="font-mono text-xs uppercase tracking-widest font-bold text-volt">
+          {pipelineLabel}
+        </p>
       </div>
 
       {/* Recording state: duration + stop */}
       {isRecording && (
-        <div className="flex flex-col items-center gap-4 py-4">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-2xl font-mono font-bold">
+        <div className="flex flex-col items-center gap-4 py-6">
+          <div className="flex items-center gap-3">
+            <span className="w-3 h-3 bg-red-500 animate-pulse" />
+            <span className="font-display text-5xl text-white tabular-nums leading-none">
               {formatDuration(durationSec)}
             </span>
           </div>
           <button
             type="button"
             onClick={stopRecording}
-            className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 active:bg-red-800 flex items-center justify-center shadow-lg transition-transform active:scale-95"
+            className="w-20 h-20 bg-red-600 border-4 border-black shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 flex items-center justify-center transition-transform duration-100"
             aria-label="Stop recording"
           >
-            <span className="w-6 h-6 rounded-sm bg-white" />
+            <span className="w-6 h-6 bg-white" />
           </button>
-          <p className="text-sm text-gray-500">Tap to stop</p>
+          <p className="font-mono text-[10px] uppercase tracking-widest font-bold text-gray-400">
+            Tap to stop
+          </p>
         </div>
       )}
 
       {!isSupported && (
-        <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
-          <p className="text-base text-red-700">
+        <div className="bg-red-100 border-4 border-red-600 px-4 py-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-red-700 font-bold">
             This browser does not support audio recording.
           </p>
         </div>
       )}
 
       {activeError && (
-        <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
-          <p className="text-base text-red-700">{activeError}</p>
+        <div className="bg-red-100 border-4 border-red-600 px-4 py-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-red-700 font-bold">
+            {activeError}
+          </p>
         </div>
       )}
 
       {/* Success banners */}
       {pushResult?.success && (
-        <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
-          <p className="text-base text-green-700">
+        <div className="bg-volt/20 border-4 border-volt px-4 py-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-volt font-bold">
             Pushed to CRM.
             {pushResult.contactId && (
               <> Contact {pushResult.contactCreated ? 'created' : 'found'}.</>
@@ -376,56 +388,70 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
       )}
 
       {hasSaved && !pushResult?.success && !isPushing && (
-        <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
-          <p className="text-base text-green-700">Note saved.</p>
+        <div className="bg-volt/20 border-4 border-volt px-4 py-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-volt font-bold">
+            Note saved.
+          </p>
         </div>
       )}
 
       {/* Candidate selection picker */}
       {pushCandidates && pushCandidates.length > 0 && (
-        <div className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-3 flex flex-col gap-2">
-          <p className="text-base text-yellow-800 font-medium">
-            Multiple {pushCandidates[0].type === 'contact' ? 'contacts' : 'deals'} found. Select one:
+        <BrutalCard variant="white" padded>
+          <p className="font-display uppercase text-lg text-black mb-3">
+            Multiple {pushCandidates[0].type === 'contact' ? 'contacts' : 'deals'} found
           </p>
-          {pushCandidates.map(c => (
-            <label key={c.id} className="flex items-center gap-2 text-base cursor-pointer min-h-[44px]">
-              <input
-                type="radio"
-                name="crmCandidate"
-                value={c.id}
-                checked={selectedCandidateId === c.id}
-                onChange={() => setSelectedCandidateId(c.id)}
-                className="w-5 h-5"
-              />
-              <span className="font-medium">{c.name}</span>
-              {c.detail && <span className="text-gray-500">{c.detail}</span>}
-            </label>
-          ))}
-          <button
+          <div className="flex flex-col gap-2 mb-4">
+            {pushCandidates.map(c => (
+              <label
+                key={c.id}
+                className="flex items-center gap-3 font-mono text-sm uppercase tracking-wider cursor-pointer min-h-[44px] border-2 border-black px-3 py-2"
+              >
+                <input
+                  type="radio"
+                  name="crmCandidate"
+                  value={c.id}
+                  checked={selectedCandidateId === c.id}
+                  onChange={() => setSelectedCandidateId(c.id)}
+                  className="w-5 h-5 accent-black"
+                />
+                <span className="font-bold text-black">{c.name}</span>
+                {c.detail && <span className="text-black/60 normal-case">{c.detail}</span>}
+              </label>
+            ))}
+          </div>
+          <BrutalButton
             type="button"
             onClick={handleSelectCandidate}
             disabled={!selectedCandidateId || isPushing}
-            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
+            variant="primary"
+            size="md"
+            className="w-full"
           >
             {isPushing ? 'Pushing...' : 'Push with selected'}
-          </button>
-        </div>
+          </BrutalButton>
+        </BrutalCard>
       )}
 
       {/* Audio preview (after recording stops) */}
       {audioBlob && !isRecording && (
-        <div className="flex flex-col gap-2 text-sm text-gray-500">
-          <p>
+        <div className="flex flex-col gap-2">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-gray-400 font-bold">
             {formatBytes(audioBlob.size)} · {mimeType || audioBlob.type || 'unknown'}
           </p>
-          {audioPreviewUrl && <audio controls src={audioPreviewUrl} className="w-full" />}
+          {audioPreviewUrl && (
+            <audio controls src={audioPreviewUrl} className="w-full" style={{ filter: 'invert(1)' }} />
+          )}
         </div>
       )}
 
       {/* Transcript (shown after transcription) */}
       {transcript && (
         <div className="flex flex-col gap-2">
-          <label htmlFor="transcript" className="text-base font-medium">
+          <label
+            htmlFor="transcript"
+            className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] font-bold text-white"
+          >
             Transcript
           </label>
           <textarea
@@ -433,147 +459,130 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
             value={transcript}
             readOnly
             rows={6}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-base"
+            className="w-full bg-white border-4 border-black font-body text-black px-4 py-3"
           />
         </div>
       )}
 
       {/* Editable structured output */}
       {structured && (
-        <div className="flex flex-col gap-2 rounded-md border border-gray-200 p-4">
-          <h3 className="text-lg font-semibold">Review &amp; Edit</h3>
-          <p className="text-sm text-gray-500">
+        <BrutalCard variant="white" padded>
+          <h3 className="font-display uppercase text-xl text-black mb-1 leading-none">
+            Review &amp; Edit
+          </h3>
+          <p className="font-mono text-[10px] uppercase tracking-wider text-black/60 mb-4">
             Edit any field before saving. Colored badges show extraction confidence.
           </p>
           <EditableStructuredOutput
             data={structured}
             onChange={setStructured}
           />
-        </div>
+        </BrutalCard>
       )}
 
       {/* Progressive action buttons — only show the next relevant action */}
       <div className="flex flex-col gap-3">
         {/* Stage: idle or error with no audio — start recording */}
         {!isRecording && !audioBlob && !transcript && !structured && isSupported && (
-          <button
+          <BrutalButton
             type="button"
             onClick={() => void startRecording()}
             disabled={status === 'requesting_permission'}
-            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
+            variant="volt"
+            size="lg"
           >
             {status === 'requesting_permission' ? 'Requesting mic...' : 'Start recording'}
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: audio recorded — transcribe */}
         {hasStopped && !transcript && !isTranscribing && (
-          <button
+          <BrutalButton
             type="button"
             onClick={() => void handleTranscribe()}
-            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium"
+            variant="volt"
+            size="lg"
           >
             Transcribe
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: transcribing */}
         {isTranscribing && (
-          <button
-            type="button"
-            disabled
-            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
-          >
+          <BrutalButton type="button" disabled variant="primary" size="lg">
             Transcribing...
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: transcribed — structure */}
         {hasTranscript && !structured && !isStructuring && (
-          <button
+          <BrutalButton
             type="button"
             onClick={() => void handleStructure()}
-            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium"
+            variant="volt"
+            size="lg"
           >
             Structure for CRM
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: structuring */}
         {isStructuring && (
-          <button
-            type="button"
-            disabled
-            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
-          >
+          <BrutalButton type="button" disabled variant="primary" size="lg">
             Structuring...
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: structured — save */}
         {hasStructured && !hasSaved && !isSaving && (
-          <button
+          <BrutalButton
             type="button"
             onClick={() => void handleSave()}
-            className="min-h-[44px] rounded-md bg-green-700 text-white text-base font-medium"
+            variant="volt"
+            size="lg"
           >
             Save note
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: saving */}
         {isSaving && (
-          <button
-            type="button"
-            disabled
-            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
-          >
+          <BrutalButton type="button" disabled variant="primary" size="lg">
             Saving...
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: saved — push to CRM */}
         {hasSaved && !pushResult?.success && !isPushing && !pushCandidates && (
-          <button
+          <BrutalButton
             type="button"
             onClick={() => void handlePushToCRM()}
-            className="min-h-[44px] rounded-md bg-black text-white text-base font-medium"
+            variant="volt"
+            size="lg"
           >
             {pushError ? 'Retry push to CRM' : 'Push to CRM'}
-          </button>
+          </BrutalButton>
         )}
 
         {/* Stage: pushing */}
         {isPushing && !pushCandidates && (
-          <button
-            type="button"
-            disabled
-            className="min-h-[44px] rounded-md bg-gray-400 text-white text-base font-medium"
-          >
+          <BrutalButton type="button" disabled variant="primary" size="lg">
             Pushing to CRM...
-          </button>
+          </BrutalButton>
         )}
 
         {/* Done button — after save (skip push) or after push success */}
         {(hasSaved || hasPushed) && onSaved && (
-          <button
-            type="button"
-            onClick={onSaved}
-            className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium text-gray-700"
-          >
+          <BrutalButton type="button" onClick={onSaved} variant="outline" size="md">
             Done
-          </button>
+          </BrutalButton>
         )}
 
         {/* Reset — always available when there's work */}
         {hasWork && !isRecording && (
-          <button
-            type="button"
-            onClick={handleReset}
-            className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium text-gray-400"
-          >
+          <BrutalButton type="button" onClick={handleReset} variant="ghost" size="sm">
             Start over
-          </button>
+          </BrutalButton>
         )}
       </div>
 

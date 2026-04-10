@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
-import { neuTheme } from '@/lib/vbrick/theme'
-
-const t = neuTheme
+import { BrutalBadge } from '@/components/streetnotes/brutal'
 
 interface NoteListItem {
   id: string
@@ -35,37 +33,27 @@ function timeAgo(dateStr: string): string {
 }
 
 function PushBadge({ status }: { status: string | null }) {
-  const base = 'font-inter text-[10px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-md'
-  if (!status) return (
-    <span className={base} style={{ color: t.colors.text.subtle, background: `${t.colors.text.subtle}15` }}>Draft</span>
-  )
-  if (status === 'success') return (
-    <span className={base} style={{ color: t.colors.score.green, background: `${t.colors.score.green}15` }}>Pushed</span>
-  )
-  if (status === 'failed') return (
-    <span className={base} style={{ color: t.colors.score.red, background: `${t.colors.score.red}15` }}>Failed</span>
-  )
-  if (status === 'pending') return (
-    <span className={base} style={{ color: t.colors.score.amber, background: `${t.colors.score.amber}15` }}>Pending</span>
-  )
+  if (!status) return <BrutalBadge variant="white">Draft</BrutalBadge>
+  if (status === 'success') return <BrutalBadge variant="black">Pushed</BrutalBadge>
+  if (status === 'failed') return <BrutalBadge variant="red">Failed</BrutalBadge>
+  if (status === 'pending') return <BrutalBadge variant="amber">Pending</BrutalBadge>
   return null
 }
 
 function Skeleton() {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {[1, 2, 3].map(i => (
         <div
           key={i}
-          className="rounded-xl px-4 py-3 animate-pulse"
-          style={{ background: t.colors.bg, boxShadow: t.shadows.raisedSm }}
+          className="bg-gray-900 border-4 border-black shadow-neo-sm px-4 py-4 animate-pulse"
         >
           <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-1.5 flex-1">
-              <div className="h-4 rounded w-3/4" style={{ background: t.colors.shadow }} />
-              <div className="h-3 rounded w-1/4" style={{ background: `${t.colors.shadow}80` }} />
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="h-4 bg-gray-700 w-3/4" />
+              <div className="h-3 bg-gray-800 w-1/4" />
             </div>
-            <div className="h-3 rounded w-12 ml-3" style={{ background: `${t.colors.shadow}60` }} />
+            <div className="h-5 bg-gray-700 w-14 ml-3" />
           </div>
         </div>
       ))}
@@ -90,14 +78,9 @@ export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
 
   if (notes.length === 0) {
     return (
-      <div
-        className="rounded-2xl p-8 text-center"
-        style={{ background: t.colors.bg, boxShadow: t.shadows.raised }}
-      >
-        <p className="font-inter text-sm" style={{ color: t.colors.text.muted }}>
-          No notes yet
-        </p>
-        <p className="font-inter text-xs mt-1" style={{ color: t.colors.text.subtle }}>
+      <div className="bg-white border-4 border-black shadow-neo-sm p-8 text-center">
+        <p className="font-display uppercase text-xl text-black">No notes yet</p>
+        <p className="font-mono text-[10px] uppercase tracking-wider text-black/60 mt-2">
           Tap the mic to capture your first one
         </p>
       </div>
@@ -105,7 +88,7 @@ export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <AnimatePresence mode="popLayout">
         {notes.map((note, i) => (
           <motion.div
@@ -118,28 +101,20 @@ export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
           >
             <Link
               href={`/notes/${note.id}`}
-              className="flex items-center justify-between px-4 py-3 rounded-xl min-h-[44px] transition-all duration-200"
-              style={{
-                background: t.colors.bg,
-                boxShadow: t.shadows.raisedSm,
-              }}
+              className="block bg-white border-4 border-black shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-transform duration-100 px-4 py-3 min-h-[60px]"
             >
-              <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                <p
-                  className="font-inter font-semibold text-sm truncate"
-                  style={{ color: t.colors.text.heading }}
-                >
-                  {note.title || 'Untitled'}
-                </p>
-                <p
-                  className="font-fira-code text-xs"
-                  style={{ color: t.colors.text.subtle }}
-                >
-                  {timeAgo(note.created_at)}
-                </p>
-              </div>
-              <div className="flex-shrink-0 ml-3">
-                <PushBadge status={note.push_status} />
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                  <p className="font-display uppercase text-lg text-black truncate leading-[0.9]">
+                    {note.title || 'Untitled'}
+                  </p>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-black/60">
+                    {timeAgo(note.created_at)}
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <PushBadge status={note.push_status} />
+                </div>
               </div>
             </Link>
           </motion.div>
