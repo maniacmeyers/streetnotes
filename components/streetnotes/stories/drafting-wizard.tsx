@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
-import { BrutalCard, BrutalButton, BrutalTextarea } from '@/components/streetnotes/brutal'
+import { VoiceTextInput } from '@/components/ui/voice-text-input'
 import { fadeIn } from '@/lib/vbrick/animations'
 import type { StoryFrameworkConfig } from '@/lib/vbrick/story-types'
 
@@ -70,21 +70,25 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
   const canAdvance = (answers[current.key] || '').trim().length > 10
 
   return (
-    <BrutalCard variant="white" padded>
+    <div className="rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5 sm:p-6">
       {/* Progress */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-black">
+          <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/60">
             Step {stepIndex + 1} of {totalSteps}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-black tabular-nums">
+          <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt tabular-nums">
             {Math.round(progress)}%
           </span>
         </div>
-        <div className="w-full h-3 bg-white border-2 border-black">
+        <div className="w-full h-2 rounded-full overflow-hidden bg-white/[0.06] shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">
           <div
-            className="h-full bg-volt transition-all duration-500"
-            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${Math.min(100, Math.max(0, progress))}%`,
+              background: 'linear-gradient(90deg, #00E676 0%, #7dff9f 100%)',
+              boxShadow: '0 0 8px rgba(0, 230, 118, 0.6)',
+            }}
           />
         </div>
       </div>
@@ -98,50 +102,51 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
           animate="visible"
           exit="hidden"
         >
-          <h3 className="font-display uppercase text-xl text-black leading-[0.9] mb-1">
+          <h3 className="font-display uppercase text-xl text-white leading-[0.9] mb-1">
             {current.label}
           </h3>
-          <p className="font-body text-sm text-black/70 mb-4 italic">{current.hint}</p>
+          <p className="font-body text-sm text-white/70 mb-4 italic">{current.hint}</p>
 
-          <BrutalTextarea
+          <VoiceTextInput
             value={answers[current.key] || ''}
-            onChange={(e) => handleAnswerChange(e.target.value)}
+            onChange={handleAnswerChange}
             placeholder={current.placeholder}
-            rows={5}
             maxLength={current.maxLength}
+            hint={current.hint}
           />
-
-          {current.maxLength && (
-            <p className="font-mono text-[10px] uppercase tracking-widest text-black/60 text-right tabular-nums mt-1">
-              {(answers[current.key] || '').length} / {current.maxLength}
-            </p>
-          )}
         </motion.div>
       </AnimatePresence>
 
       {/* Error */}
       {error && (
-        <p className="font-mono text-xs uppercase tracking-wider font-bold text-red-600 mt-3">
-          {error}
-        </p>
+        <div className="mt-3 rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md px-4 py-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-red-400">
+            {error}
+          </p>
+        </div>
       )}
 
       {/* Navigation */}
       <div className="flex items-center justify-between mt-6 gap-3">
-        <BrutalButton variant="outline" size="sm" onClick={handleBack} disabled={loading}>
+        <button
+          type="button"
+          onClick={handleBack}
+          disabled={loading}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
           <ArrowLeft size={16} />
           Back
-        </BrutalButton>
+        </button>
 
-        <BrutalButton
-          variant="volt"
-          size="sm"
+        <button
+          type="button"
           onClick={handleNext}
           disabled={!canAdvance || loading}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>
-              <Loader2 size={16} className="animate-spin" />
+              <Loader2 size={16} className="animate-spin text-volt" />
               Assembling...
             </>
           ) : isLast ? (
@@ -152,8 +157,8 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
               <ArrowRight size={16} />
             </>
           )}
-        </BrutalButton>
+        </button>
       </div>
-    </BrutalCard>
+    </div>
   )
 }

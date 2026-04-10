@@ -8,14 +8,24 @@ interface Props {
   onChange: (updated: CRMNote) => void
 }
 
+const INPUT_CLASS =
+  'w-full rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3 text-base text-white placeholder:text-white/30 outline-none transition focus:border-volt/50 focus:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5),0_0_0_3px_rgba(0,230,118,0.15)] min-h-[44px]'
+
+const SELECT_CLASS = `${INPUT_CLASS} appearance-none bg-black/40`
+
+const TEXTAREA_CLASS =
+  'w-full rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3 text-base text-white placeholder:text-white/30 outline-none transition focus:border-volt/50 focus:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5),0_0_0_3px_rgba(0,230,118,0.15)] resize-y'
+
 function confidenceBadge(level: ConfidenceLevel) {
   const styles: Record<ConfidenceLevel, string> = {
-    high: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    low: 'bg-red-100 text-red-800',
+    high: 'border-volt/40 bg-volt/15 text-volt',
+    medium: 'border-white/20 bg-white/5 text-white/60',
+    low: 'border-white/10 bg-white/[0.03] text-white/40',
   }
   return (
-    <span className={`inline-block text-xs font-medium px-1.5 py-0.5 rounded ${styles[level]}`}>
+    <span
+      className={`inline-block rounded-md border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold backdrop-blur-md ${styles[level]}`}
+    >
       {level}
     </span>
   )
@@ -31,8 +41,11 @@ function FieldLabel({
   confidence?: ConfidenceLevel
 }) {
   return (
-    <div className="flex items-center gap-2 mb-1">
-      <label htmlFor={htmlFor} className="text-sm font-medium text-gray-700">
+    <div className="flex items-center gap-2 mb-1.5">
+      <label
+        htmlFor={htmlFor}
+        className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50"
+      >
         {label}
       </label>
       {confidence && confidenceBadge(confidence)}
@@ -58,7 +71,7 @@ function TextInput({
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-md border border-gray-300 px-3 py-2 text-base min-h-[44px]"
+      className={INPUT_CLASS}
     />
   )
 }
@@ -81,14 +94,16 @@ function CollapsibleSection({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
-        className="flex items-center gap-2 text-base font-semibold min-h-[44px] text-left"
+        className="flex items-center gap-2 font-display uppercase text-base text-white min-h-[44px] text-left"
       >
-        <span className="text-gray-400 w-4 text-center" aria-hidden="true">
+        <span className="text-volt w-4 text-center" aria-hidden="true">
           {isOpen ? '▾' : '▸'}
         </span>
         {title}
         {count !== undefined && (
-          <span className="text-sm text-gray-400 font-normal">({count})</span>
+          <span className="font-mono text-[10px] tracking-[0.15em] text-white/40 font-bold">
+            ({count})
+          </span>
         )}
       </button>
       {isOpen && children}
@@ -130,7 +145,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
     <div className="flex flex-col gap-5">
       {/* Contact / Company — always visible */}
       <div className="flex flex-col gap-3">
-        <h3 className="text-base font-semibold">Contact / Company</h3>
+        <h3 className="font-display uppercase text-base text-white">Contact / Company</h3>
         <div>
           <FieldLabel htmlFor="edit-contactName" label="Contact name" confidence={data.contactNameConfidence} />
           <TextInput
@@ -153,7 +168,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
 
       {/* Deal Snapshot — always visible */}
       <div className="flex flex-col gap-3">
-        <h3 className="text-base font-semibold">Deal Snapshot</h3>
+        <h3 className="font-display uppercase text-base text-white">Deal Snapshot</h3>
         <div>
           <FieldLabel htmlFor="edit-dealStage" label="Stage" confidence={data.dealStageConfidence} />
           <select
@@ -164,7 +179,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                 dealStage: (e.target.value || undefined) as CRMNote['dealStage'],
               })
             }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-base min-h-[44px] bg-white"
+            className={SELECT_CLASS}
           >
             <option value="">Not set</option>
             {DEAL_STAGES.map(s => (
@@ -204,7 +219,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
           }}
           rows={4}
           placeholder="One bullet point per line"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-base"
+          className={TEXTAREA_CLASS}
         />
       </div>
 
@@ -217,9 +232,14 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
         {data.nextSteps && data.nextSteps.length > 0 ? (
           <div className="flex flex-col gap-3">
             {data.nextSteps.map((step, i) => (
-              <div key={i} className="border border-gray-200 rounded-md p-3 flex flex-col gap-2">
+              <div
+                key={i}
+                className="rounded-xl border border-white/12 bg-white/5 backdrop-blur-md p-3 flex flex-col gap-2"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-500">Step {i + 1}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+                    Step {i + 1}
+                  </span>
                   {confidenceBadge(step.confidence)}
                 </div>
                 <TextInput
@@ -243,7 +263,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                         updated[i] = { ...step, owner: e.target.value as Owner }
                         update({ nextSteps: updated })
                       }}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-base min-h-[44px] bg-white"
+                      className={SELECT_CLASS}
                     >
                       <option value="rep">You</option>
                       <option value="prospect">Prospect</option>
@@ -259,7 +279,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                         updated[i] = { ...step, priority: e.target.value as (typeof PRIORITIES)[number] }
                         update({ nextSteps: updated })
                       }}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-base min-h-[44px] bg-white"
+                      className={SELECT_CLASS}
                     >
                       {PRIORITIES.map(p => (
                         <option key={p} value={p}>{p} priority</option>
@@ -284,7 +304,9 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400">No next steps extracted.</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
+            No next steps extracted.
+          </p>
         )}
       </CollapsibleSection>
 
@@ -297,9 +319,14 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
         {data.attendees && data.attendees.length > 0 ? (
           <div className="flex flex-col gap-3">
             {data.attendees.map((att, i) => (
-              <div key={i} className="border border-gray-200 rounded-md p-3 flex flex-col gap-2">
+              <div
+                key={i}
+                className="rounded-xl border border-white/12 bg-white/5 backdrop-blur-md p-3 flex flex-col gap-2"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-500">Attendee {i + 1}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+                    Attendee {i + 1}
+                  </span>
                   {confidenceBadge(att.confidence)}
                 </div>
                 <div>
@@ -338,7 +365,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                       updated[i] = { ...att, role: e.target.value as (typeof ATTENDEE_ROLES)[number] }
                       update({ attendees: updated })
                     }}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-base min-h-[44px] bg-white"
+                    className={SELECT_CLASS}
                   >
                     {ATTENDEE_ROLES.map(r => (
                       <option key={r} value={r}>{r}</option>
@@ -355,7 +382,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                       updated[i] = { ...att, sentiment: e.target.value as (typeof SENTIMENTS)[number] }
                       update({ attendees: updated })
                     }}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-base min-h-[44px] bg-white"
+                    className={SELECT_CLASS}
                   >
                     {SENTIMENTS.map(s => (
                       <option key={s} value={s}>{s}</option>
@@ -366,7 +393,9 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400">No attendees extracted.</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
+            No attendees extracted.
+          </p>
         )}
       </CollapsibleSection>
 
@@ -383,7 +412,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             onChange={e => update({ opportunityNotes: e.target.value || undefined })}
             rows={3}
             placeholder="Notes for the CRM opportunity record"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-base"
+            className={TEXTAREA_CLASS}
           />
         </div>
       </CollapsibleSection>
@@ -405,7 +434,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             }}
             rows={3}
             placeholder="One per line"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-base"
+            className={TEXTAREA_CLASS}
           />
         </div>
       </CollapsibleSection>

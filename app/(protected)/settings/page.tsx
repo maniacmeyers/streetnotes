@@ -9,10 +9,10 @@ export default function SettingsPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest font-bold text-white/50 hover:text-volt min-w-[44px] min-h-[44px] cursor-pointer transition-colors"
+          className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 min-h-[44px]"
           aria-label="Back to dashboard"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4" />
           Back
         </Link>
       </div>
@@ -21,23 +21,23 @@ export default function SettingsPage() {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
           Configure
         </p>
-        <h1 className="font-bold text-3xl text-white leading-tight mt-1">
-          Settings
+        <h1 className="font-display uppercase text-4xl text-white leading-[0.85] mt-1">
+          <span className="text-volt">Settings</span>
         </h1>
       </div>
 
       <section className="flex flex-col gap-4">
         <div>
-          <h2 className="font-bold text-lg text-white leading-none">
+          <h2 className="font-display uppercase text-lg text-white leading-none">
             CRM Connections
           </h2>
-          <p className="font-body text-sm text-white/50 mt-1.5">
+          <p className="font-body text-sm text-white/60 mt-1.5">
             Connect your CRM to push notes straight to your pipeline.
           </p>
         </div>
         <Suspense
           fallback={
-            <div className="glass rounded-2xl flex items-center justify-center py-12">
+            <div className="rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] flex items-center justify-center py-12">
               <div className="w-6 h-6 border-2 border-volt border-t-transparent rounded-full animate-spin" />
             </div>
           }

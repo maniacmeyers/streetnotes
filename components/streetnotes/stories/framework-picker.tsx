@@ -59,10 +59,10 @@ export function FrameworkPicker({ onSelect }: FrameworkPickerProps) {
               <fw.Icon size={20} className="text-volt drop-shadow-[0_0_6px_rgba(0,230,118,0.6)]" />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-bold text-lg text-white leading-tight">
+              <h3 className="font-display uppercase text-lg text-white leading-tight">
                 {fw.name}
               </h3>
-              <p className="font-body text-xs text-white/55 mt-1.5 leading-relaxed">
+              <p className="font-body text-sm text-white/70 mt-1.5 leading-relaxed">
                 {fw.description}
               </p>
             </div>

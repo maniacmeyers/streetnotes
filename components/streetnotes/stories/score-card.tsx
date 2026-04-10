@@ -13,14 +13,19 @@ import {
   Copy,
   CheckCircle,
 } from 'lucide-react'
-import { BrutalCard, BrutalButton, BrutalBadge } from '@/components/streetnotes/brutal'
 import { cascadeIn, staggerContainer, scaleIn } from '@/lib/vbrick/animations'
 import type { StoryScore } from '@/lib/vbrick/story-types'
 
 function scoreColor(score: number): string {
-  if (score <= 3) return '#dc2626'
-  if (score <= 6) return '#d97706'
+  if (score <= 3) return '#f87171'
+  if (score <= 6) return '#fbbf24'
   return '#00E676'
+}
+
+function scoreGlow(score: number): string {
+  if (score <= 3) return '0 0 16px rgba(248, 113, 113, 0.5)'
+  if (score <= 6) return '0 0 16px rgba(251, 191, 36, 0.5)'
+  return '0 0 20px rgba(0, 230, 118, 0.6)'
 }
 
 interface ScoreCardProps {
@@ -45,6 +50,15 @@ const DIMENSION_LABELS: { key: keyof StoryScore['improvements']; label: string }
 function getDimensionScore(score: StoryScore, key: string): number {
   return (score as unknown as Record<string, number>)[key] ?? 0
 }
+
+const GLASS_BASE =
+  'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)]'
+const GLASS_VOLT =
+  'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)]'
+const BTN_VOLT =
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed'
+const BTN_GHOST =
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 disabled:opacity-40'
 
 export function ScoreCard({
   score,
@@ -101,36 +115,39 @@ export function ScoreCard({
     >
       {/* Composite Score */}
       <motion.div variants={scaleIn} className="flex flex-col items-center">
-        <BrutalCard variant="white" padded className="flex flex-col items-center w-full max-w-xs">
+        <div className={`${GLASS_VOLT} p-6 flex flex-col items-center w-full max-w-xs`}>
           <span
             className="font-display text-7xl tabular-nums leading-none"
-            style={{ color: scoreColor(score.composite) }}
+            style={{
+              color: scoreColor(score.composite),
+              textShadow: scoreGlow(score.composite),
+            }}
           >
             {score.composite.toFixed(1)}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-black/60 mt-2">
+          <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50 mt-2">
             Composite Score
           </span>
 
           <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
             {isNewBest && (
-              <BrutalBadge variant="black">
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-volt/40 bg-volt/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md">
                 <Trophy size={12} />
-                <span className="ml-1">New Personal Best!</span>
-              </BrutalBadge>
+                New Personal Best
+              </span>
             )}
-            <BrutalBadge variant="volt">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-volt/40 bg-volt/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md">
               <Sparkles size={12} />
-              <span className="ml-1">+{xpEarned} XP</span>
-            </BrutalBadge>
+              +{xpEarned} XP
+            </span>
           </div>
-        </BrutalCard>
+        </div>
       </motion.div>
 
       {/* Dimension Scores */}
       <motion.div variants={cascadeIn} custom={1}>
-        <BrutalCard variant="white" padded>
-          <h4 className="font-display uppercase text-lg text-black leading-none mb-4">
+        <div className={`${GLASS_BASE} p-5`}>
+          <h4 className="font-display uppercase text-lg text-white leading-none mb-4">
             Score Breakdown
           </h4>
 
@@ -148,7 +165,7 @@ export function ScoreCard({
                     onClick={() => note && toggleDimension(key)}
                     style={{ cursor: note ? 'pointer' : 'default' }}
                   >
-                    <span className="font-mono text-[11px] uppercase tracking-wider font-bold text-black">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70">
                       {label}
                     </span>
                     <div className="flex items-center gap-2">
@@ -160,20 +177,21 @@ export function ScoreCard({
                       </span>
                       {note &&
                         (isExpanded ? (
-                          <ChevronUp size={14} className="text-black/60" />
+                          <ChevronUp size={14} className="text-white/50" />
                         ) : (
-                          <ChevronDown size={14} className="text-black/60" />
+                          <ChevronDown size={14} className="text-white/50" />
                         ))}
                     </div>
                   </button>
 
-                  {/* Brutalist progress bar */}
-                  <div className="w-full h-2 bg-white border-2 border-black">
+                  {/* Glass-inset track with volt fill */}
+                  <div className="w-full h-2 rounded-full overflow-hidden bg-white/[0.06] shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">
                     <div
-                      className="h-full transition-all duration-500"
+                      className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${Math.min(100, Math.max(0, dimScore * 10))}%`,
                         background: scoreColor(dimScore),
+                        boxShadow: `0 0 8px ${scoreColor(dimScore)}66`,
                       }}
                     />
                   </div>
@@ -183,7 +201,7 @@ export function ScoreCard({
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="font-body text-xs mt-2 leading-relaxed text-black/70"
+                      className="font-body text-xs mt-2 leading-relaxed text-white/70"
                     >
                       {note}
                     </motion.p>
@@ -192,20 +210,20 @@ export function ScoreCard({
               )
             })}
           </div>
-        </BrutalCard>
+        </div>
       </motion.div>
 
       {/* Coaching Note */}
       {score.coaching_note && (
         <motion.div variants={cascadeIn} custom={2}>
-          <BrutalCard variant="volt" padded>
-            <p className="font-mono text-[10px] uppercase tracking-widest font-bold text-black mb-2">
+          <div className={`${GLASS_VOLT} p-5`}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt mb-2">
               Coach&apos;s Note
             </p>
-            <p className="font-body text-sm leading-relaxed text-black">
+            <p className="font-body text-sm leading-relaxed text-white/85">
               {score.coaching_note}
             </p>
-          </BrutalCard>
+          </div>
         </motion.div>
       )}
 
@@ -215,14 +233,14 @@ export function ScoreCard({
         custom={3}
         className="flex items-center justify-center gap-3 flex-wrap"
       >
-        <BrutalButton variant="outline" size="md" onClick={onRetry}>
+        <button type="button" onClick={onRetry} className={BTN_GHOST}>
           <RotateCcw size={16} />
           Practice Again
-        </BrutalButton>
-        <BrutalButton variant="volt" size="md" onClick={onSaveToVault}>
+        </button>
+        <button type="button" onClick={onSaveToVault} className={BTN_VOLT}>
           <Check size={16} />
           Done
-        </BrutalButton>
+        </button>
       </motion.div>
 
       {/* Share Challenge */}
@@ -233,25 +251,25 @@ export function ScoreCard({
           className="flex flex-col items-center gap-2"
         >
           {!shareUrl ? (
-            <BrutalButton
-              variant="outline"
-              size="sm"
+            <button
+              type="button"
               onClick={handleShareChallenge}
               disabled={sharing}
+              className={BTN_GHOST}
             >
               <Share2 size={14} />
               {sharing ? 'Creating...' : 'Share Challenge'}
-            </BrutalButton>
+            </button>
           ) : (
             <div className="flex items-center gap-2">
               <input
                 readOnly
                 value={shareUrl}
-                className="font-mono text-xs bg-white border-4 border-black px-3 py-2 truncate w-56 text-black"
+                className="rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-3 py-2 font-mono text-xs text-white/80 truncate w-56 outline-none"
               />
-              <BrutalButton variant="outline" size="sm" onClick={handleCopyUrl}>
+              <button type="button" onClick={handleCopyUrl} className={BTN_GHOST}>
                 {copied ? <CheckCircle size={14} /> : <Copy size={14} />}
-              </BrutalButton>
+              </button>
             </div>
           )}
         </motion.div>

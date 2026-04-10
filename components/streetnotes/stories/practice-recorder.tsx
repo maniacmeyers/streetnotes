@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Mic, Square, Loader2 } from 'lucide-react'
-import { BrutalCard, BrutalButton } from '@/components/streetnotes/brutal'
 import { fadeIn } from '@/lib/vbrick/animations'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import type { StoryType, StoryScore } from '@/lib/vbrick/story-types'
@@ -84,93 +83,128 @@ export function PracticeRecorder({
   const isRecording = recorder.status === 'recording'
   const isStopped = recorder.status === 'stopped'
 
+  const containerClass = isRecording
+    ? 'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5'
+    : 'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] p-5'
+
   return (
     <motion.div variants={fadeIn} initial="hidden" animate="visible" className="space-y-6">
       {/* Reference Script */}
-      <BrutalCard variant="white" padded>
-        <p className="font-mono text-[10px] uppercase tracking-widest font-bold text-black/60 mb-2">
+      <div className="rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] p-5">
+        <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50 mb-2">
           Your script (for reference)
         </p>
-        <div className="max-h-40 overflow-y-auto font-body text-sm leading-relaxed text-black">
-          <p className="whitespace-pre-wrap">{draftContent}</p>
+        <div className="rounded-xl border border-white/6 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3 max-h-40 overflow-y-auto">
+          <p className="font-body text-sm leading-relaxed text-white/85 whitespace-pre-wrap">
+            {draftContent}
+          </p>
         </div>
-      </BrutalCard>
+      </div>
 
       {/* Recording Controls */}
-      <div className="flex flex-col items-center gap-5">
-        {/* Timer */}
-        <span
-          className={`font-display text-5xl tabular-nums leading-none ${
-            isRecording ? 'text-volt' : 'text-white'
-          }`}
-          style={{ textShadow: '2px 2px 0px #000000' }}
-        >
-          {formatTime(recorder.durationSec)}
-        </span>
-
-        {/* Mic Button */}
-        {!isRecording && !isStopped && !submitting && (
-          <button
-            type="button"
-            onClick={() => recorder.startRecording()}
-            className="w-24 h-24 bg-volt border-4 border-black shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 flex items-center justify-center transition-transform duration-100"
-            aria-label="Start recording practice"
+      <div className={containerClass}>
+        <div className="flex flex-col items-center gap-5">
+          {/* Timer */}
+          <span
+            className={`font-display text-5xl tabular-nums leading-none ${
+              isRecording ? 'text-volt drop-shadow-[0_0_12px_rgba(0,230,118,0.6)]' : 'text-white/80'
+            }`}
           >
-            <Mic size={36} className="text-black" />
-          </button>
-        )}
+            {formatTime(recorder.durationSec)}
+          </span>
 
-        {/* Recording pulse + stop */}
-        {isRecording && (
-          <div className="flex flex-col items-center gap-4">
-            <motion.div
-              className="w-24 h-24 bg-red-600 border-4 border-black flex items-center justify-center"
-              animate={{
-                boxShadow: [
-                  '0 0 0 0px rgba(220, 38, 38, 0.4)',
-                  '0 0 0 20px rgba(220, 38, 38, 0)',
-                ],
-              }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
-            >
-              <Mic size={36} className="text-white" />
-            </motion.div>
+          {/* Mic surround */}
+          <div className="rounded-2xl border border-white/6 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] p-6 flex items-center justify-center">
+            {/* Mic Button */}
+            {!isRecording && !isStopped && !submitting && (
+              <button
+                type="button"
+                onClick={() => recorder.startRecording()}
+                className="w-24 h-24 rounded-full border border-volt/50 bg-volt/15 text-volt backdrop-blur-md flex items-center justify-center transition hover:bg-volt/25 shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)]"
+                aria-label="Start recording practice"
+              >
+                <Mic size={36} />
+              </button>
+            )}
 
-            <BrutalButton variant="volt" size="md" onClick={handleStopAndScore}>
-              <Square size={16} className="text-red-600" />
-              Stop &amp; Score
-            </BrutalButton>
+            {/* Recording pulse */}
+            {isRecording && (
+              <motion.button
+                type="button"
+                onClick={handleStopAndScore}
+                aria-label="Stop and score"
+                className="w-24 h-24 rounded-full border border-volt/60 bg-volt/20 text-volt flex items-center justify-center backdrop-blur-md"
+                animate={{
+                  boxShadow: [
+                    '0 0 0 0px rgba(0,230,118,0.5), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    '0 0 0 22px rgba(0,230,118,0), inset 0 1px 0 rgba(255,255,255,0.25)',
+                  ],
+                }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+              >
+                <Square size={32} />
+              </motion.button>
+            )}
+
+            {/* Loading */}
+            {submitting && (
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 size={40} className="animate-spin text-volt" />
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+                  Transcribing and scoring...
+                </p>
+              </div>
+            )}
+
+            {/* Stopped: submit */}
+            {isStopped && !submitting && (
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-24 h-24 rounded-full border border-white/15 bg-white/5 backdrop-blur-md flex items-center justify-center">
+                  <Mic size={32} className="text-white/60" />
+                </div>
+              </div>
+            )}
           </div>
-        )}
 
-        {/* Stopped: submit */}
-        {isStopped && !submitting && (
-          <div className="flex gap-3">
-            <BrutalButton variant="outline" size="sm" onClick={() => recorder.resetRecording()}>
-              Re-record
-            </BrutalButton>
-            <BrutalButton variant="volt" size="md" onClick={handleSubmit}>
-              Score My Delivery
-            </BrutalButton>
-          </div>
-        )}
-
-        {/* Loading */}
-        {submitting && (
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 size={40} className="animate-spin text-volt" />
-            <p className="font-mono text-xs uppercase tracking-widest font-bold text-gray-400">
-              Transcribing and scoring your delivery...
+          {/* Recording stop label (legacy) */}
+          {isRecording && (
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt/80">
+              Tap to stop &amp; score
             </p>
-          </div>
-        )}
+          )}
 
-        {/* Error */}
-        {(error || recorder.error) && (
-          <p className="font-mono text-xs uppercase tracking-wider font-bold text-red-400 text-center">
-            {error || recorder.error}
-          </p>
-        )}
+          {/* Stopped: submit actions */}
+          {isStopped && !submitting && (
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => recorder.resetRecording()}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10"
+              >
+                Re-record
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25"
+              >
+                Score My Delivery
+              </button>
+            </div>
+          )}
+
+          {/* Error */}
+          {(error || recorder.error) && (
+            <div
+              role="alert"
+              className="w-full rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md px-4 py-3"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-red-400 text-center">
+                {error || recorder.error}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   )

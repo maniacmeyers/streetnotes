@@ -83,8 +83,12 @@ export function VaultCard({
     }
   }
 
+  const containerClass = entry.is_personal_best
+    ? 'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5'
+    : 'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] p-5'
+
   return (
-    <div className="glass rounded-2xl p-5">
+    <div className={containerClass}>
       {/* Header row — clickable to expand */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -106,7 +110,7 @@ export function VaultCard({
             )}
           </div>
 
-          <h4 className="font-bold text-lg text-white leading-tight">
+          <h4 className="font-display uppercase text-lg text-white leading-tight">
             {entry.title}
           </h4>
 
@@ -129,7 +133,7 @@ export function VaultCard({
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex flex-col items-center">
             <span
-              className="font-bold text-4xl tabular-nums leading-none"
+              className="font-display text-4xl tabular-nums leading-none"
               style={{
                 color: scoreColor(entry.composite_score),
                 textShadow: scoreGlow(entry.composite_score),

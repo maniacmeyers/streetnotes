@@ -118,14 +118,16 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
           <div className="flex flex-col items-center shrink-0 ml-1">
             <Flame
               size={22}
-              className={streakActive ? 'text-orange-400' : 'text-white/20'}
+              className={streakActive ? 'text-volt' : 'text-white/20'}
               style={
-                streakActive ? { filter: 'drop-shadow(0 0 6px rgba(251, 146, 60, 0.6))' } : undefined
+                streakActive
+                  ? { filter: 'drop-shadow(0 0 6px rgba(0, 230, 118, 0.6))' }
+                  : undefined
               }
             />
             <span
-              className={`font-bold text-xl tabular-nums leading-none ${
-                streakActive ? 'text-orange-400' : 'text-white/20'
+              className={`font-display text-2xl tabular-nums leading-none ${
+                streakActive ? 'text-volt drop-shadow-[0_0_6px_rgba(0,230,118,0.6)]' : 'text-white/20'
               }`}
             >
               {state.current_streak}
