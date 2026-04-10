@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { BrutalCard, BrutalButton, BrutalBadge } from '@/components/streetnotes/brutal'
 
 interface CrmConnection {
   crmType: string
@@ -21,20 +22,14 @@ const CRM_CONFIG = {
   salesforce: {
     name: 'Salesforce',
     connectUrl: '/api/auth/salesforce/connect',
-    color: 'bg-blue-600',
-    hoverColor: 'hover:bg-blue-700',
   },
   hubspot: {
     name: 'HubSpot',
     connectUrl: '/api/auth/hubspot/connect',
-    color: 'bg-orange-500',
-    hoverColor: 'hover:bg-orange-600',
   },
   pipedrive: {
     name: 'Pipedrive',
     connectUrl: '/api/auth/pipedrive/connect',
-    color: 'bg-green-600',
-    hoverColor: 'hover:bg-green-700',
   },
 } as const
 
@@ -125,7 +120,7 @@ export default function CrmConnections() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        <div className="w-6 h-6 border-4 border-volt border-t-transparent animate-spin" />
       </div>
     )
   }
@@ -133,8 +128,10 @@ export default function CrmConnections() {
   return (
     <div className="flex flex-col gap-4">
       {toast && (
-        <div className="px-4 py-3 rounded-lg bg-gray-100 text-sm text-gray-800">
-          {toast}
+        <div className="bg-volt/20 border-4 border-volt px-4 py-3">
+          <p className="font-mono text-xs uppercase tracking-wider font-bold text-volt">
+            {toast}
+          </p>
         </div>
       )}
 
@@ -143,28 +140,28 @@ export default function CrmConnections() {
         const crmStages = stages[key]
 
         return (
-          <div
-            key={key}
-            className="border border-gray-200 rounded-xl p-4 flex flex-col gap-3"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${conn ? 'bg-green-500' : 'bg-gray-300'}`} />
-                <span className="font-semibold text-base">{config.name}</span>
+          <BrutalCard key={key} variant="white" padded>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-4 h-4 border-2 border-black ${conn ? 'bg-volt' : 'bg-white'}`} />
+                <span className="font-display uppercase text-xl text-black leading-none">
+                  {config.name}
+                </span>
               </div>
 
               {conn ? (
-                <button
+                <BrutalButton
                   onClick={() => disconnect(key)}
                   disabled={disconnecting === key}
-                  className="px-4 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 min-h-[44px] disabled:opacity-50"
+                  variant="danger"
+                  size="sm"
                 >
                   {disconnecting === key ? 'Disconnecting...' : 'Disconnect'}
-                </button>
+                </BrutalButton>
               ) : (
                 <a
                   href={config.connectUrl}
-                  className={`px-4 py-2 text-sm rounded-lg text-white min-h-[44px] flex items-center ${config.color} ${config.hoverColor}`}
+                  className="inline-flex items-center justify-center gap-2 font-display uppercase cursor-pointer transition-transform duration-100 bg-black text-volt border-4 border-black shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 px-3 py-2 text-xs min-h-[44px]"
                 >
                   Connect
                 </a>
@@ -172,13 +169,11 @@ export default function CrmConnections() {
             </div>
 
             {conn && (
-              <div className="text-xs text-gray-500 flex flex-col gap-1">
+              <div className="mt-3 flex flex-col gap-1 font-mono text-[10px] uppercase tracking-wider text-black/60">
                 {conn.instanceUrl && (
                   <span>Org: {conn.instanceUrl.replace('https://', '')}</span>
                 )}
-                <span>
-                  Connected {new Date(conn.connectedAt).toLocaleDateString()}
-                </span>
+                <span>Connected {new Date(conn.connectedAt).toLocaleDateString()}</span>
               </div>
             )}
 
@@ -186,30 +181,27 @@ export default function CrmConnections() {
               <button
                 onClick={() => fetchStages(key)}
                 disabled={loadingStages === key}
-                className="text-sm text-blue-600 hover:text-blue-800 text-left min-h-[44px] flex items-center disabled:opacity-50"
+                className="mt-3 font-mono text-xs uppercase tracking-widest font-bold text-black hover:text-volt text-left min-h-[44px] flex items-center disabled:opacity-50 border-b-2 border-black self-start"
               >
-                {loadingStages === key ? 'Loading stages...' : 'Load deal stages'}
+                {loadingStages === key ? 'Loading stages...' : 'Load deal stages →'}
               </button>
             )}
 
             {crmStages && crmStages.length > 0 && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+              <div className="mt-4 flex flex-col gap-2">
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-black/70">
                   Pipeline Stages
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {crmStages.map((stage, i) => (
-                    <span
-                      key={i}
-                      className="px-2 py-1 text-xs bg-gray-100 rounded-md text-gray-700"
-                    >
+                    <BrutalBadge key={i} variant="white">
                       {stage.label}
-                    </span>
+                    </BrutalBadge>
                   ))}
                 </div>
               </div>
             )}
-          </div>
+          </BrutalCard>
         )
       })}
     </div>
