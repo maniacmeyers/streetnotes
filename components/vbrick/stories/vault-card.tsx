@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus, Trash2, Link2, CheckCircle } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Share2, Calendar, ChevronDown, Trophy, Mic, Plus, Trash2, Link2, CheckCircle, Copy, ExternalLink } from 'lucide-react'
 import { motion } from 'motion/react'
 import { NeuCard, NeuBadge, NeuButton } from '@/components/vbrick/neu'
 import { NeuToggle } from '@/components/vbrick/neu'
@@ -42,11 +42,20 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
   const [expanded, setExpanded] = useState(false)
   const [challengeUrl, setChallengeUrl] = useState<string | null>(null)
   const [creatingChallenge, setCreatingChallenge] = useState(false)
-  const [challengeCopied, setChallengeCopied] = useState(false)
+  const [copyFeedback, setCopyFeedback] = useState<'copied' | 'failed' | null>(null)
+  const copyFeedbackTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copyFeedbackTimeout.current) {
+        clearTimeout(copyFeedbackTimeout.current)
+      }
+    }
+  }, [])
 
   async function handleCreateChallenge(e: React.MouseEvent) {
     e.stopPropagation()
-    if (!email) return
+    if (!email || challengeUrl) return
     setCreatingChallenge(true)
     try {
       const res = await fetch('/api/vbrick/stories/challenge', {
@@ -57,13 +66,53 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
       if (res.ok) {
         const data = await res.json()
         setChallengeUrl(data.url)
-        await navigator.clipboard.writeText(data.url)
-        setChallengeCopied(true)
-        setTimeout(() => setChallengeCopied(false), 2500)
       }
     } finally {
       setCreatingChallenge(false)
     }
+  }
+
+  async function copyToClipboard(url: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopyFeedback('copied')
+    } catch {
+      setCopyFeedback('failed')
+    }
+    if (copyFeedbackTimeout.current) {
+      clearTimeout(copyFeedbackTimeout.current)
+    }
+    copyFeedbackTimeout.current = setTimeout(() => {
+      setCopyFeedback(null)
+      copyFeedbackTimeout.current = null
+    }, 2500)
+  }
+
+  async function handleNativeShare(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!challengeUrl) return
+    const shareData = {
+      title: 'Beat this StreetNotes score',
+      text: `I scored ${entry.composite_score.toFixed(1)} on ${STORY_TYPE_LABELS[entry.story_type]}. Can you beat it?`,
+      url: challengeUrl,
+    }
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share(shareData)
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          await copyToClipboard(challengeUrl)
+        }
+      }
+      return
+    }
+    await copyToClipboard(challengeUrl)
+  }
+
+  async function handleCopyLink(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!challengeUrl) return
+    await copyToClipboard(challengeUrl)
   }
 
   return (
@@ -191,12 +240,12 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
 
       {/* Challenge share */}
       {expanded && email && (
-        <div className="flex items-center gap-2 mt-3">
+        <div className="mt-3">
           {!challengeUrl ? (
             <button
               onClick={handleCreateChallenge}
               disabled={creatingChallenge}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150 disabled:opacity-50 min-h-[40px]"
               style={{
                 background: neuTheme.colors.bg,
                 boxShadow: neuTheme.shadows.raisedSm,
@@ -204,13 +253,87 @@ export function VaultCard({ entry, showShare = false, onToggleShare, showAuthor 
               }}
             >
               <Link2 size={12} />
-              {creatingChallenge ? 'Creating...' : 'Share Challenge'}
+              {creatingChallenge ? 'Creating…' : 'Share Challenge'}
             </button>
           ) : (
-            <span className="flex items-center gap-1.5 text-xs font-satoshi" style={{ color: neuTheme.colors.accent.primary }}>
-              <CheckCircle size={12} />
-              {challengeCopied ? 'Link copied!' : 'Challenge link created'}
-            </span>
+            <div
+              className="rounded-xl p-3 space-y-2.5"
+              style={{
+                background: neuTheme.colors.bg,
+                boxShadow: neuTheme.shadows.inset,
+              }}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <Link2 size={12} style={{ color: neuTheme.colors.accent.primary }} className="shrink-0" />
+                <span
+                  className="font-satoshi text-xs truncate flex-1"
+                  style={{ color: neuTheme.colors.text.body }}
+                  title={challengeUrl}
+                >
+                  {challengeUrl.replace(/^https?:\/\//, '')}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleNativeShare}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150 min-h-[40px]"
+                  style={{
+                    background: neuTheme.colors.accent.primary,
+                    color: '#ffffff',
+                    boxShadow: neuTheme.shadows.raisedSm,
+                  }}
+                >
+                  <Share2 size={12} />
+                  Share
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150 min-h-[40px]"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: neuTheme.shadows.raisedSm,
+                    color:
+                      copyFeedback === 'copied'
+                        ? neuTheme.colors.accent.primary
+                        : neuTheme.colors.text.body,
+                  }}
+                >
+                  {copyFeedback === 'copied' ? (
+                    <>
+                      <CheckCircle size={12} />
+                      Copied
+                    </>
+                  ) : copyFeedback === 'failed' ? (
+                    <>
+                      <Copy size={12} />
+                      Copy failed
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={12} />
+                      Copy
+                    </>
+                  )}
+                </button>
+                <a
+                  href={challengeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150 no-underline min-h-[40px]"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: neuTheme.shadows.raisedSm,
+                    color: neuTheme.colors.text.body,
+                  }}
+                >
+                  <ExternalLink size={12} />
+                  Preview
+                </a>
+              </div>
+            </div>
           )}
         </div>
       )}
