@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Share2,
   Calendar,
@@ -62,6 +62,15 @@ export function VaultCard({
   const [challengeUrl, setChallengeUrl] = useState<string | null>(null)
   const [creatingChallenge, setCreatingChallenge] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState<'copied' | 'failed' | null>(null)
+  const copyFeedbackTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copyFeedbackTimeout.current) {
+        clearTimeout(copyFeedbackTimeout.current)
+      }
+    }
+  }, [])
 
   async function handleCreateChallenge(e: React.MouseEvent) {
     e.stopPropagation()
@@ -89,7 +98,13 @@ export function VaultCard({
     } catch {
       setCopyFeedback('failed')
     }
-    setTimeout(() => setCopyFeedback(null), 2500)
+    if (copyFeedbackTimeout.current) {
+      clearTimeout(copyFeedbackTimeout.current)
+    }
+    copyFeedbackTimeout.current = setTimeout(() => {
+      setCopyFeedback(null)
+      copyFeedbackTimeout.current = null
+    }, 2500)
   }
 
   async function handleNativeShare(e: React.MouseEvent) {
