@@ -125,7 +125,19 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
     fetchDrafts()
   }
 
-  const handlePracticeVault = async (entry: VaultEntry) => {
+  // Personal vault: practice the same draft again. No copy.
+  const handlePracticeFromVault = async (entry: VaultEntry) => {
+    const res = await fetch(`/api/vbrick/stories/drafts/${entry.story_draft_id}`)
+    if (res.ok) {
+      const data = await res.json()
+      setActiveDraft(data.draft)
+      setActiveFrameworkType(data.draft.story_type as StoryType)
+      setView('practice')
+    }
+  }
+
+  // Team vault: clone the story into a new personal draft, then practice.
+  const handleAdoptAndPractice = async (entry: VaultEntry) => {
     setAdoptingId(entry.id)
     try {
       const res = await fetch('/api/vbrick/stories/drafts/adopt', {
@@ -136,6 +148,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
       if (res.ok) {
         const data = await res.json()
         setActiveDraft(data.draft)
+        setActiveFrameworkType(data.draft.story_type as StoryType)
         setView('practice')
       }
     } finally {
@@ -358,7 +371,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                           entry={entry}
                           showShare
                           onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
-                          onPractice={() => handlePracticeVault(entry)}
+                          onPractice={() => handlePracticeFromVault(entry)}
                           onDelete={() => handleDeleteVault(entry.id)}
                           email={email}
                         />
@@ -404,7 +417,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                         <VaultCard
                           entry={entry}
                           showAuthor
-                          onAdopt={() => handlePracticeVault(entry)}
+                          onAdopt={() => handleAdoptAndPractice(entry)}
                           adopting={adoptingId === entry.id}
                           onDelete={entry.bdr_email === email ? () => handleDeleteVault(entry.id) : undefined}
                           email={email}
