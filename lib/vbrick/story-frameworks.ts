@@ -48,7 +48,7 @@ export const STORY_FRAMEWORKS: StoryFrameworkConfig[] = [
       {
         key: 'objection',
         label: 'The Objection',
-        hint: 'What objection do you hear most often? Type it exactly as prospects say it.',
+        hint: 'What objection do you hear most often? Say it exactly the way prospects say it to you.',
         placeholder: 'e.g. "We already have a solution for that" or "We don\'t have budget right now"',
         maxLength: 300,
       },

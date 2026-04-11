@@ -75,7 +75,7 @@ function getScoreColor(score: number): string {
 
 function getAssessment(score: number): string {
   if (score <= 3) return 'Bare minimum. Key details missing.'
-  if (score <= 6) return 'Getting there. Fill in the gaps.'
+  if (score <= 6) return 'Getting there. A few details still missing.'
   if (score <= 8) return 'Solid debrief. CRM is happy.'
   return 'Complete. Nothing left on the table.'
 }
