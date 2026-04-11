@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import {
   Trophy,
@@ -12,6 +12,8 @@ import {
   Share2,
   Copy,
   CheckCircle,
+  ExternalLink,
+  Link2,
 } from 'lucide-react'
 import { cascadeIn, staggerContainer, scaleIn } from '@/lib/vbrick/animations'
 import type { StoryScore } from '@/lib/vbrick/story-types'
@@ -72,10 +74,19 @@ export function ScoreCard({
   const [expandedDimension, setExpandedDimension] = useState<string | null>(null)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [sharing, setSharing] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [copyFeedback, setCopyFeedback] = useState<'copied' | 'failed' | null>(null)
+  const copyFeedbackTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copyFeedbackTimeout.current) {
+        clearTimeout(copyFeedbackTimeout.current)
+      }
+    }
+  }, [])
 
   async function handleShareChallenge() {
-    if (!vaultEntryId || !email) return
+    if (!vaultEntryId || !email || shareUrl) return
     setSharing(true)
     try {
       const res = await fetch('/api/vbrick/stories/challenge', {
@@ -86,20 +97,51 @@ export function ScoreCard({
       if (res.ok) {
         const data = await res.json()
         setShareUrl(data.url)
-        await navigator.clipboard.writeText(data.url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2500)
       }
     } finally {
       setSharing(false)
     }
   }
 
+  async function copyToClipboard(url: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopyFeedback('copied')
+    } catch {
+      setCopyFeedback('failed')
+    }
+    if (copyFeedbackTimeout.current) {
+      clearTimeout(copyFeedbackTimeout.current)
+    }
+    copyFeedbackTimeout.current = setTimeout(() => {
+      setCopyFeedback(null)
+      copyFeedbackTimeout.current = null
+    }, 2500)
+  }
+
+  async function handleNativeShare() {
+    if (!shareUrl) return
+    const shareData = {
+      title: 'Beat this StreetNotes score',
+      text: `I scored ${score.composite.toFixed(1)} on StreetNotes Story Vault. Can you beat it?`,
+      url: shareUrl,
+    }
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share(shareData)
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          await copyToClipboard(shareUrl)
+        }
+      }
+      return
+    }
+    await copyToClipboard(shareUrl)
+  }
+
   async function handleCopyUrl() {
     if (!shareUrl) return
-    await navigator.clipboard.writeText(shareUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
+    await copyToClipboard(shareUrl)
   }
 
   function toggleDimension(key: string) {
@@ -248,7 +290,7 @@ export function ScoreCard({
         <motion.div
           variants={cascadeIn}
           custom={4}
-          className="flex flex-col items-center gap-2"
+          className="flex flex-col items-center gap-2 w-full"
         >
           {!shareUrl ? (
             <button
@@ -258,18 +300,60 @@ export function ScoreCard({
               className={BTN_GHOST}
             >
               <Share2 size={14} />
-              {sharing ? 'Creating...' : 'Share Challenge'}
+              {sharing ? 'Creating…' : 'Share Challenge'}
             </button>
           ) : (
-            <div className="flex items-center gap-2">
-              <input
-                readOnly
-                value={shareUrl}
-                className="rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-3 py-2 font-mono text-xs text-white/80 truncate w-56 outline-none"
-              />
-              <button type="button" onClick={handleCopyUrl} className={BTN_GHOST}>
-                {copied ? <CheckCircle size={14} /> : <Copy size={14} />}
-              </button>
+            <div className={`${GLASS_BASE} p-3 w-full max-w-md space-y-2.5`}>
+              <div className="flex items-center gap-2 min-w-0">
+                <Link2 size={12} className="text-volt shrink-0" />
+                <span
+                  className="font-mono text-[11px] text-white/75 truncate flex-1"
+                  title={shareUrl}
+                >
+                  {shareUrl.replace(/^https?:\/\//, '')}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleNativeShare}
+                  className={BTN_VOLT}
+                >
+                  <Share2 size={14} />
+                  Share
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyUrl}
+                  className={BTN_GHOST}
+                >
+                  {copyFeedback === 'copied' ? (
+                    <>
+                      <CheckCircle size={14} />
+                      Copied
+                    </>
+                  ) : copyFeedback === 'failed' ? (
+                    <>
+                      <Copy size={14} />
+                      Copy failed
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={14} />
+                      Copy
+                    </>
+                  )}
+                </button>
+                <a
+                  href={shareUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${BTN_GHOST} no-underline`}
+                >
+                  <ExternalLink size={14} />
+                  Preview
+                </a>
+              </div>
             </div>
           )}
         </motion.div>

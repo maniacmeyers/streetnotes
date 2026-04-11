@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { Trophy, RotateCcw, Check, ChevronDown, ChevronUp, Sparkles, Share2, Copy, CheckCircle } from 'lucide-react'
+import { Trophy, RotateCcw, Check, ChevronDown, ChevronUp, Sparkles, Share2, Copy, CheckCircle, ExternalLink, Link2 } from 'lucide-react'
 import { NeuCard, NeuButton, NeuBadge } from '@/components/vbrick/neu'
 import { NeuProgress } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
@@ -45,10 +45,19 @@ export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault, 
   const [expandedDimension, setExpandedDimension] = useState<string | null>(null)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [sharing, setSharing] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [copyFeedback, setCopyFeedback] = useState<'copied' | 'failed' | null>(null)
+  const copyFeedbackTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copyFeedbackTimeout.current) {
+        clearTimeout(copyFeedbackTimeout.current)
+      }
+    }
+  }, [])
 
   async function handleShareChallenge() {
-    if (!vaultEntryId || !email) return
+    if (!vaultEntryId || !email || shareUrl) return
     setSharing(true)
     try {
       const res = await fetch('/api/vbrick/stories/challenge', {
@@ -59,20 +68,51 @@ export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault, 
       if (res.ok) {
         const data = await res.json()
         setShareUrl(data.url)
-        await navigator.clipboard.writeText(data.url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2500)
       }
     } finally {
       setSharing(false)
     }
   }
 
+  async function copyToClipboard(url: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopyFeedback('copied')
+    } catch {
+      setCopyFeedback('failed')
+    }
+    if (copyFeedbackTimeout.current) {
+      clearTimeout(copyFeedbackTimeout.current)
+    }
+    copyFeedbackTimeout.current = setTimeout(() => {
+      setCopyFeedback(null)
+      copyFeedbackTimeout.current = null
+    }, 2500)
+  }
+
+  async function handleNativeShare() {
+    if (!shareUrl) return
+    const shareData = {
+      title: 'Beat this StreetNotes score',
+      text: `I scored ${score.composite.toFixed(1)} on StreetNotes Story Vault. Can you beat it?`,
+      url: shareUrl,
+    }
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share(shareData)
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          await copyToClipboard(shareUrl)
+        }
+      }
+      return
+    }
+    await copyToClipboard(shareUrl)
+  }
+
   async function handleCopyUrl() {
     if (!shareUrl) return
-    await navigator.clipboard.writeText(shareUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
+    await copyToClipboard(shareUrl)
   }
 
   function toggleDimension(key: string) {
@@ -221,7 +261,7 @@ export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault, 
 
       {/* Share Challenge */}
       {vaultEntryId && email && (
-        <motion.div variants={cascadeIn} custom={4} className="flex flex-col items-center gap-2">
+        <motion.div variants={cascadeIn} custom={4} className="flex flex-col items-center gap-2 w-full">
           {!shareUrl ? (
             <NeuButton
               variant="raised"
@@ -230,24 +270,59 @@ export function ScoreCard({ score, isNewBest, xpEarned, onRetry, onSaveToVault, 
               disabled={sharing}
             >
               <Share2 size={14} className="mr-1.5 inline-block" />
-              {sharing ? 'Creating...' : 'Share Challenge'}
+              {sharing ? 'Creating…' : 'Share Challenge'}
             </NeuButton>
           ) : (
-            <div className="flex items-center gap-2">
-              <input
-                readOnly
-                value={shareUrl}
-                className="text-xs font-satoshi px-3 py-2 rounded-xl truncate w-56"
-                style={{
-                  background: neuTheme.colors.bg,
-                  boxShadow: neuTheme.shadows.inset,
-                  color: neuTheme.colors.text.body,
-                }}
-              />
-              <NeuButton variant="raised" size="sm" onClick={handleCopyUrl}>
-                {copied ? <CheckCircle size={14} /> : <Copy size={14} />}
-              </NeuButton>
-            </div>
+            <NeuCard variant="inset" padding="sm" hover={false} className="w-full max-w-md">
+              <div className="flex items-center gap-2 min-w-0 mb-2">
+                <Link2 size={12} style={{ color: neuTheme.colors.accent.primary }} className="shrink-0" />
+                <span
+                  className="font-satoshi text-xs truncate flex-1"
+                  style={{ color: neuTheme.colors.text.body }}
+                  title={shareUrl}
+                >
+                  {shareUrl.replace(/^https?:\/\//, '')}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <NeuButton variant="accent" size="sm" onClick={handleNativeShare}>
+                  <Share2 size={14} className="mr-1.5 inline-block" />
+                  Share
+                </NeuButton>
+                <NeuButton variant="raised" size="sm" onClick={handleCopyUrl}>
+                  {copyFeedback === 'copied' ? (
+                    <>
+                      <CheckCircle size={14} className="mr-1.5 inline-block" />
+                      Copied
+                    </>
+                  ) : copyFeedback === 'failed' ? (
+                    <>
+                      <Copy size={14} className="mr-1.5 inline-block" />
+                      Copy failed
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={14} className="mr-1.5 inline-block" />
+                      Copy
+                    </>
+                  )}
+                </NeuButton>
+                <a
+                  href={shareUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-satoshi font-medium border-none cursor-pointer transition-all duration-150 no-underline"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: neuTheme.shadows.raisedSm,
+                    color: neuTheme.colors.text.body,
+                  }}
+                >
+                  <ExternalLink size={14} />
+                  Preview
+                </a>
+              </div>
+            </NeuCard>
           )}
         </motion.div>
       )}

@@ -170,7 +170,7 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
                 Daily Challenge
               </p>
               <p
-                className="font-satoshi text-sm truncate"
+                className="font-satoshi text-sm leading-snug break-words line-clamp-3"
                 style={{ color: neuTheme.colors.text.body }}
               >
                 {daily_challenge.description}
