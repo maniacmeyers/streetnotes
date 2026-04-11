@@ -71,12 +71,15 @@ export default function StoryVaultPage() {
   }, [email])
 
   const fetchTeamVault = useCallback(async () => {
-    const res = await fetch('/api/vbrick/stories/vault/team')
+    if (!email) return
+    const res = await fetch(
+      `/api/vbrick/stories/vault/team?email=${encodeURIComponent(email)}`,
+    )
     if (res.ok) {
       const data = await res.json()
       setTeamVault(data.vault || [])
     }
-  }, [])
+  }, [email])
 
   useEffect(() => {
     if (email) {
@@ -152,7 +155,11 @@ export default function StoryVaultPage() {
   }
 
   const handleDeleteVaultEntry = async (entryId: string) => {
-    const res = await fetch(`/api/vbrick/stories/vault/${entryId}`, { method: 'DELETE' })
+    if (!email) return
+    const res = await fetch(
+      `/api/vbrick/stories/vault/${entryId}?email=${encodeURIComponent(email)}`,
+      { method: 'DELETE' },
+    )
     if (res.ok) {
       fetchVault()
       fetchTeamVault()
@@ -160,10 +167,11 @@ export default function StoryVaultPage() {
   }
 
   const handleToggleShare = async (entryId: string, currentlyShared: boolean) => {
+    if (!email) return
     await fetch(`/api/vbrick/stories/vault/${entryId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ shared_to_team: !currentlyShared }),
+      body: JSON.stringify({ shared_to_team: !currentlyShared, email }),
     })
     fetchVault()
     fetchTeamVault()

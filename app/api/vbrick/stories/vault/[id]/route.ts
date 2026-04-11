@@ -1,12 +1,61 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 export const runtime = 'nodejs'
 
-// PATCH: Toggle team sharing for a vault entry
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const body = await request.json()
+// Resolve the caller's effective email. Prefer the Supabase session (the
+// authenticated StreetNotes app), fall back to an email supplied by the
+// caller (the vbrick public demo, which uses localStorage-based identity
+// because /vbrick and /api are public at the middleware level).
+async function resolveCallerEmail(
+  supabase: SupabaseClient,
+  request: Request,
+  bodyEmail?: string | null,
+): Promise<string | null> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (user?.email) return user.email
+
+  if (bodyEmail) return bodyEmail
+
+  const url = new URL(request.url)
+  const queryEmail = url.searchParams.get('email')
+  if (queryEmail) return queryEmail
+
+  return null
+}
+
+// PATCH: Toggle team sharing for a vault entry. Requires ownership.
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
+  let body: { shared_to_team?: boolean; email?: string }
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
   const supabase = await createClient()
+  const callerEmail = await resolveCallerEmail(supabase, request, body.email)
+  if (!callerEmail) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { data: existing, error: fetchError } = await supabase
+    .from('story_vault_entries')
+    .select('bdr_email')
+    .eq('id', params.id)
+    .single()
+  if (fetchError || !existing) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+  if (existing.bdr_email !== callerEmail) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
 
   const updateData: Record<string, unknown> = {}
   if (typeof body.shared_to_team === 'boolean') {
@@ -28,28 +77,38 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json({ entry: data })
 }
 
-// DELETE: Remove a vault entry and its associated practice session
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+// DELETE: Remove a vault entry (and its practice session). Requires ownership.
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
   const supabase = await createClient()
+  const callerEmail = await resolveCallerEmail(supabase, request, null)
+  if (!callerEmail) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
-  // Fetch the vault entry to get the practice_session_id before deleting
   const { data: entry, error: fetchError } = await supabase
     .from('story_vault_entries')
-    .select('practice_session_id')
+    .select('practice_session_id, bdr_email')
     .eq('id', params.id)
     .single()
+  if (fetchError || !entry) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+  if (entry.bdr_email !== callerEmail) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
 
-  if (fetchError) return NextResponse.json({ error: fetchError.message }, { status: 500 })
-
-  // Delete the vault entry first
   const { error: deleteVaultError } = await supabase
     .from('story_vault_entries')
     .delete()
     .eq('id', params.id)
 
-  if (deleteVaultError) return NextResponse.json({ error: deleteVaultError.message }, { status: 500 })
+  if (deleteVaultError) {
+    return NextResponse.json({ error: deleteVaultError.message }, { status: 500 })
+  }
 
-  // Delete the associated practice session
   if (entry.practice_session_id) {
     const { error: deletePracticeError } = await supabase
       .from('story_practice_sessions')
@@ -57,7 +116,7 @@ export async function DELETE(_request: Request, { params }: { params: { id: stri
       .eq('id', entry.practice_session_id)
 
     if (deletePracticeError) {
-      // Log but don't fail the request — vault entry is already deleted
+      // Log but don't fail — the vault entry is already gone.
       console.error('Failed to delete practice session:', deletePracticeError.message)
     }
   }

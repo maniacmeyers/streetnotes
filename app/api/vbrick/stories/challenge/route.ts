@@ -3,23 +3,46 @@ import { createClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 
-// POST: Create a shareable challenge from a vault entry
+// POST: Create (or return existing) shareable challenge for a vault entry.
+//
+// The caller's effective email is the Supabase session email when one
+// exists, otherwise the body email (for the vbrick public demo path).
+// The caller must own the vault entry being challenged.
 export async function POST(request: Request) {
-  let body: { vault_entry_id: string; email: string }
+  let body: { vault_entry_id?: string; email?: string }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { vault_entry_id, email } = body
-  if (!vault_entry_id || !email) {
-    return NextResponse.json({ error: 'Missing vault_entry_id or email' }, { status: 400 })
+  const { vault_entry_id } = body
+  if (!vault_entry_id) {
+    return NextResponse.json({ error: 'Missing vault_entry_id' }, { status: 400 })
   }
 
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const effectiveEmail = user?.email || body.email
+  if (!effectiveEmail) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
-  // Check if challenge already exists for this vault entry
+  // Verify the caller owns the vault entry they're challenging with.
+  const { data: entry, error: entryError } = await supabase
+    .from('story_vault_entries')
+    .select('bdr_email')
+    .eq('id', vault_entry_id)
+    .single()
+  if (entryError || !entry) {
+    return NextResponse.json({ error: 'Vault entry not found' }, { status: 404 })
+  }
+  if (entry.bdr_email !== effectiveEmail) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   const { data: existing } = await supabase
     .from('story_challenges')
     .select('*')
@@ -31,12 +54,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ challenge: existing, url })
   }
 
-  // Create new challenge
   const { data: challenge, error } = await supabase
     .from('story_challenges')
     .insert({
       vault_entry_id,
-      created_by_email: email,
+      created_by_email: effectiveEmail,
     })
     .select()
     .single()
