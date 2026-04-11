@@ -11,6 +11,8 @@ import {
   Trash2,
   Link2,
   CheckCircle,
+  Copy,
+  ExternalLink,
 } from 'lucide-react'
 import { motion } from 'motion/react'
 import { BrutalToggle } from '@/components/streetnotes/brutal'
@@ -59,11 +61,11 @@ export function VaultCard({
   const [expanded, setExpanded] = useState(false)
   const [challengeUrl, setChallengeUrl] = useState<string | null>(null)
   const [creatingChallenge, setCreatingChallenge] = useState(false)
-  const [challengeCopied, setChallengeCopied] = useState(false)
+  const [copyFeedback, setCopyFeedback] = useState<'copied' | 'failed' | null>(null)
 
   async function handleCreateChallenge(e: React.MouseEvent) {
     e.stopPropagation()
-    if (!email) return
+    if (!email || challengeUrl) return
     setCreatingChallenge(true)
     try {
       const res = await fetch('/api/vbrick/stories/challenge', {
@@ -74,13 +76,47 @@ export function VaultCard({
       if (res.ok) {
         const data = await res.json()
         setChallengeUrl(data.url)
-        await navigator.clipboard.writeText(data.url)
-        setChallengeCopied(true)
-        setTimeout(() => setChallengeCopied(false), 2500)
       }
     } finally {
       setCreatingChallenge(false)
     }
+  }
+
+  async function copyToClipboard(url: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopyFeedback('copied')
+    } catch {
+      setCopyFeedback('failed')
+    }
+    setTimeout(() => setCopyFeedback(null), 2500)
+  }
+
+  async function handleNativeShare(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!challengeUrl) return
+    const shareData = {
+      title: 'Beat this StreetNotes score',
+      text: `I scored ${entry.composite_score.toFixed(1)} on ${STORY_TYPE_LABELS[entry.story_type]}. Can you beat it?`,
+      url: challengeUrl,
+    }
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share(shareData)
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          await copyToClipboard(challengeUrl)
+        }
+      }
+      return
+    }
+    await copyToClipboard(challengeUrl)
+  }
+
+  async function handleCopyLink(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!challengeUrl) return
+    await copyToClipboard(challengeUrl)
   }
 
   const containerClass = entry.is_personal_best
@@ -207,21 +243,70 @@ export function VaultCard({
 
       {/* Challenge share */}
       {expanded && email && (
-        <div className="flex items-center gap-2 mt-3">
+        <div className="mt-3">
           {!challengeUrl ? (
             <button
               onClick={handleCreateChallenge}
               disabled={creatingChallenge}
-              className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[44px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all disabled:opacity-50"
             >
               <Link2 size={12} />
-              {creatingChallenge ? 'Creating...' : 'Share Challenge'}
+              {creatingChallenge ? 'Creating…' : 'Share Challenge'}
             </button>
           ) : (
-            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt">
-              <CheckCircle size={12} />
-              {challengeCopied ? 'Link copied!' : 'Challenge link created'}
-            </span>
+            <div className="glass-inset rounded-xl p-3 space-y-2.5">
+              <div className="flex items-center gap-2 min-w-0">
+                <Link2 size={12} className="text-volt shrink-0" />
+                <span
+                  className="font-mono text-[11px] text-white/75 truncate flex-1"
+                  title={challengeUrl}
+                >
+                  {challengeUrl.replace(/^https?:\/\//, '')}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleNativeShare}
+                  className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-[10px] uppercase tracking-[0.15em] px-3 py-2.5 rounded-lg cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-volt min-h-[44px]"
+                >
+                  <Share2 size={12} />
+                  Share
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[44px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all"
+                >
+                  {copyFeedback === 'copied' ? (
+                    <>
+                      <CheckCircle size={12} className="text-volt" />
+                      Copied
+                    </>
+                  ) : copyFeedback === 'failed' ? (
+                    <>
+                      <Copy size={12} />
+                      Copy failed
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={12} />
+                      Copy
+                    </>
+                  )}
+                </button>
+                <a
+                  href={challengeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[44px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all no-underline"
+                >
+                  <ExternalLink size={12} />
+                  Preview
+                </a>
+              </div>
+            </div>
           )}
         </div>
       )}
