@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Space_Mono, Ranchers } from 'next/font/google'
 import './globals.css'
+import PWARegister from '@/components/pwa-register'
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -24,13 +25,27 @@ export const metadata: Metadata = {
   title: 'StreetNotes.ai — Voice-to-CRM for Sales Reps',
   description:
     'Stop losing deals because you forgot what happened in the parking lot. Hit record, talk, and your CRM updates itself.',
+  applicationName: 'StreetNotes',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'StreetNotes',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/streetnotes_logo.png',
+  },
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
   viewportFit: 'cover',
-  themeColor: '#121212',
+  themeColor: '#061222',
 }
 
 export default function RootLayout({
@@ -50,6 +65,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
+        <PWARegister />
       </body>
     </html>
   )

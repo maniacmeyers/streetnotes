@@ -16,7 +16,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 pb-safe"
+      className="fixed bottom-0 left-0 right-0 z-50 pb-safe md:hidden"
       aria-label="Main navigation"
       style={{
         background: 'linear-gradient(180deg, rgba(6, 18, 34, 0) 0%, rgba(6, 18, 34, 0.95) 40%, rgba(6, 18, 34, 1) 100%)',

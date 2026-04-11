@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import BottomNav from '@/components/dashboard/bottom-nav'
+import SideNav from '@/components/dashboard/side-nav'
 import Logo from '@/components/brand/logo'
 
 export default async function ProtectedLayout({
@@ -26,7 +27,10 @@ export default async function ProtectedLayout({
             'radial-gradient(circle, rgba(0,230,118,0.12) 0%, rgba(0,230,118,0.03) 40%, transparent 70%)',
         }}
       />
-      <header className="sticky top-0 z-40 border-b border-volt/20 bg-[#061222]/80 backdrop-blur-xl pt-safe">
+
+      <SideNav email={user.email} />
+
+      <header className="md:hidden sticky top-0 z-40 border-b border-volt/20 bg-[#061222]/80 backdrop-blur-xl pt-safe">
         <div className="max-w-md mx-auto px-4 flex items-center justify-between h-14">
           <Logo size="sm" href="/dashboard" priority />
           <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
@@ -34,9 +38,13 @@ export default async function ProtectedLayout({
           </span>
         </div>
       </header>
-      <main className="max-w-md mx-auto pb-24 relative z-10">
-        {children}
+
+      <main className="relative z-10 md:pl-64">
+        <div className="max-w-md mx-auto pb-24 md:pb-10 md:pt-10">
+          {children}
+        </div>
       </main>
+
       <BottomNav />
     </div>
   )
