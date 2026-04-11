@@ -396,14 +396,20 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       transition={{ duration: 0.25 }}
                     >
-                      <VaultCard
-                        entry={entry}
-                        showAuthor
-                        onAdopt={() => handlePracticeVault(entry)}
-                        adopting={adoptingId === entry.id}
-                        onDelete={entry.bdr_email === email ? () => handleDeleteVault(entry.id) : undefined}
-                        email={email}
-                      />
+                      <SwipeToDelete
+                        onDelete={() => handleDeleteVault(entry.id)}
+                        disabled={entry.bdr_email !== email}
+                        variant="brutal"
+                      >
+                        <VaultCard
+                          entry={entry}
+                          showAuthor
+                          onAdopt={() => handlePracticeVault(entry)}
+                          adopting={adoptingId === entry.id}
+                          onDelete={entry.bdr_email === email ? () => handleDeleteVault(entry.id) : undefined}
+                          email={email}
+                        />
+                      </SwipeToDelete>
                     </motion.div>
                   ))}
                 </AnimatePresence>
