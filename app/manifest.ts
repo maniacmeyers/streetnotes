@@ -15,10 +15,22 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ['business', 'productivity', 'sales'],
     icons: [
       {
-        src: '/streetnotes_logo.png',
-        sizes: '1194x287',
+        src: '/icon-192.png',
+        sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icon-maskable-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
       {
         src: '/favicon.ico',
