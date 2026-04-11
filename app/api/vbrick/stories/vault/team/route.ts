@@ -3,13 +3,52 @@ import { createClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 
-// GET: Fetch all shared team vault stories, sorted by score.
-//
-// This endpoint acts as a global feed — any entry with shared_to_team = true
-// is visible. Per-team scoping would require an org/team id on
-// story_vault_entries, which is TODO. Until then, we at least require that
-// the caller identify themselves (authenticated Supabase session, or an
-// email in the query string for the vbrick public demo path).
+// "Team" is the caller's email domain. Two users at @acme.com are on the
+// same team; a user at @gmail.com has no team (personal email providers
+// are treated as "no team" and get an empty feed rather than a shared
+// inbox of strangers' stories).
+const FREE_EMAIL_PROVIDERS = new Set([
+  'gmail.com',
+  'googlemail.com',
+  'yahoo.com',
+  'yahoo.co.uk',
+  'hotmail.com',
+  'hotmail.co.uk',
+  'outlook.com',
+  'live.com',
+  'icloud.com',
+  'me.com',
+  'mac.com',
+  'aol.com',
+  'protonmail.com',
+  'proton.me',
+  'pm.me',
+  'gmx.com',
+  'gmx.us',
+  'zoho.com',
+  'mail.com',
+  'yandex.com',
+  'yandex.ru',
+  'fastmail.com',
+  'hey.com',
+  'tutanota.com',
+  'tuta.io',
+  'duck.com',
+])
+
+function extractDomain(email: string): string | null {
+  const at = email.indexOf('@')
+  if (at === -1 || at === email.length - 1) return null
+  const domain = email.slice(at + 1).toLowerCase().trim()
+  // Defensive: only allow standard DNS-label characters so this value is
+  // safe to interpolate into an ILIKE pattern (Supabase parameterizes the
+  // value too, but belt-and-braces).
+  if (!/^[a-z0-9.-]+$/.test(domain)) return null
+  return domain
+}
+
+// GET: Fetch team vault stories shared by peers on the caller's email
+// domain, sorted by score.
 export async function GET(request: Request) {
   const supabase = await createClient()
   const {
@@ -18,15 +57,23 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url)
   const fallbackEmail = searchParams.get('email')
+  const callerEmail = user?.email || fallbackEmail
 
-  if (!user?.email && !fallbackEmail) {
+  if (!callerEmail) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const domain = extractDomain(callerEmail)
+  if (!domain || FREE_EMAIL_PROVIDERS.has(domain)) {
+    // Personal / free email provider — no company team, empty feed.
+    return NextResponse.json({ vault: [] })
   }
 
   const { data, error } = await supabase
     .from('story_vault_entries')
     .select('*')
     .eq('shared_to_team', true)
+    .ilike('bdr_email', `%@${domain}`)
     .order('composite_score', { ascending: false })
     .limit(50)
 
