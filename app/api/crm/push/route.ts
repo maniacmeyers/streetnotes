@@ -6,6 +6,8 @@ import { pushToHubSpot } from '@/lib/crm/push/hubspot'
 import { pushToPipedrive } from '@/lib/crm/push/pipedrive'
 import type { CRMNote } from '@/lib/notes/schema'
 import type { PushResult, CachedStage } from '@/lib/crm/push/types'
+import type { PushPlan, CrmSchema } from '@/lib/crm/schema/types'
+import { getCachedSchema } from '@/lib/crm/schema/cache'
 
 /**
  * POST /api/crm/push
@@ -54,8 +56,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
-  const structured = note.structured_output as CRMNote | null
-  if (!structured) {
+  // The structured_output may be the new { crmNote, pushPlan } shape or the legacy CRMNote shape
+  let crmNote: CRMNote | null = null
+  let pushPlan: PushPlan | undefined
+
+  if (note.structured_output) {
+    if ('crmNote' in (note.structured_output as Record<string, unknown>)) {
+      const output = note.structured_output as { crmNote: CRMNote; pushPlan?: PushPlan }
+      crmNote = output.crmNote
+      pushPlan = output.pushPlan
+    } else {
+      crmNote = note.structured_output as CRMNote
+    }
+  }
+
+  if (!crmNote) {
     return NextResponse.json({ error: 'Note has no structured output' }, { status: 400 })
   }
 
@@ -101,6 +116,13 @@ export async function POST(request: NextRequest) {
     cachedStages = stageCache.stages as CachedStage[]
   }
 
+  // Load CRM schema if pushPlan exists (needed for field metadata)
+  let crmSchema: CrmSchema | null = null
+  if (pushPlan && (crmType === 'salesforce' || crmType === 'hubspot')) {
+    const cached = await getCachedSchema(supabase, user.id, crmType)
+    if (cached) crmSchema = cached.schema
+  }
+
   // Create pending push log entry
   const { data: logEntry, error: logError } = await supabase
     .from('crm_push_log')
@@ -129,21 +151,21 @@ export async function POST(request: NextRequest) {
 
   try {
     if (crmType === 'salesforce') {
-      pushResult = await pushToSalesforce(tokens, structured, {
+      pushResult = await pushToSalesforce(tokens, crmNote, {
         existingContactId: body.existingContactId,
         existingDealId: body.existingDealId,
         dealStageCrmValue: body.dealStageCrmValue,
         cachedStages,
-      })
+      }, pushPlan, crmSchema)
     } else if (crmType === 'hubspot') {
-      pushResult = await pushToHubSpot(tokens, structured, {
+      pushResult = await pushToHubSpot(tokens, crmNote, {
         existingContactId: body.existingContactId,
         existingDealId: body.existingDealId,
         dealStageCrmValue: body.dealStageCrmValue,
         cachedStages,
-      })
+      }, pushPlan, crmSchema)
     } else if (crmType === 'pipedrive') {
-      pushResult = await pushToPipedrive(tokens, structured, {
+      pushResult = await pushToPipedrive(tokens, crmNote, {
         existingContactId: body.existingContactId,
         existingDealId: body.existingDealId,
         dealStageCrmValue: body.dealStageCrmValue,

@@ -1,6 +1,8 @@
 import type { CRMNote } from '@/lib/notes/schema'
 import type { DecryptedTokens, PushResult, PushOptions, CrmCandidate } from './types'
+import type { PushPlan, CrmSchema } from '@/lib/crm/schema/types'
 import { mapDealStage, parseEstimatedValue, parseName } from './stage-mapper'
+import { buildObjectProps, resolveStageValue, buildActivityBody, shouldCreateTasks } from './plan-applier'
 
 const API_VERSION = 'v59.0'
 
@@ -224,7 +226,9 @@ async function createTask(
 export async function pushToSalesforce(
   tokens: DecryptedTokens,
   structured: CRMNote,
-  options: PushOptions
+  options: PushOptions,
+  pushPlan?: PushPlan,
+  schema?: CrmSchema | null
 ): Promise<PushResult> {
   const result: PushResult = { success: false }
 
@@ -274,19 +278,32 @@ export async function pushToSalesforce(
     // Update existing opportunity
     const updateFields: Partial<OppFields> = {}
 
-    if (options.dealStageCrmValue) {
-      updateFields.StageName = options.dealStageCrmValue
-    } else if (structured.dealStage && options.cachedStages) {
-      const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'salesforce')
-      if (mapped) updateFields.StageName = mapped.value
-      else result.unmappedStage = true
+    if (pushPlan) {
+      const oppProps = buildObjectProps(pushPlan, 'opportunity', structured, schema ?? null)
+      // Handle stage separately since it needs fuzzy matching
+      if (options.dealStageCrmValue) {
+        oppProps.StageName = options.dealStageCrmValue
+      } else {
+        const stageResult = resolveStageValue(pushPlan, structured, options.cachedStages ?? [], 'salesforce')
+        if (stageResult) oppProps.StageName = stageResult.value
+        else if (structured.dealStage) result.unmappedStage = true
+      }
+      Object.assign(updateFields, oppProps)
+    } else {
+      if (options.dealStageCrmValue) {
+        updateFields.StageName = options.dealStageCrmValue
+      } else if (structured.dealStage && options.cachedStages) {
+        const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'salesforce')
+        if (mapped) updateFields.StageName = mapped.value
+        else result.unmappedStage = true
+      }
+
+      const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
+      if (amount !== null) updateFields.Amount = amount
+
+      if (structured.opportunityNotes) updateFields.Description = structured.opportunityNotes
+      if (structured.closeDate) updateFields.CloseDate = structured.closeDate
     }
-
-    const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
-    if (amount !== null) updateFields.Amount = amount
-
-    if (structured.opportunityNotes) updateFields.Description = structured.opportunityNotes
-    if (structured.closeDate) updateFields.CloseDate = structured.closeDate
 
     if (Object.keys(updateFields).length > 0) {
       const updateResult = await updateOpportunity(tokens, dealId, updateFields)
@@ -318,35 +335,63 @@ export async function pushToSalesforce(
 
     if (!dealId) {
       // Create new opportunity
-      let stageName: string | undefined
-      if (options.dealStageCrmValue) {
-        stageName = options.dealStageCrmValue
-      } else if (structured.dealStage && options.cachedStages) {
-        const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'salesforce')
-        if (mapped) stageName = mapped.value
-        else result.unmappedStage = true
-      }
-
-      // Salesforce requires StageName — fall back to first non-closed stage
-      if (!stageName && options.cachedStages && options.cachedStages.length > 0) {
-        const open = options.cachedStages.find(s => !s.isClosed)
-        stageName = open?.value ?? options.cachedStages[0].value
-      }
-
-      const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
-
       // Salesforce requires CloseDate — default 90 days out
       const closeDate = structured.closeDate || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-
       const oppName = [structured.company, structured.contactName].filter(Boolean).join(' - ') || 'New Opportunity'
 
       const oppFields: OppFields = {
         Name: oppName,
         CloseDate: closeDate,
       }
-      if (stageName) oppFields.StageName = stageName
-      if (amount !== null) oppFields.Amount = amount
-      if (structured.opportunityNotes) oppFields.Description = structured.opportunityNotes
+
+      if (pushPlan) {
+        const oppProps = buildObjectProps(pushPlan, 'opportunity', structured, schema ?? null)
+        // Handle stage separately since it needs fuzzy matching
+        if (options.dealStageCrmValue) {
+          oppProps.StageName = options.dealStageCrmValue
+        } else {
+          const stageResult = resolveStageValue(pushPlan, structured, options.cachedStages ?? [], 'salesforce')
+          if (stageResult) oppProps.StageName = stageResult.value
+          else if (structured.dealStage) result.unmappedStage = true
+        }
+        // Salesforce requires StageName — fall back to first non-closed stage
+        if (!oppProps.StageName && options.cachedStages && options.cachedStages.length > 0) {
+          const open = options.cachedStages.find(s => !s.isClosed)
+          oppProps.StageName = open?.value ?? options.cachedStages[0].value
+        }
+        // Override CloseDate if plan provided one
+        if (oppProps.CloseDate && typeof oppProps.CloseDate === 'string') {
+          oppFields.CloseDate = oppProps.CloseDate
+          delete oppProps.CloseDate
+        }
+        // Override Name if plan provided one
+        if (oppProps.Name && typeof oppProps.Name === 'string') {
+          oppFields.Name = oppProps.Name
+          delete oppProps.Name
+        }
+        Object.assign(oppFields, oppProps)
+      } else {
+        let stageName: string | undefined
+        if (options.dealStageCrmValue) {
+          stageName = options.dealStageCrmValue
+        } else if (structured.dealStage && options.cachedStages) {
+          const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'salesforce')
+          if (mapped) stageName = mapped.value
+          else result.unmappedStage = true
+        }
+
+        // Salesforce requires StageName — fall back to first non-closed stage
+        if (!stageName && options.cachedStages && options.cachedStages.length > 0) {
+          const open = options.cachedStages.find(s => !s.isClosed)
+          stageName = open?.value ?? options.cachedStages[0].value
+        }
+
+        const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
+
+        if (stageName) oppFields.StageName = stageName
+        if (amount !== null) oppFields.Amount = amount
+        if (structured.opportunityNotes) oppFields.Description = structured.opportunityNotes
+      }
 
       // Link to account if we found/created one via contact
       if (contactId && structured.company) {
@@ -369,7 +414,9 @@ export async function pushToSalesforce(
   // ---- Step 3: Tasks from nextSteps ----
   const taskIds: string[] = []
 
-  if (structured.nextSteps) {
+  const createTasks = pushPlan ? shouldCreateTasks(pushPlan) : !!structured.nextSteps
+
+  if (createTasks && structured.nextSteps) {
     for (const step of structured.nextSteps) {
       if (step.owner !== 'rep') continue
 
@@ -393,24 +440,32 @@ export async function pushToSalesforce(
   if (taskIds.length > 0) result.taskIds = taskIds
 
   // ---- Step 4: Activity log (completed task with meeting notes) ----
-  const summaryParts: string[] = []
-  if (structured.meetingSummary) {
-    summaryParts.push('Meeting Summary:', ...structured.meetingSummary.map(s => `- ${s}`))
-  }
-  if (structured.opportunityNotes) {
-    summaryParts.push('', 'Opportunity Notes:', structured.opportunityNotes)
-  }
-  if (structured.painPoints && structured.painPoints.length > 0) {
-    summaryParts.push('', 'Pain Points:', ...structured.painPoints.map(p => `- ${p}`))
+  let activityDescription: string | null = null
+
+  if (pushPlan) {
+    const body = buildActivityBody(pushPlan, structured, schema ?? null)
+    if (body) activityDescription = body
+  } else {
+    const summaryParts: string[] = []
+    if (structured.meetingSummary) {
+      summaryParts.push('Meeting Summary:', ...structured.meetingSummary.map(s => `- ${s}`))
+    }
+    if (structured.opportunityNotes) {
+      summaryParts.push('', 'Opportunity Notes:', structured.opportunityNotes)
+    }
+    if (structured.painPoints && structured.painPoints.length > 0) {
+      summaryParts.push('', 'Pain Points:', ...structured.painPoints.map(p => `- ${p}`))
+    }
+    if (summaryParts.length > 0) activityDescription = summaryParts.join('\n')
   }
 
-  if (summaryParts.length > 0) {
+  if (activityDescription) {
     const today = new Date().toISOString().split('T')[0]
     const subject = `Meeting Notes - ${structured.contactName || 'Unknown'} - ${today}`
 
     const noteId = await createTask(tokens, {
       Subject: subject,
-      Description: summaryParts.join('\n'),
+      Description: activityDescription,
       Status: 'Completed',
       Priority: 'Normal',
       WhoId: contactId ?? null,

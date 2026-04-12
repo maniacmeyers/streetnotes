@@ -188,3 +188,73 @@ export const structureUserPrompt = (transcript: string) =>
 ---
 ${transcript}
 ---`
+
+export function buildSchemaBlock(schemaJson: string): string {
+  return `## CRM SCHEMA
+
+The user's connected CRM has the following writable fields. Use ONLY field names from this schema when producing the pushPlan. Never invent field names.
+
+<crm_schema>
+${schemaJson}
+</crm_schema>`
+}
+
+export function buildStickyRulesBlock(rules: Array<{ sourceField: string; targetObject: string; targetField: string }>): string {
+  if (rules.length === 0) return ''
+  const lines = rules.map(r => `- ${r.sourceField} \u2192 ${r.targetObject}.${r.targetField}`)
+  return `## STICKY RULES (user overrides \u2014 always honor these)
+
+${lines.join('\n')}
+
+These rules represent the user's explicit field routing preferences. For each rule, assign the source field to the specified target regardless of your own judgment.`
+}
+
+export const PUSH_PLAN_INSTRUCTIONS = `## PUSH PLAN
+
+In addition to the CRM note extraction above, you MUST also produce a pushPlan object that maps each extracted value to the best-fit CRM field from the schema provided.
+
+RULES FOR PUSH PLAN:
+1. Use ONLY field names that appear in the CRM schema. Never invent field API names.
+2. Prefer standard fields over custom fields unless a custom field's label strongly and unambiguously matches the semantic meaning (e.g. a custom field labeled "Pain Point" for painPoints, or "Budget" for estimatedValue).
+3. Respect sticky rules (listed separately) \u2014 they always win.
+4. When uncertain whether a custom field fits, set confidence to "low" and explain in reason.
+5. Include a valuePreview for each assignment \u2014 a truncated string preview of the value being mapped.
+6. Set isCustomField to true for any custom CRM field (Salesforce: ends in __c; HubSpot: not hubspotDefined).
+7. If no CRM schema is provided, set crmType to "none" and return an empty assignments array.
+8. Map contactName to both FirstName and LastName targets (the push code handles splitting).
+9. Map nextSteps to the Task target \u2014 the push code handles creating individual tasks.
+10. For dealStage, map to the stage picklist field \u2014 the push code handles fuzzy matching to picklist values.`
+
+export const PUSH_PLAN_FEW_SHOT_SF = {
+  role: 'assistant' as const,
+  content: JSON.stringify({
+    crmNote: {
+      contactName: 'Sarah Chen',
+      contactNameConfidence: 'high',
+      company: 'Acme Corp',
+      companyConfidence: 'high',
+      dealStage: 'Demo / Evaluation',
+      dealStageConfidence: 'medium',
+      estimatedValue: '$150K ARR',
+      estimatedValueConfidence: 'high',
+      painPoints: ['Current tool pricing ($200K/yr)', 'Migration complexity'],
+      meetingSummary: ['Demo scheduled with engineering team next week'],
+      nextSteps: [{ task: 'Send migration playbook', owner: 'rep', dueDate: 'Friday', priority: 'high', confidence: 'high' }],
+      opportunityNotes: 'Met with Sarah Chen at Acme Corp to discuss replacing Datadog.',
+    },
+    pushPlan: {
+      crmType: 'salesforce',
+      assignments: [
+        { sourceField: 'contactName', targetObject: 'contact', targetField: 'FirstName', valuePreview: 'Sarah', confidence: 'high', isCustomField: false },
+        { sourceField: 'contactName', targetObject: 'contact', targetField: 'LastName', valuePreview: 'Chen', confidence: 'high', isCustomField: false },
+        { sourceField: 'company', targetObject: 'account', targetField: 'Name', valuePreview: 'Acme Corp', confidence: 'high', isCustomField: false },
+        { sourceField: 'dealStage', targetObject: 'opportunity', targetField: 'StageName', valuePreview: 'Demo / Evaluation', confidence: 'medium', isCustomField: false },
+        { sourceField: 'estimatedValue', targetObject: 'opportunity', targetField: 'Amount', valuePreview: '150000', confidence: 'high', isCustomField: false },
+        { sourceField: 'opportunityNotes', targetObject: 'opportunity', targetField: 'Description', valuePreview: 'Met with Sarah Chen at Acme Corp...', confidence: 'high', isCustomField: false },
+        { sourceField: 'painPoints', targetObject: 'opportunity', targetField: 'Custom_Pain_Points__c', valuePreview: 'Current tool pricing / Migration complexity', confidence: 'medium', reason: 'Custom field label matches semantic meaning', isCustomField: true },
+        { sourceField: 'meetingSummary', targetObject: 'activity', targetField: 'Task.Description', valuePreview: 'Demo scheduled with engineering team...', confidence: 'high', isCustomField: false },
+        { sourceField: 'nextSteps', targetObject: 'activity', targetField: 'Task.NextSteps', valuePreview: 'Send migration playbook', confidence: 'high', isCustomField: false },
+      ],
+    },
+  }),
+}

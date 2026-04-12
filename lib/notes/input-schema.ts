@@ -85,3 +85,35 @@ export const CRM_NOTE_INPUT_SCHEMA = {
     attendees: { type: 'array', items: attendeeSchema },
   },
 } as const
+
+const pushAssignmentSchema = {
+  type: 'object' as const,
+  properties: {
+    sourceField: { type: 'string' },
+    targetObject: { type: 'string', enum: ['contact', 'account', 'opportunity', 'activity'] },
+    targetField: { type: 'string' },
+    valuePreview: { type: 'string', maxLength: 240 },
+    confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
+    reason: { type: 'string', maxLength: 240 },
+    isCustomField: { type: 'boolean' },
+  },
+  required: ['sourceField', 'targetObject', 'targetField', 'valuePreview', 'confidence'],
+}
+
+const pushPlanSchema = {
+  type: 'object' as const,
+  properties: {
+    crmType: { type: 'string', enum: ['salesforce', 'hubspot', 'none'] },
+    assignments: { type: 'array', items: pushAssignmentSchema },
+  },
+  required: ['crmType', 'assignments'],
+}
+
+export const CRM_NOTE_WITH_PLAN_INPUT_SCHEMA = {
+  type: 'object' as const,
+  properties: {
+    crmNote: CRM_NOTE_INPUT_SCHEMA,
+    pushPlan: pushPlanSchema,
+  },
+  required: ['crmNote', 'pushPlan'],
+}

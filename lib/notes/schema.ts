@@ -72,3 +72,27 @@ export const CRMNoteSchema = z.object({
 })
 
 export type CRMNote = z.infer<typeof CRMNoteSchema>
+
+export const PushAssignmentSchema = z.object({
+  sourceField: z.string(),
+  targetObject: z.enum(['contact', 'account', 'opportunity', 'activity']),
+  targetField: z.string(),
+  valuePreview: z.string().max(240),
+  confidence: z.enum(['high', 'medium', 'low']),
+  reason: z.string().max(240).optional(),
+  isCustomField: z.boolean().optional(),
+})
+
+export const PushPlanSchema = z.object({
+  crmType: z.enum(['salesforce', 'hubspot', 'none']),
+  assignments: z.array(PushAssignmentSchema),
+})
+
+export type PushPlanZod = z.infer<typeof PushPlanSchema>
+
+export const StructuredOutputSchema = z.object({
+  crmNote: CRMNoteSchema,
+  pushPlan: PushPlanSchema.optional(),
+})
+
+export type StructuredOutput = z.infer<typeof StructuredOutputSchema>

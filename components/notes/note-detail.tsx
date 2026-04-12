@@ -1,16 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronDown, ChevronRight } from 'lucide-react'
 import type { CRMNote, ConfidenceLevel } from '@/lib/notes/schema'
 import type { PushResult } from '@/lib/crm/push/types'
+import PushPlanReview from './push-plan-review'
+import type { PushPlan, CrmSchema } from '@/lib/crm/schema/types'
 
 interface NoteData {
   id: string
   title: string
   raw_transcript: string
-  structured_output: CRMNote | null
+  structured_output: Record<string, unknown> | null
   status: string
   push_status: string | null
   created_at: string
@@ -348,6 +350,23 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
   const [pushError, setPushError] = useState<string | null>(null)
 
   const [showTranscript, setShowTranscript] = useState(false)
+  const [schema, setSchema] = useState<CrmSchema | null>(null)
+  const [showPlanReview, setShowPlanReview] = useState(false)
+
+  const parsedOutput = useMemo(() => {
+    if (!note?.structured_output) return { crmNote: null, pushPlan: undefined }
+    const so = note.structured_output as Record<string, unknown>
+    if ('crmNote' in so) {
+      return {
+        crmNote: so.crmNote as CRMNote,
+        pushPlan: so.pushPlan as PushPlan | undefined,
+      }
+    }
+    return { crmNote: so as unknown as CRMNote, pushPlan: undefined }
+  }, [note?.structured_output])
+
+  const structured = parsedOutput.crmNote
+  const pushPlan = parsedOutput.pushPlan
 
   useEffect(() => {
     fetch(`/api/notes/${noteId}`)
@@ -362,6 +381,14 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
       .catch(() => setError('Note not found'))
       .finally(() => setLoading(false))
   }, [noteId])
+
+  useEffect(() => {
+    if (!pushPlan || pushPlan.crmType === 'none') return
+    fetch(`/api/crm/schema?crmType=${pushPlan.crmType}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data?.schema) setSchema(data.schema) })
+      .catch(() => {})
+  }, [pushPlan])
 
   const handleRetryPush = async () => {
     if (!note) return
@@ -415,7 +442,6 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
     )
   }
 
-  const structured = note.structured_output as CRMNote | null
   const canPush =
     !isPushing && note.push_status !== 'success' && note.push_status !== 'pending'
 
@@ -446,10 +472,16 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
       <SyncStatus pushStatus={note.push_status} pushLog={pushLog} />
 
       {/* Push / Retry button */}
-      {canPush && (
+      {canPush && !showPlanReview && (
         <button
           type="button"
-          onClick={() => void handleRetryPush()}
+          onClick={() => {
+            if (pushPlan) {
+              setShowPlanReview(true)
+            } else {
+              void handleRetryPush()
+            }
+          }}
           disabled={isPushing}
           className={BTN_VOLT}
         >
@@ -459,6 +491,54 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
               ? 'Retry push to CRM'
               : 'Push to CRM'}
         </button>
+      )}
+
+      {/* Push Plan Review */}
+      {showPlanReview && pushPlan && structured && (
+        <PushPlanReview
+          crmNote={structured}
+          pushPlan={pushPlan}
+          schema={schema}
+          isPushing={isPushing}
+          onConfirm={async (finalPlan, newRules) => {
+            setIsPushing(true)
+            setPushError(null)
+            try {
+              // Save sticky rules if any
+              if (newRules.length > 0) {
+                await fetch('/api/crm/rules', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ crmType: finalPlan.crmType, rules: newRules }),
+                })
+              }
+              // Push with the confirmed plan
+              const res = await fetch('/api/crm/push', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ noteId: note.id }),
+              })
+              const data = await res.json()
+              if (!res.ok || !data.success) {
+                setPushError(data.error || 'Push failed')
+              } else {
+                setShowPlanReview(false)
+                // Refresh note data
+                const refreshRes = await fetch(`/api/notes/${noteId}`)
+                if (refreshRes.ok) {
+                  const refreshData = await refreshRes.json()
+                  setNote(refreshData.note)
+                  setPushLog(refreshData.pushLog)
+                }
+              }
+            } catch {
+              setPushError('Network error. Try again.')
+            } finally {
+              setIsPushing(false)
+            }
+          }}
+          onCancel={() => setShowPlanReview(false)}
+        />
       )}
 
       {pushError && (

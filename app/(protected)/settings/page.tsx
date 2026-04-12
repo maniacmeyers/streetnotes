@@ -1,7 +1,7 @@
-import { Suspense } from 'react'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
-import CrmConnections from '@/components/settings/crm-connections'
+import UserSetup from '@/components/settings/user-setup'
+import ActivityExport from '@/components/settings/activity-export'
 
 export default function SettingsPage() {
   return (
@@ -29,21 +29,25 @@ export default function SettingsPage() {
       <section className="flex flex-col gap-4">
         <div>
           <h2 className="font-display uppercase text-lg text-white leading-none">
-            CRM Connections
+            Your Setup
           </h2>
           <p className="font-body text-sm text-white/60 mt-1.5">
-            Connect your CRM to push notes straight to your pipeline.
+            Pick your CRM and pipeline. Notes push where you tell them.
           </p>
         </div>
-        <Suspense
-          fallback={
-            <div className="rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] flex items-center justify-center py-12">
-              <div className="w-6 h-6 border-2 border-volt border-t-transparent rounded-full animate-spin" />
-            </div>
-          }
-        >
-          <CrmConnections />
-        </Suspense>
+        <UserSetup />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <div>
+          <h2 className="font-display uppercase text-lg text-white leading-none">
+            Export Activity
+          </h2>
+          <p className="font-body text-sm text-white/60 mt-1.5">
+            Download your notes as a CSV for manual CRM import.
+          </p>
+        </div>
+        <ActivityExport />
       </section>
     </div>
   )

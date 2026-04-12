@@ -16,7 +16,10 @@ npm run dev          # Start dev server (localhost:3000)
 npm run build        # Production build
 npm run lint         # ESLint
 npm start            # Start production server
+node screenshot-mobile.js  # Playwright mobile-viewport screenshot utility
 ```
+
+No test runner is configured. Playwright is installed for screenshot/automation utilities only.
 
 ## Tech Stack
 
@@ -25,7 +28,7 @@ npm start            # Start production server
 - **Database/Auth:** Supabase (PostgreSQL + Auth via `@supabase/ssr`)
 - **Transcription:** OpenAI Whisper API (`whisper-1` model)
 - **AI Structuring:** Anthropic Claude API (`@anthropic-ai/sdk`, Sonnet 4.6 via tool_use)
-- **CRM Targets:** Salesforce (jsforce v3) + HubSpot (`@hubspot/api-client`) — Phase 4+
+- **CRM Targets:** Salesforce (REST API v59.0) + HubSpot (CRM v3 API) — called directly via `fetch`, no SDK
 - **Voice Capture:** Native MediaRecorder API (custom hook, no library)
 
 ## Architecture
@@ -123,7 +126,7 @@ See `.env.local.example`. Never commit `.env.local`.
 
 ## Build Progress
 
-Phases 1-5 are complete. Phase 6 (Review UI + Dashboard) is next.
+The original 6-phase voice-to-CRM build is complete. The codebase has since grown to include several adjacent surfaces (Story Vault, CI dashboard, user-memory) — see "Adjacent Surfaces" below. Always check `.planning/STATE.md` for current position before assuming what's next.
 
 Full roadmap and execution plans live in `.planning/`:
 - `.planning/PROJECT.md` — Core requirements and decisions
@@ -176,13 +179,39 @@ Missing (paid): auto-push to CRM, follow-ups scheduled automatically, deal histo
 ### Important: NOT a coaching tool
 StreetNotes does NOT do deal coaching, pattern recognition, buyer psychology, or objection diagnostics. That's Gong's lane. StreetNotes extracts CRM-ready data from voice and pushes it to the CRM. The differentiator is the CRM integration, not the analysis.
 
+## Adjacent Surfaces
+
+Beyond the core voice→CRM pipeline and `/debrief` lead magnet, the repo houses several feature surfaces that share the same Next.js app and Supabase instance. Treat them as first-class, not dead code.
+
+### Story Vault + Story Challenges
+Story drafting, practice, scoring, and gamification — BDRs build elevator pitches, Feel-Felt-Found responses, and ABT customer stories, then share practice challenges via public tokenized links.
+- Routes: `app/challenge/[token]/` (public share page + OG image)
+- Components: `components/streetnotes/stories/`, `components/streetnotes/brutal/`
+- Migrations: `006_story_vault.sql` (drafts, practice, scores), `012_story_challenges.sql` (shared challenge tokens)
+
+### Competitive Intelligence Dashboard
+Public CI dashboard showing sentiment/category heatmaps, trend charts, and quote feeds over competitor mentions.
+- Route: `app/ci/` (public)
+- Components: `components/ci/` (`heatmap-grid`, `quote-feed`, `trend-chart`), `components/streetnotes/ci/`
+- Lib: `lib/ci/pipeline.ts`, `lib/ci/types.ts` (sentiment + mention category taxonomy)
+- Migration: `005_ci_dashboard.sql`
+- API: `app/api/ci/*`
+
+### User Memory (entity aggregation)
+Per-user rolling memory of entities (contacts, accounts, products, competitors) extracted from prior notes. Used to improve CRM extraction accuracy by giving Claude known-entity context.
+- Lib: `lib/user-memory/server.ts` (5-min cached load over most recent 100 notes), `lib/user-memory/scoring.ts` (entity aggregation), `lib/user-memory/reconcile.ts`
+- Consumed by `/api/structure` to prime the extraction prompt
+
+### Vbrick surfaces
+The repo also contains `app/vbrick/`, `app/vbrick-site/`, `lib/vbrick/`, `lib/deepgram/`, and migrations 004/007/008/009/011 — these are a separate tenant served from `vbrick.streetnotes.ai` (see host-based rewrite in `middleware.ts`). Not documented here; treat as a sibling app sharing the codebase.
+
 ## Key Decisions (Do Not Override)
 
 - Use `@supabase/ssr` — the older `@supabase/auth-helpers-nextjs` is deprecated
 - `tailwindcss-safe-area@0.1.0` — v1.3.0 breaks webpack in Next.js 14
 - Keep `/api/transcribe` separate from AI structuring — retry isolation
 - User always reviews structured output before CRM push — no auto-push
-- Public routes: `/login`, `/sign-up`, `/auth`, `/debrief` — all others require auth
+- Public routes (see `lib/supabase/middleware.ts`): `/`, `/login`, `/sign-up`, `/auth/*`, `/api/*`, `/debrief/*`, `/vbrick/*`, `/vbrick-site/*`, `/ci/*`, `/sw.js`, `/manifest.webmanifest`. The `/challenge/[token]` route is public via token-based access. Everything else requires auth.
 - Mobile-first layout: `max-w-md mx-auto` with thumb-friendly 44px min tap targets
 
 ## Ideabrowser Project
@@ -200,3 +229,109 @@ Direct. Fast. Zero fluff. Speaks like a rep, not a SaaS startup. No buzzwords. N
 - Never use: "leverage," "synergy," "robust," "seamlessly," "game-changer," "revolutionary," "empower," "enable," "solution," "platform"
 - Profanity OK when natural. No emoji in product copy.
 - Full voice profile saved in Ideabrowser context files.
+
+## Code Intelligence
+
+This project uses CodeGraph and GitNexus for codebase knowledge graphs. Always use the codegraph and gitnexus MCP tools to understand code structure before exploring files directly.
+
+<!-- gitnexus:start -->
+# GitNexus — Code Intelligence
+
+This project is indexed by GitNexus as **Streetnotes** (1829 symbols, 3379 relationships, 69 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+
+> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
+
+## Always Do
+
+- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
+- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
+- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
+- When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
+- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
+
+## When Debugging
+
+1. `gitnexus_query({query: "<error or symptom>"})` — find execution flows related to the issue
+2. `gitnexus_context({name: "<suspect function>"})` — see all callers, callees, and process participation
+3. `READ gitnexus://repo/Streetnotes/process/{processName}` — trace the full execution flow step by step
+4. For regressions: `gitnexus_detect_changes({scope: "compare", base_ref: "main"})` — see what your branch changed
+
+## When Refactoring
+
+- **Renaming**: MUST use `gitnexus_rename({symbol_name: "old", new_name: "new", dry_run: true})` first. Review the preview — graph edits are safe, text_search edits need manual review. Then run with `dry_run: false`.
+- **Extracting/Splitting**: MUST run `gitnexus_context({name: "target"})` to see all incoming/outgoing refs, then `gitnexus_impact({target: "target", direction: "upstream"})` to find all external callers before moving code.
+- After any refactor: run `gitnexus_detect_changes({scope: "all"})` to verify only expected files changed.
+
+## Never Do
+
+- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
+- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
+- NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
+- NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
+
+## Tools Quick Reference
+
+| Tool | When to use | Command |
+|------|-------------|---------|
+| `query` | Find code by concept | `gitnexus_query({query: "auth validation"})` |
+| `context` | 360-degree view of one symbol | `gitnexus_context({name: "validateUser"})` |
+| `impact` | Blast radius before editing | `gitnexus_impact({target: "X", direction: "upstream"})` |
+| `detect_changes` | Pre-commit scope check | `gitnexus_detect_changes({scope: "staged"})` |
+| `rename` | Safe multi-file rename | `gitnexus_rename({symbol_name: "old", new_name: "new", dry_run: true})` |
+| `cypher` | Custom graph queries | `gitnexus_cypher({query: "MATCH ..."})` |
+
+## Impact Risk Levels
+
+| Depth | Meaning | Action |
+|-------|---------|--------|
+| d=1 | WILL BREAK — direct callers/importers | MUST update these |
+| d=2 | LIKELY AFFECTED — indirect deps | Should test |
+| d=3 | MAY NEED TESTING — transitive | Test if critical path |
+
+## Resources
+
+| Resource | Use for |
+|----------|---------|
+| `gitnexus://repo/Streetnotes/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/Streetnotes/clusters` | All functional areas |
+| `gitnexus://repo/Streetnotes/processes` | All execution flows |
+| `gitnexus://repo/Streetnotes/process/{name}` | Step-by-step execution trace |
+
+## Self-Check Before Finishing
+
+Before completing any code modification task, verify:
+1. `gitnexus_impact` was run for all modified symbols
+2. No HIGH/CRITICAL risk warnings were ignored
+3. `gitnexus_detect_changes()` confirms changes match expected scope
+4. All d=1 (WILL BREAK) dependents were updated
+
+## Keeping the Index Fresh
+
+After committing code changes, the GitNexus index becomes stale. Re-run analyze to update it:
+
+```bash
+npx gitnexus analyze
+```
+
+If the index previously included embeddings, preserve them by adding `--embeddings`:
+
+```bash
+npx gitnexus analyze --embeddings
+```
+
+To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.embeddings` field shows the count (0 means no embeddings). **Running analyze without `--embeddings` will delete any previously generated embeddings.**
+
+> Claude Code users: A PostToolUse hook handles this automatically after `git commit` and `git merge`.
+
+## CLI
+
+| Task | Read this skill file |
+|------|---------------------|
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
+| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
+| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
+| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+
+<!-- gitnexus:end -->

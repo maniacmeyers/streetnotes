@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { encryptToken } from '@/lib/crm/encryption'
+import { fetchHubspotSchema } from '@/lib/crm/hubspot'
+import { storeCachedSchema } from '@/lib/crm/schema/cache'
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
@@ -76,6 +78,16 @@ export async function GET(request: NextRequest) {
       new URL('/settings?error=db_save_failed', request.url)
     )
   }
+
+  // Fire-and-forget schema warm — failures are caught and don't block the redirect
+  void (async () => {
+    try {
+      const crmSchema = await fetchHubspotSchema(supabase, user.id)
+      await storeCachedSchema(supabase, user.id, 'hubspot', crmSchema)
+    } catch (err) {
+      console.error('Schema warm failed (non-blocking):', err)
+    }
+  })()
 
   const response = NextResponse.redirect(
     new URL('/settings?connected=hubspot', request.url)

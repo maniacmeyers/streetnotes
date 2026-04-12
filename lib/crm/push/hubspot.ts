@@ -1,6 +1,8 @@
 import type { CRMNote } from '@/lib/notes/schema'
 import type { DecryptedTokens, PushResult, PushOptions, CrmCandidate } from './types'
+import type { PushPlan, CrmSchema } from '@/lib/crm/schema/types'
 import { mapDealStage, parseEstimatedValue, parseName } from './stage-mapper'
+import { buildObjectProps, resolveStageValue, buildActivityBody, shouldCreateTasks } from './plan-applier'
 
 const HS_API = 'https://api.hubapi.com'
 
@@ -230,7 +232,9 @@ async function searchDeals(
 export async function pushToHubSpot(
   tokens: DecryptedTokens,
   structured: CRMNote,
-  options: PushOptions
+  options: PushOptions,
+  pushPlan?: PushPlan,
+  schema?: CrmSchema | null
 ): Promise<PushResult> {
   const result: PushResult = { success: false }
 
@@ -285,18 +289,33 @@ export async function pushToHubSpot(
     // Update existing deal
     const properties: Record<string, string> = {}
 
-    if (options.dealStageCrmValue) {
-      properties.dealstage = options.dealStageCrmValue
-    } else if (structured.dealStage && options.cachedStages) {
-      const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'hubspot')
-      if (mapped) properties.dealstage = mapped.value
-      else result.unmappedStage = true
-    }
+    if (pushPlan) {
+      const dealProps = buildObjectProps(pushPlan, 'opportunity', structured, schema ?? null)
+      // Handle stage separately since it needs fuzzy matching
+      if (options.dealStageCrmValue) {
+        dealProps.dealstage = options.dealStageCrmValue
+      } else {
+        const stageResult = resolveStageValue(pushPlan, structured, options.cachedStages ?? [], 'hubspot')
+        if (stageResult) dealProps.dealstage = stageResult.value
+        else if (structured.dealStage) result.unmappedStage = true
+      }
+      for (const [k, v] of Object.entries(dealProps)) {
+        if (v !== null) properties[k] = String(v)
+      }
+    } else {
+      if (options.dealStageCrmValue) {
+        properties.dealstage = options.dealStageCrmValue
+      } else if (structured.dealStage && options.cachedStages) {
+        const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'hubspot')
+        if (mapped) properties.dealstage = mapped.value
+        else result.unmappedStage = true
+      }
 
-    const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
-    if (amount !== null) properties.amount = amount.toString()
-    if (structured.closeDate) properties.closedate = structured.closeDate
-    if (structured.opportunityNotes) properties.description = structured.opportunityNotes
+      const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
+      if (amount !== null) properties.amount = amount.toString()
+      if (structured.closeDate) properties.closedate = structured.closeDate
+      if (structured.opportunityNotes) properties.description = structured.opportunityNotes
+    }
 
     if (Object.keys(properties).length > 0) {
       const res = await hsFetch(tokens, `/crm/v3/objects/deals/${dealId}`, {
@@ -337,26 +356,52 @@ export async function pushToHubSpot(
 
       properties.dealname = [structured.company, structured.contactName].filter(Boolean).join(' - ') || 'New Deal'
 
-      if (options.dealStageCrmValue) {
-        properties.dealstage = options.dealStageCrmValue
-      } else if (structured.dealStage && options.cachedStages) {
-        const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'hubspot')
-        if (mapped) properties.dealstage = mapped.value
-        else result.unmappedStage = true
+      if (pushPlan) {
+        const dealProps = buildObjectProps(pushPlan, 'opportunity', structured, schema ?? null)
+        // Handle stage separately since it needs fuzzy matching
+        if (options.dealStageCrmValue) {
+          dealProps.dealstage = options.dealStageCrmValue
+        } else {
+          const stageResult = resolveStageValue(pushPlan, structured, options.cachedStages ?? [], 'hubspot')
+          if (stageResult) dealProps.dealstage = stageResult.value
+          else if (structured.dealStage) result.unmappedStage = true
+        }
+        // Default to first stage if nothing mapped
+        if (!dealProps.dealstage && options.cachedStages && options.cachedStages.length > 0) {
+          const first = options.cachedStages[0]
+          dealProps.dealstage = first.stageId ?? first.value
+        }
+        if (options.pipelineId) dealProps.pipeline = options.pipelineId
+        // Override dealname if plan provided one
+        if (dealProps.dealname && typeof dealProps.dealname === 'string') {
+          properties.dealname = dealProps.dealname
+          delete dealProps.dealname
+        }
+        for (const [k, v] of Object.entries(dealProps)) {
+          if (v !== null) properties[k] = String(v)
+        }
+      } else {
+        if (options.dealStageCrmValue) {
+          properties.dealstage = options.dealStageCrmValue
+        } else if (structured.dealStage && options.cachedStages) {
+          const mapped = mapDealStage(structured.dealStage, options.cachedStages, 'hubspot')
+          if (mapped) properties.dealstage = mapped.value
+          else result.unmappedStage = true
+        }
+
+        // Default to first stage if nothing mapped
+        if (!properties.dealstage && options.cachedStages && options.cachedStages.length > 0) {
+          const first = options.cachedStages[0]
+          properties.dealstage = first.stageId ?? first.value
+        }
+
+        if (options.pipelineId) properties.pipeline = options.pipelineId
+
+        const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
+        if (amount !== null) properties.amount = amount.toString()
+        if (structured.closeDate) properties.closedate = structured.closeDate
+        if (structured.opportunityNotes) properties.description = structured.opportunityNotes
       }
-
-      // Default to first stage if nothing mapped
-      if (!properties.dealstage && options.cachedStages && options.cachedStages.length > 0) {
-        const first = options.cachedStages[0]
-        properties.dealstage = first.stageId ?? first.value
-      }
-
-      if (options.pipelineId) properties.pipeline = options.pipelineId
-
-      const amount = structured.estimatedValue ? parseEstimatedValue(structured.estimatedValue) : null
-      if (amount !== null) properties.amount = amount.toString()
-      if (structured.closeDate) properties.closedate = structured.closeDate
-      if (structured.opportunityNotes) properties.description = structured.opportunityNotes
 
       const createRes = await hsFetch(tokens, '/crm/v3/objects/deals', {
         method: 'POST',
@@ -385,24 +430,32 @@ export async function pushToHubSpot(
   if (dealId) result.dealId = dealId
 
   // ---- Step 4: Note (meeting summary) ----
-  const noteParts: string[] = []
-  if (structured.meetingSummary) {
-    noteParts.push('<strong>Meeting Summary</strong><br/>', ...structured.meetingSummary.map(s => `- ${s}<br/>`))
-  }
-  if (structured.opportunityNotes) {
-    noteParts.push('<br/><strong>Opportunity Notes</strong><br/>', structured.opportunityNotes)
-  }
-  if (structured.painPoints && structured.painPoints.length > 0) {
-    noteParts.push('<br/><strong>Pain Points</strong><br/>', ...structured.painPoints.map(p => `- ${p}<br/>`))
+  let noteBody: string | null = null
+
+  if (pushPlan) {
+    const body = buildActivityBody(pushPlan, structured, schema ?? null)
+    if (body) noteBody = body
+  } else {
+    const noteParts: string[] = []
+    if (structured.meetingSummary) {
+      noteParts.push('<strong>Meeting Summary</strong><br/>', ...structured.meetingSummary.map(s => `- ${s}<br/>`))
+    }
+    if (structured.opportunityNotes) {
+      noteParts.push('<br/><strong>Opportunity Notes</strong><br/>', structured.opportunityNotes)
+    }
+    if (structured.painPoints && structured.painPoints.length > 0) {
+      noteParts.push('<br/><strong>Pain Points</strong><br/>', ...structured.painPoints.map(p => `- ${p}<br/>`))
+    }
+    if (noteParts.length > 0) noteBody = noteParts.join('\n')
   }
 
-  if (noteParts.length > 0) {
+  if (noteBody) {
     const noteRes = await hsFetch(tokens, '/crm/v3/objects/notes', {
       method: 'POST',
       body: JSON.stringify({
         properties: {
           hs_timestamp: new Date().toISOString(),
-          hs_note_body: noteParts.join('\n'),
+          hs_note_body: noteBody,
         },
       }),
     })
@@ -420,7 +473,9 @@ export async function pushToHubSpot(
   // ---- Step 5: Tasks from nextSteps ----
   const taskIds: string[] = []
 
-  if (structured.nextSteps) {
+  const createTasks = pushPlan ? shouldCreateTasks(pushPlan) : !!structured.nextSteps
+
+  if (createTasks && structured.nextSteps) {
     for (const step of structured.nextSteps) {
       if (step.owner !== 'rep') continue
 
