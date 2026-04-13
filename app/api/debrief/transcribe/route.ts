@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { MAX_AUDIO_BYTES } from '@/lib/audio/recording'
 import { getOpenAIClient, SALES_WHISPER_PROMPT } from '@/lib/openai/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     return jsonError('Audio exceeds 25MB limit', 413)
 
   // Validate session exists
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data: session } = await supabase
     .from('debrief_sessions')
     .select('id')

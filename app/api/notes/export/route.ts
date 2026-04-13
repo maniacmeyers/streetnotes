@@ -7,6 +7,7 @@ const QuerySchema = z.object({
   flavor: z.enum(['salesforce', 'hubspot']),
   from: z.string().optional(),
   to: z.string().optional(),
+  unexported: z.enum(['true', 'false']).optional(),
 })
 
 export async function GET(request: NextRequest) {
@@ -21,13 +22,14 @@ export async function GET(request: NextRequest) {
     flavor: request.nextUrl.searchParams.get('flavor'),
     from: request.nextUrl.searchParams.get('from') || undefined,
     to: request.nextUrl.searchParams.get('to') || undefined,
+    unexported: request.nextUrl.searchParams.get('unexported') || undefined,
   })
 
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 })
   }
 
-  const { flavor, from, to } = parsed.data
+  const { flavor, from, to, unexported } = parsed.data
 
   // Rate limit: 10 exports per hour
   const { count: recentCount } = await supabase
@@ -50,6 +52,7 @@ export async function GET(request: NextRequest) {
     .order('created_at', { ascending: false })
     .limit(5000)
 
+  if (unexported === 'true') query = query.is('exported_at', null)
   if (from) query = query.gte('created_at', from)
   if (to) query = query.lte('created_at', to)
 
@@ -66,6 +69,15 @@ export async function GET(request: NextRequest) {
   const headers = flavor === 'hubspot' ? HUBSPOT_HEADERS : SALESFORCE_HEADERS
   const csv = toCsv(headers, rows)
   const body = new TextEncoder().encode(csv)
+
+  // Stamp exported notes so they don't appear in "not yet exported" again
+  const exportedIds = (notes ?? []).map(n => n.id)
+  if (exportedIds.length > 0) {
+    await supabase
+      .from('notes')
+      .update({ exported_at: new Date().toISOString() })
+      .in('id', exportedIds)
+  }
 
   // Log export
   await supabase.from('crm_export_log').insert({

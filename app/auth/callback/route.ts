@@ -12,15 +12,9 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host')
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      return NextResponse.redirect(
-        isLocalEnv
-          ? `${origin}${next}`
-          : forwardedHost
-          ? `https://${forwardedHost}${next}`
-          : `${origin}${next}`
-      )
+      // Use APP_ORIGIN if set (production), otherwise fall back to request origin
+      const appOrigin = process.env.APP_ORIGIN || origin
+      return NextResponse.redirect(`${appOrigin}${next}`)
     }
   }
 

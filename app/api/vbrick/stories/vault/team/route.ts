@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { isVbrickUser } from '@/lib/vbrick/config'
 
 export const runtime = 'nodejs'
 
@@ -50,10 +52,10 @@ function extractDomain(email: string): string | null {
 // GET: Fetch team vault stories shared by peers on the caller's email
 // domain, sorted by score.
 export async function GET(request: Request) {
-  const supabase = await createClient()
+  const authClient = await createClient()
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await authClient.auth.getUser()
 
   const { searchParams } = new URL(request.url)
   const fallbackEmail = searchParams.get('email')
@@ -63,12 +65,18 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  // If identity came from querystring (no session), restrict to known vbrick users
+  if (!user && !isVbrickUser(callerEmail)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const domain = extractDomain(callerEmail)
   if (!domain || FREE_EMAIL_PROVIDERS.has(domain)) {
     // Personal / free email provider — no company team, empty feed.
     return NextResponse.json({ vault: [] })
   }
 
+  const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('story_vault_entries')
     .select('*')

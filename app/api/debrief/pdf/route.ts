@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { DebriefPDF } from '@/lib/debrief/pdf'
 import type { DebriefOutput } from '@/lib/debrief/types'
 import React from 'react'
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing sessionId' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data: session, error } = await supabase
     .from('debrief_sessions')
     .select('email, structured_output')

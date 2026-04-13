@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import type { SupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 
@@ -9,13 +9,13 @@ export const runtime = 'nodejs'
 // caller (the vbrick public demo, which uses localStorage-based identity
 // because /vbrick and /api are public at the middleware level).
 async function resolveCallerEmail(
-  supabase: SupabaseClient,
   request: Request,
   bodyEmail?: string | null,
 ): Promise<string | null> {
+  const authClient = await createClient()
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await authClient.auth.getUser()
   if (user?.email) return user.email
 
   if (bodyEmail) return bodyEmail
@@ -39,8 +39,8 @@ export async function PATCH(
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const supabase = await createClient()
-  const callerEmail = await resolveCallerEmail(supabase, request, body.email)
+  const supabase = createAdminClient()
+  const callerEmail = await resolveCallerEmail(request, body.email)
   if (!callerEmail) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -82,8 +82,8 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } },
 ) {
-  const supabase = await createClient()
-  const callerEmail = await resolveCallerEmail(supabase, request, null)
+  const supabase = createAdminClient()
+  const callerEmail = await resolveCallerEmail(request, null)
   if (!callerEmail) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

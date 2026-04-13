@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getOpenAIClient } from '@/lib/openai/server'
 
 export const runtime = 'nodejs'
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   }
 
   const domain = email.split('@')[1]
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('ci_weekly_briefs')
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   }
 
   const domain = email.split('@')[1]
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Get this week's CI mentions
   const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString()

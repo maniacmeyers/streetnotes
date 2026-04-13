@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 
 // POST: Seed Story Vault with real Vbrick content from documentation
 export async function POST() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const BDR_EMAILS = [
     'jeff@forgetime.ai',

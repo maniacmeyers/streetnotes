@@ -1,20 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendNotification } from '@/lib/resend'
+
+// In-memory IP rate limiter: max 5 signups per IP per 15 minutes
+const ipWindow = new Map<string, { count: number; resetAt: number }>()
+const IP_LIMIT = 5
+const IP_WINDOW_MS = 15 * 60 * 1000
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = ipWindow.get(ip)
+  if (!entry || now > entry.resetAt) {
+    ipWindow.set(ip, { count: 1, resetAt: now + IP_WINDOW_MS })
+    return false
+  }
+  entry.count++
+  return entry.count > IP_LIMIT
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json()
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.ip ||
+      'unknown'
 
-    if (!email || typeof email !== 'string') {
-      return NextResponse.json({ error: 'Email is required' }, { status: 400 })
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Try again later.' },
+        { status: 429 }
+      )
     }
 
+    const { email } = await request.json()
+
+    if (!email || typeof email !== 'string' || !EMAIL_RE.test(email)) {
+      return NextResponse.json({ error: 'Valid email is required' }, { status: 400 })
+    }
+
+    const cleanEmail = email.toLowerCase().trim()
+
     // Store in Supabase waitlist table
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { error: dbError } = await supabase
       .from('waitlist')
-      .insert({ email: email.toLowerCase().trim() })
+      .insert({ email: cleanEmail })
 
     if (dbError && dbError.code !== '23505') {
       // 23505 = unique violation (already signed up) — that's fine
@@ -23,8 +55,8 @@ export async function POST(request: NextRequest) {
 
     // Notify — awaited so Vercel doesn't kill the request
     await sendNotification(
-      `New waitlist signup: ${email}`,
-      `New waitlist signup!\n\nEmail: ${email}\nTime: ${new Date().toISOString()}`
+      `New waitlist signup: ${cleanEmail}`,
+      `New waitlist signup!\n\nEmail: ${cleanEmail}\nTime: ${new Date().toISOString()}`
     )
 
     return NextResponse.json({ success: true })

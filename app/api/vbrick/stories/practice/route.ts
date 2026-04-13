@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { transcribeAudio } from '@/lib/openai/transcribe'
 import { getScoringPrompt } from '@/lib/vbrick/story-prompts'
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing audio file' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Fetch the draft
   const { data: draft } = await supabase

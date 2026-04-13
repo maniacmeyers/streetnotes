@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const daysParam = searchParams.get('days')
   const days = daysParam && [7, 30, 90].includes(Number(daysParam)) ? Number(daysParam) : 30
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Calculate date cutoff
   const cutoff = new Date()

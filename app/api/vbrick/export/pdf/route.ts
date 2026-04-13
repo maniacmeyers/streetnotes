@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { VbrickSessionPDF } from '@/lib/vbrick/session-pdf'
 import { calculateConversionRate } from '@/lib/vbrick/stats'
 
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Missing sessionId' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Get session
     const { data: session } = await supabase

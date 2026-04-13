@@ -16,10 +16,21 @@ const BTN_VOLT =
   'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]'
 
 type Flavor = 'hubspot' | 'salesforce'
-type Preset = '7d' | '30d' | '90d' | 'all'
+type Preset = 'new' | 'today' | 'week' | 'all'
 
-function daysAgo(days: number): string {
-  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
+function startOfToday(): string {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d.toISOString()
+}
+
+function startOfWeek(): string {
+  const d = new Date()
+  const day = d.getDay()
+  const diff = day === 0 ? 6 : day - 1 // Monday = start of week
+  d.setDate(d.getDate() - diff)
+  d.setHours(0, 0, 0, 0)
+  return d.toISOString()
 }
 
 function formatBytes(bytes: number): string {
@@ -28,9 +39,16 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+const PRESET_LABELS: Record<Preset, string> = {
+  new: 'Not yet exported',
+  today: 'Today',
+  week: 'This week',
+  all: 'All time',
+}
+
 export default function ActivityExport() {
   const [flavor, setFlavor] = useState<Flavor>('hubspot')
-  const [preset, setPreset] = useState<Preset>('30d')
+  const [preset, setPreset] = useState<Preset>('new')
   const [downloading, setDownloading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recentExports, setRecentExports] = useState<ExportLog[]>([])
@@ -50,24 +68,29 @@ export default function ActivityExport() {
       .catch(() => setHasConnectedCrm(false))
   }, [])
 
-  const getDateRange = useCallback((): { from?: string; to?: string } => {
+  const buildParams = useCallback((): URLSearchParams => {
+    const params = new URLSearchParams({ flavor })
     switch (preset) {
-      case '7d': return { from: daysAgo(7) }
-      case '30d': return { from: daysAgo(30) }
-      case '90d': return { from: daysAgo(90) }
-      case 'all': return {}
+      case 'new':
+        params.set('unexported', 'true')
+        break
+      case 'today':
+        params.set('from', startOfToday())
+        break
+      case 'week':
+        params.set('from', startOfWeek())
+        break
+      case 'all':
+        break
     }
-  }, [preset])
+    return params
+  }, [preset, flavor])
 
   const handleDownload = async () => {
     setDownloading(true)
     setError(null)
     try {
-      const range = getDateRange()
-      const params = new URLSearchParams({ flavor })
-      if (range.from) params.set('from', range.from)
-      if (range.to) params.set('to', range.to)
-
+      const params = buildParams()
       const res = await fetch(`/api/notes/export?${params}`)
 
       if (res.status === 429) {
@@ -80,6 +103,11 @@ export default function ActivityExport() {
       }
 
       const blob = await res.blob()
+      if (blob.size === 0) {
+        setError('Nothing to export.')
+        return
+      }
+
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -110,7 +138,6 @@ export default function ActivityExport() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Admin-blocked banner */}
       {hasConnectedCrm === false && (
         <div
           className="rounded-xl border border-amber-500/20 bg-amber-500/8 backdrop-blur-md px-4 py-3"
@@ -145,18 +172,13 @@ export default function ActivityExport() {
           ))}
         </div>
 
-        {/* Date range presets */}
+        {/* Export scope */}
         <div className="flex flex-col gap-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
-            Date range
+            What to export
           </p>
           <div className="flex gap-2 flex-wrap">
-            {([
-              { key: '7d', label: 'Last 7d' },
-              { key: '30d', label: 'Last 30d' },
-              { key: '90d', label: 'Last 90d' },
-              { key: 'all', label: 'All time' },
-            ] as const).map(({ key, label }) => (
+            {(['new', 'today', 'week', 'all'] as const).map(key => (
               <button
                 key={key}
                 type="button"
@@ -168,7 +190,7 @@ export default function ActivityExport() {
                 }`}
                 aria-pressed={preset === key}
               >
-                {label}
+                {PRESET_LABELS[key]}
               </button>
             ))}
           </div>

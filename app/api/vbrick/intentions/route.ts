@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function GET(request: Request) {
   try {
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Missing email' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const today = new Date().toISOString().split('T')[0]
 
     const [todayResult, previousResult] = await Promise.all([
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const today = new Date().toISOString().split('T')[0]
 
     const { error } = await supabase

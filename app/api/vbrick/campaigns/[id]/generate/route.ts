@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { getCampaignGenerationPrompt, getCampaignAnalysisPrompt } from '@/lib/vbrick/campaign-prompts'
 import { CHANNEL_ORDER } from '@/lib/vbrick/campaign-types'
@@ -10,7 +10,7 @@ export const maxDuration = 120
 
 // POST: Generate all channel messaging for a campaign using AI
 export async function POST(_request: Request, { params }: { params: { id: string } }) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // 1. Fetch campaign + files
   const { data: campaign } = await supabase

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendNotification } from '@/lib/resend'
 import { isVbrickUser } from '@/lib/vbrick/config'
 
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cleanEmail = email.toLowerCase().trim()
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const isVbrick = isVbrickUser(cleanEmail)
 
     // Rate limit: 3 per day per email (skip for Vbrick)

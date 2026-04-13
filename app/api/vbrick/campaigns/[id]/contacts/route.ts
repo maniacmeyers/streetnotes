@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { getContactPersonalizationPrompt } from '@/lib/vbrick/campaign-prompts'
 import type { FrameworkType, ChannelType, CampaignChannel } from '@/lib/vbrick/campaign-types'
@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   const { searchParams } = new URL(request.url)
   const company = searchParams.get('company')
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   let query = supabase
     .from('campaign_contact_scripts')
@@ -47,7 +47,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Fetch the base channel content
   const { data: channel } = await supabase

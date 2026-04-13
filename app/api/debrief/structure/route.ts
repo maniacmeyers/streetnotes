@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getOpenAIClient } from '@/lib/openai/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendNotification } from '@/lib/resend'
 import {
   DEBRIEF_SYSTEM_PROMPT,
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     }
 
     // Validate session
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { data: session } = await supabase
       .from('debrief_sessions')
       .select('id, email')

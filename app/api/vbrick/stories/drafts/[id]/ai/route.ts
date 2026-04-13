@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { getDraftAssemblyPrompt, DRAFTING_ASSISTANT_SYSTEM_PROMPT } from '@/lib/vbrick/story-prompts'
 import type { StoryType, AIMessage } from '@/lib/vbrick/story-types'
@@ -16,7 +16,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     answers?: Record<string, string>
   }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data: draft, error } = await supabase
     .from('story_drafts')
     .select('*')

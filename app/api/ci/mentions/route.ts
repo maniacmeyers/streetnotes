@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { QuoteFeedItem, CIMention } from '@/lib/ci/types'
 
 export const runtime = 'nodejs'
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     }
 
     const domain = email.split('@')[1]
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Time cutoff
     const days = TIME_RANGE_DAYS[timeRange]
