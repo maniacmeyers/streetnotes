@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Mic, BookOpen, Radar, Settings } from 'lucide-react'
+import { Mic, BookOpen, Radar, ScrollText, Settings } from 'lucide-react'
 import Logo from '@/components/brand/logo'
 
 const navItems = [
   { label: 'Home', href: '/dashboard', icon: Mic },
   { label: 'Stories', href: '/stories', icon: BookOpen },
+  { label: 'Playbook', href: '/playbook', icon: ScrollText },
   { label: 'Intel', href: '/intel', icon: Radar },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]

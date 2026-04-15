@@ -17,17 +17,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.rewrite(url)
     }
 
-    // vbrick.streetnotes.ai/dashboard → command center
-    if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
-      const url = request.nextUrl.clone()
-      url.pathname = `/vbrick${pathname}`
-      return NextResponse.rewrite(url)
-    }
-
-    // vbrick.streetnotes.ai/api/... → pass through (APIs needed by dashboard)
-    if (pathname.startsWith('/api/')) {
-      return await updateSession(request)
-    }
+    // All other paths (dashboard, stories, intel, settings, playbook, api)
+    // fall through to the regular StreetNotes app — the Vbrick tenant now
+    // shares the same UI and includes Playbook as a bottom-nav tab.
   }
 
   return await updateSession(request)
