@@ -3,23 +3,24 @@ import { updateSession } from '@/lib/supabase/middleware'
 
 const VBRICK_HOST = 'vbrick.streetnotes.ai'
 
+function isVbrickHost(host: string): boolean {
+  if (host === VBRICK_HOST || host.startsWith(VBRICK_HOST + ':')) return true
+  if (process.env.VERCEL_ENV === 'preview') return true
+  if (host.startsWith('localhost') && process.env.FORCE_VBRICK === 'true') return true
+  return false
+}
+
 export async function middleware(request: NextRequest) {
   const host = request.headers.get('host') || ''
 
-  // Route vbrick.streetnotes.ai to dedicated pages
-  if (host === VBRICK_HOST || host.startsWith(VBRICK_HOST)) {
+  if (isVbrickHost(host)) {
     const { pathname } = request.nextUrl
 
-    // vbrick.streetnotes.ai/ → CRO landing page
     if (pathname === '/') {
       const url = request.nextUrl.clone()
       url.pathname = '/vbrick-site'
       return NextResponse.rewrite(url)
     }
-
-    // All other paths (dashboard, stories, intel, settings, playbook, api)
-    // fall through to the regular StreetNotes app — the Vbrick tenant now
-    // shares the same UI and includes Playbook as a bottom-nav tab.
   }
 
   return await updateSession(request)
