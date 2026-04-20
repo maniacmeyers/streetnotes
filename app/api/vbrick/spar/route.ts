@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import OpenAI from 'openai'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { createClient } from '@/lib/supabase/server'
 import {
@@ -172,7 +171,7 @@ Provide detailed scoring and feedback.`
       // Transform to CallScore format
       const callScore: CallScore = {
         totalScore: scoringResult.total_score,
-        dimensions: scoringResult.dimensions.map((d: any) => ({
+        dimensions: scoringResult.dimensions.map((d: { name: string; score: number; weight: number; weighted_score: number; details: unknown }) => ({
           name: d.name,
           score: d.score,
           weight: d.weight,
@@ -184,7 +183,7 @@ Provide detailed scoring and feedback.`
         feedback: [...scoringResult.key_strengths, ...scoringResult.key_improvements],
         strengths: scoringResult.key_strengths,
         improvements: scoringResult.key_improvements,
-        sampleExchanges: scoringResult.sample_exchanges.map((ex: any) => ({
+        sampleExchanges: scoringResult.sample_exchanges.map((ex: { speaker: string; text: string; feedback: string; score: number }) => ({
           speaker: ex.speaker,
           text: ex.text,
           feedback: ex.feedback,

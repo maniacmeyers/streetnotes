@@ -48,15 +48,15 @@ ALTER TABLE sparring_sessions ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view own sparring sessions"
   ON sparring_sessions FOR SELECT
-  USING (user_id = auth.uid());
+  USING (user_id = (select auth.uid()));
 
 CREATE POLICY "Users can insert own sparring sessions"
   ON sparring_sessions FOR INSERT
-  WITH CHECK (user_id = auth.uid());
+  WITH CHECK (user_id = (select auth.uid()));
 
 CREATE POLICY "Users can update own sparring sessions"
   ON sparring_sessions FOR UPDATE
-  USING (user_id = auth.uid());
+  USING (user_id = (select auth.uid()));
 
 -- Stats view for quick aggregated data
 CREATE OR REPLACE VIEW sparring_stats AS

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import { useState } from 'react'
@@ -15,12 +16,19 @@ import { FrameworkSparringSession } from '@/components/vbrick/framework-sparring
 import { BDR_CALL_FRAMEWORK } from '@/lib/vbrick/bdr-framework'
 import { type ProspectPersona } from '@/lib/vbrick/sparring-personas'
 
+type SessionResult = {
+  score: number
+  frameworkScore: number
+  wouldTransfer: boolean
+  [key: string]: unknown
+}
+
 export default function FrameworkSparringPage() {
   const [isActiveSession, setIsActiveSession] = useState(false)
-  const [lastResult, setLastResult] = useState<any>(null)
+  const [lastResult, setLastResult] = useState<SessionResult | null>(null)
   const [lastPersona, setLastPersona] = useState<ProspectPersona | null>(null)
 
-  const handleSessionComplete = (result: any, persona: ProspectPersona) => {
+  const handleSessionComplete = (result: SessionResult, persona: ProspectPersona) => {
     setLastResult(result)
     setLastPersona(persona)
     setIsActiveSession(false)

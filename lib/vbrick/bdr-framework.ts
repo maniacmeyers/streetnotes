@@ -75,7 +75,7 @@ export const BDR_CALL_FRAMEWORK = {
           'Pause after company name for clarity',
           'Practice: "video" has clear V sound, not "wideo"'
         ],
-alandAccent: [
+        newZealandAccent: [
           'Emphasize "team" - can sound like "tum"',
           'Slow down "responsible" - complex word',
           'Make {x} very clear - this is the key qualification'
@@ -263,8 +263,7 @@ export const ACCENT_COACHING_PROMPTS = {
 // Expected persona responses to the framework
 export function getFrameworkResponse(
   persona: ProspectPersona,
-  step: string,
-  bdrName?: string
+  step: string
 ): string {
   const responses: Record<string, Record<string, string[]>> = {
     'disinterested-it-manager': {

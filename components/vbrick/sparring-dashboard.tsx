@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -7,8 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SparringSession } from './sparring-session'
-import { type CallScore } from '@/lib/vbrick/sparring-scoring'
-import { type ProspectPersona } from '@/lib/vbrick/sparring-personas'
 import { cn } from '@/lib/utils'
 
 interface SessionHistory {
@@ -53,8 +52,7 @@ export function SparringDashboard() {
     }
   }
 
-  const handleSessionComplete = (score: CallScore, persona: ProspectPersona) => {
-    // Refresh dashboard data after completion
+  const handleSessionComplete = () => {
     fetchDashboardData()
   }
 

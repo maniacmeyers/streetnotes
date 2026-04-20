@@ -1,7 +1,8 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import { useState, useRef } from 'react'
-import { Phone, Mic, Square, RotateCcw, Trophy, Volume2 } from 'lucide-react'
+import { Phone, Square, RotateCcw, Trophy, Volume2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -10,10 +11,29 @@ import { ALL_PERSONAS, type ProspectPersona } from '@/lib/vbrick/sparring-person
 import { BDR_CALL_FRAMEWORK } from '@/lib/vbrick/bdr-framework'
 import { cn } from '@/lib/utils'
 
+type SparringResult = {
+  score: number
+  frameworkScore: number
+  wouldTransfer: boolean
+  [key: string]: unknown
+}
+type ScoreDimension = { name: string; score: number; feedback?: string }
+type ScriptImprovement = { original: string; improved: string; reason: string }
+type SparringScore = {
+  score: number
+  frameworkScore: number
+  wouldTransfer: boolean
+  dimensions?: ScoreDimension[]
+  strengths?: string[]
+  improvements?: string[]
+  accentFeedback?: string
+  scriptImprovements?: ScriptImprovement[]
+  [key: string]: unknown
+}
+
 interface FrameworkSparringSessionProps {
-  onComplete: (result: any, persona: ProspectPersona) => void
+  onComplete: (result: SparringResult, persona: ProspectPersona) => void
   onCancel: () => void
-  bdrName?: string
 }
 
 type CallState = 'select' | 'accent' | 'briefing' | 'connecting' | 'in-call' | 'reviewing'
@@ -52,13 +72,12 @@ const ACCENT_INFO: Record<BDRAccent, { name: string; description: string; tips: 
   }
 }
 
-export function FrameworkSparringSession({ onComplete, onCancel, bdrName }: FrameworkSparringSessionProps) {
+export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSparringSessionProps) {
   const [callState, setCallState] = useState<CallState>('select')
   const [selectedPersona, setSelectedPersona] = useState<ProspectPersona | null>(null)
   const [selectedAccent, setSelectedAccent] = useState<BDRAccent>('general')
-  const [isRecording, setIsRecording] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
-  const [currentScore, setCurrentScore] = useState<any>(null)
+  const [currentScore, setCurrentScore] = useState<SparringScore | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [conversation, setConversation] = useState<Array<{ speaker: 'bdr' | 'prospect'; text: string }>>([])
   const [currentStep, setCurrentStep] = useState('name_capture')
@@ -220,7 +239,7 @@ export function FrameworkSparringSession({ onComplete, onCancel, bdrName }: Fram
             <Card
               key={persona.id}
               className="p-4 cursor-pointer transition-all hover:shadow-lg hover:border-primary"
-              onClick={() => setCallState('accent') || setSelectedPersona(persona)}
+              onClick={() => { setSelectedPersona(persona); setCallState('accent'); }}
             >
               <div className="flex items-start gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
@@ -330,7 +349,10 @@ export function FrameworkSparringSession({ onComplete, onCancel, bdrName }: Fram
   if (callState === 'in-call' && selectedPersona) {
     const frameworkStep = BDR_CALL_FRAMEWORK.steps.find(s => s.id === currentStep)
     const accentInfo = ACCENT_INFO[selectedAccent]
-    const accentTips = frameworkStep?.coachingTips?.[selectedAccent as 'irish' | 'newZealand'] || []
+    const accentKey = selectedAccent === 'irish' ? 'irishAccent' : selectedAccent === 'newZealand' ? 'newZealandAccent' : null
+    const accentTips: string[] = accentKey && frameworkStep?.coachingTips
+      ? ((frameworkStep.coachingTips as Record<string, string[]>)[accentKey] ?? [])
+      : []
 
     return (
       <div className="space-y-4 max-w-3xl mx-auto">
@@ -511,7 +533,7 @@ export function FrameworkSparringSession({ onComplete, onCancel, bdrName }: Fram
         <Card className="p-4">
           <h3 className="font-semibold mb-4">Score Breakdown</h3>
           <div className="space-y-3">
-            {currentScore.dimensions?.map((dim: any) => (
+            {currentScore.dimensions?.map((dim) => (
               <div key={dim.name}>
                 <div className="flex justify-between text-sm mb-1">
                   <span>{dim.name}</span>
@@ -562,11 +584,11 @@ export function FrameworkSparringSession({ onComplete, onCancel, bdrName }: Fram
         </div>
 
         {/* Script Improvements */}
-        {currentScore.scriptImprovements?.length > 0 && (
+        {(currentScore.scriptImprovements?.length ?? 0) > 0 && (
           <Card className="p-4">
             <h3 className="font-semibold mb-3">Script Refinements</h3>
             <div className="space-y-3">
-              {currentScore.scriptImprovements.map((item: any, i: number) => (
+              {currentScore.scriptImprovements?.map((item, i: number) => (
                 <div key={i} className="p-3 bg-muted rounded">
                   <p className="text-sm text-muted-foreground line-through">"{item.original}"</p>
                   <p className="text-sm font-medium mt-1">"{item.improved}"</p>

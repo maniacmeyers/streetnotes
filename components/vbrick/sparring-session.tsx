@@ -1,11 +1,12 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
-import { Phone, Mic, Square, Play, Pause, RotateCcw, Trophy, TrendingUp } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Phone, Mic, Square, RotateCcw, Trophy, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { ALL_PERSONAS, type ProspectPersona, type PersonaId } from '@/lib/vbrick/sparring-personas'
+import { ALL_PERSONAS, type ProspectPersona } from '@/lib/vbrick/sparring-personas'
 import { getFeedbackLevel, type CallScore } from '@/lib/vbrick/sparring-scoring'
 import { cn } from '@/lib/utils'
 

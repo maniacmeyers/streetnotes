@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server'
-import OpenAI from 'openai'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { createClient } from '@/lib/supabase/server'
-import {
-  BDR_CALL_FRAMEWORK,
-  FRAMEWORK_SCORING_RUBRIC,
-  ACCENT_COACHING_PROMPTS,
-  type FrameworkTracker
-} from '@/lib/vbrick/bdr-framework'
+import { ACCENT_COACHING_PROMPTS } from '@/lib/vbrick/bdr-framework'
 import { getPersonaById, type PersonaId } from '@/lib/vbrick/sparring-personas'
 
 export const runtime = 'nodejs'
@@ -345,7 +339,7 @@ function detectFrameworkStep(message: string, currentStep: string): string {
 }
 
 // Helper: Get framework context for AI persona
-function getFrameworkContext(step: string, persona: any): string {
+function getFrameworkContext(step: string, persona: { company: string; title: string }): string {
   const contexts: Record<string, string> = {
     name_capture: `They asked "First and last name?" After you respond, they should say: "Great, I was hoping you can help me out real quick."`,
     help_request: `They just asked for help. Next: "Are you on the team responsible for ${persona.company}'s [video/streaming/communications]?"`,
