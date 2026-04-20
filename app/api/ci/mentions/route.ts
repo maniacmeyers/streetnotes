@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import type { QuoteFeedItem, CIMention } from '@/lib/ci/types'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const TIME_RANGE_DAYS: Record<string, number> = {
   '7d': 7,
