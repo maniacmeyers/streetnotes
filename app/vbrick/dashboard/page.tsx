@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { Sidebar } from '@/components/vbrick/sidebar'
 import { IntentionScreen } from '@/components/vbrick/intention-screen'
 import { Leaderboard } from '@/components/vbrick/leaderboard'
 import { PerformanceCards } from '@/components/vbrick/performance-cards'
@@ -58,14 +56,12 @@ interface StatsData {
 type DashboardView = 'dashboard' | 'debrief' | 'transcript'
 
 export default function VbrickDashboardPage() {
-  const router = useRouter()
   const [email, setEmail] = useState<string | null>(null)
   const [emailInput, setEmailInput] = useState('')
   const [showIntention, setShowIntention] = useState(false)
   const [stats, setStats] = useState<StatsData | null>(null)
   const [view, setView] = useState<DashboardView>('dashboard')
   const [isRecording, setIsRecording] = useState(false)
-  const [recordingDuration, setRecordingDuration] = useState(0)
   const [pastedTranscript, setPastedTranscript] = useState<string | null>(null)
   const [recentCalls, setRecentCalls] = useState<RecentCall[]>([])
 
@@ -83,15 +79,6 @@ export default function VbrickDashboardPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email])
 
-  useEffect(() => {
-    if (!isRecording) return
-    setRecordingDuration(0)
-    const timer = window.setInterval(() => {
-      setRecordingDuration(prev => prev + 1)
-    }, 1000)
-    return () => window.clearInterval(timer)
-  }, [isRecording])
-
   async function fetchStats() {
     if (!email) return
     try {
@@ -105,15 +92,6 @@ export default function VbrickDashboardPage() {
     const today = new Date().toISOString().split('T')[0]
     localStorage.setItem(`vbrick_intention_${today}`, '1')
     setShowIntention(false)
-  }
-
-  function handleMicStart() {
-    setView('debrief')
-    setIsRecording(true)
-  }
-
-  function handleMicStop() {
-    setIsRecording(false)
   }
 
   const handleDebriefComplete = useCallback(async (debriefSessionId: string, output: DebriefOutput) => {
@@ -236,30 +214,12 @@ export default function VbrickDashboardPage() {
   const userIsBdr = isVbrickBdr(email)
 
   return (
-    <div className="h-screen overflow-hidden font-satoshi" style={{ background: '#e0e5ec' }}>
-      <Sidebar
-        name={displayName}
-        email={email}
-        role={userIsBdr ? 'BDR — Vbrick' : 'Coach — Vbrick'}
-        showStats={userIsBdr}
-        streak={stats?.streak || 0}
-        todayCalls={stats?.todayCalls || 0}
-        spinAvg={stats?.thisWeek.averageSpin || 0}
-        isRecording={isRecording}
-        durationSec={recordingDuration}
-        onMicStart={handleMicStart}
-        onMicStop={handleMicStop}
-        onSettingsClick={() => router.push('/vbrick/dashboard/settings')}
-        onPasteTranscript={() => setView('transcript')}
-        micDisabled={view === 'debrief' && !isRecording}
-      />
+    <div className="min-h-screen">
+      {isRecording && (
+        <div className="fixed inset-0 bg-black/10 z-20 pointer-events-none" />
+      )}
 
-      <div className="ml-[288px] h-screen overflow-y-auto relative" style={{ background: '#e0e5ec' }}>
-        {isRecording && (
-          <div className="fixed inset-0 ml-[288px] bg-black/10 z-20 pointer-events-none" />
-        )}
-
-        <div className="px-8 py-8 space-y-8 relative z-10">
+      <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-8 relative z-10">
           {view === 'debrief' && !pastedTranscript && (
             <DashboardDebriefFlow
               email={email}
@@ -366,7 +326,6 @@ export default function VbrickDashboardPage() {
               )}
             </>
           )}
-        </div>
       </div>
     </div>
   )
