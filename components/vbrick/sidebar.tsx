@@ -1,22 +1,16 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
-import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Radar, Radio, PhoneOff, Megaphone, ScrollText, Dumbbell } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { Settings, ClipboardPaste, Zap, LayoutDashboard, BookOpen, Megaphone, ScrollText, Dumbbell } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { PlayerCard } from './player-card'
 import { MicButton } from './mic-button'
-import type { CoachingSummary } from './coaching/coaching-panel'
-import { NeuButton } from '@/components/vbrick/neu'
-import { VBRICK_CONFIG } from '@/lib/vbrick/config'
 import { neuTheme } from '@/lib/vbrick/theme'
 
 const navItems = [
   { label: 'Dashboard', href: '/vbrick/dashboard', icon: LayoutDashboard },
   { label: 'Stories', href: '/vbrick/dashboard/stories', icon: BookOpen },
   { label: 'Campaigns', href: '/vbrick/dashboard/campaigns', icon: Megaphone },
-  { label: 'Intel', href: '/vbrick/dashboard/ci', icon: Radar },
   { label: 'Playbook', href: '/vbrick/dashboard/playbook', icon: ScrollText },
   { label: 'Sparring', href: '/vbrick/dashboard/sparring', icon: Dumbbell },
 ]
@@ -36,16 +30,6 @@ interface SidebarProps {
   onSettingsClick: () => void
   onPasteTranscript: () => void
   micDisabled?: boolean
-  queueContact?: {
-    contactName: string
-    contactTitle?: string
-    company: string
-  } | null
-  coachingPromptIndex?: number
-  isCoaching?: boolean
-  onStartCoaching?: () => void
-  onEndCoaching?: (summary: CoachingSummary | null) => void
-  callingSessionId?: string | null
 }
 
 export function Sidebar({
@@ -64,13 +48,6 @@ export function Sidebar({
   onSettingsClick,
   onPasteTranscript,
   micDisabled = false,
-  queueContact,
-  coachingPromptIndex = 0,
-  isCoaching = false,
-  onStartCoaching,
-  onEndCoaching,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  callingSessionId,
 }: SidebarProps) {
   const pathname = usePathname()
 
@@ -152,31 +129,6 @@ export function Sidebar({
           </div>
         </nav>
 
-        {/* Queue contact info during recording */}
-        <AnimatePresence>
-          {isRecording && queueContact && (
-            <motion.div
-              className="px-6 pb-3 shrink-0"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <p className="text-[10px] uppercase tracking-[0.15em] font-general-sans font-semibold mb-1" style={{ color: neuTheme.colors.accent.primary }}>
-                Debriefing
-              </p>
-              <p className="font-general-sans font-bold text-sm" style={{ color: neuTheme.colors.text.heading }}>
-                {queueContact.contactName}
-              </p>
-              {queueContact.contactTitle && (
-                <p className="text-xs font-satoshi" style={{ color: neuTheme.colors.text.body }}>
-                  {queueContact.contactTitle} — {queueContact.company}
-                </p>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Mic Button */}
         <div className="flex flex-col items-center pt-6 pb-4 shrink-0">
           <MicButton
@@ -187,27 +139,8 @@ export function Sidebar({
             disabled={micDisabled}
           />
 
-          {/* Coaching prompts during recording */}
-          <AnimatePresence mode="wait">
-            {isRecording && (
-              <motion.div
-                key={coachingPromptIndex}
-                className="mt-6 mx-5 px-4 py-3"
-                style={{ borderRadius: neuTheme.radii.sm, boxShadow: neuTheme.shadows.inset, maxWidth: 240 }}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4 }}
-              >
-                <p className="text-xs font-satoshi text-center italic" style={{ color: neuTheme.colors.text.muted }}>
-                  {VBRICK_CONFIG.coachingPrompts[coachingPromptIndex % VBRICK_CONFIG.coachingPrompts.length]}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Paste transcript button */}
-          {!isRecording && !isCoaching && (
+          {!isRecording && (
             <button
               onClick={onPasteTranscript}
               className="mt-4 flex items-center gap-2 text-xs font-satoshi cursor-pointer border-none bg-transparent"
@@ -217,26 +150,9 @@ export function Sidebar({
               Paste Chorus Transcript
             </button>
           )}
-
-          {/* Start Live Coaching button */}
-          {!isRecording && !isCoaching && onStartCoaching && (
-            <button
-              onClick={onStartCoaching}
-              className="mt-3 flex items-center gap-2 text-xs font-general-sans font-semibold cursor-pointer border-none bg-transparent"
-              style={{ color: neuTheme.colors.accent.primary }}
-            >
-              <Radio className="w-4 h-4" />
-              Start Live Coaching
-            </button>
-          )}
         </div>
 
-        {/* Live Coaching compact indicator */}
-        {isCoaching && onEndCoaching && (
-          <CoachingCompactIndicator onEndCoaching={onEndCoaching} />
-        )}
-
-        {!isCoaching && <div className="flex-1" />}
+        <div className="flex-1" />
       </div>
 
       {/* Bottom divider — pinned bottom */}
@@ -257,49 +173,5 @@ export function Sidebar({
         </p>
       </div>
     </div>
-  )
-}
-
-function CoachingCompactIndicator({ onEndCoaching }: { onEndCoaching: (summary: CoachingSummary | null) => void }) {
-  const [elapsed, setElapsed] = useState(0)
-
-  useEffect(() => {
-    const timer = setInterval(() => setElapsed((prev) => prev + 1), 1000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const m = Math.floor(elapsed / 60)
-  const s = elapsed % 60
-  const formatted = `${m}:${s.toString().padStart(2, '0')}`
-
-  return (
-    <motion.div
-      className="mx-5 mt-2 mb-2 px-4 py-3 flex items-center justify-between"
-      style={{
-        borderRadius: neuTheme.radii.sm,
-        boxShadow: neuTheme.shadows.raisedSm,
-      }}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="flex items-center gap-2.5">
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600" />
-        </span>
-        <div>
-          <p className="text-xs font-general-sans font-semibold" style={{ color: neuTheme.colors.text.heading }}>
-            Live Coaching
-          </p>
-          <p className="text-[10px] font-satoshi tabular-nums" style={{ color: neuTheme.colors.text.muted }}>
-            {formatted}
-          </p>
-        </div>
-      </div>
-      <NeuButton variant="icon" onClick={() => onEndCoaching(null)} style={{ width: 32, height: 32 }}>
-        <PhoneOff className="w-3.5 h-3.5" style={{ color: '#dc2626' }} />
-      </NeuButton>
-    </motion.div>
   )
 }
