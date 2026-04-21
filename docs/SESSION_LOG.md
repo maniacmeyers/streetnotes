@@ -15,9 +15,9 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 
 ## 2026-04-21
 
-- **Shipped** the VBrick command-center restructure on branch `restructure/vbrick-command-center` (8 commits, build + lint green). `vbrick.streetnotes.ai` is now a strictly BDR development/practice hub: nav `Dashboard · Stories · Campaigns · Playbook · Sparring`, sticky sidebar mic, dashboard landing = intention → welcome → quick-start tiles → debrief → performance → recent debriefs → leaderboard. Call-queue + live-coaching + settings history fully removed. New component `components/vbrick/quick-start-tiles.tsx`. DB tables untouched.
+- **Shipped** the VBrick command-center restructure on branch `restructure/vbrick-command-center` (9 commits, PR #2, build + lint + manual smoke all green). `vbrick.streetnotes.ai` is now a strictly BDR development/practice hub: nav `Dashboard · Stories · Campaigns · Playbook · Sparring`, sticky sidebar mic, dashboard landing = intention → welcome → quick-start tiles → debrief → performance → recent debriefs → leaderboard. Call-queue + live-coaching + settings history fully removed. New component `components/vbrick/quick-start-tiles.tsx`. DB tables untouched.
+- Smoke test caught a pre-existing sparring-API auth bug (shipped in `844ee2f`): routes required Supabase auth but VBrick uses localStorage email identity. Fixed in-branch (`065c252`) — hard auth gate dropped, DB insert kept opportunistic. Anonymous sessions don't persist (NOT NULL `user_id`); proper fix is a `bdr_email` migration.
 - Earlier in the day: direction-shift brainstorm captured in `_brain/sessions/2026-04-21-vbrick-command-center-restructure-brainstorm.md`. Spec: `docs/superpowers/specs/2026-04-21-vbrick-command-center-restructure-design.md`. Plan: `docs/superpowers/plans/2026-04-21-vbrick-command-center-restructure.md`. Shipped notes: `_brain/sessions/2026-04-21-vbrick-command-center-shipped.md`.
-- Pending: manual browser smoke, then PR/merge. Manager-side sparring visibility deferred.
 
 ## 2026-04-19
 
