@@ -3,6 +3,7 @@ import { getOpenAIClient } from '@/lib/openai/server'
 import { createClient } from '@/lib/supabase/server'
 import { ACCENT_COACHING_PROMPTS } from '@/lib/vbrick/bdr-framework'
 import { getPersonaById, type PersonaId } from '@/lib/vbrick/sparring-personas'
+import { getScenarioById } from '@/lib/vbrick/sparring-scenarios'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -19,20 +20,31 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const { 
-      personaId, 
-      action, 
-      sessionId, 
-      bdrMessage, 
-      transcription, 
+    const {
+      personaId,
+      action,
+      sessionId,
+      bdrMessage,
+      transcription,
       bdrAccent = 'general',
-      currentStep = 'name_capture'
+      currentStep = 'name_capture',
+      scenarioId,
+      hardMode = false,
     } = body
 
     // Validate persona
     const persona = getPersonaById(personaId as PersonaId)
     if (!persona) {
       return NextResponse.json({ error: 'Invalid persona' }, { status: 400 })
+    }
+
+    // Optional scenario wraps the persona's system prompt with situation + mode context
+    const scenario = getScenarioById(scenarioId)
+    const composeSystemPrompt = (base: string): string => {
+      if (!scenario) return base
+      const parts = [base, scenario.scenarioContext]
+      if (hardMode && scenario.hardModeContext) parts.push(scenario.hardModeContext)
+      return parts.join('\n\n')
     }
 
     // Initialize new session
@@ -45,7 +57,7 @@ export async function POST(request: Request) {
         messages: [
           {
             role: 'system',
-            content: `${persona.systemPrompt}\n\nCURRENT CONTEXT: This is a cold call. The BDR (sales rep) is calling you. They'll ask for your name first:\n\n"First and last name?" (inquisitive tone)\n\nAfter you give your name, they say: "Great, I was hoping you can help me out real quick."\n\nYOUR RESPONSE (as ${persona.name}, ${persona.title}):\n- Answer with your first and last name\n- Include your natural reaction (busy, curious, guarded)\n- This sets the tone for the rest of the call\n\nKeep response realistic and conversational (1-2 sentences).`
+            content: `${composeSystemPrompt(persona.systemPrompt)}\n\nCURRENT CONTEXT: This is a cold call. The BDR (sales rep) is calling you. They'll ask for your name first:\n\n"First and last name?" (inquisitive tone)\n\nAfter you give your name, they say: "Great, I was hoping you can help me out real quick."\n\nYOUR RESPONSE (as ${persona.name}, ${persona.title}):\n- Answer with your first and last name\n- Include your natural reaction (busy, curious, guarded)\n- This sets the tone for the rest of the call\n\nKeep response realistic and conversational (1-2 sentences).`
           }
         ],
         temperature: 0.7,
@@ -98,7 +110,7 @@ export async function POST(request: Request) {
         messages: [
           {
             role: 'system',
-            content: `${persona.systemPrompt}\n\nFRAMEWORK TRACKING:\nThe BDR is using the VBRICK cold call framework. Current step: ${detectedStep}\n\n${frameworkContext}\n\nCONVERSATION GUIDELINES:\n- Respond as ${persona.name} authentically\n- React to their script naturally - you can say yes or no to qualification\n- If they ask "Are you responsible for X?" - answer honestly based on your role\n- If you say NO, expect them to ask for a referral\n- If you say YES, expect a value proposition\n- Stay in character - don't "play nice" just because it's training\n- You can be skeptical, busy, or interested based on your personality`
+            content: `${composeSystemPrompt(persona.systemPrompt)}\n\nFRAMEWORK TRACKING:\nThe BDR is using the VBRICK cold call framework. Current step: ${detectedStep}\n\n${frameworkContext}\n\nCONVERSATION GUIDELINES:\n- Respond as ${persona.name} authentically\n- React to their script naturally - you can say yes or no to qualification\n- If they ask "Are you responsible for X?" - answer honestly based on your role\n- If you say NO, expect them to ask for a referral\n- If you say YES, expect a value proposition\n- Stay in character - don't "play nice" just because it's training\n- You can be skeptical, busy, or interested based on your personality`
           },
           ...conversationHistory,
           { role: 'user', content: bdrMessage }

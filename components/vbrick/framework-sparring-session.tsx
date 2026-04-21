@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Phone, Square, RotateCcw, Trophy, Volume2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -34,6 +34,9 @@ type SparringScore = {
 interface FrameworkSparringSessionProps {
   onComplete: (result: SparringResult, persona: ProspectPersona) => void
   onCancel: () => void
+  scenarioId?: string
+  hardMode?: boolean
+  autoStartPersonaId?: ProspectPersona['id']
 }
 
 type CallState = 'select' | 'accent' | 'briefing' | 'connecting' | 'in-call' | 'reviewing'
@@ -72,7 +75,7 @@ const ACCENT_INFO: Record<BDRAccent, { name: string; description: string; tips: 
   }
 }
 
-export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSparringSessionProps) {
+export function FrameworkSparringSession({ onComplete, onCancel, scenarioId, hardMode = false, autoStartPersonaId }: FrameworkSparringSessionProps) {
   const [callState, setCallState] = useState<CallState>('select')
   const [selectedPersona, setSelectedPersona] = useState<ProspectPersona | null>(null)
   const [selectedAccent, setSelectedAccent] = useState<BDRAccent>('general')
@@ -82,8 +85,23 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
   const [conversation, setConversation] = useState<Array<{ speaker: 'bdr' | 'prospect'; text: string }>>([])
   const [currentStep, setCurrentStep] = useState('name_capture')
   const [isPlayingAudio, setIsPlayingAudio] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isMuted, _setIsMuted] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  // Auto-start when launched with a specific persona (scenario flow)
+  useEffect(() => {
+    if (!autoStartPersonaId) return
+    if (callState !== 'select') return
+    const persona = ALL_PERSONAS.find(p => p.id === autoStartPersonaId)
+    if (persona) {
+      setSelectedPersona(persona)
+      setCallState('connecting')
+      void startSession(persona)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStartPersonaId])
 
   // Start session
   const startSession = async (persona: ProspectPersona) => {
@@ -97,7 +115,9 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
         body: JSON.stringify({
           personaId: persona.id,
           action: 'start',
-          bdrAccent: selectedAccent
+          bdrAccent: selectedAccent,
+          scenarioId,
+          hardMode,
         })
       })
 
@@ -106,20 +126,22 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
       const data = await response.json()
       setSessionId(data.sessionId)
       setCurrentStep(data.framework.currentStep)
-      setCallState('connecting')
 
-      // Play AI opening
+      // Display text + unblock input immediately. Audio is decoration, not a gate.
+      setConversation([{ speaker: 'prospect', text: data.openingResponse }])
+      setCallState('in-call')
+
       if (data.audioBase64) {
         const audio = new Audio(`data:audio/mp3;base64,${data.audioBase64}`)
+        audio.muted = isMuted
         audioRef.current = audio
         setIsPlayingAudio(true)
-        audio.onended = () => {
+        audio.onended = () => setIsPlayingAudio(false)
+        audio.onerror = () => setIsPlayingAudio(false)
+        audio.play().catch((err) => {
+          console.warn('TTS autoplay rejected or failed:', err)
           setIsPlayingAudio(false)
-          setCallState('in-call')
-        }
-        audio.play()
-
-        setConversation([{ speaker: 'prospect', text: data.openingResponse }])
+        })
       }
     } catch (error) {
       console.error('Failed to start session:', error)
@@ -133,6 +155,13 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
   const submitBDRResponse = async (text: string) => {
     if (!selectedPersona || !sessionId) return
 
+    // Cut any prospect audio — BDR is interrupting, which is normal on a real call.
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+    setIsPlayingAudio(false)
+
     setIsLoading(true)
 
     try {
@@ -143,7 +172,12 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
       ]
       setConversation(updatedConversation)
 
-      // Get AI response
+      // Convert local history → OpenAI chat shape (assistant = prospect, user = BDR)
+      const mappedHistory = updatedConversation.slice(-40).map((m) => ({
+        role: (m.speaker === 'bdr' ? 'user' : 'assistant') as 'user' | 'assistant',
+        content: m.text,
+      }))
+
       const response = await fetch('/api/vbrick/framework-spar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -153,8 +187,10 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
           sessionId,
           bdrMessage: text,
           currentStep,
-          conversationHistory: updatedConversation.slice(-6),
-          bdrAccent: selectedAccent
+          conversationHistory: mappedHistory,
+          bdrAccent: selectedAccent,
+          scenarioId,
+          hardMode,
         })
       })
 
@@ -163,19 +199,23 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
       const data = await response.json()
       setCurrentStep(data.nextStep)
 
-      // Add AI response
+      // Show prospect text immediately — don't wait for TTS.
       setConversation([
         ...updatedConversation,
         { speaker: 'prospect', text: data.response }
       ])
 
-      // Play AI response
       if (data.audioBase64) {
         const audio = new Audio(`data:audio/mp3;base64,${data.audioBase64}`)
+        audio.muted = isMuted
         audioRef.current = audio
         setIsPlayingAudio(true)
         audio.onended = () => setIsPlayingAudio(false)
-        audio.play()
+        audio.onerror = () => setIsPlayingAudio(false)
+        audio.play().catch((err) => {
+          console.warn('TTS autoplay rejected or failed:', err)
+          setIsPlayingAudio(false)
+        })
       }
     } catch (error) {
       console.error('Failed to process response:', error)
@@ -446,7 +486,7 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
                 e.currentTarget.value = ''
               }
             }}
-            disabled={isLoading || isPlayingAudio}
+            disabled={isLoading}
           />
           <Button
             onClick={() => {
@@ -456,7 +496,7 @@ export function FrameworkSparringSession({ onComplete, onCancel }: FrameworkSpar
                 input.value = ''
               }
             }}
-            disabled={isLoading || isPlayingAudio}
+            disabled={isLoading}
           >
             Send
           </Button>

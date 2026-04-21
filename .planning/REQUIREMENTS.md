@@ -7,46 +7,46 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can create account with email/password via Supabase
-- [ ] **AUTH-02**: User can log in with Google OAuth
-- [ ] **AUTH-03**: User session persists across browser refresh
-- [ ] **AUTH-04**: User can log out from any page
+- [x] **AUTH-01**: User can create account with email/password via Supabase
+- [x] **AUTH-02**: User can log in with Google OAuth
+- [x] **AUTH-03**: User session persists across browser refresh
+- [x] **AUTH-04**: User can log out from any page
 
 ### Voice Pipeline
 
-- [ ] **VOICE-01**: User can start/stop voice recording via MediaRecorder API with iOS Safari format detection
-- [ ] **VOICE-02**: Recording duration displays in real-time while recording
-- [ ] **VOICE-03**: Audio file size validated (<25MB) before upload with user feedback
-- [ ] **VOICE-04**: Audio uploaded to `/api/transcribe` and transcribed via Whisper API (whisper-1)
-- [ ] **VOICE-05**: Whisper prompt includes sales vocabulary for jargon accuracy
+- [x] **VOICE-01**: User can start/stop voice recording via MediaRecorder API with iOS Safari format detection
+- [x] **VOICE-02**: Recording duration displays in real-time while recording
+- [x] **VOICE-03**: Audio file size validated (<25MB) before upload with user feedback
+- [x] **VOICE-04**: Audio uploaded to `/api/transcribe` and transcribed via Whisper API (whisper-1)
+- [x] **VOICE-05**: Whisper prompt includes sales vocabulary for jargon accuracy
 
 ### AI Structuring
 
-- [ ] **AI-01**: Transcript sent to Claude API with structured output (Zod schema via `output_config.format`)
-- [ ] **AI-02**: Extracts: contact name, company, meeting summary, next steps, deal stage
-- [ ] **AI-03**: All CRM fields are nullable — handles incomplete notes without hallucination
-- [ ] **AI-04**: Confidence indicators flag low-confidence extractions for user review
+- [x] **AI-01**: Transcript sent to Claude API with structured output (tool_use + Zod validation of CRM fields)
+- [x] **AI-02**: Extracts: contact name, company, meeting summary, next steps, deal stage
+- [x] **AI-03**: All CRM fields are nullable — handles incomplete notes without hallucination
+- [x] **AI-04**: Confidence indicators flag low-confidence extractions for user review
 
 ### CRM Integration
 
-- [ ] **CRM-01**: User can connect Salesforce via OAuth (with CSRF protection)
-- [ ] **CRM-02**: User can connect HubSpot via OAuth (with CSRF protection)
-- [ ] **CRM-03**: CRM tokens stored encrypted in Supabase, never exposed to browser
-- [ ] **CRM-04**: Proactive token refresh before expiry (no reactive 401 loops)
-- [ ] **CRM-05**: User can create new opportunity/deal in connected CRM
-- [ ] **CRM-06**: User can update existing deal (notes, stage) in connected CRM
-- [ ] **CRM-07**: User can create new contact if not found in CRM
-- [ ] **CRM-08**: Follow-up tasks/activities auto-scheduled from extracted next steps
-- [ ] **CRM-09**: Pipeline stages fetched from user's CRM and cached in Supabase
-- [ ] **CRM-10**: CRM sync status displayed (saved locally vs. pushed to CRM)
+- [x] **CRM-01**: User can connect Salesforce via OAuth (with CSRF protection)
+- [x] **CRM-02**: User can connect HubSpot via OAuth (with CSRF protection)
+- [x] **CRM-03**: CRM tokens stored encrypted in Supabase, never exposed to browser
+- [x] **CRM-04**: Proactive token refresh before expiry (no reactive 401 loops)
+- [x] **CRM-05**: User can create new opportunity/deal in connected CRM
+- [x] **CRM-06**: User can update existing deal (notes, stage) in connected CRM
+- [x] **CRM-07**: User can create new contact if not found in CRM
+- [x] **CRM-08**: Follow-up tasks/activities auto-scheduled from extracted next steps
+- [x] **CRM-09**: Pipeline stages fetched from user's CRM and cached in Supabase
+- [x] **CRM-10**: CRM sync status displayed (saved locally vs. pushed to CRM)
 
 ### UI/UX
 
-- [ ] **UI-01**: Mobile-first responsive design (thumb-friendly, large tap targets)
-- [ ] **UI-02**: Dashboard as simple launch pad (prominent Record button + recent notes)
-- [ ] **UI-03**: Editable review card — all AI-extracted fields editable before CRM push
-- [ ] **UI-04**: Settings screen for CRM connection and deal stage configuration
-- [ ] **UI-05**: Note detail view showing structured fields and CRM sync status
+- [x] **UI-01**: Mobile-first responsive design (thumb-friendly, large tap targets)
+- [x] **UI-02**: Dashboard as simple launch pad (prominent Record button + recent notes)
+- [x] **UI-03**: Editable review card — all AI-extracted fields editable before CRM push
+- [x] **UI-04**: Settings screen for CRM connection and deal stage configuration
+- [x] **UI-05**: Note detail view showing structured fields and CRM sync status
 
 ## v2 Requirements
 
@@ -88,34 +88,34 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
-| UI-01 | Phase 1 | Pending |
-| VOICE-01 | Phase 2 | Pending |
-| VOICE-02 | Phase 2 | Pending |
-| VOICE-03 | Phase 2 | Pending |
-| VOICE-04 | Phase 2 | Pending |
-| VOICE-05 | Phase 2 | Pending |
-| AI-01 | Phase 3 | Pending |
-| AI-02 | Phase 3 | Pending |
-| AI-03 | Phase 3 | Pending |
-| AI-04 | Phase 3 | Pending |
-| CRM-01 | Phase 4 | Pending |
-| CRM-02 | Phase 4 | Pending |
-| CRM-03 | Phase 4 | Pending |
-| CRM-04 | Phase 4 | Pending |
-| CRM-09 | Phase 4 | Pending |
-| UI-04 | Phase 4 | Pending |
-| CRM-05 | Phase 5 | Pending |
-| CRM-06 | Phase 5 | Pending |
-| CRM-07 | Phase 5 | Pending |
-| CRM-08 | Phase 5 | Pending |
-| CRM-10 | Phase 5 | Pending |
-| UI-02 | Phase 6 | Pending |
-| UI-03 | Phase 6 | Pending |
-| UI-05 | Phase 6 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
+| AUTH-04 | Phase 1 | Complete |
+| UI-01 | Phase 1 | Complete |
+| VOICE-01 | Phase 2 | Complete |
+| VOICE-02 | Phase 2 | Complete |
+| VOICE-03 | Phase 2 | Complete |
+| VOICE-04 | Phase 2 | Complete |
+| VOICE-05 | Phase 2 | Complete |
+| AI-01 | Phase 3 | Complete |
+| AI-02 | Phase 3 | Complete |
+| AI-03 | Phase 3 | Complete |
+| AI-04 | Phase 3 | Complete |
+| CRM-01 | Phase 4 | Complete |
+| CRM-02 | Phase 4 | Complete |
+| CRM-03 | Phase 4 | Complete |
+| CRM-04 | Phase 4 | Complete |
+| CRM-09 | Phase 4 | Complete |
+| UI-04 | Phase 4 | Complete |
+| CRM-05 | Phase 5 | Complete |
+| CRM-06 | Phase 5 | Complete |
+| CRM-07 | Phase 5 | Complete |
+| CRM-08 | Phase 5 | Complete |
+| CRM-10 | Phase 5 | Complete |
+| UI-02 | Phase 6 | Complete |
+| UI-03 | Phase 6 | Complete |
+| UI-05 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total
@@ -124,4 +124,4 @@
 
 ---
 *Requirements defined: 2026-02-18*
-*Last updated: 2026-02-18 after roadmap creation — all 28 requirements mapped*
+*Last updated: 2026-04-14 — v1 requirements marked complete; aligns with `.planning/STATE.md` (Phase 6 complete).*
