@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { DashboardProvider } from '@/lib/vbrick/dashboard-context'
+import { VbrickShell } from '@/components/vbrick/vbrick-shell'
 
 export const metadata: Metadata = {
   title: 'Vbrick Command Center — Dashboard',
@@ -13,7 +14,7 @@ export default function DashboardLayout({
 }) {
   return (
     <DashboardProvider>
-      {children}
+      <VbrickShell>{children}</VbrickShell>
     </DashboardProvider>
   )
 }
