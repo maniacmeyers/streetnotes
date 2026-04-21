@@ -5,7 +5,7 @@ project: streetnotes/vbrick
 owner: Jeff
 ---
 
-# VBrick Sparring — Restyle, Reliability, Quick-Start Scenario
+# VBrick Sparring Restyle + Nav Consolidation
 
 ## Problem
 
@@ -17,6 +17,8 @@ BDRs open the sparring tool and hit three walls:
 
 This week's outreach play is a specific Bending Spoons acquisition check-in + K26 booth invite. The tool should open directly into that scenario. One seasoned BDR (4 years) also needs an escape hatch: same scenario with the cheat card off and a tougher prospect.
 
+**Separately, the vbrick app has an inconsistent nav architecture.** The `Sidebar` (288px) renders only on the dashboard home (`app/vbrick/dashboard/page.tsx:240`). Every sub-page (Sparring, Stories, Campaigns, Playbook, Settings, CI) replaces it with its own locally-invented `<header>` — different colors, different actions, no shared IA. Users navigate via the sidebar on the home page, land on a sub-page, and the sidebar vanishes. The sticky mic — core to the product — is trapped inside the sidebar and therefore unreachable from any sub-page. The 288px gutter also eats ~20% of horizontal width on a 1440px display, with stats that are already redundant with `PerformanceCards` on the same screen.
+
 ## Scope
 
 **In scope (this branch):**
@@ -25,6 +27,7 @@ This week's outreach play is a specific Bending Spoons acquisition check-in + K2
 - New scenario primitive + one scenario: `bending-spoons-k26`
 - New default landing at `/vbrick/dashboard/sparring` with one-click quick start and a Hard-mode toggle
 - Quiet "More scenarios →" link to the existing persona grid
+- **Nav consolidation:** remove the 288px `Sidebar`, introduce a persistent 56px `TopNav` rendered via the dashboard layout, and introduce a floating `MicFab` (bottom-right) so the mic reaches every sub-page. Delete the per-page custom `<header>` blocks on all 6 sub-pages.
 
 **Out of scope (deferred):**
 - DB persistence for anonymous sparring sessions (refresh = restart is acceptable for v1)
@@ -135,14 +138,60 @@ No new persistence layer. Refresh = restart for anonymous users, same as today.
 
 Separate deliverable, not a code artifact — see below in the final response. These are short coach/manager prompts Jeff can read aloud when a BDR freezes on Hard mode.
 
+### 5. Nav consolidation (Option B: top nav + mic FAB)
+
+**New shared chrome.** The dashboard layout (`app/vbrick/dashboard/layout.tsx`) becomes the single source of chrome for every page under it. A new client component `VbrickShell` wraps `children` and renders:
+
+- **`<TopNav>`** — 56px persistent bar at top.
+  - Left: StreetNotes mark + vbrick wordmark (`Command Center`) + 5 nav pills with `usePathname()` active state: `Dashboard · Stories · Campaigns · Playbook · Sparring`.
+  - Right: streak badge (`🔥 {n}-day streak` — only when `n >= 1`) + user menu button (`displayName` avatar → dropdown with Settings and Sign out).
+  - Styling: Neu tokens — `#e0e5ec` background, soft shadow bottom edge, Satoshi + General Sans fonts already in use.
+- **`{children}`** — full-width content area. No more `ml-[288px]`. Pages render inline with whatever page title or inline `<h1>` they want; the TopNav is the shared chrome.
+- **`<MicFab>`** — circular floating action button, fixed `bottom: 24px; right: 24px`, z-index above page content.
+  - Idle state: 56×56 button with mic icon, Neu styling, indigo accent (`#6366f1`).
+  - Recording state: expands to pill showing duration + small waveform + Stop button. Remains tappable from any page.
+  - Tapping mic while on any non-dashboard page routes to `/vbrick/dashboard` and starts the debrief flow (preserves the existing dashboard debrief behavior — the FAB is just the universal entry point).
+
+**Recording state lifted into `DashboardProvider`.** Today `isRecording`, `recordingDuration`, `handleMicStart`, `handleMicStop` live in `app/vbrick/dashboard/page.tsx` state and are passed down to `Sidebar`. They move into `dashboard-context.tsx` so `TopNav`, `MicFab`, and the dashboard page all read from the same source.
+
+**Email / identity lifted into `DashboardProvider` too.** The `email → displayName` logic currently in `dashboard/page.tsx:232-236` moves into the provider so `TopNav` can show the user menu on any page. The email gate (login form at lines 155-226) stays on the dashboard home as the entry point — if you land on a sub-route without an email set, `VbrickShell` redirects to `/vbrick/dashboard` to run the gate.
+
+**Per-page headers deleted.** These six files lose their custom top-bar blocks and render only their content body:
+
+- `app/vbrick/dashboard/sparring/page.tsx` — kill the "Cold Call Gym" green/teal gradient header; move the help dialog into the sparring-quickstart landing itself
+- `app/vbrick/dashboard/stories/page.tsx`
+- `app/vbrick/dashboard/campaigns/page.tsx`
+- `app/vbrick/dashboard/playbook/page.tsx`
+- `app/vbrick/dashboard/settings/page.tsx`
+- `app/vbrick/dashboard/ci/page.tsx`
+
+Inline `<h1>` for the page title stays on each sub-page if it was there — the TopNav is chrome, not content.
+
+**Sidebar deleted.** `components/vbrick/sidebar.tsx` is removed. The stats it showed (streak, today's calls, spin avg) are redundant with `PerformanceCards` on the dashboard home, except streak which moves to the TopNav.
+
+**Dashboard home content re-flows.** `app/vbrick/dashboard/page.tsx` stops rendering `<Sidebar>` and stops offsetting with `ml-[288px]`. Welcome block + QuickStartTiles + PerformanceCards + Recent Debriefs + Leaderboard now render full-width under the TopNav. This should visibly feel "larger" — that's the point.
+
+**Mobile/responsive.** TopNav pills collapse to a hamburger menu under `md` breakpoint (existing Tailwind breakpoint). MicFab stays bottom-right on mobile. No sidebar drawer needed — the whole point of this change is to not have a sidebar.
+
 ## Files touched
 
+**Sparring restyle + quick-start:**
 - **New:** `lib/vbrick/sparring-scenarios.ts`
 - **Modified:** `lib/vbrick/sparring-personas.ts` — append one new persona (the Bending Spoons VP) referenced by the scenario
 - **Modified:** `app/vbrick/dashboard/sparring/page.tsx` — new landing layout
 - **Modified:** `components/vbrick/framework-sparring-session.tsx` — Neu styling, input ungated from audio, cheat-card rendering, scenario + hardMode props
 - **Modified:** `components/vbrick/sparring-session.tsx` — Neu styling only
 - **Modified:** `app/api/vbrick/framework-spar/route.ts` — accept `scenarioId` and `hardMode`, compose system prompt accordingly
+
+**Nav consolidation:**
+- **New:** `components/vbrick/top-nav.tsx`
+- **New:** `components/vbrick/mic-fab.tsx`
+- **New:** `components/vbrick/vbrick-shell.tsx` — client wrapper rendering TopNav + children + MicFab, handling email redirect
+- **Modified:** `app/vbrick/dashboard/layout.tsx` — wrap children in `VbrickShell`
+- **Modified:** `lib/vbrick/dashboard-context.tsx` — add recording state + email/displayName to context
+- **Modified:** `app/vbrick/dashboard/page.tsx` — stop rendering Sidebar, stop offsetting `ml-[288px]`, stop owning recording state
+- **Modified:** strip per-page `<header>` blocks from the 6 sub-pages listed above
+- **Deleted:** `components/vbrick/sidebar.tsx`
 
 No DB migrations. No new env vars. No new dependencies.
 
@@ -153,9 +202,16 @@ No DB migrations. No new env vars. No new dependencies.
 - Hard mode toggle visibly hides the cheat card and the AI prospect pushes back on weak openers.
 - `framework-sparring-session.tsx` uses no raw `bg-muted` / default shadcn card visuals.
 - The existing persona-grid path still works end-to-end for anyone who clicks "More scenarios →".
+- Every dashboard page (`/vbrick/dashboard` + all 6 sub-routes) renders the same `TopNav` and the same `MicFab`. No page has a local `<header>` with its own nav-looking chrome.
+- Tapping the `MicFab` on any non-dashboard page starts a debrief flow (routes to the dashboard root).
+- The dashboard home content (Welcome + QuickStartTiles + PerformanceCards + Recent Debriefs + Leaderboard) renders at full available width — no `ml-[288px]` offset.
+- `components/vbrick/sidebar.tsx` is deleted; `git grep Sidebar` returns no imports.
 
 ## Risks / watch-outs
 
 - **TTS still fails silently.** If after ungating input the BDR still can't hear the AI, the text is readable so the practice session continues; we add a log + a mute-state indicator in the call header so we notice.
 - **Hard mode drift.** The system prompt append needs to actually produce more skeptical replies. If the model keeps being cooperative, we tune the hardModeContext prose rather than touching code.
 - **Existing `sparring-session.tsx` generic flow.** Styling-only changes there — do not touch its state machine to avoid regressions on the legacy path.
+- **MicFab collision with page content.** Fixed bottom-right at z-20+; must not cover primary actions. Pages with their own bottom-right buttons (if any) need a small bottom-padding pass. Check sparring in-call "Send / End Call" row and the debrief screens.
+- **Mic state race when navigating mid-recording.** If the user taps the mic on `/vbrick/dashboard/sparring` while in a sparring call, we need to NOT start a debrief over the sparring session. Simplest rule: disable the MicFab whenever the dashboard debrief flow is already active OR whenever the route is `/vbrick/dashboard/sparring` with an active session. Encode this in the context.
+- **Email gate on sub-routes.** If the user somehow deep-links to `/vbrick/dashboard/stories` without an email in localStorage, `VbrickShell` redirects to `/vbrick/dashboard` to run the gate. Test the redirect doesn't loop.
