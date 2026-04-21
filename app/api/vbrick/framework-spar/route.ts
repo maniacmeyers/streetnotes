@@ -9,14 +9,13 @@ export const maxDuration = 60
 
 // Start a new framework-based sparring session
 export async function POST(request: Request) {
+  // VBrick tenant uses localStorage email identity, not Supabase auth.
+  // A Supabase session is opportunistic — used to save session history if present,
+  // but not required to run the practice session itself.
   const supabase = await createClient()
   const {
     data: { user }
   } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   try {
     const body = await request.json()
@@ -262,23 +261,26 @@ Score on Framework Adherence, Accent Clarity, Tonality, Objection Handling, and 
 
       const scoringResult = JSON.parse(functionCall.arguments)
 
-      // Store session in database
-      await supabase.from('sparring_sessions').insert({
-        user_id: user.id,
-        persona_id: personaId,
-        total_score: scoringResult.total_score,
-        framework_score: scoringResult.framework_score,
-        accent_score: scoringResult.accent_score,
-        dimensions: scoringResult.dimensions,
-        framework_data: scoringResult.framework_analysis,
-        transcription: fullTranscript,
-        bdr_accent: bdrAccent,
-        would_meet: scoringResult.would_transfer,
-        meeting_likelihood: scoringResult.transfer_confidence,
-        accent_feedback: scoringResult.accent_feedback,
-        key_strengths: scoringResult.key_strengths,
-        improvements: scoringResult.improvements
-      })
+      // Store session in database (only if a Supabase user is signed in;
+      // the VBrick tenant otherwise runs on localStorage email identity)
+      if (user) {
+        await supabase.from('sparring_sessions').insert({
+          user_id: user.id,
+          persona_id: personaId,
+          total_score: scoringResult.total_score,
+          framework_score: scoringResult.framework_score,
+          accent_score: scoringResult.accent_score,
+          dimensions: scoringResult.dimensions,
+          framework_data: scoringResult.framework_analysis,
+          transcription: fullTranscript,
+          bdr_accent: bdrAccent,
+          would_meet: scoringResult.would_transfer,
+          meeting_likelihood: scoringResult.transfer_confidence,
+          accent_feedback: scoringResult.accent_feedback,
+          key_strengths: scoringResult.key_strengths,
+          improvements: scoringResult.improvements
+        })
+      }
 
       return NextResponse.json({
         score: scoringResult.total_score,

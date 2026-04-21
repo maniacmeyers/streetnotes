@@ -14,14 +14,13 @@ export const maxDuration = 60
 
 // Start a new sparring session
 export async function POST(request: Request) {
+  // VBrick tenant uses localStorage email identity, not Supabase auth.
+  // A Supabase session is opportunistic — used to save session history if present,
+  // but not required to run the practice session itself.
   const supabase = await createClient()
   const {
     data: { user }
   } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   try {
     const body = await request.json()
@@ -191,18 +190,21 @@ Provide detailed scoring and feedback.`
         }))
       }
 
-      // Store score in database
-      await supabase.from('sparring_sessions').insert({
-        user_id: user.id,
-        persona_id: personaId,
-        total_score: callScore.totalScore,
-        dimensions: callScore.dimensions,
-        transcription,
-        duration_seconds: scoringInput.durationSeconds,
-        would_meet: scoringResult.would_meet,
-        meeting_likelihood: scoringResult.meeting_likelihood,
-        summary: scoringResult.summary
-      })
+      // Store score in database (only if a Supabase user is signed in;
+      // the VBrick tenant otherwise runs on localStorage email identity)
+      if (user) {
+        await supabase.from('sparring_sessions').insert({
+          user_id: user.id,
+          persona_id: personaId,
+          total_score: callScore.totalScore,
+          dimensions: callScore.dimensions,
+          transcription,
+          duration_seconds: scoringInput.durationSeconds,
+          would_meet: scoringResult.would_meet,
+          meeting_likelihood: scoringResult.meeting_likelihood,
+          summary: scoringResult.summary
+        })
+      }
 
       return NextResponse.json({
         score: callScore,
