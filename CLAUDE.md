@@ -2,6 +2,39 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Second Brain (session-start read)
+
+This repo is part of an Obsidian vault (`Obsidian_ClaudeCode/`). Knowledge lives in `_brain/` at the vault root.
+
+**`_brain/CONTEXT.md` is auto-injected at session start via a `SessionStart` hook** — do NOT read it manually, it is already in your context as a `=== SECOND BRAIN (auto-injected) ===` block. Follow `[[wikilinks]]` from CONTEXT.md only when the task needs deeper context beyond what's in that block.
+
+**At session end, follow this checklist:**
+1. Write a session note to `_brain/sessions/` if anything meaningful happened
+2. Write decision or pattern notes if any were made (flag to user first)
+3. Update `_brain/CONTEXT.md` (last session, recent decisions, open threads)
+4. Add new notes to `_brain/MOC.md`
+5. Update `docs/SESSION_LOG.md` if there was a direction shift
+
+**Note locations:**
+- `_brain/decisions/` — why we chose X over Y (frontmatter: type, project, date, status, tags)
+- `_brain/patterns/` — reusable technical patterns (frontmatter: type, project, date, stack, tags)
+- `_brain/sessions/` — auto-generated session knowledge (frontmatter: type, project, date)
+- `_brain/evolution/` — GTM/strategy shifts (frontmatter: type, project, date, area, tags)
+- `_brain/MOC.md` — Map of Content linking all brain notes
+- `_brain/CONTEXT.md` — always-current briefing doc
+
+**All brain notes use `[[wikilinks]]`** to connect to each other, to project notes, and to other decisions/patterns. This powers Obsidian's graph view.
+
+## Vault context (reference)
+
+The curated map of non-code context lives in `docs/INDEX.md` and is imported below. Read it for file locations, not for strategic context (that's in `_brain/CONTEXT.md`).
+
+@docs/INDEX.md
+
+**Keep the vault honest.** When you create or substantially modify a vault document, update `docs/INDEX.md`. Rules are inside `docs/INDEX.md`.
+
+**Codebase wiki:** A GitNexus-generated wiki lives at `docs/codebase/` (gitignored, auto-refreshed). Read `docs/codebase/overview.md` for a linked module map before exploring source. The wiki regenerates automatically after every commit via `.git/hooks/post-commit` (runs `./scripts/sync-wiki.sh` in the background; logs to `.gitnexus/wiki-sync.log`). GitNexus skips unchanged modules, so most commits are free or near-free; only architectural changes trigger paid regen. Manual refresh: `./scripts/sync-wiki.sh`. The graph index itself (`.gitnexus/`) is refreshed by the existing PostToolUse hook.
+
 ## Project Overview
 
 StreetNotes.ai is a mobile-first voice-to-CRM web app. A sales rep finishes a meeting, talks into their phone for 60 seconds, reviews the AI-structured output, hits confirm, and their CRM is updated — no manual data entry.
@@ -203,7 +236,7 @@ Per-user rolling memory of entities (contacts, accounts, products, competitors) 
 - Consumed by `/api/structure` to prime the extraction prompt
 
 ### Vbrick surfaces
-The repo also contains `app/vbrick/`, `app/vbrick-site/`, `lib/vbrick/`, `lib/deepgram/`, and migrations 004/007/008/009/011 — these are a separate tenant served from `vbrick.streetnotes.ai` (see host-based rewrite in `middleware.ts`). Not documented here; treat as a sibling app sharing the codebase.
+The repo also contains `app/vbrick/`, `app/vbrick-site/`, and `lib/vbrick/` — a separate tenant served from `vbrick.streetnotes.ai` (see host-based rewrite in `middleware.ts`). The command center is a **BDR development/practice hub**: `Dashboard · Stories · Campaigns · Playbook · Sparring`. Dashboard landing = IntentionScreen + `Welcome back, {name}` + QuickStartTiles + Debrief flow + PerformanceCards + Recent Debriefs + Leaderboard. Call-queue and live-coaching subsystems were removed on 2026-04-21 (see `docs/superpowers/specs/2026-04-21-vbrick-command-center-restructure-design.md`); DB tables `vbrick_calling_sessions`, `vbrick_queue_items`, `vbrick_coaching_sessions` are intentionally preserved. Treat as a sibling app sharing the codebase.
 
 ## Key Decisions (Do Not Override)
 
@@ -232,12 +265,12 @@ Direct. Fast. Zero fluff. Speaks like a rep, not a SaaS startup. No buzzwords. N
 
 ## Code Intelligence
 
-This project uses CodeGraph and GitNexus for codebase knowledge graphs. Always use the codegraph and gitnexus MCP tools to understand code structure before exploring files directly.
+This project uses GitNexus for codebase knowledge graphs. Use the GitNexus MCP tools to understand code structure before exploring files directly.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **Streetnotes** (1829 symbols, 3379 relationships, 69 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **Streetnotes** (2188 symbols, 3986 relationships, 84 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

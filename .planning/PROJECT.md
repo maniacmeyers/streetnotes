@@ -14,24 +14,24 @@ A sales rep finishes a meeting, talks into their phone for 60 seconds, reviews t
 
 (None yet — ship to validate)
 
-### Active
+### Active (v1 — shipped per `.planning/STATE.md`, 2026-04-08)
 
-- [ ] User auth (email/password) via Supabase
-- [ ] Voice recording via MediaRecorder API (start/stop, mobile-first)
-- [ ] Transcription via OpenAI Whisper API (whisper-1 model) through Next.js API route
-- [ ] AI structuring via Claude API — extracts: contact name, company, meeting summary, next steps, deal stage
-- [ ] Deal stages are user-configurable (pulled from connected CRM, editable in settings)
-- [ ] Editable review card — user reviews and edits structured output before CRM push
-- [ ] CRM integration: Salesforce (OAuth)
-- [ ] CRM integration: HubSpot (OAuth)
-- [ ] CRM actions: create new opportunity/deal from first meeting
-- [ ] CRM actions: update existing deal (add notes, update stage)
-- [ ] CRM actions: schedule follow-up task/event for next steps
-- [ ] CRM actions: create new contact if they don't exist
-- [ ] Save note to Supabase (local record of all notes)
-- [ ] Dashboard as simple launch pad (prominent Record button)
-- [ ] Note detail view (view past note with structured fields)
-- [ ] Settings screen: CRM connection (OAuth), deal stage configuration
+- [x] User auth (email/password) via Supabase
+- [x] Voice recording via MediaRecorder API (start/stop, mobile-first)
+- [x] Transcription via OpenAI Whisper API (whisper-1 model) through Next.js API route
+- [x] AI structuring via Claude API — extracts: contact name, company, meeting summary, next steps, deal stage
+- [x] Deal stages are user-configurable (pulled from connected CRM, editable in settings)
+- [x] Editable review card — user reviews and edits structured output before CRM push
+- [x] CRM integration: Salesforce (OAuth)
+- [x] CRM integration: HubSpot (OAuth)
+- [x] CRM actions: create new opportunity/deal from first meeting
+- [x] CRM actions: update existing deal (add notes, update stage)
+- [x] CRM actions: schedule follow-up task/event for next steps
+- [x] CRM actions: create new contact if they don't exist
+- [x] Save note to Supabase (local record of all notes)
+- [x] Dashboard as simple launch pad (prominent Record button)
+- [x] Note detail view (view past note with structured fields)
+- [x] Settings screen: CRM connection (OAuth), deal stage configuration
 
 ### Out of Scope
 
@@ -65,13 +65,13 @@ A sales rep finishes a meeting, talks into their phone for 60 seconds, reviews t
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Include CRM integration in MVP | CRM push is core to value prop — without it, user still does manual work | — Pending |
-| Salesforce + HubSpot for MVP | Covers enterprise + SMB segments | — Pending |
-| OAuth for CRM connection | Standard, user-friendly, no API key management | — Pending |
-| Always-review before CRM push | Builds trust, prevents bad data in CRM | — Pending |
-| User-configurable deal stages from CRM | Stages vary per org, must match their pipeline | — Pending |
-| Simple launch pad dashboard | Speed matters — get to recording fast | — Pending |
-| Discard audio after transcription | Simplifies storage, privacy-friendly for MVP | — Pending |
+| Include CRM integration in MVP | CRM push is core to value prop — without it, user still does manual work | Shipped (v1) |
+| Salesforce + HubSpot for MVP | Covers enterprise + SMB segments | Shipped (v1) |
+| OAuth for CRM connection | Standard, user-friendly, no API key management | Shipped (v1) |
+| Always-review before CRM push | Builds trust, prevents bad data in CRM | Shipped (v1) |
+| User-configurable deal stages from CRM | Stages vary per org, must match their pipeline | Shipped (v1) |
+| Simple launch pad dashboard | Speed matters — get to recording fast | Shipped (v1) |
+| Discard audio after transcription | Simplifies storage, privacy-friendly for MVP | Shipped (v1) |
 
 ---
-*Last updated: 2026-02-18 after initialization*
+*Last updated: 2026-04-14 — Active requirements and decisions reconciled to shipped v1 (see `.planning/STATE.md`).*
