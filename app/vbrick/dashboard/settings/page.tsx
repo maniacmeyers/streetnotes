@@ -13,13 +13,6 @@ export default function SettingsPage() {
   const [displayName, setDisplayName] = useState('')
   const [importMapping, setImportMapping] = useState(DEFAULT_IMPORT_MAPPING)
   const [saved, setSaved] = useState(false)
-  const [sessions, setSessions] = useState<Array<{
-    id: string
-    started_at: string
-    ended_at: string | null
-    total_calls: number
-    average_spin: number
-  }>>([])
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('vbrick_email') || ''
@@ -29,15 +22,6 @@ export default function SettingsPage() {
     const savedMapping = localStorage.getItem('vbrick_import_mapping')
     if (savedMapping) {
       try { setImportMapping(JSON.parse(savedMapping)) } catch {}
-    }
-
-    if (storedEmail) {
-      fetch(`/api/vbrick/session?email=${encodeURIComponent(storedEmail)}&history=true`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.sessions) setSessions(data.sessions)
-        })
-        .catch(() => {})
     }
   }, [])
 
@@ -171,52 +155,6 @@ export default function SettingsPage() {
           >
             {saved ? 'Saved' : 'Save Settings'}
           </NeuButton>
-
-          {/* Divider */}
-          <div className="h-px" style={{ background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}, transparent)` }} />
-
-          {/* Session History */}
-          <NeuCard>
-            <h2 className="text-xs uppercase tracking-widest font-general-sans font-semibold mb-4" style={{ color: neuTheme.colors.accent.primary }}>
-              Session History
-            </h2>
-            {sessions.length === 0 ? (
-              <p className="text-sm font-satoshi" style={{ color: neuTheme.colors.text.muted }}>No sessions yet</p>
-            ) : (
-              <div className="space-y-2">
-                {sessions.map(s => (
-                  <div key={s.id} className="flex items-center justify-between py-2">
-                    <div>
-                      <p className="text-sm font-satoshi" style={{ color: neuTheme.colors.text.heading }}>
-                        {new Date(s.started_at).toLocaleDateString()}
-                      </p>
-                      <p className="text-xs font-fira-code" style={{ color: neuTheme.colors.text.muted }}>
-                        {s.total_calls} calls | SPIN avg: {Number(s.average_spin).toFixed(1)}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <a
-                        href={`/api/vbrick/export/csv?sessionId=${s.id}`}
-                        className="text-xs font-satoshi hover:underline cursor-pointer"
-                        style={{ color: neuTheme.colors.accent.primary }}
-                        download
-                      >
-                        CSV
-                      </a>
-                      <a
-                        href={`/api/vbrick/export/pdf?sessionId=${s.id}`}
-                        className="text-xs font-satoshi hover:underline cursor-pointer"
-                        style={{ color: neuTheme.colors.accent.primary }}
-                        download
-                      >
-                        PDF
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </NeuCard>
         </div>
       </div>
     </div>
