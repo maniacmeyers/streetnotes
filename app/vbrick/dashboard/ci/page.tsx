@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import { ArrowLeft, RefreshCw, FileText } from 'lucide-react'
+import { RefreshCw, FileText } from 'lucide-react'
 import { NeuCard, NeuButton, NeuTabs } from '@/components/vbrick/neu'
 import { SNFeed } from '@/components/vbrick/ci/sn-feed'
 import { CompetitorTracker } from '@/components/vbrick/ci/competitor-tracker'
@@ -199,45 +199,35 @@ export default function CIDashboardPage() {
   ]
 
   return (
-    <div className="min-h-screen" style={{ background: neuTheme.colors.bg }}>
-      <div className="max-w-6xl mx-auto p-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-6"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-general-sans font-bold" style={{ color: neuTheme.colors.text.heading }}>
-              CI Dashboard
-            </h1>
-            <div className="flex items-center gap-3">
-              <NeuButton variant="raised" size="sm" onClick={handleGenerateBrief}>
-                <FileText size={16} className="mr-2 inline" />
-                Weekly Brief
-              </NeuButton>
-              <NeuButton variant="icon" onClick={fetchData}>
-                <RefreshCw size={16} />
-              </NeuButton>
-              <a
-                href="/vbrick/dashboard"
-                className="flex items-center gap-2 font-satoshi text-sm"
-                style={{ color: neuTheme.colors.text.muted }}
-              >
-                <ArrowLeft size={16} /> Dashboard
-              </a>
-            </div>
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="font-general-sans font-bold text-2xl tracking-tight" style={{ color: '#2d3436' }}>
+            CI Dashboard
+          </h1>
+          <div className="flex items-center gap-3">
+            <NeuButton variant="raised" size="sm" onClick={handleGenerateBrief}>
+              <FileText size={16} className="mr-2 inline" />
+              Weekly Brief
+            </NeuButton>
+            <NeuButton variant="icon" onClick={fetchData}>
+              <RefreshCw size={16} />
+            </NeuButton>
           </div>
+        </div>
 
-          {/* Session Stats */}
-          <SessionStatsBar
-            dials={sessionStats.dials}
-            conversations={sessionStats.conversations}
-            meetings={sessionStats.meetings}
-            loading={loading}
-          />
-        </motion.div>
+        {/* Session Stats */}
+        <SessionStatsBar
+          dials={sessionStats.dials}
+          conversations={sessionStats.conversations}
+          meetings={sessionStats.meetings}
+          loading={loading}
+        />
+      </motion.div>
 
         {/* Weekly Brief Modal */}
         {showBrief && weeklyBrief && (
@@ -327,8 +317,6 @@ export default function CIDashboardPage() {
             </motion.div>
           )}
         </motion.div>
-      </div>
-
       <IntelToast
         message={toast.message}
         category={toast.category}

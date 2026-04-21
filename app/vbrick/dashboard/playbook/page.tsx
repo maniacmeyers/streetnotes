@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { ArrowLeft, Lightbulb, MessageCircle, MessagesSquare, Phone, Target, Layers, ShieldCheck } from 'lucide-react'
+import { Lightbulb, MessageCircle, MessagesSquare, Phone, Target, Layers, ShieldCheck } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { cascadeIn, staggerContainer } from '@/lib/vbrick/animations'
 import { playbookCards, playbookCategories, type PlaybookCard, type PlaybookSection } from '@/lib/vbrick/playbook-data'
@@ -178,34 +178,19 @@ export default function PlaybookPage() {
   }))
 
   return (
-    <div className="min-h-screen" style={{ background: neuTheme.colors.bg }}>
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <h1
-              className="text-2xl font-general-sans font-bold"
-              style={{ color: neuTheme.colors.text.heading }}
-            >
-              Playbook
-            </h1>
-            <a
-              href="/vbrick/dashboard"
-              className="flex items-center gap-2 font-satoshi text-sm no-underline"
-              style={{ color: neuTheme.colors.text.muted }}
-            >
-              <ArrowLeft size={16} /> Dashboard
-            </a>
-          </div>
-          <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
-            Scripts, frameworks, and field-tested plays. Find what you need, use it, close.
-          </p>
-        </motion.div>
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <h1 className="font-general-sans font-bold text-2xl tracking-tight mb-2" style={{ color: '#2d3436' }}>
+          Playbook
+        </h1>
+        <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
+          Scripts, frameworks, and field-tested plays. Find what you need, use it, close.
+        </p>
+      </motion.div>
 
         {/* Cards by category */}
         <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-8">
@@ -234,7 +219,6 @@ export default function PlaybookPage() {
             </motion.div>
           ))}
         </motion.div>
-      </div>
     </div>
   )
 }

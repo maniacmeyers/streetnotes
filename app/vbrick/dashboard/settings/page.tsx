@@ -1,14 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 import { NeuCard, NeuButton } from '@/components/vbrick/neu'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { DEFAULT_IMPORT_MAPPING, DEFAULT_EXPORT_MAPPING } from '@/lib/vbrick/csv-parser'
 
 export default function SettingsPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [importMapping, setImportMapping] = useState(DEFAULT_IMPORT_MAPPING)
@@ -33,26 +30,11 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: neuTheme.colors.bg }}>
-      <div className="max-w-2xl mx-auto px-6 py-8 font-satoshi">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <button
-            onClick={() => router.push('/vbrick/dashboard')}
-            className="cursor-pointer transition-colors"
-            style={{ color: neuTheme.colors.text.muted }}
-            aria-label="Back to dashboard"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1
-            className="text-[11px] uppercase tracking-[0.2em] font-general-sans font-semibold"
-            style={{ color: neuTheme.colors.accent.primary }}
-          >
-            Settings
-          </h1>
-        </div>
-
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+      <h1 className="font-general-sans font-bold text-2xl tracking-tight" style={{ color: '#2d3436' }}>
+        Settings
+      </h1>
+      <div className="max-w-2xl font-satoshi">
         <div className="space-y-6">
           {/* Profile */}
           <NeuCard>
