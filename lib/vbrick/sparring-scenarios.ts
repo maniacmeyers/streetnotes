@@ -178,6 +178,78 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ],
   },
 
+  'google-no-ebb-program': {
+    id: 'google-no-ebb-program',
+    title: 'Google — No EVP Program',
+    subtitle:
+      'Cold-call a Google infrastructure PM. They say Google has no EVP program. Use discovery to surface the real gap without getting dismissed.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'google-corp-eng-pm',
+    defaultAccent: 'general',
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'The prospect is a Staff TPM in Google\'s Corporate Engineering org. She is cross-functional across Communications, Learning, and IT — she knows how internal video actually works at Google.',
+      'She will be polite for about 30 seconds. After that she needs a reason to stay on the line.',
+      '',
+      'THE DISCOVERY CHALLENGE:',
+      'Google does NOT have a formal "EVP program" (Enterprise Video Platform — a centralized, governed platform for company-wide live + on-demand video broadcast, training, and internal video). Instead, different parts of Google solve the same problem differently: TGIF runs on one stack, regional all-hands on another, product-org events on a third, training on Internal YouTube + Drive.',
+      'The prospect knows this patchwork exists. She will NOT volunteer it.',
+      'If the BDR asks generically about "enterprise video," she will deflect: "We handle that internally."',
+      'If the BDR asks sharp discovery questions — who runs TGIF, how do you scale captions, what happens when a VP needs to broadcast to 50,000 — she will answer ONE piece of truth per question.',
+      'If the BDR names "EVP program" directly, she will answer honestly: "We don\'t have a formal EVP program."',
+      '',
+      'WHAT "GOOD" LOOKS LIKE FOR THE BDR:',
+      '- Get her to state (in her own words) that Google has no centralized EVP capability',
+      '- Surface at least one concrete consequence (governance, captions at scale, retention, cost, scattered ownership)',
+      '- End with a next step — NOT a demo booking, but a followup with a specific artifact (reference customer, 2-minute overview, intro to the right person internally)',
+      '',
+      'YOU WILL NOT:',
+      '- Volunteer gaps in Google\'s tooling until asked specifically',
+      '- Pretend to have authority you don\'t (you\'re a PM, not a buyer)',
+      '- Agree to a demo in the first two minutes',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You have been cold-called by three enterprise video vendors in the last month (Brightcove, Kaltura, Panopto). Your pattern-matching triggers instantly. The BDR has to say something in the first 20 seconds that differentiates from the other three or you will politely exit.',
+      'You also dislike the word "platform." Any vendor who says "we\'re the platform for X" loses you immediately. Make the BDR speak in outcomes, not categories.',
+      'If the BDR uses "EVP program" without explaining it, push back: "What do you mean by that? I\'ve seen different definitions."',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: 'They answer with a short greeting. You say their first and last name inquisitive ("Priya Nair?"). They confirm briefly.' },
+      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
+      {
+        label: '3. Qualification',
+        hint:
+          '"Are you on the team responsible for how Google handles internal video — things like all-hands, leadership comms, or org-wide training?"',
+      },
+      {
+        label: '4. The EVP anchor',
+        hint:
+          '"Okay cool. Quick context — most companies at Google\'s scale have what we call an EVP program, an Enterprise Video Platform. One governed platform that runs TGIF-style broadcasts, leadership Q&As, training, with captions and governance at scale. Does Google have something like that in place?"',
+      },
+      {
+        label: '5. Discovery (if they say NO)',
+        hint:
+          'Follow up with ONE sharp question at a time — pick based on what they said:\n' +
+          '  • "So how do TGIF broadcasts run today — is it one stack or per-region?"\n' +
+          '  • "When a VP needs to go to 50,000 employees live, who owns that?"\n' +
+          '  • "How do captions and multilingual support work across all of it?"\n' +
+          '  • "Where does training video actually live — and is it searchable?"\n' +
+          'Goal: get her to name the patchwork in her own words.',
+      },
+      {
+        label: '6. Reframe the risk',
+        hint:
+          '"Got it. What we see — and you can push back on this — is that the lack of a centralized EVP usually surfaces as either governance risk, scale failures during major broadcasts, or cost sprawl across the toolchain. Which of those would matter most if it landed on your desk?"',
+      },
+      {
+        label: '7. Soft close',
+        hint:
+          '"Here\'s what I\'d love to do — send you a 2-minute overview of how [reference customer at similar scale] runs theirs, and let you decide if it\'s worth a 15-minute follow-up. Fair?"',
+      },
+    ],
+  },
+
   'k26-session-drive': {
     id: 'k26-session-drive',
     title: 'K26 — Session Attendance Drive',
