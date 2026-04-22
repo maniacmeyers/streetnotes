@@ -8,6 +8,8 @@ import {
   Trophy,
   Mic,
   Target,
+  Building2,
+  Check,
 } from 'lucide-react'
 import WaitlistForm from '@/components/waitlist-form'
 import ShinyText from '@/components/shiny-text'
@@ -79,7 +81,7 @@ export default function LandingPage() {
             <div className="mb-6 sm:mb-8">
               <span className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt">
                 <span className="w-1.5 h-1.5 rounded-full bg-volt animate-pulse" />
-                For reps who&apos;d rather sell than type
+                For aesthetic reps who carry the bag
               </span>
             </div>
 
@@ -88,19 +90,22 @@ export default function LandingPage() {
               id="hero-heading"
               className="font-bold text-[44px] sm:text-[80px] md:text-[112px] lg:text-[140px] leading-[0.9] text-white mb-6 sm:mb-8 tracking-tight"
             >
-              Stop losing
+              You cover
               <br className="hidden sm:block" />{' '}
-              deals in the
+              47 accounts.
               <br className="hidden sm:block" />{' '}
+              You remember{' '}
               <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
-                parking lot
+                12
               </span>
+              .
             </h1>
 
             {/* Subheadline */}
             <p className="font-body text-lg sm:text-xl md:text-2xl text-white/70 max-w-2xl mb-10 sm:mb-14 leading-relaxed">
-              StreetNotes turns your voice into CRM data. Finish the meeting. Hit
-              record. Your CRM updates itself.
+              Every injector preference, every tox-to-filler ratio, every
+              practice manager&apos;s kid&apos;s name — gone the minute you
+              leave the parking lot. StreetNotes remembers so you can close.
             </p>
 
             {/* ── PRIMARY CTA: Free Tool Glass Card ── */}
@@ -117,18 +122,20 @@ export default function LandingPage() {
                   </span>
 
                   <h2 className="font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-3 leading-tight">
-                    Try it <span className="text-volt">right now</span>
+                    Try it after your next{' '}
+                    <span className="text-volt">injector call</span>
                   </h2>
                   <p className="font-body text-sm sm:text-base text-white/70 mb-6 max-w-md leading-relaxed">
-                    60 seconds of talking. Structured deal notes, objections, next
-                    steps, and a PDF. Free.
+                    60 seconds of voice → your CRM fields, a practice-specific
+                    next step, and the competitor objection you should expect at
+                    your next stop.
                   </p>
 
                   <a
                     href="/debrief"
                     className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-7 py-4 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
                   >
-                    Start a Brain Dump
+                    Start debrief
                     <span aria-hidden="true">→</span>
                   </a>
                 </div>
@@ -138,7 +145,7 @@ export default function LandingPage() {
             {/* ── SECONDARY: Waitlist ── */}
             <div id="waitlist" className="max-w-xl">
               <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.15em] text-white/50 mb-3">
-                Already sold? Join the beta.
+                Building with aesthetic reps before GA. Join the beta.
               </p>
               <WaitlistForm />
             </div>
@@ -155,9 +162,9 @@ export default function LandingPage() {
               id="problem-heading"
               className="font-bold text-[32px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
             >
-              Your CRM is{' '}
+              Your CRM wasn&apos;t built for{' '}
               <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                lying to you
+                this work
               </span>
             </h2>
 
@@ -166,53 +173,58 @@ export default function LandingPage() {
               {/* Row 1: Old */}
               <div className="glass rounded-2xl p-6 sm:p-8 lg:p-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-bold block mb-3">
-                  The old way
+                  Tuesday, 2pm
                 </span>
                 <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white/50 mb-4">
-                  8 calls. 6pm. Still typing.
+                  Dr. Smith asks about Daxxify duration.
                 </p>
                 <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
-                  You enter the bare minimum. Contact name. &quot;Good call.&quot;
-                  Move on.
+                  You say you&apos;ll follow up. You won&apos;t remember the
+                  specifics by the time you&apos;re in Dr. Patel&apos;s parking lot
+                  on Thursday.
                 </p>
               </div>
               {/* Row 1: New */}
               <div className="glass-volt rounded-2xl p-6 sm:p-8 lg:p-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt font-bold block mb-3">
-                  The StreetNotes way
+                  Tuesday, 2:01pm
                 </span>
                 <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white mb-4">
-                  8 calls. Done in 60 seconds.
+                  60 seconds of voice in the car.
                 </p>
                 <p className="font-body text-white/70 text-base sm:text-lg leading-relaxed">
-                  Hit record. Talk. Your CRM is updated with rich detail before you
-                  start the car.
+                  Her patients run 40–60 units. She&apos;s price-sensitive on
+                  duration. Her front-desk manager is the gatekeeper, not the MA.
+                  It&apos;s all in your CRM by the time you merge onto the highway.
                 </p>
               </div>
 
               {/* Row 2: Old */}
               <div className="glass rounded-2xl p-6 sm:p-8 lg:p-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-bold block mb-3">
-                  Monday forecast call
+                  Thursday, Patel&apos;s parking lot
                 </span>
                 <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white/50 mb-4">
-                  &quot;Uh... let me check&quot;
+                  CRM says &quot;tox user.&quot; That&apos;s it.
                 </p>
                 <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
-                  Your pipeline data is garbage because you only entered the
-                  minimum.
+                  You send a generic follow-up. Smith stays on Botox. The Daxxify
+                  objection gets raised again — at Patel, at Chen, at every account
+                  on your territory.
                 </p>
               </div>
               {/* Row 2: New */}
               <div className="glass-volt rounded-2xl p-6 sm:p-8 lg:p-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt font-bold block mb-3">
-                  Monday forecast call
+                  Thursday, Patel&apos;s parking lot
                 </span>
                 <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white mb-4">
-                  &quot;Pull it up&quot;
+                  Your brief is already open.
                 </p>
                 <p className="font-body text-white/70 text-base sm:text-lg leading-relaxed">
-                  Walk in confident. Every deal, every detail, already in the CRM.
+                  Smith&apos;s Daxxify objection, answered. Patel&apos;s injector
+                  preferences, pulled. Last three filler competitors, ranked. You
+                  walk in ready. You close both.
                 </p>
               </div>
             </div>
@@ -239,18 +251,18 @@ export default function LandingPage() {
               {[
                 {
                   step: '01',
-                  title: 'Finish your meeting',
-                  body: 'Walk to the car. Grab your phone.',
+                  title: 'Finish your injector call',
+                  body: 'Walk to the car. Grab your phone. Before the next stop.',
                 },
                 {
                   step: '02',
                   title: 'Hit record. Talk.',
-                  body: 'Tell StreetNotes what happened — in your own words. The AI asks the right follow-up questions. No forms. No typing.',
+                  body: 'Tell StreetNotes what happened in your own words. Unit counts, modality, objections, who the gatekeeper really is. No forms. No typing.',
                 },
                 {
                   step: '03',
                   title: 'Review. Confirm. Done.',
-                  body: 'StreetNotes populates every CRM field — contact, company, notes, next steps, deal stage — directly inside your CRM. Review the structured data, tap confirm, and it\'s live.',
+                  body: 'Injector preferences, competitor mentions, next step, and deal-stage update — structured and pushed to Salesforce or HubSpot. Review, tap confirm, drive to Patel.',
                 },
               ].map((s) => (
                 <div
@@ -305,16 +317,17 @@ export default function LandingPage() {
                   .
                 </h2>
                 <p className="font-body text-lg sm:text-xl text-white/70 mb-6 leading-relaxed">
-                  StreetNotes auto-extracts every time a prospect brings up a competitor.
-                  See who you&apos;re actually losing to, which accounts are shopping,
-                  and what&apos;s really happening in your market — without asking a single rep.
+                  Botox, Dysport, Xeomin, Jeuveau, Daxxify. Juvéderm, Restylane,
+                  RHA, Versa. Sculptra, Radiesse. Every time an injector brings
+                  one up, StreetNotes captures it — sentiment, pricing signal,
+                  objection pattern. Surfaced as you and your team talk.
                 </p>
                 <ul className="space-y-3">
                   {[
-                    'Sentiment-tracked quotes pulled from real calls',
-                    'Competitor mention trends week over week',
-                    'Weekly AI-summarized competitive brief',
-                    'Alerts when a new competitor shows up',
+                    'Injector quotes pulled from real calls, sentiment-tagged',
+                    'Brand mention trends across your territory, week over week',
+                    'Weekly brief: what’s cresting, what’s fading',
+                    'Alerts when a new objection pattern shows up',
                   ].map((bullet) => (
                     <li key={bullet} className="flex items-start gap-3">
                       <span
@@ -355,10 +368,10 @@ export default function LandingPage() {
                   </div>
                   <div className="space-y-3">
                     {[
-                      { name: 'Gong.io', count: 18, pct: 100, pos: 60, neg: 25 },
-                      { name: 'Chorus.ai', count: 11, pct: 61, pos: 45, neg: 35 },
-                      { name: 'Fireflies', count: 7, pct: 38, pos: 70, neg: 15 },
-                      { name: 'Outreach', count: 4, pct: 22, pos: 50, neg: 30 },
+                      { name: 'Daxxify', count: 18, pct: 100, pos: 60, neg: 25 },
+                      { name: 'Dysport', count: 11, pct: 61, pos: 45, neg: 35 },
+                      { name: 'Xeomin', count: 7, pct: 38, pos: 70, neg: 15 },
+                      { name: 'Jeuveau', count: 4, pct: 22, pos: 50, neg: 30 },
                     ].map((c) => (
                       <div key={c.name} className="flex items-center gap-3">
                         <span className="font-bold text-xs text-white w-20 truncate">
@@ -414,12 +427,12 @@ export default function LandingPage() {
                     <MessageSquareQuote className="w-4 h-4 text-volt flex-shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
                       <p className="font-body text-sm text-white/85 italic leading-relaxed mb-3">
-                        &ldquo;They said they&apos;d looked at Gong but the price was way
-                        too steep for our team size.&rdquo;
+                        &ldquo;Dr. Patel said her patients kept asking about Daxxify
+                        duration — she wants trial vials before Aesthetic Next.&rdquo;
                       </p>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-block glass-inset rounded-md px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
-                          Gong.io
+                          Daxxify
                         </span>
                         <span
                           className="w-2 h-2 rounded-full"
@@ -429,7 +442,7 @@ export default function LandingPage() {
                           }}
                         />
                         <span className="font-mono text-[10px] uppercase tracking-wider text-white/50">
-                          Acme Corp
+                          Patel Aesthetics
                         </span>
                       </div>
                     </div>
@@ -450,7 +463,7 @@ export default function LandingPage() {
                         Weekly Brief
                       </p>
                       <p className="font-bold text-xs text-white truncate">
-                        Gong wave cresting
+                        Daxxify wave cresting
                       </p>
                     </div>
                   </div>
@@ -533,10 +546,10 @@ export default function LandingPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt">
-                        Daily Challenge
+                        Daily Drill
                       </p>
                       <p className="font-body text-sm text-white truncate">
-                        Nail your elevator pitch under 45s
+                        Daxxify duration objection — under 45s
                       </p>
                     </div>
                   </div>
@@ -551,7 +564,7 @@ export default function LandingPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className="inline-block glass-inset rounded-md px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
-                          Elevator Pitch
+                          Switch Story
                         </span>
                         <span className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
                           <Trophy size={9} />
@@ -559,7 +572,7 @@ export default function LandingPage() {
                         </span>
                       </div>
                       <p className="font-bold text-base text-white leading-tight">
-                        Series B SaaS Pitch v3
+                        Chen — Botox to Daxxify v3
                       </p>
                       <p className="font-mono text-[10px] uppercase tracking-wider text-white/40 mt-1.5">
                         Mar 28, 2026
@@ -590,22 +603,24 @@ export default function LandingPage() {
                   id="story-vault-heading"
                   className="font-bold text-[32px] sm:text-[48px] md:text-[64px] leading-[0.9] text-white mb-5 tracking-tight"
                 >
-                  Your best pitches.{' '}
+                  Injector-ready stories.{' '}
                   <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
                     On demand
                   </span>
                   .
                 </h2>
                 <p className="font-body text-lg sm:text-xl text-white/70 mb-6 leading-relaxed">
-                  Draft your elevator pitch, objection handling, or customer story once.
-                  Practice until you can nail it in your sleep. Keep your personal bests
-                  in a vault you can pull up before every call.
+                  The switch story Dr. Chen used to move her patients from Botox
+                  to Daxxify. The objection drill that answers duration without
+                  dropping price. Repeatable narratives your injectors can
+                  actually use with their patients — practiced until they&apos;re
+                  instinct.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
                   {[
-                    { Icon: Rocket, label: 'Elevator Pitch', body: 'What you do, why it matters, in 30 seconds' },
-                    { Icon: Shield, label: 'Feel/Felt/Found', body: 'Handle any objection with empathy + proof' },
-                    { Icon: BookOpen, label: 'Customer Story', body: 'And, But, Therefore — make it memorable' },
+                    { Icon: Rocket, label: 'Switch Story', body: 'Why Dr. Chen moved her Botox patients to Daxxify — the ABT her MA repeats' },
+                    { Icon: Shield, label: 'Feel/Felt/Found', body: 'Duration, onset, pricing — drill objections with empathy + proof' },
+                    { Icon: BookOpen, label: 'Injector Testimonial', body: 'Narratives your injector can use with her own patients' },
                     { Icon: Mic, label: 'Practice Mode', body: 'Live AI scoring until you nail it' },
                   ].map((f) => (
                     <div
@@ -659,27 +674,28 @@ export default function LandingPage() {
                   id="free-tool-heading"
                   className="font-bold text-[32px] sm:text-[56px] md:text-[72px] text-white mb-5 leading-[0.9] tracking-tight"
                 >
-                  Try it{' '}
+                  Try it after your{' '}
                   <span className="text-volt drop-shadow-[0_0_30px_rgba(0,230,118,0.45)]">
-                    right now
+                    next call
                   </span>
                 </h2>
 
                 <p className="font-body text-base sm:text-lg md:text-xl text-white/70 max-w-xl mx-auto mb-10 leading-relaxed">
-                  Our Post-Call Brain Dump turns 60 seconds of talking into structured
-                  deal notes, a mind map, and a downloadable PDF. No account needed.
+                  60 seconds of voice after your next injector visit. Get your
+                  CRM fields, unit counts, competitor mentions, and a
+                  practice-specific next step. No account needed.
                 </p>
 
                 <a
                   href="/debrief"
                   className="inline-flex items-center gap-2 font-bold text-lg sm:text-xl bg-volt text-black rounded-xl px-8 py-4 sm:px-10 sm:py-5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
                 >
-                  Start a Brain Dump
+                  Start debrief
                   <span aria-hidden="true">→</span>
                 </a>
 
                 <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mt-5">
-                  60 seconds. Structured deal notes. Free forever.
+                  60 seconds. Structured CRM fields. Free forever.
                 </p>
               </div>
             </div>
@@ -696,29 +712,29 @@ export default function LandingPage() {
               id="benefits-heading"
               className="font-bold text-[30px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
             >
-              What would you do with 6-8 hours back{' '}
+              What happens when you remember{' '}
               <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                every week?
+                all 47?
               </span>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
               {[
                 {
-                  title: 'CRM stays full',
-                  body: 'Rich deal data after every call — not the bare minimum you typed at a red light.',
+                  title: 'Every injector, remembered',
+                  body: 'Preferences, patient volume, tox-to-filler ratio, objection history. Across every practice on your territory.',
                 },
                 {
-                  title: 'Forecast calls. Confident.',
-                  body: 'Your pipeline is accurate because the data actually made it into the CRM.',
+                  title: 'Pre-visit briefs that actually fit',
+                  body: 'Walk into Dr. Patel’s office with Dr. Smith’s objection already answered. Daxxify vs Botox. RHA vs Juvéderm. The specific one you need.',
                 },
                 {
-                  title: 'Deal mind map',
-                  body: 'A living story of every deal that builds with each meeting — so you never lose the thread.',
+                  title: 'Territory-wide competitor intelligence',
+                  body: 'Every competitor mention your team captures becomes territory intelligence. Sentiment, pricing signals, objection patterns — surfaced as you and your team talk, not when someone has time to type it up.',
                 },
                 {
-                  title: 'Works with your stack',
-                  body: 'Salesforce. HubSpot. Microsoft Dynamics. Zoho CRM. More coming based on what you tell us.',
+                  title: 'A CRM that doesn’t lie to your VP',
+                  body: 'Voice in → fields out. No end-of-quarter data cleanup. Your pipeline is actually accurate.',
                 },
               ].map((b) => (
                 <div
@@ -737,6 +753,58 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── BRAND LEADER MODULE ── */}
+        <section
+          className="border-t border-volt/10 py-16 sm:py-24"
+          aria-labelledby="brand-leader-heading"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="glass rounded-3xl p-8 sm:p-12 md:p-16 max-w-4xl mx-auto relative overflow-hidden">
+              {/* Background wash */}
+              <div
+                aria-hidden="true"
+                className="absolute -right-10 -top-10 w-72 h-72 pointer-events-none opacity-50"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(0,230,118,0.12) 0%, transparent 60%)',
+                }}
+              />
+
+              <div className="relative">
+                <span className="inline-flex items-center gap-2 glass-inset rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt mb-6">
+                  <Building2 className="w-3 h-3" />
+                  For VPs of Sales at brands
+                </span>
+
+                <h2
+                  id="brand-leader-heading"
+                  className="font-bold text-[28px] sm:text-[44px] md:text-[56px] leading-[0.95] text-white mb-6 tracking-tight"
+                >
+                  3,000 reps. 47 accounts each.{' '}
+                  <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
+                    You can&apos;t see any of it.
+                  </span>
+                </h2>
+
+                <p className="font-body text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed max-w-2xl">
+                  Veeva is built for pharma. Salesforce is horizontal.
+                  Symplast and PatientNow serve the practice. Nothing was built
+                  for your reps. StreetNotes is the field-intelligence layer —
+                  purpose-built for aesthetic reps, deployed at 150–200 seats.
+                </p>
+
+                <a
+                  href="/for-leaders"
+                  className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-7 py-4 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
+                >
+                  Talk to Michael
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── CREDIBILITY ── */}
         <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="credibility-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -747,38 +815,64 @@ export default function LandingPage() {
               id="credibility-heading"
               className="font-bold text-[28px] sm:text-[52px] md:text-[68px] lg:text-[84px] leading-[0.9] text-white mt-3 mb-8 sm:mb-12 tracking-tight"
             >
-              Built by people who&apos;ve actually{' '}
+              Built by someone who ran{' '}
               <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                successfully carried a quota
+                aesthetic software
               </span>
             </h2>
 
-            <div className="glass rounded-2xl p-6 sm:p-10 md:p-12 max-w-3xl">
-              <p className="font-body text-lg sm:text-xl md:text-2xl text-white/80 mb-5 leading-relaxed">
-                We&apos;re not a SaaS team that read about sales in a blog post.
+            {/* Founder card */}
+            <div className="glass rounded-2xl p-6 sm:p-10 md:p-12 max-w-3xl mb-8">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold mb-3">
+                Michael Hervis · Co-founder
               </p>
-              <p className="font-body text-base sm:text-lg text-white/60 mb-5 leading-relaxed">
-                45 years of combined SMB, mid-market, and enterprise sales and
-                sales leadership experience. 28x President&apos;s Clubs. We&apos;ve
-                been the rep in the parking lot, typing half-assed notes into the
-                CRM before the next meeting.
-              </p>
-              <p className="font-body text-base sm:text-lg text-white/60 mb-8 leading-relaxed">
+              <p className="font-body text-lg sm:text-xl md:text-2xl text-white/85 mb-5 leading-relaxed">
                 <ShinyText
-                  text="We built StreetNotes because no one else did."
-                  color="#9ca3af"
+                  text="Ex-VP at Symplast."
+                  color="#e5e7eb"
                   shineColor="#00E676"
                   speed={3}
                   spread={120}
-                  className="font-body text-base sm:text-lg"
+                  className="font-body text-lg sm:text-xl md:text-2xl"
                 />{' '}
-                Gong records your calls. Fireflies takes notes. But at the end of
-                the day, you&apos;re still the one updating the CRM.
+                Spent years building software for aesthetic practices.
               </p>
+              <p className="font-body text-base sm:text-lg text-white/60 leading-relaxed">
+                Watched brand reps get handed pharma CRMs that didn&apos;t fit
+                the work. Watched injectors get asked for the same unit counts
+                three calls in a row because nothing got remembered between
+                visits. So we built what reps — and the brands they sell for —
+                actually needed.
+              </p>
+            </div>
 
-              <span className="inline-block glass-inset rounded-lg font-mono text-xs sm:text-sm text-volt font-bold uppercase tracking-[0.15em] px-4 py-2">
-                We fixed that.
-              </span>
+            {/* Insider-language proof grid */}
+            <div>
+              <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt/80 font-bold mb-5">
+                StreetNotes knows…
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                {[
+                  '40 units vs 100 units is a different patient conversation',
+                  'Daxxify duration objection ≠ Xeomin objection',
+                  '“Filler fatigue” is a real buying signal',
+                  'Practice manager ≠ MA ≠ injector — different asks, different timing',
+                  'RHA, Restylane, Juvéderm, Versa are not the same conversation',
+                  'Aesthetic Next, AMWC, Vegas Cosmetic — buying windows, not just conferences',
+                ].map((fact) => (
+                  <div
+                    key={fact}
+                    className="glass rounded-xl p-4 flex items-start gap-3"
+                  >
+                    <div className="w-7 h-7 rounded-lg glass-inset flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-4 h-4 text-volt" />
+                    </div>
+                    <p className="font-body text-sm sm:text-base text-white/80 leading-relaxed">
+                      {fact}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -800,15 +894,48 @@ export default function LandingPage() {
               id="final-cta-heading"
               className="font-bold text-[40px] sm:text-[80px] md:text-[112px] lg:text-[140px] leading-[0.9] text-white mb-6 tracking-tight"
             >
-              Voice<span className="text-volt">-to-</span>CRM
+              All 47.{' '}
+              <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
+                Remembered.
+              </span>
             </h2>
             <p className="font-body text-lg sm:text-xl md:text-2xl text-white/60 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
-              Because &quot;I&apos;ll enter it later&quot; is how deals die.
+              Every injector. Every preference. Every competitor conversation.
             </p>
 
-            {/* Waitlist form */}
-            <div className="max-w-xl mx-auto">
-              <WaitlistForm />
+            {/* Dual CTAs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto text-left">
+              {/* Rep track */}
+              <div className="glass rounded-2xl p-6 sm:p-8">
+                <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt font-bold mb-4">
+                  For reps
+                </p>
+                <p className="font-bold text-xl sm:text-2xl text-white mb-5 leading-tight">
+                  Join the beta.
+                </p>
+                <WaitlistForm />
+              </div>
+
+              {/* Brand leader track */}
+              <div className="glass-volt rounded-2xl p-6 sm:p-8 flex flex-col">
+                <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt font-bold mb-4">
+                  For sales leaders
+                </p>
+                <p className="font-bold text-xl sm:text-2xl text-white mb-5 leading-tight">
+                  Talk to Michael.
+                </p>
+                <p className="font-body text-sm sm:text-base text-white/70 mb-6 leading-relaxed flex-1">
+                  Purpose-built for aesthetic sales teams, deployed at 150–200
+                  seats.
+                </p>
+                <a
+                  href="/for-leaders"
+                  className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-6 py-3.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt self-start"
+                >
+                  Book a call
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -829,7 +956,7 @@ export default function LandingPage() {
             />
           </div>
           <ShinyText
-            text="Built for reps who'd rather sell than type"
+            text="Built for aesthetic reps who carry the bag"
             color="#4b5563"
             shineColor="#00E676"
             speed={3}

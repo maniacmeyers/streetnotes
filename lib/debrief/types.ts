@@ -1,6 +1,12 @@
 import type { CIExtraction } from '@/lib/ci/types'
 
-export type DealSegment = 'smb' | 'mid-market' | 'enterprise' | 'partner-channel'
+export type DealSegment =
+  | 'injector-check-in'
+  | 'new-practice'
+  | 'practice-manager'
+  | 'device-demo'
+  | 'lunch-learn'
+  | 'conference'
 
 /* ─── Structured Debrief Output ─── */
 
