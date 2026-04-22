@@ -493,7 +493,7 @@ export const playbookCards: PlaybookCard[] = [
         table: {
           headers: ['Tool', 'Role'],
           rows: [
-            ['GTM Intelligence Dashboard', 'Trigger events, script generation, stakeholder intel, CSV upload, real-time coaching, voice debrief'],
+            ['GTM Intelligence Dashboard', 'Trigger events, script generation, stakeholder intel, voice debrief'],
             ['LinkedIn Sales Navigator', 'Contact discovery via Boolean title searches; 3-list pipeline'],
             ['LinkedIn', 'Connection requests (Week 1); DMs / InMails with video (Week 2)'],
             ['Outreach', 'Email sequencing, send tracking, automated follow-ups'],
