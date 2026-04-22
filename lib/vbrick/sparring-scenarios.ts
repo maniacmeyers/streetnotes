@@ -79,6 +79,153 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
       },
     ],
   },
+
+  'k26-registration-push': {
+    id: 'k26-registration-push',
+    title: 'K26 — Registration Push',
+    subtitle:
+      'ServiceNow customer hasn\'t registered for Knowledge 26. Drive enrollment using the certified ServiceNow integration as the reason to go.',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'disinterested-it-manager',
+    defaultAccent: 'general',
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'Your company is an existing ServiceNow customer. Knowledge 26 is ServiceNow\'s annual conference, a few weeks away in Las Vegas. You have heard about it but have not registered. Budget, timing, and whether it\'s worth the trip are all open questions for you.',
+      'The BDR is calling from VBrick (enterprise video platform with a certified ServiceNow integration). They will pitch K26 attendance as a chance to see the integration live, meet the ServiceNow product team, and walk away with a concrete reason to justify the trip.',
+      '',
+      'REACT HONESTLY based on your personality. You can be any of:',
+      '- Curious about the integration and on the fence about K26',
+      '- Already heard about K26 but dismissive ("maybe someone else on my team goes")',
+      '- Blocked by travel budget or timing',
+      '- Interested IF you can justify the trip to your boss',
+      '',
+      'Do NOT volunteer that you\'re interested in K26 yourself. Let the BDR raise it.',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You have a travel freeze in effect, OR your manager would have to approve the K26 ticket and you don\'t want to ask. Push back on "it\'s free to register" — the real cost is the flight, hotel, and three days away from your team.',
+      'You have also been pitched K26 three times this week by other vendors. The BDR needs to give you a concrete, substance-first reason — not a generic "you should come."',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: 'They answer "Hello?". You say their first and last name inquisitive ("Marcus Delgado?"). They confirm.' },
+      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
+      { label: '3. Qualification', hint: '"[First name], are you on the team that manages your ServiceNow and enterprise video stack?"' },
+      {
+        label: '4. K26 hook',
+        hint:
+          '"Okay cool. Quick reason for the call — VBrick just rolled out a certified ServiceNow integration, and the K26 team is walking through it live. Any chance you\'re going to be at Knowledge 26?"',
+      },
+      {
+        label: '5a. NOT REGISTERED path',
+        hint:
+          '"Would it help if I sent you the registration link and a 2-minute overview of the integration? That way if your manager asks why you\'re going, you\'ve got something concrete to point at."',
+      },
+      {
+        label: '5b. NOT ATTENDING path',
+        hint:
+          '"Totally understand. Would anyone else on your team be going? I can send them the link. And if it\'s okay, can I tell them you said hello?"',
+      },
+      {
+        label: '6. Bridge to integration',
+        hint:
+          '"Either way, the integration is the thing worth looking at — happy to send you the overview."',
+      },
+    ],
+  },
+
+  'k26-booth-drive': {
+    id: 'k26-booth-drive',
+    title: 'K26 — Booth Drive',
+    subtitle:
+      'ServiceNow customer already registered for K26. Pre-book a booth visit so they don\'t miss it in the floor chaos.',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'enthusiastic-innovator',
+    defaultAccent: 'general',
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'Your company is a ServiceNow customer and you are registered for Knowledge 26. You are attending — flight is booked, agenda is filling up.',
+      'The BDR is calling from VBrick. They will ask you to lock in a 15-minute booth slot to see the certified ServiceNow integration live, meet the integration lead, and walk away with something concrete.',
+      '',
+      'REACT HONESTLY based on your personality. You can be any of:',
+      '- Genuinely interested in the ServiceNow + video integration story',
+      '- Packed schedule, hard to find a window',
+      '- Skeptical of booth pitches in general',
+      '- Willing to stop by IF it\'s a specific, timed slot (not "come by anytime")',
+      '- Dismissive ("I walk the floor, I don\'t schedule booths")',
+      '',
+      'Do NOT volunteer that you\'re interested — let the BDR earn the time on the calendar.',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'Your schedule is already triple-booked with ServiceNow partner meetings and your own company\'s sessions. You push back on anything that feels like a walk-by — you only take meetings that are pre-briefed with a clear agenda.',
+      'You also had a bad booth experience at a past event (vendor wasted 20 minutes on a generic demo). You will explicitly ask: "What\'s the agenda? Who from your team will be there? How long?"',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: 'They answer. You say their first and last name inquisitive. They confirm.' },
+      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
+      { label: '3. Qualification', hint: '"Are you planning to be at Knowledge 26?"' },
+      {
+        label: '4. Booth pre-book hook',
+        hint:
+          '"Okay cool. The reason I\'m calling — I\'d like to lock in a 15-minute booth slot so you\'re not walking the floor hoping to catch us. We\'ll have our certified ServiceNow integration live on screen. Does Tuesday or Wednesday work better?"',
+      },
+      { label: '5. Agenda qualifier', hint: '"I\'ll have our ServiceNow integration lead there. I\'ll send you an agenda beforehand so it\'s not a generic demo."' },
+      {
+        label: '6. Session cross-sell',
+        hint:
+          '"We\'re also hosting a breakout session walking through a customer case study — happy to send the time and abstract so you can decide if it fits your agenda."',
+      },
+    ],
+  },
+
+  'k26-session-drive': {
+    id: 'k26-session-drive',
+    title: 'K26 — Session Attendance Drive',
+    subtitle:
+      'ServiceNow customer attending K26. Drive attendance at the VBrick breakout session — customer case study, not a demo.',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'overwhelmed-cto',
+    defaultAccent: 'general',
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'Your company is a ServiceNow customer and you are registered for Knowledge 26.',
+      'The BDR is calling from VBrick. They will pitch you on attending VBrick\'s breakout session — a customer case study on using the certified ServiceNow integration inside Agentforce and Now Assist.',
+      '',
+      'REACT HONESTLY based on your personality. You can be any of:',
+      '- Sessions are the reason you attend — open to a good one',
+      '- Already built a full agenda, no room',
+      '- Will attend IF the speaker or topic is compelling',
+      '- Skeptical of vendor sessions (usually thinly-veiled product pitches)',
+      '- Will block it if it\'s at a conflicting time',
+      '',
+      'Do NOT volunteer your schedule — let the BDR ask.',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'Your Knowledge 26 agenda is already locked and the VBrick session conflicts with a ServiceNow roadmap keynote you care about. Push back hard — "why should I skip the roadmap keynote for your session?"',
+      'You are also tired of vendor sessions that are 40 minutes of product demo. You will ask: "Is this a case study or a demo? Who\'s the speaker? What will I walk away with?"',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: 'They answer. You say their first and last name inquisitive. They confirm.' },
+      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
+      { label: '3. Qualification', hint: '"Are you attending Knowledge 26?" → "Have you built out your session agenda yet?"' },
+      {
+        label: '4. Session hook',
+        hint:
+          '"Okay cool. The reason I\'m calling — VBrick is hosting a breakout on how our certified ServiceNow integration is being used inside Agentforce and Now Assist. It\'s a customer case study, not a demo."',
+      },
+      {
+        label: '5. Substance qualifier',
+        hint:
+          '"The speaker is [customer name / title]. I\'ll send you the abstract and the session time so you can decide if it\'s worth blocking on your agenda."',
+      },
+      {
+        label: '6. Booth cross-sell',
+        hint:
+          '"If the session doesn\'t fit, I can lock in a 15-minute booth slot instead so you\'re not walking by hoping to catch us."',
+      },
+    ],
+  },
 }
 
 export function getScenarioById(id: string | null | undefined): SparringScenario | null {
