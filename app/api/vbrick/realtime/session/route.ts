@@ -76,7 +76,13 @@ export async function POST(request: Request) {
       const text = await resp.text()
       console.error('Realtime session mint failed:', resp.status, text)
       return NextResponse.json(
-        { error: 'Failed to mint Realtime session' },
+        {
+          error: 'Failed to mint Realtime session',
+          openaiStatus: resp.status,
+          openaiBody: text.slice(0, 500),
+          keyPrefix: apiKey.slice(0, 7),
+          keyLength: apiKey.length,
+        },
         { status: 502 },
       )
     }
