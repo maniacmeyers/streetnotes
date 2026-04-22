@@ -565,7 +565,7 @@ export default function LandingPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className="inline-block glass-inset rounded-md px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
-                          Switch Story
+                          Customer Story
                         </span>
                         <span className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
                           <Trophy size={9} />
@@ -604,23 +604,25 @@ export default function LandingPage() {
                   id="story-vault-heading"
                   className="font-bold text-[32px] sm:text-[48px] md:text-[64px] leading-[0.9] text-white mb-5 tracking-tight"
                 >
-                  Stories your injectors can{' '}
+                  Practice before you&apos;re{' '}
                   <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                    actually use
+                    live
                   </span>
                   .
                 </h2>
                 <p className="font-body text-lg sm:text-xl text-white/70 mb-6 leading-relaxed">
-                  Save the narrative that worked at one practice. Practice it
-                  until it&apos;s natural. Share it with your team. Walk into
-                  your next account with the exact story that moves injectors.
+                  Every rep knows what they should&apos;ve said — on the drive
+                  home. StreetNotes gives you a place to rehearse the three
+                  things that actually win deals: your pitch, your objection
+                  comebacks, and your customer stories. Talk them out. Get
+                  scored. Walk in ready.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
                   {[
-                    { Icon: Rocket, label: 'Switch stories', body: 'Save what worked: why an injector moved patients from one brand to another.' },
-                    { Icon: Shield, label: 'Objection drills', body: 'Duration, onset, pricing, comfort — practice the answer until it’s instinct.' },
-                    { Icon: BookOpen, label: 'Talk tracks', body: 'Short narratives your injector can repeat word-for-word with patients.' },
-                    { Icon: Mic, label: 'Practice mode', body: 'Talk. Get scored. Try again. Nail it before the call that matters.' },
+                    { Icon: Rocket, label: 'Your pitch', body: 'The 30-second open that decides whether the rest of the meeting matters. Rehearse it until it sounds natural.' },
+                    { Icon: Shield, label: 'Objection handling', body: '“Too expensive.” “Patients don’t ask for it.” Drill the comebacks until they’re instinct, not improv.' },
+                    { Icon: BookOpen, label: 'Customer stories', body: 'Real wins from the field, turned into short stories you can tell in any injector’s office.' },
+                    { Icon: Mic, label: 'Practice mode', body: 'Talk into your phone. Get scored on clarity, timing, and structure. Try again. Nail it before it counts.' },
                   ].map((f) => (
                     <div
                       key={f.label}
