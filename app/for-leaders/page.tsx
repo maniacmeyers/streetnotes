@@ -6,7 +6,7 @@ import LeaderContactForm from '@/components/leader-contact-form'
 export const metadata: Metadata = {
   title: 'StreetNotes for Sales Leaders — Field intelligence for aesthetic sales teams',
   description:
-    'StreetNotes is the field-intelligence layer for aesthetic sales teams. Purpose-built for injectable and device reps, deployed at 150–200 seats. Book a call with co-founder Michael Hervis.',
+    'StreetNotes is the field-intelligence layer for aesthetic sales teams. Purpose-built for injectable and device reps, deployed at 150–200 seats. Request a 60-day pilot.',
 }
 
 const gapItems = [
@@ -35,7 +35,7 @@ const pilotPhases = [
   },
   {
     label: 'Weeks 1–2',
-    body: 'Onboarding. Michael runs the rep sessions. CRM integration stood up (Salesforce or HubSpot). Territory data loaded. First injector debriefs recorded.',
+    body: 'Onboarding. Our team runs the rep sessions. CRM integration stood up (Salesforce or HubSpot). Territory data loaded. First injector debriefs recorded.',
   },
   {
     label: 'Weeks 3–8',
@@ -112,10 +112,10 @@ export default function ForLeadersPage() {
               For reps
             </a>
             <a
-              href="#talk-to-michael"
+              href="#request-pilot"
               className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black rounded-xl px-4 py-2.5 sm:px-5 sm:py-3 cursor-pointer min-h-[44px] flex items-center transition-all duration-200 shadow-glow-volt hover:shadow-glow-volt-lg"
             >
-              Talk to Michael
+              Request a pilot
             </a>
           </div>
         </nav>
@@ -155,10 +155,10 @@ export default function ForLeadersPage() {
             </p>
 
             <a
-              href="#talk-to-michael"
+              href="#request-pilot"
               className="inline-flex items-center gap-2 font-bold text-lg sm:text-xl bg-volt text-black rounded-xl px-8 py-4 sm:px-10 sm:py-5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
             >
-              Book a call with Michael
+              Request a pilot
               <span aria-hidden="true">→</span>
             </a>
           </div>
@@ -213,11 +213,11 @@ export default function ForLeadersPage() {
             >
               60-day pilot.{' '}
               <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                Michael-led.
+                Hands-on.
               </span>
             </h2>
             <p className="font-body text-lg sm:text-xl text-white/70 mb-10 sm:mb-14 leading-relaxed max-w-3xl">
-              Pilot: 25 seats, 9 weeks, success metrics defined with you upfront.
+              25 seats, 9 weeks, success metrics defined with you upfront.
               Expand or walk. No multi-year lock-in.
             </p>
 
@@ -310,7 +310,7 @@ export default function ForLeadersPage() {
                 </p>
                 <ul className="space-y-2 text-white/70 text-sm sm:text-base">
                   <li>· Success metrics defined upfront</li>
-                  <li>· Michael-led onboarding</li>
+                  <li>· Hands-on onboarding</li>
                   <li>· Weekly leadership review</li>
                   <li>· Month-to-month during pilot</li>
                 </ul>
@@ -423,9 +423,9 @@ export default function ForLeadersPage() {
           </div>
         </section>
 
-        {/* Talk to Michael — form */}
+        {/* Request a pilot — form */}
         <section
-          id="talk-to-michael"
+          id="request-pilot"
           className="border-t border-volt/10 py-16 sm:py-28 relative scroll-mt-20"
           aria-labelledby="contact-heading"
         >
@@ -443,11 +443,12 @@ export default function ForLeadersPage() {
               id="contact-heading"
               className="font-bold text-[32px] sm:text-[56px] md:text-[72px] leading-[0.95] text-white mb-6 tracking-tight text-center"
             >
-              Book a call.
+              Request a pilot.
             </h2>
             <p className="font-body text-base sm:text-lg md:text-xl text-white/70 mb-10 leading-relaxed text-center">
-              Tell Michael what you&apos;re working on. He&apos;ll reach out
-              directly within two business days.
+              Tell us what you&apos;re working on — team size, rough timeline,
+              anything specific you want to cover. We&apos;ll be in touch within
+              two business days.
             </p>
 
             <LeaderContactForm />

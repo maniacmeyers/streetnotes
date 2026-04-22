@@ -43,7 +43,7 @@ export default function LeaderContactForm() {
       <div role="status" aria-live="polite" className="glass-volt rounded-2xl p-8 text-center">
         <p className="font-bold text-3xl text-white mb-2">Got it.</p>
         <p className="font-body text-white/70">
-          Michael will reach out directly within two business days.
+          We&apos;ll be in touch within two business days.
         </p>
       </div>
     )
@@ -121,11 +121,11 @@ export default function LeaderContactForm() {
         disabled={status === 'loading'}
         className="w-full sm:w-auto bg-volt text-black font-bold text-base sm:text-lg px-8 py-4 rounded-xl uppercase hover:bg-volt/90 active:bg-volt/80 transition-all duration-200 cursor-pointer disabled:opacity-50 min-h-[44px] shadow-glow-volt"
       >
-        {status === 'loading' ? 'Sending…' : 'Request a call'}
+        {status === 'loading' ? 'Sending…' : 'Request a pilot'}
       </button>
       {status === 'error' && (
         <p role="alert" className="font-mono text-xs uppercase tracking-[0.15em] text-red-400">
-          Something went wrong. Try again or email michael at streetnotes dot ai.
+          Something went wrong. Please try again.
         </p>
       )}
     </form>

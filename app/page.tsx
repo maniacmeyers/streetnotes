@@ -797,7 +797,7 @@ export default function LandingPage() {
                   href="/for-leaders"
                   className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-7 py-4 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
                 >
-                  Talk to Michael
+                  Request a pilot
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
@@ -922,7 +922,7 @@ export default function LandingPage() {
                   For sales leaders
                 </p>
                 <p className="font-bold text-xl sm:text-2xl text-white mb-5 leading-tight">
-                  Talk to Michael.
+                  Request a pilot.
                 </p>
                 <p className="font-body text-sm sm:text-base text-white/70 mb-6 leading-relaxed flex-1">
                   Purpose-built for aesthetic sales teams, deployed at 150–200
@@ -932,7 +932,7 @@ export default function LandingPage() {
                   href="/for-leaders"
                   className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-6 py-3.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt self-start"
                 >
-                  Book a call
+                  Request a pilot
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
