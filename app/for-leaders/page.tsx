@@ -136,22 +136,24 @@ export default function ForLeadersPage() {
               id="hero-heading"
               className="font-bold text-[40px] sm:text-[72px] md:text-[96px] lg:text-[120px] leading-[0.9] text-white mb-6 sm:mb-8 tracking-tight"
             >
-              The aesthetic
+              Your reps hear
               <br className="hidden sm:block" />{' '}
-              sales team you{' '}
+              everything.
+              <br className="hidden sm:block" />{' '}
+              Your pipeline sees{' '}
               <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
-                can’t see
+                almost none of it
               </span>
               .
             </h1>
 
             <p className="font-body text-lg sm:text-xl md:text-2xl text-white/70 max-w-3xl mb-10 leading-relaxed">
-              You have 3,000 reps. Each covers ~47 accounts. Between dial-in
-              meetings, you have almost no visibility into what&apos;s actually
-              happening in the room — which injectors are shifting, which
-              objections are spreading, which competitors are cresting.
-              StreetNotes is the field-intelligence layer purpose-built for
-              that gap.
+              Injector preferences. Competitor pricing. Objection patterns.
+              Switching stories. The field intelligence that actually moves
+              share stays in your reps&apos; heads. StreetNotes captures it 60
+              seconds after each visit and structures it into your CRM —
+              purpose-built for aesthetic sales teams, deployed at 150–200
+              seats.
             </p>
 
             <a
