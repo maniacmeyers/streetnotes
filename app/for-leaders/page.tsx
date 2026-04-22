@@ -11,75 +11,75 @@ export const metadata: Metadata = {
 
 const gapItems = [
   {
-    label: 'Veeva',
-    body: 'Built for pharma rep workflows. Doesn’t model injectors, practice managers, unit-count-driven deals, or aesthetic buying cycles.',
+    label: 'Pharma CRMs (Veeva)',
+    body: 'Built for the pharma rep-to-physician detail call. Don’t understand injectors, unit counts, practice managers, or the way aesthetic buying cycles actually work.',
   },
   {
-    label: 'Salesforce / HubSpot',
-    body: 'Horizontal B2B CRMs. Your reps bend their workflow to fit the tool instead of the other way around.',
+    label: 'Horizontal CRMs (Salesforce, HubSpot)',
+    body: 'Built for everyone, optimized for no one. Your reps bend their workflow to fit the tool. Most of the field intelligence never makes it in.',
   },
   {
-    label: 'Symplast, PatientNow, Nextech, AestheticRecord',
-    body: 'Built for the practice, not the rep. They manage the patient chart. They don’t capture what happens in the room when your rep is standing there.',
+    label: 'Practice software (PatientNow, Nextech, AestheticRecord)',
+    body: 'Built for the practice, not the rep. They manage the patient chart. They don’t capture what happens the moment your rep walks out of the office.',
   },
   {
-    label: 'Gong, Chorus, Fireflies',
-    body: 'Record calls and meetings. Don’t understand aesthetic vocabulary, competitor taxonomy, or unit-count signals. No push to your CRM.',
+    label: 'Call recorders (Gong, Chorus, Fireflies)',
+    body: 'Good for Zoom. Useless in the field. No aesthetic vocabulary, no competitor-brand tracking, no structured CRM push.',
   },
 ]
 
 const pilotPhases = [
   {
-    label: 'Week 0',
-    body: 'Kickoff with sales leadership. Define success metrics (unit-count lift, trial conversions, account-manager tenure signal, competitor-mention visibility). Rep cohort selected — typically 25 seats across 2–3 territories.',
+    label: 'Week 0 — Kickoff',
+    body: 'We sit down with your sales leadership and define what success looks like. Usually: unit-count lift in the cohort, trial conversions, and how fast new competitor moves show up in your pipeline. Rep cohort selected — 25 seats across 2–3 territories.',
   },
   {
-    label: 'Weeks 1–2',
-    body: 'Onboarding. Our team runs the rep sessions. CRM integration stood up (Salesforce or HubSpot). Territory data loaded. First injector debriefs recorded.',
+    label: 'Weeks 1–2 — Onboarding',
+    body: 'Our team runs rep training. We stand up the CRM integration (Salesforce or HubSpot). Your territory data loads. First injector debriefs get recorded before week two is done.',
   },
   {
-    label: 'Weeks 3–8',
-    body: 'Production use. Weekly rollup review with sales leadership. Territory heatmap surfaces competitor shifts your reps are seeing in real time — before they show up in pipeline data.',
+    label: 'Weeks 3–8 — In production',
+    body: 'Reps use it daily. Weekly rollup review with your sales leadership. Territory heatmap shows competitor shifts your reps are seeing in real time — usually weeks before they surface in pipeline data.',
   },
   {
-    label: 'Week 9',
-    body: 'Results review against success metrics. Decision point: expand to full brand deployment (150–200 seats) or terminate. No pressure, no lock-in.',
+    label: 'Week 9 — Decision',
+    body: 'Results review against the metrics you set. Expand to full brand deployment (150–200 seats) or walk. No pressure, no lock-in, no cleanup cost if you walk.',
   },
 ]
 
 const dashboardCapabilities = [
-  'Rep → Territory → Account → Injector hierarchy, updated as your reps capture debriefs',
-  'Weekly rollup: competitor mentions by brand, sentiment, region',
-  'Objection-frequency map — which objection is showing up where, trending up or down',
-  'Switch-story library: the narratives your top reps are actually using to move injectors',
-  'Account-level memory: every injector preference, unit count, practice-manager dynamic — queryable by any rep on the team',
-  'No recording, no transcript storage past 24 hours. Only structured CRM data persists.',
+  'Live view of every account, every injector, every competitor mention on your territory — updated as your reps speak their debriefs',
+  'Weekly rollup: which brands are cresting, which are fading, where the movement is happening',
+  'Objection-frequency map — which objection is showing up where, trending up or down, by rep or region',
+  'Switch-story library — the exact narratives your best reps are using to move injectors between brands',
+  'Account memory every rep on your team can pull from — no more losing context when territories change hands',
+  'No call recording. No transcripts stored past 24 hours. Only structured CRM data persists.',
 ]
 
 const faqItems = [
   {
     q: 'How is this different from Veeva?',
-    a: 'Veeva was built for the pharma rep-to-physician detail model — prescription-driven, heavily regulated, call-plan-centric. Aesthetics is a relationship-and-volume model: injector trust, unit counts, practice-manager dynamics, and buying windows around conferences. Veeva doesn’t capture any of that. StreetNotes is purpose-built for it.',
+    a: 'Veeva was built for pharma — prescription-driven, heavily regulated, call-plan-centric. Aesthetics runs on a different engine: injector relationships, unit counts, practice-manager dynamics, buying windows around conferences. Veeva doesn’t model any of that. StreetNotes was built for it from the first line of code.',
   },
   {
     q: 'Which CRMs do you integrate with?',
-    a: 'Salesforce and HubSpot are live today. Others (including Veeva, if your org is on it) on request as part of a pilot scope.',
+    a: 'Salesforce and HubSpot are live today. Others — including Veeva, if your org is on it — can be added as part of a pilot scope.',
   },
   {
     q: 'What about recording consent and data security?',
-    a: 'StreetNotes is not a call recorder. Reps speak a 60-second debrief into their phone after a visit. Audio is transcribed and discarded; only structured CRM data is persisted. All data is encrypted at rest and in transit. Per-brand tenant isolation is available for pilot deployments.',
+    a: 'StreetNotes is not a call recorder. Reps speak a 60-second debrief into their phone after a visit. The audio is transcribed and discarded within 24 hours; only the structured CRM fields persist. Everything is encrypted at rest and in transit, with per-brand tenant isolation available for pilots.',
   },
   {
     q: 'Who owns the data?',
-    a: 'Your brand. Standard DPA and data-portability terms available pre-pilot. Rep-captured data belongs to your organization, not ours.',
+    a: 'Your brand. Standard DPA, data-portability, and export terms are available before the pilot starts. Rep-captured data belongs to your organization, not ours.',
   },
   {
     q: 'Why you, why now?',
-    a: 'Co-founder Michael Hervis spent years at Symplast, building software for aesthetic practices. He watched brand reps get handed pharma CRMs that didn’t fit the work. StreetNotes is what he wishes had existed then.',
+    a: 'Our co-founder spent years inside aesthetic software — building the tools the practices your reps sell to actually use. He watched brand reps walk in with pharma CRMs that couldn’t handle aesthetic reality. StreetNotes is what he wishes he’d had back then — and the timing is right now because AI finally makes the 60-second voice-to-CRM piece fast and accurate enough to trust.',
   },
   {
     q: 'What does the contract look like?',
-    a: '60-day paid pilot (25 seats). If success metrics are met, expand to annual at $179/seat for 10+ seats. Manager seat free with any multi-rep team. No multi-year lock-in.',
+    a: '60-day paid pilot at 25 seats. If the success metrics we set together are hit, expand to annual at $179/seat for 10 or more seats. Manager seat is free on any multi-rep team. No multi-year lock-in.',
   },
 ]
 
@@ -342,7 +342,7 @@ export default function ForLeadersPage() {
           </div>
         </section>
 
-        {/* Michael, in depth */}
+        {/* Founders */}
         <section
           className="border-t border-volt/10 py-16 sm:py-24"
           aria-labelledby="founder-heading"
@@ -355,30 +355,31 @@ export default function ForLeadersPage() {
               id="founder-heading"
               className="font-bold text-[28px] sm:text-[48px] md:text-[64px] leading-[0.95] text-white mt-3 mb-10 tracking-tight"
             >
-              Michael Hervis.{' '}
+              Two founders.{' '}
               <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                Ex-VP, Symplast.
+                One from each side.
               </span>
             </h2>
 
             <div className="glass rounded-2xl p-6 sm:p-10 md:p-12 max-w-4xl space-y-5">
               <p className="font-body text-lg sm:text-xl text-white/85 leading-relaxed">
-                Michael spent years at Symplast building software used by
-                aesthetic practices across the country. He sat with injectors,
-                practice managers, and medical directors — watching them try to
-                work with tools that weren&apos;t built for their reality.
+                Our co-founder spent years inside aesthetic software — building
+                the tools your accounts actually use every day. He sat with
+                injectors, practice managers, and medical directors and watched
+                them work around tools that weren&apos;t designed for their
+                reality.
               </p>
               <p className="font-body text-base sm:text-lg text-white/70 leading-relaxed">
-                He watched something else too: the brand reps walking in with
+                He watched something else too: brand reps walking in with
                 pharma CRMs, asking the same unit-count questions three visits
-                in a row because nothing got remembered between calls. Injectors
-                tolerated it. Nobody fixed it.
+                in a row because nothing got remembered between calls.
+                Injectors tolerated it. Nobody fixed it.
               </p>
               <p className="font-body text-base sm:text-lg text-white/70 leading-relaxed">
-                Co-founder Jeff Meyers brings 20+ years of enterprise SaaS sales
-                leadership — the GTM discipline to pair with Michael&apos;s
-                domain access. Together they built StreetNotes to be the tool
-                the brand side has been missing.
+                Co-founder Jeff Meyers brings 20+ years of enterprise SaaS
+                sales leadership — the GTM discipline to pair with the domain
+                side. Together they&apos;re building what the brand side has
+                been missing.
               </p>
             </div>
           </div>
