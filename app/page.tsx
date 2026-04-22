@@ -81,7 +81,7 @@ export default function LandingPage() {
             <div className="mb-6 sm:mb-8">
               <span className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt">
                 <span className="w-1.5 h-1.5 rounded-full bg-volt animate-pulse" />
-                For aesthetic reps who carry the bag
+                For the aesthetic professional
               </span>
             </div>
 
