@@ -23,7 +23,7 @@ export interface ProspectPersona {
   company: string
   companySize: string
   industry: string
-  voice: 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer'
+  voice: 'alloy' | 'ash' | 'ballad' | 'coral' | 'echo' | 'sage' | 'shimmer' | 'verse' | 'marin' | 'cedar'
   personality: string
   painPoints: string[]
   objections: string[]
@@ -40,7 +40,7 @@ export const SPARRING_PERSONAS: Record<PersonaId, ProspectPersona> = {
     company: 'Regional Healthcare Network',
     companySize: '2,500 employees',
     industry: 'Healthcare',
-    voice: 'onyx',
+    voice: 'ash',
     personality: 'Tired, overworked, guarded. Has been burned by vendors before. Default response is to push calls to email or deflect. Only engages if you quickly prove value.',
     painPoints: [
       'Bandwidth issues with video streaming',
@@ -96,7 +96,7 @@ You will NOT:
     company: 'Manufacturing Corp',
     companySize: '5,000 employees',
     industry: 'Manufacturing',
-    voice: 'nova',
+    voice: 'coral',
     personality: 'Direct, numbers-focused, skeptical of soft ROI claims. Wants hard data. Will challenge every cost assumption. Not rude but very efficient.',
     painPoints: [
       'Multiple video vendor contracts overlapping',
@@ -265,7 +265,7 @@ You will NOT:
     company: 'Retail Enterprise',
     companySize: '15,000 employees',
     industry: 'Retail',
-    voice: 'fable',
+    voice: 'verse',
     personality: 'Early adopter, loves new tech, eager to hear about innovation. Willing to take calls but has high expectations for "transformation" stories. Wants to be ahead of the curve.',
     painPoints: [
       'Current video infrastructure feels dated',
@@ -377,7 +377,7 @@ You will NOT:
     company: 'Pharmaceutical Company',
     companySize: '8,000 employees',
     industry: 'Pharma / Life Sciences',
-    voice: 'onyx',
+    voice: 'ash',
     personality: 'Risk-averse, thorough, suspicious of marketing claims. Needs everything in writing. Cares deeply about archival, e-discovery, and record-keeping.',
     painPoints: [
       'No audit trail for video communications',
@@ -433,7 +433,7 @@ You will NOT:
     company: 'State Government Agency',
     companySize: '3,000 employees',
     industry: 'Government / Public Sector',
-    voice: 'nova',
+    voice: 'coral',
     personality: 'Process-driven, comparing you to 5 competitors, focused on total cost. Not emotional about features. Wants standard terms, volume discounts, and a clear procurement path.',
     painPoints: [
       'Current video vendor raising prices 40% at renewal',
