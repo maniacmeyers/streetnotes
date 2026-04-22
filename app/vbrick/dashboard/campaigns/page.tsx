@@ -494,30 +494,19 @@ export default function CampaignsPage() {
 
   // ─── LIST VIEW ───
   return (
-    <div className="min-h-screen" style={{ background: neuTheme.colors.bg }}>
-      <div className="max-w-4xl mx-auto p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-6"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-2xl font-general-sans font-bold" style={{ color: neuTheme.colors.text.heading }}>
-              Campaigns
-            </h1>
-            <a
-              href="/vbrick/dashboard"
-              className="flex items-center gap-2 font-satoshi text-sm no-underline"
-              style={{ color: neuTheme.colors.text.muted }}
-            >
-              <ArrowLeft size={16} /> Dashboard
-            </a>
-          </div>
-          <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.body }}>
-            Upload campaign materials, generate multi-channel messaging, and personalize per contact.
-          </p>
-        </motion.div>
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <h1 className="font-general-sans font-bold text-2xl tracking-tight mb-2" style={{ color: '#2d3436' }}>
+          Campaigns
+        </h1>
+        <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.body }}>
+          Upload campaign materials, generate multi-channel messaging, and personalize per contact.
+        </p>
+      </motion.div>
 
         {/* Create button */}
         <motion.div
@@ -590,7 +579,6 @@ export default function CampaignsPage() {
             ))}
           </motion.div>
         )}
-      </div>
     </div>
   )
 }

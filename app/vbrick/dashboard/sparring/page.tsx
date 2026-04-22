@@ -1,301 +1,658 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client'
 
-import { useState } from 'react'
-import { PhoneOff, Dumbbell, HelpCircle, Volume2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState, useMemo } from 'react'
+import { Phone, Dumbbell, Check, X, Target, Sparkles } from 'lucide-react'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { FrameworkSparringSession } from '@/components/vbrick/framework-sparring-session'
-import { BDR_CALL_FRAMEWORK } from '@/lib/vbrick/bdr-framework'
-import { type ProspectPersona } from '@/lib/vbrick/sparring-personas'
+  RealtimeSparringSession,
+  type SparringScoreResult,
+} from '@/components/vbrick/realtime-sparring-session'
+import { SPARRING_SCENARIOS, type BDRAccent } from '@/lib/vbrick/sparring-scenarios'
+import { ALL_PERSONAS, type PersonaId } from '@/lib/vbrick/sparring-personas'
+import { neuTheme } from '@/lib/vbrick/theme'
 
-type SessionResult = {
-  score: number
-  frameworkScore: number
-  wouldTransfer: boolean
-  [key: string]: unknown
-}
+type Mode = 'landing' | 'active'
 
-export default function FrameworkSparringPage() {
-  const [isActiveSession, setIsActiveSession] = useState(false)
-  const [lastResult, setLastResult] = useState<SessionResult | null>(null)
-  const [lastPersona, setLastPersona] = useState<ProspectPersona | null>(null)
+const ACCENT_OPTIONS: Array<{ id: BDRAccent; label: string; sub: string }> = [
+  { id: 'general', label: 'General', sub: 'Standard coaching' },
+  { id: 'irish', label: 'Irish', sub: 'Fast, musical intonation' },
+  { id: 'newZealand', label: 'New Zealand', sub: 'Flat vowels' },
+]
 
-  const handleSessionComplete = (result: SessionResult, persona: ProspectPersona) => {
-    setLastResult(result)
-    setLastPersona(persona)
-    setIsActiveSession(false)
-  }
+export default function SparringPage() {
+  const scenarios = useMemo(() => Object.values(SPARRING_SCENARIOS), [])
+  const personas = useMemo(() => ALL_PERSONAS, [])
 
-  if (isActiveSession) {
+  const [mode, setMode] = useState<Mode>('landing')
+  const [scenarioId, setScenarioId] = useState<string>(scenarios[0].id)
+  const scenario = SPARRING_SCENARIOS[scenarioId] ?? scenarios[0]
+
+  const [personaId, setPersonaId] = useState<PersonaId>(scenario.defaultPersonaId)
+  const selectedPersona = personas.find((p) => p.id === personaId) ?? personas[0]
+
+  const [bdrAccent, setBdrAccent] = useState<BDRAccent>(scenario.defaultAccent)
+  const [scriptVisible, setScriptVisible] = useState(true)
+  const [hardMode, setHardMode] = useState(false)
+  const [lastResult, setLastResult] = useState<SparringScoreResult | null>(null)
+
+  if (mode === 'active') {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="border-b bg-card">
-          <div className="max-w-6xl mx-auto px-6 py-4">
-            <h1 className="font-bold text-lg">Cold Call Sparring — Active Session</h1>
-          </div>
-        </header>
-        <main className="p-6">
-          <FrameworkSparringSession
-            onComplete={handleSessionComplete}
-            onCancel={() => setIsActiveSession(false)}
-          />
-        </main>
+      <div className="max-w-[1200px] mx-auto px-6 py-8">
+        <RealtimeSparringSession
+          scenarioId={scenario.id}
+          personaId={personaId}
+          bdrAccent={bdrAccent}
+          hardMode={hardMode}
+          scriptVisible={scriptVisible}
+          onEnd={(result) => {
+            if (result) setLastResult(result)
+            setMode('landing')
+          }}
+          onCancel={() => setMode('landing')}
+        />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-600 to-teal-600 flex items-center justify-center">
-              <Dumbbell className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg">Cold Call Gym</h1>
-              <p className="text-xs text-muted-foreground">Framework Practice for VBRICK BDRs</p>
-            </div>
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+      {lastResult && <ScoreDetail result={lastResult} onRunAgain={() => setMode('active')} onDismiss={() => setLastResult(null)} />}
+
+      <div
+        className="p-8 space-y-6"
+        style={{
+          background: neuTheme.colors.bg,
+          boxShadow: neuTheme.shadows.raised,
+          borderRadius: neuTheme.radii.xl,
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="flex items-center justify-center"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: neuTheme.radii.sm,
+              background: neuTheme.colors.accent.primary,
+              boxShadow: neuTheme.shadows.raisedSm,
+            }}
+          >
+            <Dumbbell className="w-5 h-5 text-white" />
           </div>
-
-          <div className="flex items-center gap-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <HelpCircle className="w-5 h-5" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>The VBRICK Cold Call Framework</DialogTitle>
-                  <DialogDescription>
-                    Practice the exact framework used on live calls
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 text-sm">
-                  <div className="p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2">1. Name Capture</h4>
-                    <p className="font-mono text-sm mb-2">
-                      "Hi, this is [BDR Name] from VBRICK. Could I get your first and last name?"
-                    </p>
-                    <p className="text-muted-foreground">
-                      Purpose: Build rapport, establish friendly tone
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2">2. Qualification Question</h4>
-                    <p className="font-mono text-sm mb-2">
-                      "Great, I was hoping you could help me out. Are you on the team responsible for [company's] video communications?"
-                    </p>
-                    <p className="text-muted-foreground">
-                      Purpose: Identify decision-maker vs. influencer
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                      <h4 className="font-semibold mb-2 text-green-800">3a. YES Path</h4>
-                      <p className="font-mono text-sm text-green-800">
-                        "The reason I'm calling is we help companies consolidate their video platforms into one secure, manageable system..."
-                      </p>
-                    </div>
-
-                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                      <h4 className="font-semibold mb-2 text-orange-800">3b. NO Path</h4>
-                      <p className="font-mono text-sm text-orange-800">
-                        "Oh, sorry about that. Who do you feel the best person to speak with about video communications is?"
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2">4. The Bridge</h4>
-                    <p className="font-mono text-sm mb-2">
-                      "Thanks so much! May I tell her hi for you?"
-                    </p>
-                    <p className="text-muted-foreground">
-                      Purpose: Get permission to name-drop, leave positive impression
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold mb-2 text-blue-800">💡 Accent Tips for Irish & NZ BDRs</h4>
-                    <ul className="space-y-2 text-blue-800">
-                      <li>• <strong>Irish:</strong> Slow down at "VBRICK," enunciate final consonants</li>
-                      <li>• <strong>New Zealand:</strong> Make "video" clear (not "vedeo"), flatten statement intonation</li>
-                      <li>• Both: Use pauses to compensate for accent speed</li>
-                    </ul>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <Button onClick={() => setIsActiveSession(true)}>
-              <Dumbbell className="w-4 h-4 mr-2" />
-              Start Practice
-            </Button>
+          <div>
+            <p
+              className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+              style={{ color: neuTheme.colors.accent.primary }}
+            >
+              Set up your practice call
+            </p>
+            <h1
+              className="font-general-sans font-bold text-2xl tracking-tight"
+              style={{ color: neuTheme.colors.text.heading }}
+            >
+              {scenario.title}
+            </h1>
           </div>
         </div>
-      </header>
 
-      <main className="max-w-6xl mx-auto p-6">
-        {/* Hero Section */}
-        {!lastResult && (
-          <div className="mb-8 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-8">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold mb-3">Master the Framework</h2>
-                <p className="text-white/80 mb-4">
-                  Practice the VBRICK cold call framework against AI prospects. 
-                  Get real-time feedback on your delivery, handling objections, 
-                  and accent clarity.
-                </p>
-                <div className="flex gap-3">
-                  <Button 
-                    variant="secondary" 
-                    onClick={() => setIsActiveSession(true)}
+        <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
+          {scenario.subtitle} · ~{scenario.estimatedMinutes} minutes.
+        </p>
+
+        {/* Scenario picker */}
+        <div className="space-y-2">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium" style={{ color: neuTheme.colors.text.muted }}>
+            Scenario
+          </p>
+          <NeuSelect
+            value={scenarioId}
+            onChange={(next) => {
+              setScenarioId(next)
+              const s = SPARRING_SCENARIOS[next]
+              if (s) {
+                setPersonaId(s.defaultPersonaId)
+                setBdrAccent(s.defaultAccent)
+              }
+            }}
+            options={scenarios.map((s) => ({ value: s.id, label: s.title }))}
+          />
+        </div>
+
+        {/* Stakeholder picker */}
+        <div className="space-y-2">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium" style={{ color: neuTheme.colors.text.muted }}>
+            Stakeholder you&apos;re calling
+          </p>
+          <NeuSelect
+            value={personaId}
+            onChange={(next) => setPersonaId(next as PersonaId)}
+            options={personas.map((p) => ({
+              value: p.id,
+              label: `${p.name} — ${p.title}${p.company ? ` (${p.company})` : ''}`,
+            }))}
+          />
+          <p className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.muted }}>
+            {selectedPersona.personality}
+          </p>
+        </div>
+
+        {/* Accent picker */}
+        <div className="space-y-2">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium" style={{ color: neuTheme.colors.text.muted }}>
+            Your accent profile
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {ACCENT_OPTIONS.map((opt) => {
+              const active = bdrAccent === opt.id
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => setBdrAccent(opt.id)}
+                  className="text-left p-3 font-satoshi border-none cursor-pointer"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: active ? neuTheme.shadows.insetSm : neuTheme.shadows.raisedSm,
+                    borderRadius: neuTheme.radii.sm,
+                    color: active ? neuTheme.colors.accent.primary : neuTheme.colors.text.body,
+                    transition: neuTheme.transitions.fast,
+                  }}
+                >
+                  <p className="text-sm font-semibold">{opt.label}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: neuTheme.colors.text.muted }}>
+                    {opt.sub}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Mode toggles */}
+        <div className="flex items-center gap-2">
+          <TogglePill active={scriptVisible} onClick={() => setScriptVisible((v) => !v)} label="Script visible" />
+          <TogglePill active={hardMode} onClick={() => setHardMode((v) => !v)} label="Hard mode" />
+        </div>
+
+        {/* Start */}
+        <button
+          onClick={() => setMode('active')}
+          className="flex items-center gap-2 px-6 py-3 font-satoshi font-semibold text-base border-none cursor-pointer"
+          style={{
+            background: neuTheme.colors.accent.primary,
+            color: 'white',
+            borderRadius: neuTheme.radii.md,
+            boxShadow: neuTheme.shadows.raised,
+          }}
+        >
+          <Phone className="w-4 h-4" />
+          Start Practice Call
+        </button>
+
+        {scriptVisible && !hardMode && (
+          <div className="space-y-3">
+            <p
+              className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+              style={{ color: neuTheme.colors.text.muted }}
+            >
+              VBRICK framework cheat card
+            </p>
+            <ol className="space-y-3">
+              {scenario.cheatCard.map((step, i) => (
+                <li
+                  key={i}
+                  className="p-3 flex items-start gap-3"
+                  style={{
+                    background: neuTheme.colors.bgLight,
+                    boxShadow: neuTheme.shadows.insetSm,
+                    borderRadius: neuTheme.radii.sm,
+                  }}
+                >
+                  <span
+                    className="flex items-center justify-center shrink-0 font-bold text-xs"
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: '9999px',
+                      background: neuTheme.colors.accent.primary,
+                      color: 'white',
+                    }}
                   >
-                    <PhoneOff className="w-4 h-4 mr-2 rotate-[135deg]" />
-                    Start First Session
-                  </Button>
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <div className="w-48 h-32 bg-white/10 rounded-lg flex flex-col items-center justify-center text-center p-4">
-                  <Volume2 className="w-10 h-10 text-white/50 mb-2" />
-                  <p className="text-sm text-white/70">Voice-enabled practice with AI personas</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Last Session Result */}
-        {lastResult && (
-          <div className="mb-8 bg-muted border rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${
-                  lastResult.score >= 90 ? 'bg-green-100 text-green-600' :
-                  lastResult.score >= 80 ? 'bg-blue-100 text-blue-600' :
-                  lastResult.score >= 70 ? 'bg-yellow-100 text-yellow-600' :
-                  'bg-orange-100 text-orange-600'
-                }`}>
-                  {lastResult.score}
-                </div>
-                <div>
-                  <p className="font-medium text-lg">
-                    {lastResult.score >= 90 ? 'Outstanding!' : 
-                     lastResult.score >= 80 ? 'Great Job!' :
-                     lastResult.score >= 70 ? 'Good Work' : 'Keep Practicing'}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    vs. {lastPersona?.name} • Framework Score: {lastResult.frameworkScore}%
-                  </p>
-                  {lastResult.wouldTransfer && (
-                    <span className="inline-block mt-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
-                      ✓ Would Transfer
-                    </span>
-                  )}
-                </div>
-              </div>
-              <Button onClick={() => setIsActiveSession(true)}>
-                Practice Again
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Framework Steps Overview */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {BDR_CALL_FRAMEWORK.steps.map((step, i) => (
-            <div key={step.id} className="bg-card border rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold">
-                  {i + 1}
-                </span>
-                <h3 className="font-semibold text-sm">{step.name}</h3>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">{step.objective}</p>
-              <p className="text-xs font-mono bg-muted p-2 rounded">
-                "{step.script.substring(0, 50)}..."
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Available Personas */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Available Personas</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { id: 'disinterested-it-manager', name: 'Marcus', title: 'IT Manager', difficulty: 'Hard', color: 'bg-orange-500' },
-              { id: 'budget-conscious-cfo', name: 'Jennifer', title: 'CFO', difficulty: 'Hard', color: 'bg-red-500' },
-              { id: 'overwhelmed-cto', name: 'David', title: 'CTO', difficulty: 'Medium', color: 'bg-yellow-500' },
-              { id: 'skeptical-security-officer', name: 'Sarah', title: 'CISO', difficulty: 'Medium', color: 'bg-purple-500' },
-              { id: 'enthusiastic-innovator', name: 'Alex', title: 'VP Innovation', difficulty: 'Easy', color: 'bg-green-500' },
-              { id: 'busy-exec-assistant', name: 'Patricia', title: 'Exec Assistant', difficulty: 'Easy', color: 'bg-blue-500' },
-              { id: 'compliance-heavy-legal', name: 'Robert', title: 'General Counsel', difficulty: 'Medium', color: 'bg-indigo-500' },
-              { id: 'price-shopping-procurement', name: 'Linda', title: 'Procurement', difficulty: 'Hard', color: 'bg-pink-500' },
-            ].map((persona) => (
-              <div key={persona.id} className="bg-card border rounded-lg p-4 hover:border-primary transition-colors cursor-pointer"
-                   onClick={() => setIsActiveSession(true)}>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`w-10 h-10 rounded-full ${persona.color} flex items-center justify-center text-white font-bold`}>
-                    {persona.name[0]}
-                  </div>
+                    {i + 1}
+                  </span>
                   <div>
-                    <h3 className="font-semibold text-sm">{persona.name}</h3>
-                    <p className="text-xs text-muted-foreground">{persona.title}</p>
+                    <p className="font-satoshi text-sm font-medium" style={{ color: neuTheme.colors.text.heading }}>
+                      {step.label}
+                    </p>
+                    <p className="font-satoshi text-xs mt-0.5" style={{ color: neuTheme.colors.text.muted }}>
+                      {step.hint}
+                    </p>
                   </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {hardMode && (
+          <div
+            className="p-3 font-satoshi text-xs"
+            style={{
+              background: neuTheme.colors.bgLight,
+              boxShadow: neuTheme.shadows.insetSm,
+              borderRadius: neuTheme.radii.sm,
+              borderLeft: `3px solid ${neuTheme.colors.status.danger}`,
+              color: neuTheme.colors.text.body,
+            }}
+          >
+            <strong>Hard mode:</strong> cheat card hidden, prospect is skeptical and guarded. Be specific or they hang up.
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function NeuSelect({
+  value,
+  onChange,
+  options,
+}: {
+  value: string
+  onChange: (value: string) => void
+  options: Array<{ value: string; label: string }>
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full px-4 py-2.5 font-satoshi text-sm border-none outline-none cursor-pointer"
+      style={{
+        background: neuTheme.colors.bg,
+        boxShadow: neuTheme.shadows.insetSm,
+        borderRadius: neuTheme.radii.sm,
+        color: neuTheme.colors.text.body,
+        appearance: 'auto',
+      }}
+    >
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+function TogglePill({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean
+  onClick: () => void
+  label: string
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="px-4 py-1.5 font-satoshi text-xs font-medium border-none cursor-pointer"
+      style={{
+        background: neuTheme.colors.bg,
+        boxShadow: active ? neuTheme.shadows.insetSm : neuTheme.shadows.raisedSm,
+        color: active ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+        borderRadius: neuTheme.radii.full,
+        transition: neuTheme.transitions.fast,
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+function scoreColor(score: number): string {
+  if (score >= 80) return neuTheme.colors.status.success
+  if (score >= 70) return neuTheme.colors.status.warning
+  return neuTheme.colors.status.danger
+}
+
+function humanizeKey(key: string): string {
+  return key
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function ScoreDetail({
+  result,
+  onRunAgain,
+  onDismiss,
+}: {
+  result: SparringScoreResult
+  onRunAgain: () => void
+  onDismiss: () => void
+}) {
+  const color = scoreColor(result.score)
+  const headline =
+    result.score >= 90
+      ? 'Excellent.'
+      : result.score >= 80
+      ? 'Great call.'
+      : result.score >= 70
+      ? 'Solid — room to sharpen.'
+      : 'Keep reps going.'
+
+  return (
+    <div className="space-y-6">
+      {/* Top: big score + headline + actions */}
+      <div
+        className="p-6 flex flex-wrap items-center justify-between gap-6"
+        style={{
+          background: neuTheme.colors.bg,
+          boxShadow: neuTheme.shadows.raised,
+          borderRadius: neuTheme.radii.xl,
+        }}
+      >
+        <div className="flex items-center gap-5">
+          <div
+            className="flex items-center justify-center font-general-sans font-bold"
+            style={{
+              width: 96,
+              height: 96,
+              borderRadius: '9999px',
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.insetSm,
+              color,
+              fontSize: 36,
+            }}
+          >
+            {result.score}
+          </div>
+          <div>
+            <p
+              className="font-general-sans font-bold text-2xl tracking-tight"
+              style={{ color: neuTheme.colors.text.heading }}
+            >
+              {headline}
+            </p>
+            <p className="text-sm font-satoshi mt-1" style={{ color: neuTheme.colors.text.muted }}>
+              Framework {result.frameworkScore}%
+              {typeof result.accentScore === 'number' ? ` · Accent ${result.accentScore}%` : ''}
+            </p>
+            <p
+              className="text-sm font-satoshi font-medium mt-2"
+              style={{ color: result.wouldTransfer ? neuTheme.colors.status.success : neuTheme.colors.status.warning }}
+            >
+              {result.wouldTransfer
+                ? `✓ Would have transferred you${typeof result.transferConfidence === 'number' ? ` (${result.transferConfidence}% confidence)` : ''}`
+                : `✗ Probably wouldn't have transferred you${typeof result.transferConfidence === 'number' ? ` (${result.transferConfidence}% confidence)` : ''}`}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onRunAgain}
+            className="px-5 py-2.5 font-satoshi font-semibold text-sm border-none cursor-pointer"
+            style={{
+              background: neuTheme.colors.accent.primary,
+              color: 'white',
+              borderRadius: neuTheme.radii.md,
+              boxShadow: neuTheme.shadows.raisedSm,
+            }}
+          >
+            Run it again
+          </button>
+          <button
+            onClick={onDismiss}
+            className="px-4 py-2.5 font-satoshi text-sm border-none cursor-pointer"
+            style={{
+              background: neuTheme.colors.bg,
+              color: neuTheme.colors.text.muted,
+              borderRadius: neuTheme.radii.md,
+              boxShadow: neuTheme.shadows.raisedSm,
+            }}
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+
+      {/* Dimensions breakdown */}
+      {result.dimensions && result.dimensions.length > 0 && (
+        <div
+          className="p-6 space-y-4"
+          style={{
+            background: neuTheme.colors.bg,
+            boxShadow: neuTheme.shadows.raisedSm,
+            borderRadius: neuTheme.radii.md,
+          }}
+        >
+          <p
+            className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+            style={{ color: neuTheme.colors.accent.primary }}
+          >
+            Score breakdown
+          </p>
+          <div className="space-y-4">
+            {result.dimensions.map((dim, i) => (
+              <div key={i}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span
+                    className="font-satoshi text-sm font-medium"
+                    style={{ color: neuTheme.colors.text.heading }}
+                  >
+                    {dim.name}
+                  </span>
+                  <span
+                    className="font-satoshi text-sm font-semibold"
+                    style={{ color: scoreColor(dim.score) }}
+                  >
+                    {dim.score}%
+                  </span>
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  persona.difficulty === 'Easy' ? 'bg-green-100 text-green-700' :
-                  persona.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                  'bg-red-100 text-red-700'
-                }`}>
-                  {persona.difficulty}
+                <div
+                  className="relative h-2 overflow-hidden"
+                  style={{
+                    background: neuTheme.colors.bgLight,
+                    boxShadow: neuTheme.shadows.insetSm,
+                    borderRadius: '9999px',
+                  }}
+                >
+                  <div
+                    className="absolute top-0 left-0 h-full"
+                    style={{
+                      width: `${Math.max(0, Math.min(100, dim.score))}%`,
+                      background: scoreColor(dim.score),
+                      borderRadius: '9999px',
+                      transition: 'width 0.6s ease',
+                    }}
+                  />
+                </div>
+                {dim.feedback && (
+                  <p
+                    className="text-xs font-satoshi mt-1.5"
+                    style={{ color: neuTheme.colors.text.muted }}
+                  >
+                    {dim.feedback}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Framework adherence checklist */}
+      {result.frameworkAnalysis && Object.keys(result.frameworkAnalysis).length > 0 && (
+        <div
+          className="p-6 space-y-3"
+          style={{
+            background: neuTheme.colors.bg,
+            boxShadow: neuTheme.shadows.raisedSm,
+            borderRadius: neuTheme.radii.md,
+          }}
+        >
+          <p
+            className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+            style={{ color: neuTheme.colors.accent.primary }}
+          >
+            Framework adherence
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {Object.entries(result.frameworkAnalysis).map(([key, value]) => (
+              <div
+                key={key}
+                className="flex items-center gap-2.5 p-2.5"
+                style={{
+                  background: neuTheme.colors.bgLight,
+                  boxShadow: neuTheme.shadows.insetSm,
+                  borderRadius: neuTheme.radii.sm,
+                }}
+              >
+                {value ? (
+                  <Check className="w-4 h-4 shrink-0" style={{ color: neuTheme.colors.status.success }} />
+                ) : (
+                  <X className="w-4 h-4 shrink-0" style={{ color: neuTheme.colors.status.danger }} />
+                )}
+                <span className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.body }}>
+                  {humanizeKey(key)}
                 </span>
               </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Accent-Specific Tips */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
-            <h3 className="font-semibold text-green-800 mb-3">🇮🇪 Irish Accent Coaching</h3>
-            <ul className="space-y-2 text-sm text-green-700">
-              <li>• Slow down slightly — Irish accents tend to blur words</li>
-              <li>• Enunciate final consonants on "VBRICK"</li>
-              <li>• Practice: "responsible" — distinct syllables</li>
-              <li>• Use pauses strategically to compensate for speed</li>
-              <li>• Emphasize numbers: "thirty percent" not "thirty percen"</li>
+      {/* Strengths + Improvements */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {result.strengths && result.strengths.length > 0 && (
+          <div
+            className="p-6 space-y-3"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raisedSm,
+              borderRadius: neuTheme.radii.md,
+            }}
+          >
+            <p
+              className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+              style={{ color: neuTheme.colors.status.success }}
+            >
+              What you did well
+            </p>
+            <ul className="space-y-2">
+              {result.strengths.map((s, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: neuTheme.colors.status.success }} />
+                  <span className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.body }}>
+                    {s}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
+        )}
 
-          <div className="bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-200 rounded-lg p-6">
-            <h3 className="font-semibold text-blue-800 mb-3">🇳🇿 New Zealand Accent Coaching</h3>
-            <ul className="space-y-2 text-sm text-blue-700">
-              <li>• Make "i" sounds clear: "VBRICK" not "VBRUCK"</li>
-              <li>• Flatten lift at end of statements (not questions)</li>
-              <li>• Practice: "video" — clear V sound</li>
-              <li>• Emphasize "responsible" — complex for flat vowels</li>
-              <li>• Slow down company name: "V-B-R-I-C-K"</li>
+        {result.improvements && result.improvements.length > 0 && (
+          <div
+            className="p-6 space-y-3"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raisedSm,
+              borderRadius: neuTheme.radii.md,
+            }}
+          >
+            <p
+              className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+              style={{ color: neuTheme.colors.accent.primary }}
+            >
+              Focus areas
+            </p>
+            <ul className="space-y-2">
+              {result.improvements.map((s, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <Target className="w-4 h-4 shrink-0 mt-0.5" style={{ color: neuTheme.colors.accent.primary }} />
+                  <span className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.body }}>
+                    {s}
+                  </span>
+                </li>
+              ))}
             </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Script improvements (before/after) */}
+      {result.scriptImprovements && result.scriptImprovements.length > 0 && (
+        <div
+          className="p-6 space-y-4"
+          style={{
+            background: neuTheme.colors.bg,
+            boxShadow: neuTheme.shadows.raisedSm,
+            borderRadius: neuTheme.radii.md,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4" style={{ color: neuTheme.colors.accent.primary }} />
+            <p
+              className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium"
+              style={{ color: neuTheme.colors.accent.primary }}
+            >
+              Script refinements
+            </p>
+          </div>
+          <div className="space-y-3">
+            {result.scriptImprovements.map((item, i) => (
+              <div
+                key={i}
+                className="p-4 space-y-2"
+                style={{
+                  background: neuTheme.colors.bgLight,
+                  boxShadow: neuTheme.shadows.insetSm,
+                  borderRadius: neuTheme.radii.sm,
+                }}
+              >
+                <p
+                  className="font-satoshi text-xs italic line-through"
+                  style={{ color: neuTheme.colors.text.muted }}
+                >
+                  &ldquo;{item.original}&rdquo;
+                </p>
+                <p
+                  className="font-satoshi text-sm font-medium"
+                  style={{ color: neuTheme.colors.text.heading }}
+                >
+                  &ldquo;{item.improved}&rdquo;
+                </p>
+                <p className="text-xs font-satoshi" style={{ color: neuTheme.colors.text.muted }}>
+                  {item.reason}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </main>
+      )}
+
+      {/* Accent coaching */}
+      {result.accentFeedback && (
+        <div
+          className="p-5"
+          style={{
+            background: neuTheme.colors.bg,
+            boxShadow: neuTheme.shadows.raisedSm,
+            borderRadius: neuTheme.radii.md,
+            borderLeft: `3px solid ${neuTheme.colors.status.warning}`,
+          }}
+        >
+          <p
+            className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium mb-2"
+            style={{ color: neuTheme.colors.status.warning }}
+          >
+            Accent coaching
+          </p>
+          <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.body }}>
+            {result.accentFeedback}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

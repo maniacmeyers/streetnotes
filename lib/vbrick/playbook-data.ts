@@ -23,9 +23,9 @@ export interface PlaybookCard {
 
 export const playbookCategories = [
   'Product Knowledge',
+  'Outreach Strategy',
   'Conversation Fundamentals',
   'Call Execution',
-  'Outreach Strategy',
   'Sales Mindset',
 ] as const
 
@@ -33,72 +33,57 @@ export const playbookCards: PlaybookCard[] = [
   // ─── PRODUCT KNOWLEDGE ────────────────────────────────────
   {
     id: 'what-vbrick-does',
-    title: 'What Vbrick Does (Plain English)',
-    subtitle: 'The core value prop without jargon',
+    title: 'What Vbrick Does (2026 Positioning)',
+    subtitle: 'The enterprise video intelligence layer',
     icon: 'Lightbulb',
     category: 'Product Knowledge',
     sections: [
       {
         heading: 'The One-Sentence Version',
-        body: 'Vbrick helps large organizations use video internally without breaking their network or risking security.',
+        body: 'Vbrick is the enterprise video intelligence layer — it turns your company\'s video library and live streams into structured, queryable data that feeds AI agents like Copilot, Claude, Agentforce, and ServiceNow Now Assist.',
       },
       {
-        heading: 'When Things Break at Scale',
-        body: 'Most companies use Teams, Zoom, or Webex for small-scale video. These break when 5,000+ employees join at once — network gets crushed, buffering and lag everywhere, some employees can\'t connect, IT gets flooded with tickets. Vbrick delivers smooth CDN delivery with no congestion. Everyone watches without issues.',
+        heading: 'The Big Idea',
+        body: '"Instead of sitting idle in storage, video libraries and live streams become active knowledge engines that power agentic workflows." — Vbrick CEO. Vbrick owns the end-to-end EVP category and reframes every competitor (Panopto, Kaltura, Brightcove) as a legacy storage play.',
       },
       {
-        heading: 'When Security and Compliance Matter',
-        body: 'Think healthcare: 20,000 employees need HIPAA compliance training. They need encrypted, access-controlled, audit-logged, regulation-compliant video. Consumer tools have security gaps, compliance risks, and legal exposure. Vbrick provides enterprise-grade security, full compliance controls, and audit trails for everything.',
-      },
-      {
-        heading: 'When Bandwidth Is Limited',
-        body: 'Global companies with remote offices on expensive, limited bandwidth. Regular video eats all available bandwidth, other apps slow down, productivity tanks. Vbrick uses adaptive bitrate streaming and bandwidth optimization — video works without killing the network.',
-      },
-      {
-        heading: 'The Real Problem We Solve',
-        body: 'It\'s not about features. It\'s about risk. Companies come to us when:',
+        heading: 'Five Messaging Pillars',
         items: [
-          'Their CEO town hall crashed last quarter',
-          'They got flagged in a compliance audit',
-          'Their network can\'t handle video at scale',
-          'They\'re worried about the next big event failing',
+          'Multimodal AI — first EVP with facial recognition, now adding vision models and computer vision to analyze what is said and shown on screen',
+          'Agentic integration via MCP — Vbrick\'s Model Context Protocol server connects video to Copilot, Claude, OpenAI, ServiceNow Now Assist, and Salesforce Agentforce',
+          'Live + recorded intelligence — extends beyond VOD into live streams (CCTV, operational monitoring) for real-time sentiment, compliance, and safety intervention',
+          'Global accessibility — audio translation across 100+ languages, including right-to-left, for international workforces',
+          'Trust & governance — content credentials track origin and modifications; enterprise-grade security layered over AI innovation',
         ],
       },
       {
-        heading: 'Who Needs Vbrick',
-        body: 'Companies that DO need us:',
-        items: [
-          'Enterprise (5,000+ employees)',
-          'Global organizations',
-          'Highly regulated industries (healthcare, finance, government)',
-          'Companies with frequent CEO/leadership broadcasts',
-          'Organizations with bandwidth constraints',
-        ],
-        tip: 'Companies under 500 employees or without large-scale internal video needs are NOT our market.',
+        heading: 'Who Buys Vbrick',
+        body: 'Enterprise IT, security, and AI transformation leaders who already own Copilot, Agentforce, or ServiceNow investments and need video data to feed those agents. The Video at Work podcast series targets practitioners scaling video integration org-wide.',
       },
       {
-        heading: 'Handling Common Misconceptions',
-        items: [
-          '"Isn\'t this just YouTube for companies?" — YouTube isn\'t secure enough for internal content, doesn\'t integrate with enterprise systems, and doesn\'t handle live broadcasts at enterprise scale.',
-          '"Can\'t they just use Teams?" — Teams breaks at 10,000+ concurrent viewers, doesn\'t have enterprise video management features, and isn\'t optimized for bandwidth-constrained environments.',
-          '"Sounds expensive. Is it worth it?" — Compare the cost to a failed CEO town hall, a compliance violation, or lost productivity from network outages. For the right companies, it\'s a no-brainer.',
-        ],
-      },
-      {
-        heading: 'How to Think About It',
-        body: 'Vbrick is insurance + infrastructure. Insurance: your CEO broadcast won\'t fail, your compliance audit won\'t flag video, your network won\'t crash. Infrastructure: reliable video delivery at any scale, secure storage and management, integration with existing enterprise systems.',
-      },
-      {
-        heading: 'The Elevator Pitch',
-        script: {
-          label: 'Your 30-Second Pitch',
-          lines: [
-            '"We help large companies use video internally without breaking their network or risking security.',
-            'Think CEO town halls, training videos, global broadcasts — stuff that needs to work for thousands of people at once.',
-            'Teams and Zoom break at that scale. We don\'t."',
+        heading: 'Old Vbrick vs. New Vbrick (2026)',
+        table: {
+          headers: ['Old Vbrick', 'New Vbrick (2026)'],
+          rows: [
+            ['Enterprise video platform', 'Enterprise intelligence layer'],
+            ['Streaming + VOD library', 'Active knowledge engine for AI agents'],
+            ['Transcripts + search', 'Multimodal — vision + audio + context'],
+            ['Standalone platform', 'MCP-connected to Copilot, Claude, Agentforce, ServiceNow'],
           ],
         },
-        tip: 'Test this on a friend or family member who doesn\'t work in tech. If they get it, you\'re ready.',
+        tip: 'The strategic tell: Vbrick is no longer selling video — they\'re selling the data substrate underneath every enterprise AI agent.',
+      },
+      {
+        heading: 'Your 30-Second Pitch',
+        script: {
+          label: 'The Elevator Pitch',
+          lines: [
+            '"We\'re the enterprise video intelligence layer.',
+            'Your video library becomes structured, queryable data that feeds whatever AI agents you\'re already running — Copilot, Claude, Agentforce, ServiceNow.',
+            'Not a storage tool. A knowledge engine your agents plug into."',
+          ],
+        },
+        tip: 'Test this on a colleague outside the video industry. If they get it, you\'re ready.',
       },
     ],
   },
@@ -386,7 +371,7 @@ export const playbookCards: PlaybookCard[] = [
         table: {
           headers: ['Channel', 'Minimum', 'Stretch'],
           rows: [
-            ['Cold Calls', '20', '50'],
+            ['Cold Calls', '100', '200'],
             ['Emails', '20', '50'],
             ['LinkedIn Messages', '10', '20'],
             ['Video Messages', '2', '5'],
@@ -408,15 +393,15 @@ export const playbookCards: PlaybookCard[] = [
         body: 'Structure for each call:',
         items: [
           '1. Dial number',
-          '2. Pattern interrupt: "Hey [Name], this is [Your Name] from Vbrick — I know you weren\'t expecting my call."',
+          '2. Pattern interrupt: "[BDR first name] with Vbrick — I was hoping you could help me out."',
           '3. Value: "We help enterprises reduce video streaming costs by 40%."',
-          '4. Qualification: "Do you head up the team that handles enterprise video?"',
+          '4. Qualification: "Are you on the team that handles enterprise video?"',
           '5. If yes: Brief conversation, book meeting',
-          '6. If no: "Who might that be?"',
+          '6. If no: "Who might that be?" → "May I tell [first name] you said hi?"',
           '7. Log in Salesforce immediately',
           '8. Next call',
         ],
-        tip: 'Pacing: 3-5 minutes per call. 20 calls = 60-90 minutes. Break every 10 calls.',
+        tip: 'Pacing: 3-5 minutes per call. Break every 10 calls.',
       },
       {
         heading: 'Common Objections',
@@ -482,95 +467,166 @@ export const playbookCards: PlaybookCard[] = [
   // ─── OUTREACH STRATEGY ────────────────────────────────────
   {
     id: 'triple-play',
-    title: 'The Triple Play: Your Outreach Sequence',
-    subtitle: 'Three channels, 48 hours, impossible to ignore',
+    title: 'The Triple Play: 2-Week Trigger Event Outreach',
+    subtitle: '3 touches, 3 channels, 2 weeks — for Fortune 500 trigger-event accounts',
     icon: 'Layers',
     category: 'Outreach Strategy',
     sections: [
       {
-        heading: 'What Is the Triple Play?',
-        body: 'A coordinated, multi-touch outreach sequence that hits a prospect across three channels in rapid succession. The goal is not to overwhelm — it is to be impossible to ignore. One touch is easy to miss. Three touches across three channels in 48 hours creates pattern interruption.',
+        heading: 'The Golden Rule',
+        body: '3 touches, 3 channels, 5 minutes per touch. No breakup emails. Ever.',
+      },
+      {
+        heading: 'Sequence at a Glance',
+        table: {
+          headers: ['Touch', 'Week 1 (The Entry)', 'Week 2 (The Proof)'],
+          rows: [
+            ['1', 'LinkedIn connection request (blank)', 'LinkedIn DM / InMail with personalized video'],
+            ['2', 'Initial email via Outreach', 'Follow-up email via Outreach'],
+            ['3', 'Cold call via Intelligence App', 'Cold call via Intelligence App'],
+          ],
+        },
+        tip: 'Week 1 establishes presence. Week 2 differentiates with personalization and video.',
+      },
+      {
+        heading: 'Tools and Roles',
+        table: {
+          headers: ['Tool', 'Role'],
+          rows: [
+            ['GTM Intelligence Dashboard', 'Trigger events, script generation, stakeholder intel, CSV upload, real-time coaching, voice debrief'],
+            ['LinkedIn Sales Navigator', 'Contact discovery via Boolean title searches; 3-list pipeline'],
+            ['LinkedIn', 'Connection requests (Week 1); DMs / InMails with video (Week 2)'],
+            ['Outreach', 'Email sequencing, send tracking, automated follow-ups'],
+            ['Salesforce', 'CRM logging and source of truth'],
+          ],
+        },
+      },
+      {
+        heading: 'The Pod Sequence — 25+ Contacts per Account',
+        body: 'For every target account, build a pod of 25+ contacts using three Boolean searches in Sales Navigator. Set seniority filter to Director, VP, CXO, Owner, Partner.',
         items: [
-          '1. Phone call (with voicemail if no answer)',
-          '2. Email (sent within 5 minutes of the call)',
-          '3. LinkedIn message (sent within 24 hours of the email)',
+          'Search 1 — IT & Technology Leaders: CIO OR "Chief Information Officer" OR CTO OR "Chief Technology Officer" OR "VP of IT" OR "IT Director" OR "Enterprise Applications" OR "Unified Communications" OR "Network Director" OR "Enterprise Architect" OR "IT Manager"',
+          'Search 2 — Communications & HR Leaders: "Internal Communications" OR "Corporate Communications" OR "Employee Communications" OR "Employee Engagement" OR CHRO OR "VP of HR" OR "Learning and Development" OR "L&D" OR "Training Director" OR "HR Technology"',
+          'Search 3 — Marketing & Executive Leaders: CMO OR "Chief Marketing Officer" OR "VP of Marketing" OR "Digital Marketing" OR "Content Marketing" OR "Video Production" OR CEO OR COO OR "Chief Digital Officer"',
         ],
+        tip: 'Save all contacts to the "1 - To Prospect" list. If under 25, temporarily loosen the seniority filter or try alternate title variants.',
       },
       {
-        heading: 'Touch 1 — The Call (Day 1, within 5 min of inbound)',
-        body: 'Call the person who submitted the inbound immediately. If they answer, do not go into pitch mode.',
-        script: {
-          label: 'If They Answer',
-          lines: [
-            '"Hey [Name], this is [Your Name] from Vbrick. I saw you reached out — I wanted to call you directly instead of sending an automated email. What\'s going on on your end?"',
-            '',
-            'Let them talk. Your job is to understand the context, not to sell.',
-            'Ask: What prompted them to reach out? What are they trying to solve? Who else is involved?',
+        heading: 'Contact Tiering',
+        table: {
+          headers: ['Tier', 'Who', 'Count', 'Why'],
+          rows: [
+            ['Tier 1', 'C-suite and VPs tied directly to the trigger event', '5-8', 'Decision-makers who feel the pain'],
+            ['Tier 2', 'Directors and senior managers in IT, Comms, HR', '8-10', 'Evaluators and champions who touch the tools daily'],
+            ['Tier 3', 'Adjacent leaders in Marketing, Facilities, L&D', 'Rest', 'Expansion contacts for multi-threading the account'],
           ],
         },
-      },
-      {
-        heading: '',
-        script: {
-          label: 'If Voicemail',
-          lines: [
-            '"Hey [Name], [Your Name] at Vbrick. Saw your note come through — wanted to call you directly.',
-            'I\'ll shoot you a quick email, but if it\'s easier, my direct line is [number]. Talk soon."',
-          ],
-        },
-        tip: 'Keep it under 20 seconds. Do not pitch in a voicemail.',
-      },
-      {
-        heading: 'Touch 2 — The Email (Day 1, within 5 min of call)',
-        body: 'Send a short, direct email immediately after the call. Do not use a template that looks like a template. Write it like a human.',
-        script: {
-          label: 'Email Script',
-          lines: [
-            'Subject: Re: your Vbrick inquiry',
-            '',
-            '[Name],',
-            '',
-            'Just tried you — left a voicemail. Wanted to reach out directly rather than send you a form confirmation.',
-            '',
-            'Quick question: what\'s driving the interest right now? Is this a current project or more exploratory?',
-            '',
-            'Either way, happy to have a real conversation — not a demo pitch. Just want to understand what\'s going on.',
-            '',
-            '[Your Name]',
-            '[Direct line]',
-          ],
-        },
-        tip: 'This email does NOT include a Calendly link, does NOT say "I\'d love to schedule 30 minutes," does NOT attach a product brochure. It asks one question and invites a reply.',
-      },
-      {
-        heading: 'Touch 3 — LinkedIn Message (Day 2)',
-        body: 'Connect on LinkedIn with a short note. If already connected, send a DM.',
-        script: {
-          label: 'LinkedIn Message',
-          lines: [
-            '"Hey [Name] — tried you yesterday by phone and email. Saw your inquiry come through and wanted to connect directly. No pitch — just wanted to understand what you\'re working on. Happy to chat whenever."',
-          ],
-        },
-      },
-      {
-        heading: 'The Pod Sequence',
-        body: 'After completing the Triple Play on Tier 1 contacts, begin the sequence on Tier 2 contacts on Day 3. Do not wait for Tier 1 to respond before starting Tier 2. You are running parallel threads across the account.',
-        tip: 'The goal is not to get one person on a call. The goal is to create multiple conversations across the buying committee simultaneously.',
       },
       {
         heading: 'Triple Play Timing Chart',
         table: {
-          headers: ['Day', 'Action'],
+          headers: ['Day', 'Activity', 'Tool', 'Time'],
           rows: [
-            ['Day 1 (within 5 min)', 'Call + voicemail to inbound contact'],
-            ['Day 1 (within 5 min of call)', 'Email to inbound contact'],
-            ['Day 2', 'LinkedIn message to inbound contact'],
-            ['Day 3', 'Start Triple Play on Tier 2 (HR, Comms, L&D)'],
-            ['Day 5', 'Follow-up call to inbound if no response'],
-            ['Day 7', 'Start Triple Play on Tier 3 (executive sponsors)'],
-            ['Day 10', 'Final breakup email to non-responders'],
+            ['Mon (W1)', 'Blank LinkedIn connection requests — all Tier 1 & 2', 'Sales Nav', '20 min'],
+            ['Tue-Wed (W1)', 'Initial personalized emails — Tier 1 first, then Tier 2', 'Outreach + Intel App', '30-45 min'],
+            ['Wed-Thu (W1)', 'Cold calls — Tier 1 first, no voicemails', 'Intel App + SF', '60-90 min'],
+            ['Fri (W1)', 'Review results: opens, clicks, acceptances. Plan Week 2.', 'SF + Outreach + LI', '20 min'],
+            ['Mon (W2)', 'Record + send personalized video DMs/InMails', 'LinkedIn + Vidyard/Loom', '45-60 min'],
+            ['Tue-Wed (W2)', 'Follow-up emails via Outreach', 'Outreach + Intel App', '20-30 min'],
+            ['Wed-Thu (W2)', 'Cold calls (reference video + email). Voicemail OK under 30s.', 'Intel App + SF', '60-90 min'],
+            ['Fri (W2)', 'Wrap-up: log everything, update lists, categorize outcomes', 'SF + Sales Nav + Dashboard', '30 min'],
           ],
         },
+      },
+      {
+        heading: 'Week 1 — The Entry',
+        items: [
+          'Connection requests: ALWAYS blank. Your profile does the selling, and blank requests convert higher.',
+          'Initial email: lowercase subject, no greeting, under 40 words, one observation + one ask. Send 7-8:30 AM or 4-5:30 PM prospect local time.',
+          'Cold calls: reference the trigger event on-screen before dialing. Under 2 minutes. Ask for a 15-minute meeting.',
+          'NO voicemails in Week 1. Hang up if no answer — voicemails reduce callback rates on cold outreach.',
+          'After every call: use voice debrief to record a 30-second outcome summary in the Intel App.',
+        ],
+      },
+      {
+        heading: 'Week 2 — The Proof',
+        items: [
+          'Personalized video DM/InMail (30-45 sec): their name, the trigger event, one specific VBrick value point for their role. Upload to Vidyard/Loom; paste link into LinkedIn.',
+          'Accepted your Week 1 connection? DM them. Did not accept? InMail them — InMails show the video thumbnail and convert better on cold.',
+          'Follow-up email: reference previous touches ("I reached out last week about [trigger event]"). Still under 40 words. End with a binary ask.',
+          'Cold call: reference the video and email ("I sent you a video on LinkedIn earlier — wanted to put a voice to the name."). Brief voicemail under 30 seconds is allowed in Week 2.',
+        ],
+      },
+      {
+        heading: 'Transition Matrix — Week 1 to Week 2',
+        table: {
+          headers: ['Signal', 'Week 2 Action'],
+          rows: [
+            ['Meeting booked', 'STOP sequence. Prep for meeting.'],
+            ['Positive reply', 'Respond directly. Do NOT continue automated sequence.'],
+            ['Connection accepted', 'Send personalized video DM (Touch 1 of Week 2).'],
+            ['Email opened 3+', 'Accelerate: send follow-up email sooner.'],
+            ['No response', 'Execute standard Week 2 Triple.'],
+            ['Email bounced', 'Find alternate email via Intel App. Re-send.'],
+            ['Connection rejected', 'Skip LinkedIn DM. Focus on email + call only.'],
+          ],
+        },
+      },
+      {
+        heading: 'Post-Sequence Outcomes',
+        table: {
+          headers: ['Outcome', 'Next Step'],
+          rows: [
+            ['Meeting booked', 'Prep discovery call. Generate account plan from Intel Dashboard. Export to Salesforce.'],
+            ['Positive reply (no meeting yet)', 'Respond within 2 hours. Offer specific times.'],
+            ['Engaged but not ready', 'Add to monthly nurture sequence. Monitor for new trigger events.'],
+            ['No response after 6 touches', 'Add to long-term nurture (quarterly). Do NOT send a breakup email.'],
+          ],
+        },
+      },
+      {
+        heading: 'Top 10 Failure Points',
+        items: [
+          'Sending a connection request with a note → Always blank. Your profile does the selling.',
+          'Sending a breakup email → Never. Add to nurture. Circle back on next trigger.',
+          'Not logging activity in Salesforce → Log immediately after each touch. Use Outreach auto-sync.',
+          'Using generic scripts not from the Intel App → Always pull trigger-specific scripts.',
+          'Calling without reviewing the trigger → Spend 60 seconds on the finding before every call.',
+          'Emails over 40 words → Edit ruthlessly. One question, one value point.',
+          'Waiting too long between Week 1 and Week 2 → Start Week 2 exactly 7 days after Week 1 Day 1.',
+          'Skipping the Week 2 video → 95% of BDRs skip it. This is your #1 differentiator.',
+          'Skipping the voice debrief → It takes 30 seconds and preserves critical context.',
+          'Not checking email open data before Week 2 → Always review opens/clicks on Friday of Week 1.',
+        ],
+      },
+      {
+        heading: 'Salesforce Logging Protocol',
+        table: {
+          headers: ['Activity', 'SF Subject', 'Required Details'],
+          rows: [
+            ['LinkedIn connection request', 'LI Connect Sent', 'Date, contact, status (Sent)'],
+            ['Email (initial)', 'Email - Week 1', 'Date, contact, subject, sequence step'],
+            ['Cold call', 'Call - Week [1/2]', 'Date, contact, outcome (No Answer / VM / Spoke / Meeting)'],
+            ['LinkedIn DM/InMail', 'LI Video DM - Week 2', 'Date, contact, video link, DM vs InMail'],
+            ['Email (follow-up)', 'Email - Week 2', 'Date, contact, subject, sequence step'],
+            ['Meeting booked', 'Event + Opportunity (Discovery)', 'Date/time, attendees, agenda'],
+          ],
+        },
+        tip: 'Every single touch gets logged. No exceptions. This is how pipeline is attributed and performance is measured.',
+      },
+      {
+        heading: 'Key Reminders',
+        items: [
+          'Connection requests: ALWAYS blank',
+          'Emails: Under 40 words, lowercase subject, no greeting',
+          'Calls Week 1: No voicemail. Hang up.',
+          'Calls Week 2: Brief voicemail OK (under 30 seconds)',
+          'Video DM/InMail: 30-45 seconds, personalized, reference trigger',
+          'NEVER send a breakup email',
+          'Log EVERY touch in Salesforce immediately',
+          'Goal per account: 25+ contacts, 6 touches per Tier 1 over 2 weeks',
+          'Email send windows (prospect local time): 7:00-8:30 AM or 4:00-5:30 PM',
+        ],
       },
     ],
   },

@@ -41,7 +41,8 @@ You are not desperate for this meeting. Your genuine curiosity about their situa
 "Tuesday morning or Wednesday afternoon?" Give two specific options. Never open-ended. Never "Would you be interested?" Never "When works for you?" Two concrete slots. Then silence.
 
 KILL LIST — NEVER USE THESE PHRASES:
-"How are you doing today?" | "The reason for my call..." | "Could I get 30 seconds?" | "I'd love to..." | "I was hoping..." | "I appreciate your time" | "Sorry to bother you" | "Thanks for taking my call" | "I know you're busy" | "Do you have a minute?" | "This is a cold call" | "Just checking in" | "Just following up" | "Does that make sense?" | "Would you be open to..." | "I really appreciate..." | "I think you'll find it valuable"
+"How are you doing today?" | "The reason for my call..." | "Could I get 30 seconds?" | "I'd love to..." | "I appreciate your time" | "Sorry to bother you" | "Thanks for taking my call" | "I know you're busy" | "Do you have a minute?" | "This is a cold call" | "Just checking in" | "Just following up" | "Does that make sense?" | "Would you be open to..." | "I really appreciate..." | "I think you'll find it valuable" | "I know you weren't expecting my call"
+NOTE: "I was hoping you could help me out…" IS allowed — it's part of the sanctioned pattern interrupt. But "I was hoping to..." followed by a subordinate request (e.g., "I was hoping to get 5 minutes") is forbidden.
 
 EMAIL SUBJECT LINES: Always lowercase. No capitalization. Signals casual internal communication. Under 6 words.`
 
@@ -54,11 +55,11 @@ const FRAMEWORK_RULES: Record<FrameworkType, string> = {
 const CHANNEL_SCHEMAS: Record<ChannelType, string> = {
   cold_call: `{
   "opener": "EXACTLY this format: '[PROSPECT FIRST AND LAST NAME]?' — said in an inquisitive tone. That's the entire opener. Just their name as a question. Nothing else. Wait for their response.",
-  "pattern_interrupt": "After they respond, deliver this: 'Great. I know you weren't expecting my call, but real quick — [ONE QUESTION about whether they manage the relevant area, e.g. 'do you head up the team responsible for the enterprise video platform?' or 'are you the one managing your ServiceNow portal?']' This must be under 25 words after 'Great. I know you weren't expecting my call, but real quick —'. End with a question. Wait for response.",
-  "value_statement": "Only if they engage. Measured pace. No excitement. State what's happening as fact, connect to their environment, frame it as exclusive. Under 40 words. Never start with 'I' or 'We'd love to.' Example structure: 'Good. We've been working with a few [industry/platform] customers on [use case] and there are some things we're showing at [event] that tie directly into what your team is running. Easier to walk through in person.'",
+  "pattern_interrupt": "After they confirm, deliver this: '[BDR FIRST NAME] with Vbrick — I was hoping you could help me out…' Pause. Wait for 'ok' or similar. Then: '[EVENT/HOOK] is coming up. We're putting together a few focused sessions around [THEIR MODULE/USE CASE] and your account came up as one we specifically wanted to sit down with. Are you or someone on your team attending this year?' Under 45 words total after the pause. Ends with a question.",
+  "value_statement": "Only if they engage. Measured pace. No excitement. State what's happening as fact. Under 40 words. Example: 'Good. There are a few roadmap items dropping at [EVENT] that directly affect [THEIR MODULE]. Easier to walk through face-to-face than over email. We're also blocking time for your team with our product specialists, no agenda, just your questions.'",
   "binary_ask": "Direct. Two options. Not a question about WHETHER they want to meet — a question about WHEN. Example: 'We've got availability Tuesday morning or Wednesday afternoon. Which works better for your team?' Never 'Would you like to meet?'",
-  "closing_booked": "Confirm and get off the phone. Do not oversell the meeting you just booked. Example: 'Done. I'll send the calendar invite today. See you at [event], [NAME].' Under 15 words.",
-  "closing_follow_up": "If they say follow up later. No pleading. State what you'll do. Example: 'Got it. I'll send the details and a couple of time options. Talk soon.' Under 15 words.",
+  "closing_booked": "Confirm and get off the phone. Do not oversell. Example: 'Done. I'll send the calendar invite today. See you at [EVENT], [NAME].' Under 15 words.",
+  "closing_follow_up": "If they say follow up later. No pleading. State what you'll do. Example: 'Got it. I'll send the session list and a couple of options. Talk soon.' Under 15 words.",
   "closing_no": "If they say no. No guilt trip. Clean exit. Example: 'Fair enough. If anything changes, you've got my line. Take care.' Under 15 words.",
   "module_variants": {
     "ITSM": { "pattern_interrupt": "...", "value_statement": "..." },
@@ -70,15 +71,17 @@ const CHANNEL_SCHEMAS: Record<ChannelType, string> = {
 }
 
 CRITICAL COLD CALL RULES:
-- The opener is ONLY the prospect's name said as a question. Nothing else. No "Alex from Vbrick." Just "[First Last]?"
-- After they respond, say "Great. I know you weren't expecting my call, but real quick —" then a qualifying question.
-- The value statement references their specific ServiceNow module and a concrete use case.
-- The binary ask gives exactly two time slots. Period.
-- Three closing variants: booked, follow-up, and no. All under 15 words. All peer-to-peer.
-- Total call: 90 seconds max.`,
+- The opener is ONLY the prospect's name said as a question in an inquisitive tone. Nothing else. No "Alex from Vbrick." Just "[First Last]?"
+- After they confirm, say "[BDR FIRST NAME] with Vbrick — I was hoping you could help me out…" Pause. Wait for 'ok'.
+- NEVER say "I know you weren't expecting my call." That phrase is banned.
+- Then deliver the event/hook line ending with a question about their attendance or involvement.
+- The value statement references their specific module/use case and frames as fact, not pitch.
+- The binary ask gives exactly two concrete time slots. Period.
+- Three closings: booked, follow-up, and no. All under 15 words. All peer-to-peer.
+- Total call: 90 seconds to 2 minutes max.`,
 
   voicemail: `{
-  "script": "15 seconds max when spoken aloud. Format: '[PROSPECT NAME], [BDR NAME] with [COMPANY]. We're a [PARTNER CREDENTIAL]. Quick one about [EVENT/TOPIC]. We're setting up meetings with a few [CUSTOMER TYPE], and [THEIR COMPANY] was on the list. I'll send details over email. [PHONE NUMBER].' That's it. No 'give me a call back.' No 'when you get a chance.' Peer to peer.",
+  "script": "15 seconds max when spoken aloud. Format (from K26 Career Maniacs script): '[PROSPECT FIRST NAME], [BDR NAME] with Vbrick. Quick one about [EVENT/TOPIC]. We're blocking time for [THEIR COMPANY] with the product team. I'll send details over email. Again, this is [BDR NAME].' That's it. No 'give me a call back.' No 'when you get a chance.' Peer to peer.",
   "duration_target": "15 seconds",
   "module_variants": {
     "ITSM": "GENERATE a complete 15-second voicemail that references video-enabled knowledge articles and reduced ticket volume. Not a description — an actual script.",
@@ -157,19 +160,19 @@ CRITICAL LINKEDIN RULES:
 Generate these EXACT 6 objections plus any campaign-specific ones:
 
 1. "Can you just email me the details?"
-   Response pattern: Agree, ask for email, then ask a low-threat question that reopens conversation about the event or their environment. Example: "Sure. What's the best email? ... Got it. While I have you, quick question — is [COMPANY] sending a team to [EVENT] this year or still deciding?"
+   Response pattern (verbatim from Career Maniacs K26 script): "Sure. What's the best email? I'll send over the session list and a couple of time slots." Then, while they respond: "Got it. While I have you, quick question — is [COMPANY] sending a team to [EVENT] this year or still deciding?"
 
 2. "Not sure we're going to [event] this year."
-   Response pattern: Validate. Pivot from event to business problem. "Makes sense. A lot of [customer type] are still figuring that out. Separate from [event], is [topic] something your team has looked at, or is that not on the radar right now?"
+   Response pattern: "Makes sense. A lot of teams are still figuring that out. If you do end up going, is [THEIR MODULE/USE CASE] something your team would want roadmap visibility on, or are you in more of a steady-state right now?" If they engage on the module question, follow with: "That's fair. Either way, I'll pencil in a tentative slot and send the details. If plans change, we'll adjust. No commitment."
 
-3. "We already have a video solution" / "We're good on video."
-   Response pattern: "That's fine. How's that working out for you?" Full stop. Pause. Let them talk. Then follow-up: "Does it plug into ServiceNow natively, or is your team managing that separately?" This is the killer question — most video platforms don't integrate natively.
+3. "We're good. Not sure what we'd talk about." / "We already have a video solution."
+   Response pattern: "That's fine. How's [THEIR MODULE] working out for you?" Full stop. Pause. Let them talk. If they confirm it's working: "Good. That's what we like to hear. There are a couple of things on the roadmap that build on that. Might be worth a quick look while the product team is all in one place. I'll send over the details."
 
 4. "I don't know [your company]. Who are you?"
    Response pattern: Three sentences max. Company description, partner credibility, social proof with one use case. Then redirect back to the ask. No 60-second company overview. No apologies for them not knowing you.
 
 5. "I don't have time right now."
-   Response pattern: Agree. Offer to send details and a tentative time. "Totally fine. I'll shoot over a quick summary and pencil in a tentative slot. If it doesn't work, we adjust."
+   Response pattern: "Makes sense. I'll shoot over a quick summary and pencil in a tentative slot. If it doesn't work, we adjust." Peer-to-peer, no apologies.
 
 6. "We're locked into a contract with another vendor."
    Response pattern: "That makes sense. When does that come up for review?" Genuine curiosity. If they give a date, offer to reconnect closer to that window.

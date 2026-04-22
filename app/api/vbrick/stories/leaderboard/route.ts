@@ -4,6 +4,7 @@ import { getLevel } from '@/lib/vbrick/gamification'
 import type { StoryType } from '@/lib/vbrick/story-types'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 function displayName(email: string): string {
   const prefix = email.split('@')[0] || email

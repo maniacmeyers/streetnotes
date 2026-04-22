@@ -331,40 +331,28 @@ export default function StoryVaultPage() {
   ]
 
   return (
-    <div className="min-h-screen" style={{ background: neuTheme.colors.bg }}>
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-6"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-2xl font-general-sans font-bold" style={{ color: neuTheme.colors.text.heading }}>
-              Story Vault
-            </h1>
-            <div className="flex items-center gap-4">
-              {email && ['jeff@forgetime.ai', 'jeff@careermaniacs.com'].includes(email) && (
-                <a
-                  href="/vbrick/dashboard/stories/manager"
-                  className="flex items-center gap-2 font-satoshi text-xs font-medium"
-                  style={{ color: neuTheme.colors.accent.primary }}
-                >
-                  <BarChart3 size={14} /> Manager View
-                </a>
-              )}
-              <a
-                href="/vbrick/dashboard"
-                className="flex items-center gap-2 font-satoshi text-sm"
-                style={{ color: neuTheme.colors.text.muted }}
-              >
-                <ArrowLeft size={16} /> Dashboard
-              </a>
-            </div>
-          </div>
-          <GamificationHeader email={email} />
-        </motion.div>
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="font-general-sans font-bold text-2xl tracking-tight" style={{ color: '#2d3436' }}>
+            Story Vault
+          </h1>
+          {email && ['jeff@forgetime.ai', 'jeff@careermaniacs.com'].includes(email) && (
+            <a
+              href="/vbrick/dashboard/stories/manager"
+              className="flex items-center gap-2 font-satoshi text-xs font-medium"
+              style={{ color: neuTheme.colors.accent.primary }}
+            >
+              <BarChart3 size={14} /> Manager View
+            </a>
+          )}
+        </div>
+        <GamificationHeader email={email} />
+      </motion.div>
 
         {/* Tabs */}
         <NeuTabs
@@ -499,7 +487,6 @@ export default function StoryVaultPage() {
         {activeTab === 'leaderboard' && email && (
           <StoryLeaderboard currentEmail={email} />
         )}
-      </div>
 
       <XPToast xp={xpToast.xp} visible={xpToast.visible} onDone={() => setXPToast(prev => ({ ...prev, visible: false }))} />
     </div>
