@@ -9,17 +9,20 @@ import { neuTheme } from '@/lib/vbrick/theme'
 export function VbrickShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { email } = useDashboard()
+  const { email, hydrated } = useDashboard()
   const isDashboardRoot = pathname === '/vbrick/dashboard'
 
   useEffect(() => {
+    // Only redirect AFTER localStorage has been checked — otherwise we redirect
+    // on initial render before the provider's email state has hydrated.
+    if (!hydrated) return
     if (email === null && !isDashboardRoot && pathname.startsWith('/vbrick/dashboard')) {
       router.replace('/vbrick/dashboard')
     }
-  }, [email, isDashboardRoot, pathname, router])
+  }, [hydrated, email, isDashboardRoot, pathname, router])
 
   // On the dashboard root without email, page.tsx renders its own gate — skip chrome there.
-  if (!email && isDashboardRoot) {
+  if (hydrated && !email && isDashboardRoot) {
     return <>{children}</>
   }
 

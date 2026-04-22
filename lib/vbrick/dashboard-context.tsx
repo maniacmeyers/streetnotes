@@ -7,6 +7,7 @@ interface DashboardContextValue {
   email: string | null
   setEmail: (email: string | null) => void
   displayName: string
+  hydrated: boolean
   activeSection: 'dashboard' | 'stories' | 'ci'
   setActiveSection: (section: 'dashboard' | 'stories' | 'ci') => void
 }
@@ -24,11 +25,13 @@ function deriveDisplayName(email: string | null): string {
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [email, setEmailState] = useState<string | null>(null)
+  const [hydrated, setHydrated] = useState(false)
   const [activeSection, setActiveSection] = useState<'dashboard' | 'stories' | 'ci'>('dashboard')
 
   useEffect(() => {
     const stored = localStorage.getItem('vbrick_email')
     if (stored) setEmailState(stored)
+    setHydrated(true)
   }, [])
 
   const setEmail = useCallback((next: string | null) => {
@@ -46,6 +49,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         email,
         setEmail,
         displayName: deriveDisplayName(email),
+        hydrated,
         activeSection,
         setActiveSection,
       }}

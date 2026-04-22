@@ -50,7 +50,7 @@ export function TopNav() {
 
   return (
     <header
-      className="sticky top-0 z-30 w-full font-satoshi"
+      className="sticky top-0 z-[60] w-full font-satoshi"
       style={{
         height: 56,
         background: neuTheme.colors.bg,

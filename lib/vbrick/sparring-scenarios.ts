@@ -12,7 +12,7 @@ export interface SparringScenario {
   title: string
   subtitle: string
   estimatedMinutes: number
-  personaId: PersonaId
+  defaultPersonaId: PersonaId
   defaultAccent: BDRAccent
   scenarioContext: string
   hardModeContext: string
@@ -20,36 +20,62 @@ export interface SparringScenario {
 }
 
 export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
-  'bending-spoons-k26': {
-    id: 'bending-spoons-k26',
-    title: 'Bending Spoons Check-in + K26 Invite',
+  'brightcove-friction': {
+    id: 'brightcove-friction',
+    title: 'Brightcove Friction — Bending Spoons Acquisition',
     subtitle:
-      'Call a VP at a recently acquired company. Check on integration friction, pitch the K26 booth.',
+      'Call a Brightcove customer. Run the full VBRICK framework. Pitch VBrick as the alternative.',
     estimatedMinutes: 3,
-    personaId: 'bending-spoons-vp',
+    defaultPersonaId: 'disinterested-it-manager',
     defaultAccent: 'general',
     scenarioContext: [
-      'BACKGROUND (react to these topics only if the BDR brings them up, do NOT volunteer):',
-      '- Your company was acquired by Bending Spoons eight weeks ago; integration is noisy.',
-      '- K26 is next month; you have not decided whether to attend.',
-      'The BDR is driving the call. Your job is to react, not lead.',
+      'CALL CONTEXT:',
+      'Your company is a current Brightcove customer. Brightcove was recently acquired by Bending Spoons. The integration has been noisy — tooling disruption, support changes, pricing uncertainty.',
+      'The BDR is calling from VBrick (a Brightcove competitor). They will pitch VBrick as an alternative and ask if you are experiencing friction from the Bending Spoons acquisition of Brightcove.',
+      '',
+      'REACT HONESTLY based on your personality. You can be any of:',
+      '- Frustrated and open to discussing alternatives',
+      '- Dismissive and too busy',
+      '- Skeptical and want proof before engaging',
+      '- Genuinely unaware of the acquisition',
+      '- Already mid-evaluation',
+      '',
+      'Do NOT volunteer the Brightcove or Bending Spoons angle yourself. Only react once the BDR raises it during the value prop step.',
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You have been contacted three separate times this month about the Bending Spoons acquisition — once by a consultant, twice by SaaS vendors. You are protective of your time. Push back on generic openers like "How are things going?". You expect specifics. You will end the call within 30 seconds if the BDR has not given you a concrete reason to stay on the line. You are NOT attending K26 unless someone gives you a concrete reason tied to a problem you actually have.',
+      'You have been contacted multiple times this month about the Bending Spoons / Brightcove situation by consultants and VBrick competitors. You are protective of your time.',
+      'Push back on generic openers. You expect specifics — which Brightcove product, what kind of friction, concrete differentiation.',
+      'You will end the call within 30 seconds if the BDR has not given you a concrete reason to stay on the line.',
     ].join('\n'),
     cheatCard: [
       {
-        label: 'Confirm you are speaking to the right person',
-        hint: 'Short and direct: "Is this Dana? Quick question for you."',
+        label: '1. Name confirmation',
+        hint:
+          'They answer with "Hello?" (or similar). You say their first and last name in an inquisitive tone ("Dana Whitfield?"). They confirm with "Yeah."',
       },
       {
-        label: 'Ask about Bending Spoons friction',
-        hint: '"What has felt different since the deal closed?" — then listen.',
+        label: '2. Help request',
+        hint: '"Great, [first name], I was hoping you could help me out for a moment."',
       },
       {
-        label: 'Ask about K26 and pitch the booth',
-        hint: '"While I have you — are you going to K26? If so, stop by. We are showing multi-modal AI that pulls the exact frame of a video you need."',
+        label: '3. Qualification',
+        hint: '"[First name], are you on the team responsible for your company\'s enterprise video initiatives?"',
+      },
+      {
+        label: '4a. YES path — value prop',
+        hint:
+          '"Okay cool. I\'m with VBrick. We have a lot of customers coming to us lately due to friction from the Bending Spoons acquisition of Brightcove. Are you experiencing similar friction, or looking at alternatives?"',
+      },
+      {
+        label: '4b. NO path — referral + bridge',
+        hint:
+          '"Oh sorry. Would you happen to know who the best person at your company would be?" → "Great, thanks. Can I tell [name] you said hello?"',
+      },
+      {
+        label: '5. K26 follow-up',
+        hint:
+          '"Oh by the way, would you happen to be attending K26 in a few weeks?" If yes → booth/coffee. If no → "Do you know if anybody from your org is going?" → name → "Should I say hello for you?"',
       },
     ],
   },

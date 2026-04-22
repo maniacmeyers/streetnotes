@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getPersonaById, type PersonaId, SPARRING_PERSONAS } from '@/lib/vbrick/sparring-personas'
-import { getScenarioById } from '@/lib/vbrick/sparring-scenarios'
+import { getScenarioById, type BDRAccent } from '@/lib/vbrick/sparring-scenarios'
 import { composeRealtimeInstructions } from '@/lib/vbrick/realtime-instructions'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
 
 const REALTIME_MODEL = 'gpt-4o-realtime-preview-2024-12-17'
+const VALID_ACCENTS: readonly BDRAccent[] = ['irish', 'newZealand', 'general'] as const
 
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY
@@ -14,7 +15,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'OPENAI_API_KEY missing on server' }, { status: 500 })
   }
 
-  let body: { scenarioId?: string; hardMode?: boolean; personaId?: PersonaId } = {}
+  let body: {
+    scenarioId?: string
+    hardMode?: boolean
+    personaId?: PersonaId
+    bdrAccent?: BDRAccent
+  } = {}
   try {
     body = await request.json()
   } catch {
@@ -23,7 +29,7 @@ export async function POST(request: Request) {
 
   const scenario = getScenarioById(body.scenarioId)
   const resolvedPersonaId: PersonaId =
-    body.personaId ?? scenario?.personaId ?? 'bending-spoons-vp'
+    body.personaId ?? scenario?.defaultPersonaId ?? 'disinterested-it-manager'
   const persona = getPersonaById(resolvedPersonaId)
   if (!persona) {
     return NextResponse.json(
@@ -32,7 +38,17 @@ export async function POST(request: Request) {
     )
   }
 
-  const instructions = composeRealtimeInstructions(persona, scenario, body.hardMode ?? false)
+  const resolvedAccent: BDRAccent =
+    body.bdrAccent && VALID_ACCENTS.includes(body.bdrAccent)
+      ? body.bdrAccent
+      : scenario?.defaultAccent ?? 'general'
+
+  const instructions = composeRealtimeInstructions(
+    persona,
+    scenario,
+    body.hardMode ?? false,
+    resolvedAccent,
+  )
 
   try {
     const resp = await fetch('https://api.openai.com/v1/realtime/sessions', {
@@ -79,6 +95,7 @@ export async function POST(request: Request) {
       personaId: persona.id,
       personaName: persona.name,
       personaTitle: persona.title,
+      bdrAccent: resolvedAccent,
     })
   } catch (err) {
     console.error('Realtime session error:', err)

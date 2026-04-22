@@ -15,15 +15,22 @@ type Phase = 'idle' | 'connecting' | 'in-call' | 'ending' | 'scored' | 'error'
 export type SparringScoreResult = {
   score: number
   frameworkScore: number
+  accentScore?: number
   wouldTransfer: boolean
-  dimensions?: Array<{ name: string; score: number; feedback?: string }>
+  transferConfidence?: number
+  dimensions?: Array<{ name: string; score: number; weight?: number; feedback?: string }>
+  frameworkAnalysis?: Record<string, boolean>
+  accentFeedback?: string
   strengths?: string[]
   improvements?: string[]
+  scriptImprovements?: Array<{ original: string; improved: string; reason: string }>
   [key: string]: unknown
 }
 
 interface RealtimeSparringSessionProps {
   scenarioId: string
+  personaId?: string
+  bdrAccent?: 'irish' | 'newZealand' | 'general'
   hardMode: boolean
   scriptVisible: boolean
   onEnd: (result: SparringScoreResult | null, transcript: TranscriptTurn[]) => void
@@ -32,6 +39,8 @@ interface RealtimeSparringSessionProps {
 
 export function RealtimeSparringSession({
   scenarioId,
+  personaId,
+  bdrAccent = 'general',
   hardMode,
   scriptVisible,
   onEnd,
@@ -53,7 +62,7 @@ export function RealtimeSparringSession({
   const sessionIdRef = useRef<string | null>(null)
   const personaIdRef = useRef<string | null>(null)
 
-  const scenario = getScenarioById(scenarioId) ?? SPARRING_SCENARIOS['bending-spoons-k26']
+  const scenario = getScenarioById(scenarioId) ?? SPARRING_SCENARIOS['brightcove-friction']
 
   // --- Start the call on mount ---
   useEffect(() => {
@@ -64,7 +73,7 @@ export function RealtimeSparringSession({
         const sessionResp = await fetch('/api/vbrick/realtime/session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ scenarioId, hardMode }),
+          body: JSON.stringify({ scenarioId, hardMode, personaId, bdrAccent }),
         })
         if (!sessionResp.ok) throw new Error('Failed to mint Realtime session')
         const sessionData = await sessionResp.json()

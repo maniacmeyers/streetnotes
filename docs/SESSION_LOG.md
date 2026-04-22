@@ -6,6 +6,12 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 
 ---
 
+## 2026-04-22
+
+- **Voice architecture shift for VBrick sparring:** MediaRecorder + homemade client-VAD + HTTP Whisper/chat/TTS → direct WebRTC to OpenAI Realtime API (`gpt-4o-realtime-preview-2024-12-17`) with server-side VAD and ephemeral tokens. Sub-second turns, native interruption. New branch `feat/vbrick-realtime-sparring` off `90a0b36` (pre-fail clean commit). PR #3 open.
+- Also: persistent `TopNav` across all `/vbrick/dashboard/*` routes (288px Sidebar deleted, sub-page headers stripped, dashboard home reflows full-width). Score-detail expanded from tiny banner to full breakdown. Hydration race in `DashboardProvider` fixed — was silently kicking every sub-route click back to dashboard root.
+- Playbook + Campaigns rewritten against Career Maniacs K26 script and 2-Week BDR Outreach SOP. "I know you weren't expecting my call" removed everywhere. Triple Play card rebuilt with 2-Week SOP content (25+ contacts per pod, 5–8 T1 / 8–10 T2 / rest T3, 3 Sales Nav Boolean searches). Cold Calls 100/200. "What Vbrick Does" rewritten with 2026 GTM positioning (enterprise video intelligence layer, MCP-connected). Session: [[2026-04-22-vbrick-realtime-sparring-top-nav-playbook]]. Spec: `docs/superpowers/specs/2026-04-21-vbrick-realtime-sparring-design.md`.
+
 ## 2026-04-15
 
 - Added `docs/INDEX.md` as the auto-loaded vault map and wired it into project `CLAUDE.md` via `@docs/INDEX.md`.
