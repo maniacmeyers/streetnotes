@@ -52,6 +52,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 3,
     defaultPersonaId: 'disinterested-it-manager',
     defaultAccent: 'general',
+    difficultyScore: 4,
     scenarioContext: [
       'CALL CONTEXT:',
       'Your company is a current Brightcove customer. Brightcove was recently acquired by Bending Spoons. The integration has been noisy — tooling disruption, support changes, pricing uncertainty.',
@@ -112,6 +113,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 3,
     defaultPersonaId: 'disinterested-it-manager',
     defaultAccent: 'general',
+    difficultyScore: 3,
     scenarioContext: [
       'CALL CONTEXT:',
       'Your company is an existing ServiceNow customer. Knowledge 26 is ServiceNow\'s annual conference, a few weeks away in Las Vegas. You have heard about it but have not registered. Budget, timing, and whether it\'s worth the trip are all open questions for you.',
@@ -165,6 +167,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 3,
     defaultPersonaId: 'enthusiastic-innovator',
     defaultAccent: 'general',
+    difficultyScore: 3,
     scenarioContext: [
       'CALL CONTEXT:',
       'Your company is a ServiceNow customer and you are registered for Knowledge 26. You are attending — flight is booked, agenda is filling up.',
@@ -210,6 +213,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'google-corp-eng-pm',
     defaultAccent: 'general',
+    difficultyScore: 5,
     scenarioContext: [
       'CALL CONTEXT:',
       'The prospect is a Staff TPM in Google\'s Corporate Engineering org. She is cross-functional across Communications, Learning, and IT — she knows how internal video actually works at Google.',
@@ -234,9 +238,9 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You have been cold-called by three enterprise video vendors in the last month (Brightcove, Kaltura, Panopto). Your pattern-matching triggers instantly. The BDR has to say something in the first 20 seconds that differentiates from the other three or you will politely exit.',
-      'You also dislike the word "platform." Any vendor who says "we\'re the platform for X" loses you immediately. Make the BDR speak in outcomes, not categories.',
-      'If the BDR uses "EVP program" without explaining it, push back: "What do you mean by that? I\'ve seen different definitions."',
+      'You have been cold-called by three enterprise video vendors in the last month. You are pattern-matching. The BDR needs to say something specific in the first minute that differentiates — if they stay generic, push back with "I\'ve heard this one before" and give them a second chance.',
+      'You mildly dislike the word "platform." When a vendor uses it, push back once ("what does your platform actually do?") rather than exiting.',
+      'If the BDR uses "EVP program" without explaining it, ask: "What do you mean by that? I\'ve seen different definitions." Use this to help them anchor the conversation, not to trap them.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: 'They answer with a short greeting. You say their first and last name inquisitive ("Priya Nair?"). They confirm briefly.' },
@@ -282,6 +286,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 3,
     defaultPersonaId: 'overwhelmed-cto',
     defaultAccent: 'general',
+    difficultyScore: 4,
     scenarioContext: [
       'CALL CONTEXT:',
       'Your company is a ServiceNow customer and you are registered for Knowledge 26.',
@@ -331,7 +336,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 3,
     defaultPersonaId: 'video-adjacent-coordinator',
     defaultAccent: 'general',
-    difficultyScore: 3,
+    difficultyScore: 2,
     whyVbrickFits:
       'Not a direct fit for THIS prospect, but his org is a classic Vbrick target: 22,000 employees, scattered video tooling, no clear video strategy owner.',
     repGoal:
@@ -390,8 +395,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You are mid-email with your CFO when the call comes in. You will give the BDR 20 seconds to make the referral-ask clean, then you will politely exit whether they got it or not.',
-      'You will NOT spell Priya\'s name unless asked twice. You will NOT give her title, email, or phone number — only her name and role.',
+      'You are mid-email with your CFO when the call comes in. You are polite but pivoting to end the call quickly. Give the BDR a minute to land the referral ask; if they stumble, prompt them once ("was there something else?") to help them recover.',
+      'You will give Priya\'s name and role if asked. You will not give her direct email or phone number, but you are willing to "pass along" a hello.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Trevor Ashford?" → wait for "Yeah."' },
@@ -411,7 +416,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'internal-comms-director',
     defaultAccent: 'general',
-    difficultyScore: 6,
+    difficultyScore: 4,
     whyVbrickFits:
       'Owns exactly the problems Vbrick solves: polished live events at scale, unified live+on-demand, engagement analytics she can report to leadership, captions and multilingual delivery.',
     repGoal:
@@ -471,8 +476,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You have 12 minutes before the CHRO call. You will test the BDR with "How is this different from Zoom?" in the first 30 seconds. If they answer with buzzwords, you exit.',
-      'You will NOT share the EMEA caption story unless the BDR asks specifically about captions OR names the problem before you do.',
+      'You have 12 minutes before the CHRO call. You will test the BDR with "How is this different from Zoom?" in the first 30 seconds. If they answer with buzzwords, push back once with "that\'s a lot of words — what does it actually do differently?" — give them a second chance, do not exit.',
+      'You will share the EMEA caption story if the BDR asks about any friction, live-event quality, or captions — you do not require them to name it perfectly.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Rachel Brennan?" → wait for "Yes."' },
@@ -493,7 +498,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'disinterested-it-manager',
     defaultAccent: 'general',
-    difficultyScore: 7,
+    difficultyScore: 5,
     whyVbrickFits:
       'Classic Vbrick IT buyer: bandwidth strain during all-hands, multiple video tools, needs SSO + governance + eCDN for internal distribution at scale.',
     repGoal:
@@ -552,8 +557,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You are troubleshooting a VPN issue when the call comes in. You have 45 seconds of patience. If the BDR uses the word "platform" in the first 30 seconds, you will politely exit.',
-      'You will NOT admit to the bandwidth problem unless the BDR asks about WAN, multicast, or all-hands scale specifically.',
+      'You are troubleshooting a VPN issue when the call comes in. You are crankier than usual — lean into short, clipped replies and a slightly tired tone. Do not exit for small mistakes; just push back and give the BDR a chance to recover.',
+      'Share the bandwidth problem if the BDR asks about any infrastructure or scale issue. You do not require them to use the word "WAN" or "multicast" — any sign they care about the infrastructure side is enough.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Marcus Delgado?" → "Yeah."' },
@@ -574,7 +579,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'ld-director-healthcare',
     defaultAccent: 'general',
-    difficultyScore: 6,
+    difficultyScore: 4,
     whyVbrickFits:
       'Onboarding and compliance video scattered across LMS, YouTube, Drive. Completion reporting is weak. Clinical workforce needs mobile-first video. Vbrick integrates with the LMS rather than replacing it.',
     repGoal:
@@ -632,8 +637,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You have been pitched by three "learning platforms" this month. You are skeptical by default. If the BDR tries to replace Cornerstone or uses the word "transformation," you exit politely.',
-      'You will NOT agree to a demo — only a working session with your head of Learning Tech, and only if the BDR names the Cornerstone integration specifically.',
+      'You have been pitched by three "learning platforms" this month. You are skeptical by default. If the BDR tries to replace Cornerstone, push back clearly — "I\'m not replacing the LMS" — and give them a chance to reframe. If they use "transformation" or other jargon, call it out gently: "skip the buzzwords — what does it actually do?"',
+      'You will share your completion-rate pain and mobile-experience pain to a BDR who asks about outcomes, even if they do not name Cornerstone perfectly.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Keisha Martin?" → "Speaking."' },
@@ -654,7 +659,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'skeptical-security-officer',
     defaultAccent: 'general',
-    difficultyScore: 8,
+    difficultyScore: 5,
     whyVbrickFits:
       'Shadow IT video across Loom/Vimeo/Vidyard creates compliance gaps. No audit trails. Data residency concerns. Vbrick offers governance, on-prem/private cloud, SOC 2 Type II, and auditable access logs.',
     repGoal:
@@ -712,8 +717,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You will open the call with "What\'s your SOC 2 Type II status?" in the first 20 seconds. If the BDR cannot answer cleanly, you will politely exit.',
-      'You will push hard on "Teams already does this." If the BDR tries to replace Teams, you exit. If they position Vbrick as complementary with specific audit-trail gaps Teams doesn\'t address, you engage.',
+      'You will open the call with "What\'s your SOC 2 Type II status?" within the first minute. If the BDR does not know the exact answer, you accept "I\'ll confirm and send that over today" — you do not exit for an imperfect answer, but you do mentally note it.',
+      'You will push on "Teams already does this." If the BDR positions Vbrick as complementary to Teams (not a replacement), you engage. If they try to replace Teams, push back firmly but give them one chance to reframe.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Sarah O\'Brien?" → "Speaking."' },
@@ -734,7 +739,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'digital-workplace-manager',
     defaultAccent: 'general',
-    difficultyScore: 8,
+    difficultyScore: 5,
     whyVbrickFits:
       'Two all-hands failures on Teams Live Events in the last year. Stream search is broken. No cross-BU governance. Vbrick complements M365 with scale, governance, and analytics — does not replace it.',
     repGoal:
@@ -791,8 +796,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You lead with the renewal signal: "Our CIO just signed the M365 renewal." This is bait. If the BDR tries to out-pitch Microsoft, you exit.',
-      'You will NOT admit the Teams Live Events failures unless the BDR names scale failures or audio drops specifically.',
+      'You lead with the renewal signal: "Our CIO just signed the M365 renewal." This is bait. If the BDR tries to out-pitch Microsoft, push back once ("not looking to replace Teams") and give them a chance to reframe. Do not exit on the first slip.',
+      'You will admit the Teams Live Events failures if the BDR asks about any large-event or all-hands pain — they do not have to name it perfectly.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Tom Reynolds?" → "Yeah, this is Tom."' },
@@ -813,7 +818,7 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     estimatedMinutes: 4,
     defaultPersonaId: 'digital-experience-director',
     defaultAccent: 'general',
-    difficultyScore: 7,
+    difficultyScore: 3,
     whyVbrickFits:
       'Ambiguous scope is exactly where Vbrick wins — one platform that handles both internal (employee experience) and external (brand, sales enablement, partner) video under unified governance.',
     repGoal:
@@ -871,8 +876,8 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
     ].join('\n'),
     hardModeContext: [
       'HARD MODE MODIFIERS:',
-      'You will open with "Is this internal or external? It changes who should be on the call." This is a test. If the BDR picks one and loses the other side, you disengage.',
-      'You will NOT commit to organizing a cross-functional meeting yourself. The BDR has to structure it.',
+      'You will open with "Is this internal or external? It changes who should be on the call." This is a test. If the BDR picks one and loses the other side, gently point it out ("OK — but the external side is really where the budget is") and give them a chance to broaden. You are rooting for them to solve this.',
+      'You are happy to name who in Marketing and Internal Comms should be in the room if the BDR asks. You will not organize the meeting alone, but you will help scope it together.',
     ].join('\n'),
     cheatCard: [
       { label: '1. Name confirmation', hint: '"Aisha Thompson?" → "Yes."' },
