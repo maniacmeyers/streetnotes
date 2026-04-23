@@ -12,6 +12,28 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 - Also: persistent `TopNav` across all `/vbrick/dashboard/*` routes (288px Sidebar deleted, sub-page headers stripped, dashboard home reflows full-width). Score-detail expanded from tiny banner to full breakdown. Hydration race in `DashboardProvider` fixed — was silently kicking every sub-route click back to dashboard root.
 - Playbook + Campaigns rewritten against Career Maniacs K26 script and 2-Week BDR Outreach SOP. "I know you weren't expecting my call" removed everywhere. Triple Play card rebuilt with 2-Week SOP content (25+ contacts per pod, 5–8 T1 / 8–10 T2 / rest T3, 3 Sales Nav Boolean searches). Cold Calls 100/200. "What Vbrick Does" rewritten with 2026 GTM positioning (enterprise video intelligence layer, MCP-connected). Session: [[2026-04-22-vbrick-realtime-sparring-top-nav-playbook]]. Spec: `docs/superpowers/specs/2026-04-21-vbrick-realtime-sparring-design.md`.
 
+## 2026-04-22 (part 2 — shipping pass)
+
+- **PR #3 squash-merged to main as `3fff47a` and live on `vbrick.streetnotes.ai`.** Build was unblocked by adding `export const dynamic = 'force-dynamic'` to `app/api/vbrick/stories/leaderboard/route.ts` (was being prerendered statically and throwing on `createAdminClient()` during build).
+- **Vercel alias rot found and fixed at the root.** `vbrick.streetnotes.ai` had been silently serving a 32-day-old deployment because its Vercel domain config had `gitBranch: "vbrick"` pinning it to a long-deleted branch. Fixed via Vercel REST API (`PATCH /v9/projects/{id}/domains/{domain}` → `{"gitBranch": null}`). Subdomain now auto-tracks production deploys forever. Pattern captured: [[Vercel branch-domain rot]].
+- Session: [[2026-04-22-vbrick-ship-to-prod-alias-fix]].
+
+## 2026-04-22 (part 3 — prod debugging pass)
+
+- **Synced 3 missing prod secrets** (`SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `CRM_ENCRYPTION_KEY`) from `.env.local` to Vercel via REST API. Without them, every `createAdminClient()`-using route was returning 500 in prod. Pattern: [[Vercel env var sync from .env.local]].
+- **Sparring call connection bug was an OpenAI silent deprecation, not our code.** OpenAI Realtime API removed `onyx`, `nova`, `fable` from the supported voice list. 6 of our 9 personas used one of those three → 400 invalid_value on every mint. Mapped `onyx→ash`, `nova→coral`, `fable→verse`; widened TS union to current full set. Pattern: [[OpenAI Realtime voice deprecation]].
+- **Diagnostic technique:** Temporarily surfaced upstream error in 502 response (`openaiStatus`, `openaiBody`), shipped, hit endpoint, got exact error string, fixed root cause, reverted in same commit. Generic 502 errors hide everything.
+- **K26 campaign regenerated** via direct POST to `/api/vbrick/campaigns/{id}/generate` — no UI needed; the endpoint uses current `lib/vbrick/campaign-prompts.ts`. 5 channels rewritten in 23s.
+- Session: [[2026-04-22-vbrick-prod-debugging-pass]].
+
+## 2026-04-23
+
+- **VBrick sparring catalog grew from 1 scenario to 12.** Added K26 trio (registration push, booth drive, session attendance drive — substance-first, no cash-prize mechanic since Jeff hasn't confirmed one), Google EVP discovery, and a 7-scenario pack per spec (wrong-person referral, corp comms, IT/infra, L&D, regulated, "we already have Teams", external+internal blur). Plus 6 new personas. All 8 original personas got realistic last names (framework scoring requires first + last).
+- **`SparringScenario` interface extended** with optional coaching-grade fields: `repGoal`, `whyVbrickFits`, `openingContinuation`, `prospectTone`, `likelyProspectResponses`, `strong/weakRepResponses`, `desiredOutcome`, `coachingNote`, `difficultyScore`, `topMistakes`, `topWinMoves`. Existing scenarios still valid. UI does not yet surface the new fields.
+- **Difficulty calibrated for beginners.** First pass rated 6-8/10 — too punishing; Jeff pushed back hard. All 12 scenarios now ≤5 AND content softened so prospects share pain on reasonable discovery questions instead of requiring exact trigger words.
+- Qualification phrasing in realtime-instructions composer changed to "video strategy — internal, external, or both" to prime the bot for the internal/external blur scenario.
+- Session: [[2026-04-23-vbrick-sparring-content-expansion]].
+
 ## 2026-04-15
 
 - Added `docs/INDEX.md` as the auto-loaded vault map and wired it into project `CLAUDE.md` via `@docs/INDEX.md`.
