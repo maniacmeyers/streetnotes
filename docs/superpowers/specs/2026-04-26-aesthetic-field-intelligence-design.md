@@ -3,7 +3,8 @@
 **Date:** 2026-04-26
 **Status:** Approved for planning
 **Owner:** Jeff Meyers (StreetNotes)
-**Target ship:** Week 9.5 from start of build (~late June 2026 if started immediately)
+**Testing approach:** Verification-first (apply → probe → commit), not TDD with unit tests. Project has no test runner; following established convention. Adding a test framework is explicitly out-of-scope for v1.
+**Target ship:** End of Phase 9 + a half-phase ship buffer. Cadence assumption is ~1 phase/day with Claude as co-developer (not 1 phase/week). Earlier "9 weeks" framing is superseded — phases are sized as discrete bodies of work, not calendar units.
 
 ---
 
@@ -90,7 +91,7 @@ A single `entities` table with a type discriminator (`injector | practice | bran
 
 ### `lib/user-memory` deprecation
 
-Existing `lib/user-memory/server.ts` is superseded. The new entity tables are the source of truth. `/api/structure` reads from `entities` + latest `entity_facts` to prime the extraction prompt. Existing `user-memory` aggregations migrate into the new tables in Week 2.
+Existing `lib/user-memory/server.ts` is superseded. The new entity tables are the source of truth. `/api/structure` reads from `entities` + latest `entity_facts` to prime the extraction prompt. Existing `user-memory` aggregations migrate into the new tables during Phase 2.
 
 ---
 
@@ -98,9 +99,9 @@ Existing `lib/user-memory/server.ts` is superseded. The new entity tables are th
 
 ### Migrations
 
-- `014_aesthetic_entities.sql` — orgs, org_members, entities, entity_facts, entity_briefs, import_jobs
-- `015_aesthetic_stories.sql` — story drafts, practice sessions, vault entries, gamification, xp events, challenges
-- `016_seed_brands_products.sql` — system-seeded major aesthetic brands and products
+- `018_aesthetic_entities.sql` — orgs, org_members, entities, entity_facts, entity_briefs, import_jobs
+- `019_aesthetic_stories.sql` — story drafts, practice sessions, vault entries, gamification, xp events, challenges
+- `020_seed_brands_products.sql` — system-seeded major aesthetic brands and products
 
 ### `orgs`
 
@@ -230,7 +231,7 @@ CREATE TABLE import_jobs (
 );
 ```
 
-### Story Vault tables (`015_aesthetic_stories.sql`)
+### Story Vault tables (`019_aesthetic_stories.sql`)
 
 ```sql
 CREATE TABLE aesthetic_story_drafts (
@@ -407,7 +408,7 @@ Goal: rep completes onboarding with a non-empty Accounts tab and at least one us
 
 ### Brand & product seeding
 
-System-seeded migration `016_seed_brands_products.sql` creates the major aesthetic brands and products as `entities` rows owned by a system org. Reps don't need to import these. The seed list:
+System-seeded migration `020_seed_brands_products.sql` creates the major aesthetic brands and products as `entities` rows owned by a system org. Reps don't need to import these. The seed list:
 
 - Brands: Allergan (AbbVie), Galderma, Merz, Revance, Evolus, InMode, BTL, Cutera, Sciton, Hydrafacial, Sofwave
 - Products (sampled): Botox, Daxxify, Dysport, Xeomin, Juvederm, Restylane, Belotero, RHA Collection, Sculptra, Radiesse, Emsculpt, Morpheus8, Forma, BodyTite, Sofwave, Hydrafacial signature
@@ -660,9 +661,11 @@ This is the line that makes the brand-deal sale possible. Rep complaints about D
 
 ---
 
-## Phasing — Week by Week
+## Phasing — Phase by Phase
 
-| Week | Track | Output | Milestone |
+Cadence is approximately one phase per day with Claude as co-developer. Phases are units of work, not calendar units.
+
+| Phase | Track | Output | Milestone |
 |---|---|---|---|
 | 1 | Foundation | Schema migrations (014/015/016), RLS policies, org auto-provisioning, brand/product seeds | |
 | 2 | Field Intelligence | Aesthetic entity extractor, reconciler, hook into `/api/structure`, backfill `user-memory` | |
@@ -673,12 +676,12 @@ This is the line that makes the brand-deal sale possible. Rep complaints about D
 | 7 | Story Vault | Practice recorder, Whisper integration, scoring engine (6 + compliance), score card UI, vault promotion | **Compliance prompt review with aesthetic regulatory contact (Michael's network)** |
 | 8 | Story Vault | XP engine, streak tracking, aesthetic-themed badges, challenge sharing, manager-invite wedge, Stories tab shell | 🎯 Story Vault end-to-end → second brand-prospect demo |
 | 9 | Cross-pollination + alpha | Brief surfaces relevant stories, story drafting prefills from entity profile, internal demo, concierge alpha with first 3–5 reps, bug fixing | |
-| 9.5 | Ship | Final QA, production deploy, concierge full launch with first 20 reps, monitoring dashboards live | 🚀 v1 GA |
+| Ship | — | Final QA, production deploy, concierge full launch with first 20 reps, monitoring dashboards live | 🚀 v1 GA |
 
 ### Non-engineering dependencies
 
-- **Week 1:** Michael lines up 2 brand-prospect calls for Week 5 demo (Revance, Evolus, or Merz). 3–4 weeks lead time required.
-- **Week 7:** schedule 1-hour compliance prompt review with aesthetic medical-affairs or regulatory contact. **Block on completion before locking compliance prompt.**
+- **Before Phase 1:** Michael lines up 2 brand-prospect calls for the Phase 5 demo (Revance, Evolus, or Merz). Even with daily phase cadence these need real lead time — start scheduling now.
+- **Before Phase 7:** schedule 1-hour compliance prompt review with aesthetic medical-affairs or regulatory contact. **Block on completion before locking compliance prompt.**
 
 ---
 
@@ -692,7 +695,7 @@ This is the line that makes the brand-deal sale possible. Rep complaints about D
 
 4. **Whisper cost on Story Vault practice.** Practice recordings are 60–90s but reps may attempt many times. Budget envelope: ~$0.006/attempt → $1.50/rep/month at 250 attempts. Negligible at $199 ARPU. Alarm: $10/rep/month.
 
-5. **Big-bang launch risk.** 9 weeks before any rep touches it. Mitigated by internal demos at weeks 3 / 5 / 8 and Week 9 concierge alpha with 5 reps before full launch.
+5. **Big-bang launch risk.** Even at daily-phase cadence, the rep-facing surface lands all at once at Phase 9. Mitigated by internal demos at end of Phases 3 / 5 / 8 and the Phase 9 concierge alpha with 5 reps before full launch.
 
 6. **Voice-note recording volume regression.** New Brief Me block sits above voice capture. If recording volume drops > 20% vs. baseline in first 2–3 weeks, swap layout to put voice capture above Brief Me. Required metric: weekly notes-per-active-rep with pre-launch baseline.
 
@@ -735,9 +738,9 @@ Instrumented from v1 launch:
 
 ### Migrations
 
-- `supabase/migrations/014_aesthetic_entities.sql`
-- `supabase/migrations/015_aesthetic_stories.sql`
-- `supabase/migrations/016_seed_brands_products.sql`
+- `supabase/migrations/018_aesthetic_entities.sql`
+- `supabase/migrations/019_aesthetic_stories.sql`
+- `supabase/migrations/020_seed_brands_products.sql`
 
 ### New libs
 
