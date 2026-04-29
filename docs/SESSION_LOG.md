@@ -34,6 +34,11 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 - Qualification phrasing in realtime-instructions composer changed to "video strategy — internal, external, or both" to prime the bot for the internal/external blur scenario.
 - Session: [[2026-04-23-vbrick-sparring-content-expansion]].
 
+## 2026-04-29
+
+- **Three standard Vbrick elevator pitches (30s / 45s / 1-min) seeded into the Stories team vault** as canonical content visible to every authorized user. New idempotent seed endpoint at `/api/vbrick/stories/seed-standards`. Worked around the team-vault domain filter (a `@vbrick.com` user only sees entries from other `@vbrick.com` users) by inserting each pitch once per authorized domain under a `standard@<domain>` sentinel identity. Sentinel accounts never log in; they exist only as domain-scoped owners so the existing query surfaces these across all three authorized teams. Each pitch carries a coaching note framing when to use that length variant. 9 vault rows, 0 errors. Verified for both `jeff@forgetime.ai` and a `@vbrick.com` user.
+- Session: [[2026-04-29-vbrick-standard-pitches-team-vault]].
+
 ## 2026-04-15
 
 - Added `docs/INDEX.md` as the auto-loaded vault map and wired it into project `CLAUDE.md` via `@docs/INDEX.md`.
