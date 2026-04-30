@@ -2,12 +2,17 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Loader2, Check, ArrowRight } from 'lucide-react'
+import { Loader2, Check, ArrowRight, FileText, Upload, ClipboardPaste, Video } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { GlassCardElevated } from './glass-card'
+import { MicButton } from './mic-button'
 import type { DebriefOutput, VbrickBDRStructuredOutput } from '@/lib/debrief/types'
 import { isVbrickBDROutput, isBDROutput } from '@/lib/debrief/types'
+
+const ACCEPTED_TRANSCRIPT_EXTS = ['.txt', '.vtt', '.srt', '.csv', '.json', '.md']
+
+type IdleTab = 'paste' | 'upload' | 'summary'
 
 type FlowStep = 'idle' | 'recording' | 'review' | 'processing' | 'results'
 
@@ -187,10 +192,355 @@ export function DashboardDebriefFlow({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (step === 'idle') return null
+  // ─── Idle-state input handlers ───
+  const [idleTab, setIdleTab] = useState<IdleTab>('paste')
+  const [idleText, setIdleText] = useState('')
+  const [idleFileName, setIdleFileName] = useState<string | null>(null)
+  const [idleSource, setIdleSource] = useState<'chorus' | 'zoom' | 'fireflies' | 'other'>('chorus')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const audioInputRef = useRef<HTMLInputElement>(null)
+
+  const submitTranscript = useCallback(async (transcript: string, sourceLabel?: string) => {
+    if (!transcript.trim()) return
+    setError(null)
+    try {
+      const startRes = await fetch('/api/debrief/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, segment: 'bdr-cold-call' }),
+      })
+      const startData = await startRes.json()
+      if (!startRes.ok) throw new Error(startData.error || 'Failed to start session')
+      setDebriefSessionId(startData.sessionId)
+      const prefix = sourceLabel ? `[${sourceLabel} summary]\n\n` : ''
+      setEditedTranscript(prefix + transcript.trim())
+      setStep('review')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start session')
+    }
+  }, [email])
+
+  const handleTranscriptFile = useCallback(async (file: File) => {
+    setError(null)
+    setIdleFileName(file.name)
+    try {
+      const text = await file.text()
+      const cleaned = text
+        .replace(/WEBVTT\n\n/g, '')
+        .replace(/\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}[.,]\d{3}\n?/g, '')
+        .replace(/^\d+\n/gm, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim()
+      if (!cleaned) throw new Error('File is empty')
+      setIdleText(cleaned)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not read file')
+      setIdleFileName(null)
+    }
+  }, [])
+
+  const handleAudioFile = useCallback(async (file: File) => {
+    setError(null)
+    transcribeAudio(file)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email])
+
+  if (step === 'idle') {
+    return (
+      <motion.div
+        key="idle"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+      >
+        <GlassCardElevated>
+          <h3
+            className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium mb-1"
+            style={{ color: neuTheme.colors.accent.primary }}
+          >
+            Post-Call Debrief
+          </h3>
+          <p className="text-xs font-inter mb-6" style={{ color: neuTheme.colors.text.muted }}>
+            Brain-dump in 60 seconds — or drop a transcript / meeting summary.
+          </p>
+
+          {/* Big mic */}
+          <div className="flex flex-col items-center py-4">
+            <MicButton
+              isRecording={false}
+              onStart={handleStartRecording}
+              onStop={() => {}}
+            />
+            <p className="text-xs font-inter mt-3" style={{ color: neuTheme.colors.text.muted }}>
+              Tap the mic to talk — review the transcript before extraction.
+            </p>
+          </div>
+
+          <div
+            className="h-px my-5"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
+            }}
+          />
+
+          {/* Tabs */}
+          <div className="flex gap-2 mb-4 flex-wrap">
+            {([
+              { id: 'paste', label: 'Paste transcript', icon: ClipboardPaste },
+              { id: 'upload', label: 'Upload file', icon: Upload },
+              { id: 'summary', label: 'Meeting summary', icon: Video },
+            ] as Array<{ id: IdleTab; label: string; icon: typeof ClipboardPaste }>).map((tab) => {
+              const Icon = tab.icon
+              const active = idleTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => { setIdleTab(tab.id); setIdleText(''); setIdleFileName(null); setError(null) }}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-inter font-medium transition-all"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: active ? neuTheme.shadows.pressed : neuTheme.shadows.raisedSm,
+                    color: active ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {tab.label}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Tab body */}
+          {idleTab === 'paste' && (
+            <>
+              <textarea
+                value={idleText}
+                onChange={(e) => setIdleText(e.target.value)}
+                placeholder="Paste a Chorus, Gong, or other transcript here..."
+                className="w-full rounded-lg px-4 py-3 text-sm font-inter min-h-[160px] resize-y focus:outline-none"
+                style={{
+                  background: neuTheme.colors.bg,
+                  boxShadow: neuTheme.shadows.inset,
+                  color: neuTheme.colors.text.heading,
+                  border: 'none',
+                }}
+              />
+              <button
+                onClick={() => submitTranscript(idleText)}
+                disabled={idleText.trim().length < 20}
+                className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold uppercase tracking-widest text-sm text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: neuTheme.colors.accent.primary,
+                  boxShadow: neuTheme.shadows.raisedSm,
+                  border: 'none',
+                  cursor: idleText.trim().length < 20 ? 'not-allowed' : 'pointer',
+                }}
+              >
+                <Check className="w-4 h-4" />
+                Process Transcript
+              </button>
+            </>
+          )}
+
+          {idleTab === 'upload' && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex flex-col items-start gap-1 px-4 py-4 rounded-lg text-left transition-all"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: neuTheme.shadows.raisedSm,
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" style={{ color: neuTheme.colors.accent.primary }} />
+                    <span className="text-sm font-inter font-bold" style={{ color: neuTheme.colors.text.heading }}>
+                      Transcript file
+                    </span>
+                  </div>
+                  <span className="text-xs font-inter" style={{ color: neuTheme.colors.text.muted }}>
+                    .txt, .vtt, .srt, .csv, .json, .md
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => audioInputRef.current?.click()}
+                  className="flex flex-col items-start gap-1 px-4 py-4 rounded-lg text-left transition-all"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: neuTheme.shadows.raisedSm,
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Upload className="w-4 h-4" style={{ color: neuTheme.colors.accent.primary }} />
+                    <span className="text-sm font-inter font-bold" style={{ color: neuTheme.colors.text.heading }}>
+                      Audio recording
+                    </span>
+                  </div>
+                  <span className="text-xs font-inter" style={{ color: neuTheme.colors.text.muted }}>
+                    .m4a, .mp3, .wav, .webm
+                  </span>
+                </button>
+              </div>
+              {idleFileName && idleText && (
+                <>
+                  <p className="text-xs font-inter mt-3 flex items-center gap-1.5" style={{ color: neuTheme.colors.accent.primary }}>
+                    <FileText className="w-3 h-3" />
+                    {idleFileName}
+                  </p>
+                  <textarea
+                    value={idleText}
+                    onChange={(e) => setIdleText(e.target.value)}
+                    className="w-full mt-2 rounded-lg px-4 py-3 text-sm font-inter min-h-[120px] resize-y focus:outline-none"
+                    style={{
+                      background: neuTheme.colors.bg,
+                      boxShadow: neuTheme.shadows.inset,
+                      color: neuTheme.colors.text.heading,
+                      border: 'none',
+                    }}
+                  />
+                  <button
+                    onClick={() => submitTranscript(idleText)}
+                    className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold uppercase tracking-widest text-sm text-white transition-all"
+                    style={{
+                      backgroundColor: neuTheme.colors.accent.primary,
+                      boxShadow: neuTheme.shadows.raisedSm,
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Check className="w-4 h-4" />
+                    Process Transcript
+                  </button>
+                </>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept={ACCEPTED_TRANSCRIPT_EXTS.join(',')}
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) handleTranscriptFile(f)
+                }}
+              />
+              <input
+                ref={audioInputRef}
+                type="file"
+                accept="audio/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) handleAudioFile(f)
+                }}
+              />
+            </>
+          )}
+
+          {idleTab === 'summary' && (
+            <>
+              <div className="flex gap-2 mb-3 flex-wrap">
+                {(['chorus', 'zoom', 'fireflies', 'other'] as const).map((src) => {
+                  const active = idleSource === src
+                  const label = src === 'fireflies' ? 'Fireflies' : src === 'chorus' ? 'Chorus' : src === 'zoom' ? 'Zoom' : 'Other'
+                  return (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => setIdleSource(src)}
+                      className="px-3 py-1.5 rounded-md text-xs font-inter transition-all"
+                      style={{
+                        background: neuTheme.colors.bg,
+                        boxShadow: active ? neuTheme.shadows.pressed : neuTheme.shadows.raisedSm,
+                        color: active ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+              <textarea
+                value={idleText}
+                onChange={(e) => setIdleText(e.target.value)}
+                placeholder={`Paste your ${idleSource === 'other' ? 'meeting' : idleSource.charAt(0).toUpperCase() + idleSource.slice(1)} summary — key points, action items, attendees, decisions...`}
+                className="w-full rounded-lg px-4 py-3 text-sm font-inter min-h-[160px] resize-y focus:outline-none"
+                style={{
+                  background: neuTheme.colors.bg,
+                  boxShadow: neuTheme.shadows.inset,
+                  color: neuTheme.colors.text.heading,
+                  border: 'none',
+                }}
+              />
+              <button
+                onClick={() => submitTranscript(idleText, idleSource === 'other' ? 'Meeting' : idleSource.charAt(0).toUpperCase() + idleSource.slice(1))}
+                disabled={idleText.trim().length < 20}
+                className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold uppercase tracking-widest text-sm text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: neuTheme.colors.accent.primary,
+                  boxShadow: neuTheme.shadows.raisedSm,
+                  border: 'none',
+                  cursor: idleText.trim().length < 20 ? 'not-allowed' : 'pointer',
+                }}
+              >
+                <Check className="w-4 h-4" />
+                Extract from Summary
+              </button>
+            </>
+          )}
+
+          {error && (
+            <p className="text-xs font-inter mt-3" style={{ color: neuTheme.colors.status.danger }}>
+              {error}
+            </p>
+          )}
+
+          <button
+            onClick={onCancel}
+            className="mt-4 w-full text-xs font-inter underline"
+            style={{ color: neuTheme.colors.text.muted, background: 'transparent', border: 'none', cursor: 'pointer' }}
+          >
+            Cancel
+          </button>
+        </GlassCardElevated>
+      </motion.div>
+    )
+  }
 
   return (
     <AnimatePresence mode="wait">
+      {/* Recording */}
+      {step === 'recording' && (
+        <motion.div
+          key="recording"
+          className="flex flex-col items-center py-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <MicButton
+            isRecording
+            durationSec={recorder.durationSec}
+            onStart={() => {}}
+            onStop={() => recorder.stopRecording()}
+          />
+          <p className="text-xs font-inter mt-4" style={{ color: neuTheme.colors.text.muted }}>
+            Tap stop when you&apos;re done.
+          </p>
+        </motion.div>
+      )}
+
       {/* Processing overlay */}
       {step === 'processing' && (
         <motion.div
