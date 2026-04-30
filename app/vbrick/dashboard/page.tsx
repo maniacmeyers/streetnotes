@@ -50,6 +50,15 @@ interface StatsData {
     convTrend: number
     apptTrend: number
     spinTrend: number
+    practiceThisWeek: {
+      elevatorPitch: number
+      objectionHandling: number
+      customerStory: number
+      total: number
+    }
+    elevatorTrend: number
+    objectionTrend: number
+    customerTrend: number
   }>
 }
 
@@ -279,7 +288,7 @@ export default function VbrickDashboardPage() {
                 )}
               </motion.div>
 
-              <QuickStartTiles />
+              <QuickStartTiles onDebrief={() => setView('debrief')} />
 
               {stats && userIsBdr && (
                 <PerformanceCards
@@ -315,12 +324,12 @@ export default function VbrickDashboardPage() {
                 <Leaderboard
                   players={stats.allBdrs.map(b => ({
                     name: b.name,
-                    convRate: b.callToConversationRate,
-                    apptRate: b.conversationToAppointmentRate,
-                    spinAvg: b.averageSpin,
-                    convTrend: b.convTrend,
-                    apptTrend: b.apptTrend,
-                    spinTrend: b.spinTrend,
+                    elevatorPitch: b.practiceThisWeek.elevatorPitch,
+                    objectionHandling: b.practiceThisWeek.objectionHandling,
+                    customerStory: b.practiceThisWeek.customerStory,
+                    elevatorTrend: b.elevatorTrend,
+                    objectionTrend: b.objectionTrend,
+                    customerTrend: b.customerTrend,
                   }))}
                 />
               )}

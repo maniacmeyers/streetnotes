@@ -7,12 +7,12 @@ import { CountUp } from './count-up'
 
 interface PlayerKPIs {
   name: string
-  convRate: number
-  apptRate: number
-  spinAvg: number
-  convTrend: number
-  apptTrend: number
-  spinTrend: number
+  elevatorPitch: number
+  objectionHandling: number
+  customerStory: number
+  elevatorTrend: number
+  objectionTrend: number
+  customerTrend: number
 }
 
 interface LeaderboardProps {
@@ -130,14 +130,14 @@ export function Leaderboard({ players }: LeaderboardProps) {
 
   // Count total category wins
   const aWins = [
-    a.convRate > b.convRate,
-    a.apptRate > b.apptRate,
-    a.spinAvg > b.spinAvg,
+    a.elevatorPitch > b.elevatorPitch,
+    a.objectionHandling > b.objectionHandling,
+    a.customerStory > b.customerStory,
   ].filter(Boolean).length
   const bWins = [
-    b.convRate > a.convRate,
-    b.apptRate > a.apptRate,
-    b.spinAvg > a.spinAvg,
+    b.elevatorPitch > a.elevatorPitch,
+    b.objectionHandling > a.objectionHandling,
+    b.customerStory > a.customerStory,
   ].filter(Boolean).length
 
   return (
@@ -215,32 +215,29 @@ export function Leaderboard({ players }: LeaderboardProps) {
             }}
           />
 
-          {/* Metrics */}
+          {/* Metrics — story practice sessions, this week */}
           <MetricRow
-            label="Answer to Conversation"
-            valueA={a.convRate}
-            valueB={b.convRate}
-            trendA={a.convTrend}
-            trendB={b.convTrend}
-            suffix="%"
+            label="Elevator Pitch"
+            valueA={a.elevatorPitch}
+            valueB={b.elevatorPitch}
+            trendA={a.elevatorTrend}
+            trendB={b.elevatorTrend}
             delay={0.5}
           />
           <MetricRow
-            label="Conversation to Appt"
-            valueA={a.apptRate}
-            valueB={b.apptRate}
-            trendA={a.apptTrend}
-            trendB={b.apptTrend}
-            suffix="%"
+            label="Objection Handling"
+            valueA={a.objectionHandling}
+            valueB={b.objectionHandling}
+            trendA={a.objectionTrend}
+            trendB={b.objectionTrend}
             delay={0.6}
           />
           <MetricRow
-            label="SPIN Average"
-            valueA={a.spinAvg}
-            valueB={b.spinAvg}
-            trendA={a.spinTrend}
-            trendB={b.spinTrend}
-            decimals={1}
+            label="Customer Stories"
+            valueA={a.customerStory}
+            valueB={b.customerStory}
+            trendA={a.customerTrend}
+            trendB={b.customerTrend}
             delay={0.7}
           />
         </div>
@@ -252,7 +249,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.3 }}
         >
-          Week resets Monday
+          Practice sessions this week · Resets Monday
         </motion.p>
       </div>
     </motion.div>

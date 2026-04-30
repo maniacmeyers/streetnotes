@@ -219,3 +219,47 @@ export async function updateWeeklyStats(
       { onConflict: 'bdr_email,week_start_date' }
     )
 }
+
+export interface StoryPracticeCounts {
+  elevatorPitch: number
+  objectionHandling: number
+  customerStory: number
+  total: number
+}
+
+export async function getStoryPracticeCounts(
+  email: string,
+  supabase: SupabaseClient,
+  sinceISO?: string,
+  untilISO?: string
+): Promise<StoryPracticeCounts> {
+  let query = supabase
+    .from('story_practice_sessions')
+    .select('story_draft_id')
+    .eq('bdr_email', email.toLowerCase())
+
+  if (sinceISO) query = query.gte('created_at', sinceISO)
+  if (untilISO) query = query.lt('created_at', untilISO)
+
+  const { data: sessions } = await query
+
+  const counts = { elevatorPitch: 0, objectionHandling: 0, customerStory: 0, total: 0 }
+  if (!sessions || sessions.length === 0) return counts
+
+  const draftIds = Array.from(new Set(sessions.map((s) => s.story_draft_id)))
+  const { data: drafts } = await supabase
+    .from('story_drafts')
+    .select('id, story_type')
+    .in('id', draftIds)
+
+  const typeMap = new Map((drafts || []).map((d) => [d.id, d.story_type]))
+
+  for (const s of sessions) {
+    const type = typeMap.get(s.story_draft_id)
+    if (type === 'elevator_pitch') counts.elevatorPitch++
+    else if (type === 'feel_felt_found') counts.objectionHandling++
+    else if (type === 'abt_customer_story') counts.customerStory++
+  }
+  counts.total = counts.elevatorPitch + counts.objectionHandling + counts.customerStory
+  return counts
+}
