@@ -73,13 +73,36 @@ export function DashboardDebriefFlow({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recorder.status, recorder.audioBlob])
 
+  async function autoExtract(sessionId: string, transcript: string) {
+    setProcessingStep('extracting')
+    const res = await fetch('/api/debrief/structure', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId,
+        transcript,
+        segment: 'bdr-cold-call',
+        contactContext: queueContact
+          ? {
+              name: queueContact.contactName,
+              title: queueContact.contactTitle,
+              company: queueContact.company,
+            }
+          : undefined,
+      }),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Failed to structure')
+    setStructured(data.structured)
+    setStep('results')
+  }
+
   async function transcribeAudio(blob: Blob) {
     setStep('processing')
     setProcessingStep('transcribing')
     setError(null)
 
     try {
-      // Create debrief session first
       const startRes = await fetch('/api/debrief/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -89,9 +112,14 @@ export function DashboardDebriefFlow({
       if (!startRes.ok) throw new Error(startData.error || 'Failed to start session')
       setDebriefSessionId(startData.sessionId)
 
-      // Transcribe
+      const ext = blob.type.includes('mp4') || blob.type.includes('m4a')
+        ? 'mp4'
+        : blob.type.includes('wav') ? 'wav'
+        : blob.type.includes('mpeg') || blob.type.includes('mp3') ? 'mp3'
+        : 'webm'
+
       const formData = new FormData()
-      formData.append('audio', blob, `recording.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`)
+      formData.append('audio', blob, `recording.${ext}`)
       formData.append('sessionId', startData.sessionId)
 
       const transcribeRes = await fetch('/api/debrief/transcribe', {
@@ -102,9 +130,10 @@ export function DashboardDebriefFlow({
       if (!transcribeRes.ok) throw new Error(transcribeData.error || 'Transcription failed')
 
       setEditedTranscript(transcribeData.transcript)
-      setStep('review')
+      // Auto-extract straight to deal sheet — no review step.
+      await autoExtract(startData.sessionId, transcribeData.transcript)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to transcribe')
+      setError(err instanceof Error ? err.message : 'Failed to process recording')
       setStep('idle')
     }
   }
@@ -160,26 +189,10 @@ export function DashboardDebriefFlow({
     recorder.resetRecording()
   }
 
-  // Handle pasted transcript — skip recording, go straight to review
+  // Handle pasted transcript from parent — auto-extract straight to deal sheet
   useEffect(() => {
     if (pastedTranscript && step === 'idle') {
-      setEditedTranscript(pastedTranscript)
-      // Create a debrief session for this transcript
-      fetch('/api/debrief/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, segment: 'bdr-cold-call' }),
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (data.sessionId) {
-            setDebriefSessionId(data.sessionId)
-            setStep('review')
-          }
-        })
-        .catch(() => {
-          setError('Failed to create session')
-        })
+      submitTranscript(pastedTranscript)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pastedTranscript])
@@ -203,6 +216,8 @@ export function DashboardDebriefFlow({
   const submitTranscript = useCallback(async (transcript: string, sourceLabel?: string) => {
     if (!transcript.trim()) return
     setError(null)
+    setStep('processing')
+    setProcessingStep('extracting')
     try {
       const startRes = await fetch('/api/debrief/start', {
         method: 'POST',
@@ -213,12 +228,15 @@ export function DashboardDebriefFlow({
       if (!startRes.ok) throw new Error(startData.error || 'Failed to start session')
       setDebriefSessionId(startData.sessionId)
       const prefix = sourceLabel ? `[${sourceLabel} summary]\n\n` : ''
-      setEditedTranscript(prefix + transcript.trim())
-      setStep('review')
+      const finalText = prefix + transcript.trim()
+      setEditedTranscript(finalText)
+      await autoExtract(startData.sessionId, finalText)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start session')
+      setError(err instanceof Error ? err.message : 'Failed to extract')
+      setStep('idle')
     }
-  }, [email])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email, queueContact])
 
   const handleTranscriptFile = useCallback(async (file: File) => {
     setError(null)
@@ -265,14 +283,14 @@ export function DashboardDebriefFlow({
           </p>
 
           {/* Big mic */}
-          <div className="flex flex-col items-center py-4">
+          <div className="flex flex-col items-center py-4" style={{ touchAction: 'manipulation' }}>
             <MicButton
               isRecording={false}
               onStart={handleStartRecording}
               onStop={() => {}}
             />
-            <p className="text-xs font-inter mt-3" style={{ color: neuTheme.colors.text.muted }}>
-              Tap the mic to talk — review the transcript before extraction.
+            <p className="text-xs font-inter mt-3 text-center px-4" style={{ color: neuTheme.colors.text.muted }}>
+              Tap the mic, brain-dump for 60 seconds, tap stop. We&apos;ll show you the deal sheet.
             </p>
           </div>
 
@@ -651,32 +669,52 @@ export function DashboardDebriefFlow({
         >
           <VbrickResultsCard structured={structured} sessionId={debriefSessionId!} />
 
-          <div className="flex gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {debriefSessionId && (
+              <a
+                href={`/api/debrief/pdf?sessionId=${debriefSessionId}`}
+                className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold uppercase tracking-widest text-sm text-white transition-all"
+                style={{
+                  backgroundColor: neuTheme.colors.accent.primary,
+                  boxShadow: neuTheme.shadows.raisedSm,
+                  textDecoration: 'none',
+                  touchAction: 'manipulation',
+                }}
+                download
+              >
+                <FileText className="w-4 h-4" />
+                Download PDF
+              </a>
+            )}
+            <button
+              onClick={() => setStep('review')}
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-inter font-bold uppercase tracking-wider transition-all"
+              style={{
+                color: neuTheme.colors.text.heading,
+                background: neuTheme.colors.bg,
+                boxShadow: neuTheme.shadows.raisedSm,
+                border: 'none',
+                cursor: 'pointer',
+                touchAction: 'manipulation',
+              }}
+            >
+              Edit transcript
+            </button>
             <button
               onClick={handleNextCall}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold uppercase tracking-widest text-sm cursor-pointer transition-all hover:opacity-90 text-white"
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold uppercase tracking-widest text-sm transition-all"
               style={{
-                backgroundColor: neuTheme.colors.accent.primary,
+                color: neuTheme.colors.text.heading,
+                background: neuTheme.colors.bg,
                 boxShadow: neuTheme.shadows.raisedSm,
+                border: 'none',
+                cursor: 'pointer',
+                touchAction: 'manipulation',
               }}
             >
               <ArrowRight className="w-4 h-4" />
               {queueContact ? 'Next Call' : 'Done'}
             </button>
-            {debriefSessionId && (
-              <a
-                href={`/api/debrief/pdf?sessionId=${debriefSessionId}`}
-                className="px-4 py-3 rounded-lg text-sm font-inter font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2 transition-all"
-                style={{
-                  color: neuTheme.colors.accent.primary,
-                  background: neuTheme.colors.bg,
-                  boxShadow: neuTheme.shadows.raisedSm,
-                }}
-                download
-              >
-                PDF
-              </a>
-            )}
           </div>
         </motion.div>
       )}

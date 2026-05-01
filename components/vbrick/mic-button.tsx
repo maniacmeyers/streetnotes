@@ -73,6 +73,8 @@ export function MicButton({
             boxShadow: isRecording
               ? neuTheme.shadows.pressed
               : neuTheme.shadows.raised,
+            touchAction: 'manipulation',
+            WebkitTapHighlightColor: 'transparent',
           }}
           aria-label={isRecording ? 'Stop recording' : 'Start recording'}
         >

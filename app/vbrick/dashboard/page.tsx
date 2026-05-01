@@ -224,11 +224,7 @@ export default function VbrickDashboardPage() {
 
   return (
     <div className="min-h-screen">
-      {isRecording && (
-        <div className="fixed inset-0 bg-black/10 z-20 pointer-events-none" />
-      )}
-
-      <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-8 relative z-10">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8 relative z-10">
           {view === 'debrief' && !pastedTranscript && (
             <DashboardDebriefFlow
               email={email}
