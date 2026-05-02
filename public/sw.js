@@ -1,4 +1,4 @@
-const CACHE = 'streetnotes-shell-v1'
+const CACHE = 'streetnotes-shell-v2-2026-05-02'
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()
