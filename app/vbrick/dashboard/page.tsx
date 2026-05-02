@@ -12,6 +12,7 @@ import { QuickStartTiles } from '@/components/vbrick/quick-start-tiles'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
 import { isVbrickBdr, VBRICK_CONFIG } from '@/lib/vbrick/config'
+import { useDashboard } from '@/lib/vbrick/dashboard-context'
 import { neuTheme } from '@/lib/vbrick/theme'
 
 interface StatsData {
@@ -65,7 +66,9 @@ interface StatsData {
 type DashboardView = 'dashboard' | 'debrief' | 'transcript'
 
 export default function VbrickDashboardPage() {
-  const [email, setEmail] = useState<string | null>(null)
+  // Use the layout's DashboardProvider so navigation guards in VbrickShell
+  // see the same email value when the user clicks a tile.
+  const { email, setEmail, hydrated } = useDashboard()
   const [emailInput, setEmailInput] = useState('')
   const [showIntention, setShowIntention] = useState(false)
   const [stats, setStats] = useState<StatsData | null>(null)
@@ -73,11 +76,6 @@ export default function VbrickDashboardPage() {
   const [isRecording, setIsRecording] = useState(false)
   const [pastedTranscript, setPastedTranscript] = useState<string | null>(null)
   const [recentCalls, setRecentCalls] = useState<RecentCall[]>([])
-
-  useEffect(() => {
-    const stored = localStorage.getItem('vbrick_email')
-    if (stored) setEmail(stored)
-  }, [])
 
   useEffect(() => {
     if (!email) return
@@ -135,8 +133,13 @@ export default function VbrickDashboardPage() {
     e.preventDefault()
     const clean = emailInput.trim().toLowerCase()
     if (!clean) return
-    localStorage.setItem('vbrick_email', clean)
-    setEmail(clean)
+    setEmail(clean) // provider also writes to localStorage
+  }
+
+  // Wait for provider to hydrate from localStorage before deciding to show
+  // the gate — otherwise we flash the email form on every refresh.
+  if (!hydrated) {
+    return <div style={{ minHeight: '100vh', background: '#e0e5ec' }} />
   }
 
   if (!email) {

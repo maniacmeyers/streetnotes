@@ -672,7 +672,7 @@ export function DashboardDebriefFlow({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {debriefSessionId && (
               <a
-                href={`/api/debrief/pdf?sessionId=${debriefSessionId}`}
+                href={`/api/vbrick/debrief/pdf?sessionId=${debriefSessionId}`}
                 className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold uppercase tracking-widest text-sm text-white transition-all"
                 style={{
                   backgroundColor: neuTheme.colors.accent.primary,
