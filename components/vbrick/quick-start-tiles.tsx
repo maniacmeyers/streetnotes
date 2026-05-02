@@ -28,40 +28,40 @@ export function QuickStartTiles({ onDebrief }: QuickStartTilesProps = {}) {
 
   const tileStyle = {
     background: neuTheme.colors.bg,
-    boxShadow: neuTheme.shadows.raised,
+    boxShadow: neuTheme.shadows.raisedSm,
     borderRadius: neuTheme.radii.lg,
-    padding: '20px',
     transition: neuTheme.transitions.default,
+    touchAction: 'manipulation',
   } as const
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
       {tiles.map((tile, i) => {
         const Icon = tile.icon
         const inner = (
           <>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-2.5 sm:gap-3 mb-1.5 sm:mb-2">
               <div
                 className="flex items-center justify-center shrink-0"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 32,
+                  height: 32,
                   borderRadius: neuTheme.radii.sm,
                   background: neuTheme.colors.accent.primary,
                   boxShadow: neuTheme.shadows.raisedSm,
                 }}
               >
-                <Icon className="w-5 h-5 text-white" />
+                <Icon className="w-[18px] h-[18px] text-white" />
               </div>
               <h3
-                className="font-general-sans font-semibold text-base tracking-tight"
+                className="font-general-sans font-semibold text-sm sm:text-base tracking-tight"
                 style={{ color: neuTheme.colors.text.heading }}
               >
                 {tile.label}
               </h3>
             </div>
             <p
-              className="text-xs font-satoshi"
+              className="text-[11px] sm:text-xs font-satoshi leading-snug"
               style={{ color: neuTheme.colors.text.muted }}
             >
               {tile.descriptor}
@@ -77,14 +77,18 @@ export function QuickStartTiles({ onDebrief }: QuickStartTilesProps = {}) {
             transition={{ duration: 0.35, delay: 0.05 * i }}
           >
             {tile.href ? (
-              <Link href={tile.href} className="block no-underline" style={tileStyle}>
+              <Link
+                href={tile.href}
+                className="block no-underline p-4 sm:p-5"
+                style={tileStyle}
+              >
                 {inner}
               </Link>
             ) : (
               <button
                 type="button"
                 onClick={tile.onClick}
-                className="block no-underline w-full text-left"
+                className="block no-underline w-full text-left p-4 sm:p-5"
                 style={{ ...tileStyle, border: 'none', cursor: 'pointer' }}
               >
                 {inner}

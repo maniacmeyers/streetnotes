@@ -77,16 +77,16 @@ function MetricRow({
 
   return (
     <motion.div
-      className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-3"
+      className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 py-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay, duration: 0.4 }}
     >
       {/* Player A value */}
-      <div className="flex items-center gap-2 justify-end">
+      <div className="flex items-center gap-1.5 sm:gap-2 justify-end">
         <TrendArrow value={trendA} />
         <span
-          className="font-fira-code font-bold text-xl tabular-nums"
+          className="font-fira-code font-bold text-lg sm:text-xl tabular-nums"
           style={{
             color: aLeads
               ? neuTheme.colors.accent.primary
@@ -99,16 +99,16 @@ function MetricRow({
 
       {/* Label */}
       <span
-        className="text-[10px] uppercase tracking-[0.12em] font-inter text-center min-w-[140px]"
+        className="text-[9px] sm:text-[10px] uppercase tracking-[0.12em] font-inter text-center min-w-[88px] sm:min-w-[140px] px-1"
         style={{ color: neuTheme.colors.text.muted }}
       >
         {label}
       </span>
 
       {/* Player B value */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span
-          className="font-fira-code font-bold text-xl tabular-nums"
+          className="font-fira-code font-bold text-lg sm:text-xl tabular-nums"
           style={{
             color: bLeads
               ? neuTheme.colors.accent.primary
@@ -154,7 +154,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
       </h3>
 
       <div
-        className="rounded-2xl p-6 overflow-hidden relative"
+        className="rounded-2xl p-4 sm:p-6 overflow-hidden relative"
         style={{
           background: neuTheme.colors.bg,
           boxShadow: neuTheme.shadows.raised,
@@ -162,7 +162,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
       >
         <div className="relative">
           {/* Player names */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 mb-2">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 mb-2">
             <motion.div
               className="flex flex-col items-end gap-1"
               initial={{ opacity: 0, x: -20 }}
@@ -171,7 +171,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
             >
               <PlayerAvatar name={a.name} isLeading={aWins > bWins} />
               <h4
-                className="font-inter font-black text-lg uppercase tracking-wide"
+                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate max-w-[110px] sm:max-w-none"
                 style={{ color: neuTheme.colors.text.heading }}
               >
                 {a.name}
@@ -200,7 +200,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
             >
               <PlayerAvatar name={b.name} isLeading={bWins > aWins} />
               <h4
-                className="font-inter font-black text-lg uppercase tracking-wide"
+                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate max-w-[110px] sm:max-w-none"
                 style={{ color: neuTheme.colors.text.heading }}
               >
                 {b.name}

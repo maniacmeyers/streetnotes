@@ -47,7 +47,7 @@ export function PerformanceCards({
         {playerName}&apos;s Performance
       </h3>
 
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         {/* Call Performance */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -55,7 +55,7 @@ export function PerformanceCards({
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <div
-            className="rounded-2xl p-6 relative overflow-hidden"
+            className="rounded-2xl p-4 sm:p-6 relative overflow-hidden"
             style={{
               background: neuTheme.colors.bg,
               boxShadow: neuTheme.shadows.raised,
@@ -106,7 +106,7 @@ export function PerformanceCards({
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <div
-            className="rounded-2xl p-6 relative overflow-hidden"
+            className="rounded-2xl p-4 sm:p-6 relative overflow-hidden"
             style={{
               background: neuTheme.colors.bg,
               boxShadow: neuTheme.shadows.raised,

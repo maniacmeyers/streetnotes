@@ -72,7 +72,7 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
         {calls.map((call) => (
           <motion.div
             key={call.id}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default transition-all duration-200"
+            className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl cursor-default transition-all duration-200"
             style={{
               background: neuTheme.colors.bg,
               boxShadow: neuTheme.shadows.raisedSm,
@@ -98,13 +98,18 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
                 style={{ color: neuTheme.colors.text.muted }}
               >
                 {call.company}
+                <span className="sm:hidden ml-2" style={{ color: neuTheme.colors.text.subtle }}>
+                  · {formatRelativeTime(call.timestamp)}
+                </span>
               </p>
             </div>
 
             {call.prospectStatus && (
-              <Badge variant={statusVariant(call.prospectStatus)}>
-                {statusLabel(call.prospectStatus)}
-              </Badge>
+              <span className="hidden sm:inline-flex">
+                <Badge variant={statusVariant(call.prospectStatus)}>
+                  {statusLabel(call.prospectStatus)}
+                </Badge>
+              </span>
             )}
 
             <span
@@ -117,7 +122,7 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
             </span>
 
             <span
-              className="text-xs font-fira-code min-w-[50px] text-right"
+              className="hidden sm:inline text-xs font-fira-code min-w-[50px] text-right"
               style={{ color: neuTheme.colors.text.subtle }}
             >
               {formatRelativeTime(call.timestamp)}

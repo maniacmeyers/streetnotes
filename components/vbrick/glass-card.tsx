@@ -32,7 +32,7 @@ function CardTitle({ title }: { title: string }) {
 export function GlassCard({ className, children, title }: GlassCardProps) {
   return (
     <motion.div
-      className={cn('rounded-xl p-6', className)}
+      className={cn('rounded-xl p-4 sm:p-6', className)}
       style={{
         background: neuTheme.colors.bg,
         boxShadow: neuTheme.shadows.raised,
@@ -57,7 +57,7 @@ export function GlassCardElevated({
 }: GlassCardProps) {
   return (
     <motion.div
-      className={cn('rounded-xl p-6', className)}
+      className={cn('rounded-xl p-4 sm:p-6', className)}
       style={{
         background: neuTheme.colors.bg,
         boxShadow: neuTheme.shadows.raisedHover,

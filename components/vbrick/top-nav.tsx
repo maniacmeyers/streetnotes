@@ -52,14 +52,13 @@ export function TopNav() {
     <header
       className="sticky top-0 z-[60] w-full font-satoshi"
       style={{
-        height: 56,
         background: neuTheme.colors.bg,
         boxShadow: `0 2px 12px ${neuTheme.colors.shadow}33`,
       }}
     >
-      <div className="h-full px-6 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-6 min-w-0">
-          <Link href="/vbrick/dashboard" className="flex items-center gap-2.5 shrink-0 no-underline">
+      <div className="h-14 px-4 sm:px-6 flex items-center justify-between gap-4 sm:gap-6">
+        <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+          <Link href="/vbrick/dashboard" className="flex items-center gap-2 shrink-0 no-underline" style={{ touchAction: 'manipulation' }}>
             <div
               className="flex items-center justify-center"
               style={{
@@ -156,7 +155,12 @@ export function TopNav() {
         </div>
       </div>
 
-      <nav className="md:hidden flex items-center justify-around px-2 pb-2 -mt-1">
+      <nav
+        className="md:hidden flex items-center justify-between px-1 pb-2 pt-1"
+        style={{
+          borderTop: `1px solid ${neuTheme.colors.shadow}22`,
+        }}
+      >
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href
           const Icon = item.icon
@@ -164,13 +168,15 @@ export function TopNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center gap-0.5 px-2 py-1 text-[10px] no-underline"
+              className="flex-1 flex flex-col items-center gap-0.5 px-1 py-1.5 text-[11px] no-underline"
               style={{
                 color: isActive ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
                 fontWeight: isActive ? 600 : 500,
+                touchAction: 'manipulation',
+                minHeight: 44,
               }}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-[18px] h-[18px]" />
               {item.label}
             </Link>
           )

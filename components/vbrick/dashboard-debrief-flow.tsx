@@ -777,7 +777,7 @@ function VbrickResultsCard({
       />
 
       {/* Contact + Disposition */}
-      <div className="grid grid-cols-2 gap-4 text-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
         <div>
           <p
             className="text-[10px] uppercase tracking-[0.1em] font-inter"

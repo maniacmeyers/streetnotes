@@ -178,7 +178,7 @@ export default function PlaybookPage() {
   }))
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-6">
+    <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
