@@ -77,47 +77,75 @@ function MetricRow({
 
   return (
     <motion.div
-      className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 py-3"
+      className="py-2 sm:py-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay, duration: 0.4 }}
     >
-      {/* Player A value */}
-      <div className="flex items-center gap-1.5 sm:gap-2 justify-end">
-        <TrendArrow value={trendA} />
-        <span
-          className="font-fira-code font-bold text-lg sm:text-xl tabular-nums"
-          style={{
-            color: aLeads
-              ? neuTheme.colors.accent.primary
-              : neuTheme.colors.text.muted,
-          }}
+      {/* Mobile-only: label on its own row, then two values flanking */}
+      <div className="sm:hidden">
+        <p
+          className="text-[10px] uppercase tracking-[0.12em] font-inter text-center mb-1"
+          style={{ color: neuTheme.colors.text.muted }}
         >
-          <CountUp value={valueA} decimals={decimals || 0} suffix={suffix} />
-        </span>
+          {label}
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex items-center gap-1.5 justify-center">
+            <TrendArrow value={trendA} />
+            <span
+              className="font-fira-code font-bold text-xl tabular-nums"
+              style={{
+                color: aLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+              }}
+            >
+              <CountUp value={valueA} decimals={decimals || 0} suffix={suffix} />
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 justify-center">
+            <span
+              className="font-fira-code font-bold text-xl tabular-nums"
+              style={{
+                color: bLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+              }}
+            >
+              <CountUp value={valueB} decimals={decimals || 0} suffix={suffix} />
+            </span>
+            <TrendArrow value={trendB} />
+          </div>
+        </div>
       </div>
 
-      {/* Label */}
-      <span
-        className="text-[9px] sm:text-[10px] uppercase tracking-[0.12em] font-inter text-center min-w-[88px] sm:min-w-[140px] px-1"
-        style={{ color: neuTheme.colors.text.muted }}
-      >
-        {label}
-      </span>
-
-      {/* Player B value */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      {/* sm+: centered horizontal row */}
+      <div className="hidden sm:grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div className="flex items-center gap-2 justify-end">
+          <TrendArrow value={trendA} />
+          <span
+            className="font-fira-code font-bold text-xl tabular-nums"
+            style={{
+              color: aLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+            }}
+          >
+            <CountUp value={valueA} decimals={decimals || 0} suffix={suffix} />
+          </span>
+        </div>
         <span
-          className="font-fira-code font-bold text-lg sm:text-xl tabular-nums"
-          style={{
-            color: bLeads
-              ? neuTheme.colors.accent.primary
-              : neuTheme.colors.text.muted,
-          }}
+          className="text-[10px] uppercase tracking-[0.12em] font-inter text-center min-w-[140px] px-1"
+          style={{ color: neuTheme.colors.text.muted }}
         >
-          <CountUp value={valueB} decimals={decimals || 0} suffix={suffix} />
+          {label}
         </span>
-        <TrendArrow value={trendB} />
+        <div className="flex items-center gap-2">
+          <span
+            className="font-fira-code font-bold text-xl tabular-nums"
+            style={{
+              color: bLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+            }}
+          >
+            <CountUp value={valueB} decimals={decimals || 0} suffix={suffix} />
+          </span>
+          <TrendArrow value={trendB} />
+        </div>
       </div>
     </motion.div>
   )
@@ -162,16 +190,16 @@ export function Leaderboard({ players }: LeaderboardProps) {
       >
         <div className="relative">
           {/* Player names */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 mb-2">
+          <div className="grid grid-cols-2 sm:grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4 mb-2">
             <motion.div
-              className="flex flex-col items-end gap-1"
+              className="flex flex-col items-center sm:items-end gap-1"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <PlayerAvatar name={a.name} isLeading={aWins > bWins} />
               <h4
-                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate max-w-[110px] sm:max-w-none"
+                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate w-full text-center sm:text-right max-w-full"
                 style={{ color: neuTheme.colors.text.heading }}
               >
                 {a.name}
@@ -179,7 +207,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
             </motion.div>
 
             <motion.div
-              className="flex items-center"
+              className="hidden sm:flex items-center"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.4, type: 'spring' }}
@@ -193,14 +221,14 @@ export function Leaderboard({ players }: LeaderboardProps) {
             </motion.div>
 
             <motion.div
-              className="flex flex-col items-start gap-1"
+              className="flex flex-col items-center sm:items-start gap-1"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <PlayerAvatar name={b.name} isLeading={bWins > aWins} />
               <h4
-                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate max-w-[110px] sm:max-w-none"
+                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate w-full text-center sm:text-left max-w-full"
                 style={{ color: neuTheme.colors.text.heading }}
               >
                 {b.name}

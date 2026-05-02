@@ -6,7 +6,7 @@ import { IntentionScreen } from '@/components/vbrick/intention-screen'
 import { Leaderboard } from '@/components/vbrick/leaderboard'
 import { PerformanceCards } from '@/components/vbrick/performance-cards'
 import { RecentCalls, type RecentCall } from '@/components/vbrick/recent-calls'
-import { DashboardDebriefFlow } from '@/components/vbrick/dashboard-debrief-flow'
+import { DashboardDebriefFlow, VbrickResultsCard } from '@/components/vbrick/dashboard-debrief-flow'
 import { TranscriptInput } from '@/components/vbrick/transcript-input'
 import { QuickStartTiles } from '@/components/vbrick/quick-start-tiles'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
@@ -63,7 +63,7 @@ interface StatsData {
   }>
 }
 
-type DashboardView = 'dashboard' | 'debrief' | 'transcript'
+type DashboardView = 'dashboard' | 'debrief' | 'transcript' | 'view-debrief'
 
 export default function VbrickDashboardPage() {
   // Use the layout's DashboardProvider so navigation guards in VbrickShell
@@ -76,6 +76,8 @@ export default function VbrickDashboardPage() {
   const [isRecording, setIsRecording] = useState(false)
   const [pastedTranscript, setPastedTranscript] = useState<string | null>(null)
   const [recentCalls, setRecentCalls] = useState<RecentCall[]>([])
+  const [storedOutputs, setStoredOutputs] = useState<Record<string, DebriefOutput>>({})
+  const [viewingSessionId, setViewingSessionId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!email) return
@@ -83,6 +85,7 @@ export default function VbrickDashboardPage() {
     const intentionKey = `vbrick_intention_${today}`
     if (!localStorage.getItem(intentionKey)) setShowIntention(true)
     fetchStats()
+    fetchRecentDebriefs()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email])
 
@@ -93,6 +96,46 @@ export default function VbrickDashboardPage() {
       const data = await res.json()
       if (res.ok) setStats(data)
     } catch {}
+  }
+
+  async function fetchRecentDebriefs() {
+    if (!email) return
+    try {
+      const res = await fetch(`/api/vbrick/debriefs?email=${encodeURIComponent(email)}&limit=20`)
+      const data = await res.json()
+      if (!res.ok || !Array.isArray(data.debriefs)) return
+
+      const calls: RecentCall[] = []
+      const outputs: Record<string, DebriefOutput> = {}
+
+      for (const row of data.debriefs as Array<{
+        id: string
+        created_at: string
+        structured_output: unknown
+      }>) {
+        if (!isBDROutput(row.structured_output)) continue
+        const out = row.structured_output
+        outputs[row.id] = out as unknown as DebriefOutput
+        const spinScore = isVbrickBDROutput(out) ? out.spin.composite : undefined
+        calls.push({
+          id: row.id,
+          contactName: out.contactSnapshot?.name || 'Unknown',
+          company: out.contactSnapshot?.company || 'Unknown',
+          disposition: out.callDisposition as CallDisposition,
+          prospectStatus: out.prospectStatus as ProspectStatus,
+          spinScore,
+          timestamp: row.created_at,
+          debriefSessionId: row.id,
+        })
+      }
+      setRecentCalls(calls)
+      setStoredOutputs(outputs)
+    } catch {}
+  }
+
+  function handleSelectDebrief(sessionId: string) {
+    setViewingSessionId(sessionId)
+    setView('view-debrief')
   }
 
   function handleIntentionComplete() {
@@ -121,7 +164,8 @@ export default function VbrickDashboardPage() {
         timestamp: new Date().toISOString(),
         debriefSessionId,
       }
-      setRecentCalls(prev => [newCall, ...prev].slice(0, 10))
+      setRecentCalls(prev => [newCall, ...prev.filter(c => c.id !== debriefSessionId)].slice(0, 20))
+      setStoredOutputs(prev => ({ ...prev, [debriefSessionId]: output }))
     }
     await fetchStats()
     setView('dashboard')
@@ -249,6 +293,47 @@ export default function VbrickDashboardPage() {
             />
           )}
 
+          {view === 'view-debrief' && viewingSessionId && storedOutputs[viewingSessionId] && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-4"
+            >
+              <button
+                type="button"
+                onClick={() => { setView('dashboard'); setViewingSessionId(null) }}
+                className="text-sm font-inter underline"
+                style={{
+                  color: neuTheme.colors.text.muted,
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  touchAction: 'manipulation',
+                }}
+              >
+                ← Back to dashboard
+              </button>
+              <VbrickResultsCard
+                structured={storedOutputs[viewingSessionId]}
+                sessionId={viewingSessionId}
+              />
+              <a
+                href={`/api/vbrick/debrief/pdf?sessionId=${viewingSessionId}`}
+                className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold uppercase tracking-widest text-sm text-white"
+                style={{
+                  backgroundColor: neuTheme.colors.accent.primary,
+                  boxShadow: neuTheme.shadows.raisedSm,
+                  textDecoration: 'none',
+                  touchAction: 'manipulation',
+                }}
+                download
+              >
+                Download PDF
+              </a>
+            </motion.div>
+          )}
+
           {view === 'debrief' && pastedTranscript && (
             <DashboardDebriefFlow
               email={email}
@@ -316,7 +401,7 @@ export default function VbrickDashboardPage() {
                 <h3 className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium mb-3" style={{ color: '#6366f1' }}>
                   Recent Debriefs
                 </h3>
-                <RecentCalls calls={recentCalls} />
+                <RecentCalls calls={recentCalls} onSelect={handleSelectDebrief} />
               </motion.div>
 
               {stats && stats.allBdrs.length >= 2 && (

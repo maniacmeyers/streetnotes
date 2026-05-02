@@ -45,7 +45,12 @@ function statusLabel(status?: ProspectStatus): string {
   return status.replace(/-/g, ' ')
 }
 
-export function RecentCalls({ calls }: { calls: RecentCall[] }) {
+interface RecentCallsProps {
+  calls: RecentCall[]
+  onSelect?: (id: string) => void
+}
+
+export function RecentCalls({ calls, onSelect }: RecentCallsProps) {
   if (calls.length === 0) {
     return (
       <div
@@ -72,17 +77,33 @@ export function RecentCalls({ calls }: { calls: RecentCall[] }) {
         {calls.map((call) => (
           <motion.div
             key={call.id}
-            className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl cursor-default transition-all duration-200"
+            role={onSelect ? 'button' : undefined}
+            tabIndex={onSelect ? 0 : undefined}
+            onClick={onSelect ? () => onSelect(call.debriefSessionId || call.id) : undefined}
+            onKeyDown={
+              onSelect
+                ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      onSelect(call.debriefSessionId || call.id)
+                    }
+                  }
+                : undefined
+            }
+            className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl transition-all duration-200 ${
+              onSelect ? 'cursor-pointer' : 'cursor-default'
+            }`}
             style={{
               background: neuTheme.colors.bg,
               boxShadow: neuTheme.shadows.raisedSm,
+              touchAction: 'manipulation',
             }}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.3 }}
             layout
-            whileHover={{ boxShadow: neuTheme.shadows.raised }}
+            whileHover={onSelect ? { boxShadow: neuTheme.shadows.raised } : undefined}
           >
             <DispositionDot disposition={call.disposition} />
 

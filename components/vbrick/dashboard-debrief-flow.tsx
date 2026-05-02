@@ -722,8 +722,10 @@ export function DashboardDebriefFlow({
   )
 }
 
-// Simplified results card for the dashboard context
-function VbrickResultsCard({
+// Simplified results card for the dashboard context. Exported so the
+// dashboard can render past debriefs from Recent Debriefs without going
+// through the full record/extract flow.
+export function VbrickResultsCard({
   structured,
 }: {
   structured: DebriefOutput

@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isVbrickUser } from '@/lib/vbrick/config'
+import {
+  ensureStandardPitchesForDomain,
+  STANDARD_PITCH_DOMAINS,
+} from '@/lib/vbrick/seeds/standard-pitches'
 
 export const runtime = 'nodejs'
 
@@ -77,6 +81,18 @@ export async function GET(request: Request) {
   }
 
   const supabase = createAdminClient()
+
+  // For authorized standard-pitch domains, lazily seed the 3 standard
+  // elevator pitches if they're missing. Idempotent — no-op when already
+  // seeded.
+  if ((STANDARD_PITCH_DOMAINS as readonly string[]).includes(domain)) {
+    try {
+      await ensureStandardPitchesForDomain(supabase, domain)
+    } catch {
+      // Non-fatal — continue with whatever's already in the vault.
+    }
+  }
+
   const { data, error } = await supabase
     .from('story_vault_entries')
     .select('*')
