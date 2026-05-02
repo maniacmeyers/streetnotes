@@ -45,7 +45,7 @@ export default function WaitlistForm() {
     <div>
       <form
         onSubmit={handleSubmit}
-        className="flex glass rounded-2xl overflow-hidden p-1.5 gap-1.5"
+        className="glass flex flex-col gap-1.5 overflow-hidden rounded-2xl p-1.5 sm:flex-row"
       >
         <label htmlFor="waitlist-email" className="sr-only">
           Work email address
@@ -61,12 +61,12 @@ export default function WaitlistForm() {
           placeholder="YOUR WORK EMAIL"
           required
           aria-required="true"
-          className="flex-1 min-w-0 px-4 py-3 sm:py-4 text-base sm:text-sm text-white placeholder:text-white/40 uppercase tracking-wider bg-transparent outline-none min-h-[44px] rounded-xl"
+          className="min-h-[48px] min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-base uppercase tracking-wider text-white outline-none placeholder:text-white/40 sm:min-h-[44px] sm:py-4 sm:text-sm"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="bg-volt text-black font-bold text-base sm:text-lg px-6 sm:px-7 py-3 sm:py-4 rounded-xl uppercase hover:bg-volt/90 active:bg-volt/80 transition-all duration-200 cursor-pointer whitespace-nowrap disabled:opacity-50 min-h-[44px] shadow-glow-volt"
+          className="min-h-[48px] cursor-pointer whitespace-nowrap rounded-xl bg-volt px-6 py-3 text-base font-bold uppercase text-black shadow-glow-volt transition-all duration-200 hover:bg-volt/90 active:bg-volt/80 disabled:opacity-50 sm:min-h-[44px] sm:px-7 sm:py-4 sm:text-lg"
         >
           {status === 'loading' ? '...' : 'Join Beta'}
         </button>

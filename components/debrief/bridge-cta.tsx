@@ -36,14 +36,14 @@ export default function BridgeCTA() {
           <br />
           for 60 seconds.
           <br className="sm:hidden" />
-          {' '}Your CRM is done.
+          {' '}Your CRM fields are ready.
         </h3>
 
         <p className="font-body text-base sm:text-xl text-black/70 mb-1.5 sm:mb-2">
-          Connect StreetNotes and this happens after every call. Automatically.
+          Connect StreetNotes and approved fields, tasks, and opportunity updates push into Salesforce or Veeva.
         </p>
         <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black/50 mb-5 sm:mb-6">
-          No typing. No tab switching. No missed fields.
+          No typing. No tab switching. No missed CRM fields.
         </p>
 
         <a
@@ -63,6 +63,7 @@ export default function BridgeCTA() {
               {[
                 'Structured CRM fields',
                 'Follow-up tasks extracted',
+                'Opportunity update suggested',
                 'Opportunity notes written',
                 'One-time PDF export',
               ].map((item) => (
@@ -82,10 +83,11 @@ export default function BridgeCTA() {
             </p>
             <ul className="space-y-0.5 sm:space-y-1">
               {[
-                'Auto-push to your CRM',
+                'Approved fields push to CRM',
+                'Opportunities updated or created',
                 'Follow-ups scheduled for you',
                 'Deal history across calls',
-                'Works with Salesforce + HubSpot',
+                'Works with Salesforce + Veeva',
               ].map((item) => (
                 <li
                   key={item}

@@ -40,7 +40,21 @@ export async function updateSession(request: NextRequest) {
 
   // Allow public routes
   const isPublicRoute =
-    pathname === '/' || isAuthPage || pathname.startsWith('/auth') || pathname.startsWith('/api') || pathname.startsWith('/debrief') || pathname.startsWith('/vbrick') || pathname.startsWith('/vbrick-site') || pathname.startsWith('/ci') || pathname.startsWith('/for-leaders') || pathname === '/sw.js' || pathname === '/manifest.webmanifest'
+    pathname === '/' ||
+    isAuthPage ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/debrief') ||
+    pathname.startsWith('/vbrick') ||
+    pathname.startsWith('/vbrick-site') ||
+    pathname.startsWith('/ci') ||
+    pathname.startsWith('/for-leaders') ||
+    pathname.startsWith('/voice-to-crm-aesthetic-sales-reps') ||
+    pathname.startsWith('/contact') ||
+    pathname.startsWith('/privacy') ||
+    pathname.startsWith('/terms') ||
+    pathname === '/sw.js' ||
+    pathname === '/manifest.webmanifest'
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone()

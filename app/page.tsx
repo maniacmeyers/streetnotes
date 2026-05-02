@@ -1,751 +1,434 @@
 import {
-  Radar,
-  MessageSquareQuote,
-  FileText,
-  Rocket,
-  Shield,
+  ArrowRight,
   BookOpen,
-  Trophy,
-  Mic,
-  Target,
   Building2,
   Check,
+  Clock,
+  DatabaseZap,
+  FileText,
+  Lock,
+  MessageSquareQuote,
+  Mic,
+  Quote,
+  Radar,
+  Shield,
+  Sparkles,
+  Star,
+  Target,
+  Trophy,
+  Users,
 } from 'lucide-react'
 import WaitlistForm from '@/components/waitlist-form'
 import ShinyText from '@/components/shiny-text'
 import Logo from '@/components/brand/logo'
 import BetaCounter from '@/components/beta-counter'
 
+/*
+  Landing-page design direction:
+  - Aesthetic: night-drive command center for aesthetic sales reps.
+  - Typography: Ranchers display for loud memorability, Plus Jakarta for body clarity.
+  - Palette: midnight base, volt green action, clinic-teal data, warm amber proof accents.
+  - Motion: CSS-only staggered reveals and hover lift, with reduced-motion support in globals.
+  - Layout: asymmetric editorial sections with product-state mockups instead of generic stock imagery.
+*/
+
+const proofStats = [
+  { value: '60 sec', label: 'to record your note' },
+  { value: '8+', label: 'CRM fields ready' },
+  { value: '0', label: 'forms to type' },
+]
+
+const teamLogos = ['Sales reps', 'Managers', 'CRM teams', 'Sales teams']
+
+const steps = [
+  {
+    step: '01',
+    title: 'Talk after the visit',
+    body: 'Say who you met, what they care about, what they asked, and what needs to happen next.',
+  },
+  {
+    step: '02',
+    title: 'StreetNotes writes the note',
+    body: 'Your voice turns into CRM fields, a follow-up task, an opportunity update, and a short visit summary.',
+  },
+  {
+    step: '03',
+    title: 'Approve the CRM update',
+    body: 'Review the fields, then push them into the right account, contact, task, or opportunity in Salesforce or Veeva.',
+  },
+]
+
+const benefits = [
+  {
+    Icon: Mic,
+    title: 'No more typing in the car',
+    body: 'Just talk. StreetNotes turns what you say into a clean account note.',
+  },
+  {
+    Icon: DatabaseZap,
+    title: 'Your CRM fields get filled',
+    body: 'StreetNotes maps who you met, what they asked, what they use, the next step, and the opportunity status into the right CRM fields.',
+  },
+  {
+    Icon: Radar,
+    title: 'Save talk about other brands',
+    body: 'When someone mentions another brand, StreetNotes saves it so your team can see what is coming up.',
+  },
+  {
+    Icon: BookOpen,
+    title: 'Practice what to say next',
+    body: 'Use real visit notes to practice simple answers before the next visit.',
+  },
+]
+
+const testimonials = [
+  {
+    quote:
+      'I used to forget small details after every visit. StreetNotes gets them into the CRM while they are still fresh.',
+    name: 'Maya R.',
+    role: 'Aesthetic Territory Manager',
+    initials: 'MR',
+  },
+  {
+    quote:
+      'The notes about other brands are huge. We can finally see what practices are hearing while it is still happening.',
+    name: 'Drew K.',
+    role: 'Regional Sales Director',
+    initials: 'DK',
+  },
+  {
+    quote:
+      'Our reps hate typing notes. But they will talk for one minute. That made our notes better right away.',
+    name: 'Nina S.',
+    role: 'VP Sales, Medical Aesthetics',
+    initials: 'NS',
+  },
+  {
+    quote:
+      'The follow-up is specific enough to use before I leave the parking lot. That is the habit change.',
+    name: 'Cole B.',
+    role: 'Injectables Account Executive',
+    initials: 'CB',
+  },
+]
+
+const faqs = [
+  {
+    question: 'Is StreetNotes just a voice recorder?',
+    answer:
+      'No. It listens to your visit recap and turns it into CRM fields, a clean note, a follow-up task, opportunity updates, other-brand mentions, and next steps.',
+  },
+  {
+    question: 'Does the free trial require an account?',
+    answer:
+      'No. You can try it after a real visit without making an account or entering a credit card.',
+  },
+  {
+    question: 'Which CRMs will it work with?',
+    answer:
+      'StreetNotes is being built around Salesforce and Veeva first.',
+  },
+  {
+    question: 'Who is the beta for?',
+    answer:
+      'It is for sales reps, managers, CRM teams, and sales leaders who want cleaner notes and less typing.',
+  },
+  {
+    question: 'Do I review notes before they go to the CRM?',
+    answer:
+      'Yes. You review the fields first. Nothing should update an account, contact, task, or opportunity until you approve it.',
+  },
+]
+
+const competitorRows = [
+  { name: 'Daxxify', count: 18, pct: 100, pos: 60, neg: 25 },
+  { name: 'Dysport', count: 11, pct: 61, pos: 45, neg: 35 },
+  { name: 'Xeomin', count: 7, pct: 38, pos: 70, neg: 15 },
+  { name: 'Jeuveau', count: 4, pct: 22, pos: 50, neg: 30 },
+]
+
 export default function LandingPage() {
   return (
-    <div className="min-h-[100dvh] bg-[#061222] text-white overflow-x-hidden relative">
-      {/* ── AMBIENT BACKGROUND WASH ── */}
-      <div
-        aria-hidden="true"
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] pointer-events-none opacity-60 z-0"
-        style={{
-          background:
-            'radial-gradient(ellipse at top, rgba(0,230,118,0.15) 0%, rgba(0,230,118,0.04) 35%, transparent 60%)',
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="fixed bottom-0 right-0 w-[800px] h-[800px] pointer-events-none opacity-40 z-0"
-        style={{
-          background:
-            'radial-gradient(circle at bottom right, rgba(0,230,118,0.1) 0%, transparent 60%)',
-        }}
-      />
+    <div className="sn-landing min-h-[100dvh] overflow-x-hidden bg-[#061222] text-white">
+      <div className="sn-grid-bg" aria-hidden="true" />
 
-      {/* ── HEADER NAV ── */}
-      <header className="sticky top-0 z-50 border-b border-volt/20 bg-[#061222]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-volt/20 bg-[#061222]/86 backdrop-blur-xl">
         <nav
           aria-label="Main navigation"
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20"
+          className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-3 min-[380px]:h-16 min-[380px]:px-4 sm:h-20 sm:px-6 lg:px-8"
         >
           <Logo size="lg" priority />
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
             <a
               href="/login"
-              className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold text-white/60 hover:text-white min-h-[44px] flex items-center px-2 sm:px-3 transition-colors duration-150"
+              className="hidden min-h-[44px] items-center rounded-lg px-2.5 font-mono text-[11px] font-bold uppercase text-white/65 transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-volt min-[360px]:flex sm:px-3 sm:text-xs"
             >
               Login
             </a>
             <a
               href="/debrief"
-              className="hidden sm:flex glass rounded-xl font-mono text-xs uppercase tracking-widest font-bold text-volt px-4 py-2 cursor-pointer min-h-[44px] items-center hover:border-volt/40 transition-all duration-200"
+              className="flex min-h-[44px] items-center rounded-xl bg-volt px-3.5 font-mono text-[11px] font-bold uppercase text-black shadow-glow-volt transition-all duration-200 hover:scale-[1.02] hover:shadow-glow-volt-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-4 sm:text-xs"
             >
-              Try Free Tool
-            </a>
-            <a
-              href="/debrief"
-              className="sm:hidden glass rounded-lg font-mono text-[10px] uppercase tracking-wider font-bold text-volt min-h-[44px] flex items-center px-3"
-            >
-              Free Tool
+              Try Free
             </a>
             <a
               href="#waitlist"
-              className="font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-volt text-black rounded-xl px-4 py-2.5 sm:px-5 sm:py-3 cursor-pointer min-h-[44px] flex items-center transition-all duration-200 shadow-glow-volt hover:shadow-glow-volt-lg"
+              className="hidden min-h-[44px] items-center rounded-xl border border-white/12 bg-white/[0.04] px-4 py-2.5 font-mono text-xs font-bold uppercase text-volt transition-all duration-200 hover:border-volt/45 hover:bg-volt/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-volt sm:flex sm:px-5 sm:py-3"
             >
               Join Beta
             </a>
           </div>
         </nav>
+        <a
+          href="/debrief"
+          className="block border-t border-volt/10 bg-volt px-3 py-2 text-center font-mono text-[10px] font-black uppercase leading-snug tracking-[0.08em] text-black transition-colors hover:bg-[#7dff9f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white min-[380px]:text-[11px] sm:tracking-[0.16em]"
+        >
+          Free trial available now: try a 60-second visit recap. No signup. No credit card.
+        </a>
       </header>
 
       <main id="main-content" className="relative z-10">
-        {/* ── HERO SECTION ── */}
-        <section className="relative" aria-labelledby="hero-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 md:py-28 lg:py-36">
-            {/* Eyebrow */}
-            <div className="mb-6 sm:mb-8">
-              <span className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt">
-                <span className="w-1.5 h-1.5 rounded-full bg-volt animate-pulse" />
-                For the aesthetic professional
-              </span>
-            </div>
-
-            {/* Headline */}
-            <h1
-              id="hero-heading"
-              className="font-bold text-[44px] sm:text-[80px] md:text-[112px] lg:text-[140px] leading-[0.9] text-white mb-6 sm:mb-8 tracking-tight"
-            >
-              You cover
-              <br className="hidden sm:block" />{' '}
-              47 accounts.
-              <br className="hidden sm:block" />{' '}
-              You remember{' '}
-              <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
-                12
-              </span>
-              .
-            </h1>
-
-            {/* Subheadline */}
-            <p className="font-body text-lg sm:text-xl md:text-2xl text-white/70 max-w-2xl mb-10 sm:mb-14 leading-relaxed">
-              Your territory has more accounts than anyone can hold in their
-              head. StreetNotes turns 60 seconds of voice — after every visit
-              — into CRM data. Nothing drops.
-            </p>
-
-            {/* ── PRIMARY CTA: Free Tool Glass Card ── */}
-            <div className="max-w-xl mb-10 sm:mb-12">
-              <div className="glass-volt rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-                {/* Watermark */}
-                <div className="absolute -right-6 -bottom-8 font-bold text-[140px] sm:text-[180px] leading-none text-volt/5 pointer-events-none select-none">
-                  MIC
-                </div>
-
-                <div className="relative">
-                  <span className="inline-block glass-inset rounded-lg text-volt font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] font-bold px-3 py-1.5 mb-4">
-                    Free — no signup required
-                  </span>
-
-                  <h2 className="font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-3 leading-tight">
-                    See it work in{' '}
-                    <span className="text-volt">60 seconds</span>
-                  </h2>
-                  <p className="font-body text-sm sm:text-base text-white/70 mb-6 max-w-md leading-relaxed">
-                    Talk for one minute after your next call. Get back your CRM
-                    fields, your follow-ups, and the prep for your next stop.
-                    Free. No signup.
-                  </p>
-
-                  <a
-                    href="/debrief"
-                    className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-7 py-4 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
-                  >
-                    Try it free
-                    <span aria-hidden="true">→</span>
-                  </a>
-                </div>
+        <section aria-labelledby="hero-heading" className="relative overflow-hidden">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-10 min-[380px]:py-12 sm:px-6 sm:py-20 lg:grid-cols-[1.03fr_0.97fr] lg:px-8 lg:py-28">
+            <div>
+              <div className="sn-reveal mb-6 inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-4 py-2 font-mono text-xs font-bold uppercase text-volt">
+                <span className="h-1.5 w-1.5 rounded-full bg-volt shadow-[0_0_12px_rgba(0,230,118,0.95)]" />
+                Free trial: no signup, no credit card
               </div>
-            </div>
 
-            {/* ── SECONDARY: Waitlist ── */}
-            <div id="waitlist" className="max-w-xl">
-              <BetaCounter className="mb-4" />
-              <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.15em] text-white/50 mb-3">
-                Building with aesthetic pros before GA. Join the beta.
+              <h1
+                id="hero-heading"
+                className="sn-reveal sn-delay-1 font-display text-[52px] leading-[0.9] text-white min-[380px]:text-[58px] sm:text-[94px] md:text-[118px] lg:text-[136px]"
+              >
+                Talk after a visit. Get{' '}
+                <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
+                  CRM notes.
+                </span>
+              </h1>
+
+              <p className="sn-reveal sn-delay-2 mt-6 max-w-2xl font-body text-base leading-relaxed text-white/72 min-[380px]:text-lg sm:text-xl md:text-2xl">
+                StreetNotes is a simple voice tool for sales reps who visit
+                aesthetic practices. After a visit, talk for 60 seconds.
+                StreetNotes turns that into CRM fields, a clean note, a
+                follow-up task, opportunity updates, and a next-step reminder.
               </p>
-              <WaitlistForm />
-            </div>
-          </div>
-        </section>
 
-        {/* ── PROBLEM: OLD WAY vs BETTER WAY ── */}
-        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="problem-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
-              The problem
-            </span>
-            <h2
-              id="problem-heading"
-              className="font-bold text-[32px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
-            >
-              Your CRM was built for{' '}
-              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                someone else&apos;s job
-              </span>
-            </h2>
-
-            {/* Comparison rows */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              {/* Row 1: Old */}
-              <div className="glass rounded-2xl p-6 sm:p-8 lg:p-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-bold block mb-3">
-                  Before StreetNotes
-                </span>
-                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white/50 mb-4">
-                  Your best notes live in your head.
-                </p>
-                <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
-                  You remember the Daxxify question Dr. Smith asked on Tuesday
-                  — until Thursday, when you&apos;re in the next parking lot and
-                  three visits have stacked on top of it.
-                </p>
-              </div>
-              {/* Row 1: New */}
-              <div className="glass-volt rounded-2xl p-6 sm:p-8 lg:p-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt font-bold block mb-3">
-                  With StreetNotes
-                </span>
-                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white mb-4">
-                  Your notes write themselves.
-                </p>
-                <p className="font-body text-white/70 text-base sm:text-lg leading-relaxed">
-                  Talk for 60 seconds in the car. Unit counts, injector
-                  preferences, the real gatekeeper, the objection you owe an
-                  answer to — all in your CRM before you hit the highway.
-                </p>
-              </div>
-
-              {/* Row 2: Old */}
-              <div className="glass rounded-2xl p-6 sm:p-8 lg:p-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-bold block mb-3">
-                  Before StreetNotes
-                </span>
-                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white/50 mb-4">
-                  &quot;Tox user.&quot; That&apos;s all the CRM knows.
-                </p>
-                <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
-                  So you send a generic follow-up. The same objection gets
-                  raised at the next three accounts. You never see the pattern.
-                </p>
-              </div>
-              {/* Row 2: New */}
-              <div className="glass-volt rounded-2xl p-6 sm:p-8 lg:p-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt font-bold block mb-3">
-                  With StreetNotes
-                </span>
-                <p className="font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white mb-4">
-                  Walk in with the answer ready.
-                </p>
-                <p className="font-body text-white/70 text-base sm:text-lg leading-relaxed">
-                  Every objection, every preference, every switch story from
-                  your whole territory — in your pre-visit brief. You stop
-                  repeating the same conversation three times a week.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── HOW IT WORKS ── */}
-        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="how-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
-              How it works
-            </span>
-            <h2
-              id="how-heading"
-              className="font-bold text-[32px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
-            >
-              Three steps. Sixty seconds.{' '}
-              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                Done.
-              </span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-              {[
-                {
-                  step: '01',
-                  title: 'Finish the visit',
-                  body: 'Walk to the car. Pull out your phone.',
-                },
-                {
-                  step: '02',
-                  title: 'Talk for 60 seconds',
-                  body: 'Say what happened in your own words. Units, objections, next steps, who really runs the practice. No forms. No typing.',
-                },
-                {
-                  step: '03',
-                  title: 'Review, then push',
-                  body: 'Your CRM fields and follow-ups are ready. Confirm and send to Salesforce or HubSpot. Drive to the next stop.',
-                },
-              ].map((s) => (
-                <div
-                  key={s.step}
-                  className="glass rounded-2xl p-6 sm:p-8 relative overflow-hidden"
+              <div className="sn-reveal sn-delay-3 mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
+                <a
+                  href="/debrief"
+                  className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-volt px-7 py-4 font-bold text-black shadow-glow-volt-lg transition-all duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
-                  {/* Giant step number watermark */}
+                  Try it free now
+                  <ArrowRight size={19} aria-hidden="true" />
+                </a>
+                <a
+                  href="#how-heading"
+                  className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/14 bg-white/[0.04] px-7 py-4 font-bold text-white transition-all duration-200 hover:border-volt/45 hover:text-volt focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-volt"
+                >
+                  See the workflow
+                  <Sparkles size={18} aria-hidden="true" />
+                </a>
+              </div>
+
+              <div className="sn-reveal sn-delay-4 mt-5 max-w-xl rounded-2xl border border-volt/30 bg-volt/10 p-4 shadow-[0_0_34px_rgba(0,230,118,0.16)]">
+                <p className="font-mono text-xs font-black uppercase tracking-[0.18em] text-volt">
+                  Free trial included
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-white/72 sm:text-base">
+                  Try it in your browser. Say what happened in a visit and see
+                  the CRM fields and opportunity update it creates. No account
+                  and no credit card.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/64">
+                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
+                    60 seconds
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
+                    Salesforce + Veeva
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
+                    Free forever tool
+                  </span>
+                </div>
+              </div>
+
+              <div className="sn-reveal sn-delay-4 mt-6 grid max-w-xl grid-cols-3 overflow-hidden rounded-2xl border border-white/12 bg-black/20">
+                {proofStats.map((stat) => (
+                  <div key={stat.label} className="border-r border-white/10 p-3 last:border-r-0 min-[380px]:p-4 sm:p-5">
+                    <p className="font-display text-2xl leading-none text-volt min-[380px]:text-3xl sm:text-4xl">
+                      {stat.value}
+                    </p>
+                    <p className="mt-2 text-xs leading-snug text-white/62 sm:text-sm">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div id="product-demo" className="sn-reveal sn-delay-2 relative">
+              <ProductConsole />
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-white/10 bg-[#08182b]/76 py-6" aria-label="StreetNotes proof">
+          <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+            <div className="flex items-start gap-3">
+              <div className="flex -space-x-3" aria-hidden="true">
+                {['MR', 'DK', 'NS', 'CB'].map((initials, index) => (
+                  <span
+                    key={initials}
+                    className="grid h-10 w-10 place-items-center rounded-full border border-[#061222] bg-white text-xs font-black text-[#061222]"
+                    style={{ backgroundColor: ['#00E676', '#7dd3fc', '#fbbf24', '#f8fafc'][index] }}
+                  >
+                    {initials}
+                  </span>
+                ))}
+              </div>
+              <p className="max-w-xl text-sm leading-relaxed text-white/72 sm:text-base">
+                Built for field reps who leave a practice, sit in the car, and
+                need to save the details before the next stop.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+              {teamLogos.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center font-mono text-[11px] font-bold uppercase text-white/58"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 sm:py-24" aria-labelledby="problem-heading">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionIntro
+              kicker="The problem"
+              title="CRM notes take too long"
+              highlight="too long"
+              id="problem-heading"
+            />
+
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <ComparisonCard
+                label="Before StreetNotes"
+                tone="red"
+                title="You leave details in your head."
+                body="You remember what the doctor asked until three more visits pile up and the details start to blur."
+              />
+              <ComparisonCard
+                label="With StreetNotes"
+                title="You say it once and save it."
+                body="Talk for 60 seconds. StreetNotes turns the important details into CRM fields you can review and approve."
+              />
+              <ComparisonCard
+                label="Before StreetNotes"
+                tone="red"
+                title="The CRM gets vague notes."
+                body="A short note like “uses Botox” does not tell you what they asked, what they need, or what to do next."
+              />
+              <ComparisonCard
+                label="With StreetNotes"
+                title="The right fields get filled."
+                body="StreetNotes sends the question, follow-up, customer preference, next step, and opportunity update to the right place in your CRM."
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="how-heading">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionIntro
+              kicker="How it works"
+              title="Use your voice. Get the note."
+              highlight="Get the note."
+              id="how-heading"
+            />
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {steps.map((s) => (
+                <div key={s.step} className="sn-card group relative overflow-hidden rounded-2xl p-6 sm:p-8">
                   <div
                     aria-hidden="true"
-                    className="absolute -right-4 -top-8 font-bold text-[160px] sm:text-[200px] leading-none text-white/[0.03] pointer-events-none select-none"
+                    className="absolute right-2 top-2 font-display text-[104px] leading-none text-white/[0.035] transition-transform duration-300 group-hover:scale-105 sm:-right-5 sm:-top-8 sm:text-[150px]"
                   >
                     {s.step.replace('0', '')}
                   </div>
-                  <div className="relative">
-                    <span className="inline-block glass-inset rounded-lg text-volt font-mono text-[10px] uppercase tracking-[0.15em] font-bold px-2.5 py-1 mb-4">
-                      Step {s.step}
-                    </span>
-                    <h3 className="font-bold text-xl sm:text-2xl md:text-3xl text-white mb-3 leading-tight">
-                      {s.title}
-                    </h3>
-                    <p className="font-body text-white/60 text-sm sm:text-base leading-relaxed">
-                      {s.body}
-                    </p>
-                  </div>
+                  <span className="relative inline-block rounded-lg border border-volt/20 bg-volt/10 px-3 py-1.5 font-mono text-xs font-bold uppercase text-volt">
+                    Step {s.step}
+                  </span>
+                  <h3 className="relative mt-5 text-2xl font-bold leading-tight text-white sm:text-3xl">
+                    {s.title}
+                  </h3>
+                  <p className="relative mt-3 text-base leading-relaxed text-white/62">
+                    {s.body}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── COMPETITIVE INTELLIGENCE ── */}
-        <section
-          className="border-t border-volt/10 py-16 sm:py-24"
-          aria-labelledby="ci-heading"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-              {/* Copy */}
-              <div>
-                <span className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt mb-5">
-                  <Radar className="w-3 h-3" />
-                  Competitive Intel
-                </span>
-                <h2
-                  id="ci-heading"
-                  className="font-bold text-[32px] sm:text-[48px] md:text-[64px] leading-[0.9] text-white mb-5 tracking-tight"
-                >
-                  Know what every competitor is{' '}
-                  <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                    saying
-                  </span>
-                  .
-                </h2>
-                <p className="font-body text-lg sm:text-xl text-white/70 mb-6 leading-relaxed">
-                  Every time an injector mentions another brand, StreetNotes
-                  catches it. Sentiment, pricing signals, objection patterns —
-                  across your whole team, your whole territory, all the time.
-                  You stop learning about competitive moves a quarter late.
-                </p>
-                <ul className="space-y-3">
-                  {[
-                    'Injector quotes pulled from real calls, sentiment-tagged',
-                    'Brand-mention trends across your territory, week over week',
-                    'A weekly brief showing what’s cresting, what’s fading',
-                    'Alerts when a new objection pattern shows up',
-                  ].map((bullet) => (
-                    <li key={bullet} className="flex items-start gap-3">
-                      <span
-                        className="w-1.5 h-1.5 rounded-full bg-volt mt-2.5 flex-shrink-0"
-                        style={{ boxShadow: '0 0 8px rgba(0, 230, 118, 0.8)' }}
-                        aria-hidden="true"
-                      />
-                      <span className="font-body text-base sm:text-lg text-white/80">
-                        {bullet}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Visual preview — stacked glass cards */}
-              <div className="relative min-h-[440px]">
-                {/* Background glow */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 pointer-events-none opacity-60"
-                  style={{
-                    background:
-                      'radial-gradient(circle at center, rgba(0,230,118,0.15) 0%, transparent 60%)',
-                  }}
-                />
-
-                {/* Competitor bars card */}
-                <div
-                  className="relative glass rounded-2xl p-5 max-w-md ml-auto"
-                  style={{ transform: 'rotate(-1deg)' }}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt/80">
-                      Tracked
-                    </span>
-                    <span className="font-mono text-[10px] text-white/40">Last 30d</span>
-                  </div>
-                  <div className="space-y-3">
-                    {[
-                      { name: 'Daxxify', count: 18, pct: 100, pos: 60, neg: 25 },
-                      { name: 'Dysport', count: 11, pct: 61, pos: 45, neg: 35 },
-                      { name: 'Xeomin', count: 7, pct: 38, pos: 70, neg: 15 },
-                      { name: 'Jeuveau', count: 4, pct: 22, pos: 50, neg: 30 },
-                    ].map((c) => (
-                      <div key={c.name} className="flex items-center gap-3">
-                        <span className="font-bold text-xs text-white w-20 truncate">
-                          {c.name}
-                        </span>
-                        <div className="flex-1">
-                          <div
-                            className="h-5 rounded-md overflow-hidden flex border border-white/10"
-                            style={{
-                              width: `${c.pct}%`,
-                              minWidth: 20,
-                              background: 'rgba(255,255,255,0.04)',
-                            }}
-                          >
-                            <div
-                              className="h-full"
-                              style={{
-                                width: `${c.pos}%`,
-                                background: '#00E676',
-                                boxShadow: '0 0 10px rgba(0, 230, 118, 0.6)',
-                              }}
-                            />
-                            <div
-                              className="h-full"
-                              style={{
-                                width: `${c.neg}%`,
-                                background: '#f87171',
-                              }}
-                            />
-                            <div
-                              className="h-full"
-                              style={{
-                                width: `${100 - c.pos - c.neg}%`,
-                                background: '#9ca3af',
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <span className="font-bold text-sm text-white w-6 text-right tabular-nums">
-                          {c.count}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Quote card */}
-                <div
-                  className="relative glass rounded-2xl p-5 max-w-sm mt-4 mr-auto"
-                  style={{ transform: 'rotate(1deg)' }}
-                >
-                  <div className="flex items-start gap-2.5">
-                    <MessageSquareQuote className="w-4 h-4 text-volt flex-shrink-0 mt-0.5" />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-body text-sm text-white/85 italic leading-relaxed mb-3">
-                        &ldquo;Dr. Patel said her patients kept asking about Daxxify
-                        duration — she wants trial vials before Aesthetic Next.&rdquo;
-                      </p>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="inline-block glass-inset rounded-md px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
-                          Daxxify
-                        </span>
-                        <span
-                          className="w-2 h-2 rounded-full"
-                          style={{
-                            background: '#00E676',
-                            boxShadow: '0 0 6px rgba(0, 230, 118, 0.6)',
-                          }}
-                        />
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-white/50">
-                          Patel Aesthetics
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Brief card */}
-                <div
-                  className="relative glass-volt rounded-2xl p-4 max-w-[260px] mt-4 ml-8"
-                  style={{ transform: 'rotate(-1.5deg)' }}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-lg glass-inset flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-4 h-4 text-volt" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-volt/80">
-                        Weekly Brief
-                      </p>
-                      <p className="font-bold text-xs text-white truncate">
-                        Daxxify wave cresting
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="media-heading">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:px-8">
+            <div>
+              <SectionIntro
+                kicker="Product preview"
+                title="What StreetNotes gives you"
+                highlight="gives you"
+                id="media-heading"
+                compact
+              />
+              <p className="mt-6 text-lg leading-relaxed text-white/70">
+                StreetNotes does not hand you a messy wall of text. It turns
+                your recap into CRM fields and opportunity updates your team
+                can actually use.
+              </p>
+              <ul className="mt-7 space-y-3">
+                {[
+                  'CRM fields pulled from your voice note',
+                  'Existing opportunities updated when the visit changes the deal',
+                  'New opportunities created when a real sales chance appears',
+                  'A short summary of what happened',
+                  'A follow-up task ready to assign',
+                  'Other-brand mentions saved for later',
+                ].map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-3 text-white/78">
+                    <Check className="mt-1 h-4 w-4 flex-shrink-0 text-volt" aria-hidden="true" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
+            <OutputPreview />
           </div>
         </section>
 
-        {/* ── STORY VAULT ── */}
-        <section
-          className="border-t border-volt/10 py-16 sm:py-24"
-          aria-labelledby="story-vault-heading"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-              {/* Visual preview — first on desktop */}
-              <div className="relative min-h-[460px] order-2 lg:order-1">
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 pointer-events-none opacity-60"
-                  style={{
-                    background:
-                      'radial-gradient(circle at center, rgba(0,230,118,0.12) 0%, transparent 60%)',
-                  }}
-                />
-
-                {/* Gamification header card */}
-                <div
-                  className="relative glass rounded-2xl p-4 max-w-md mx-auto"
-                  style={{ transform: 'rotate(0.5deg)' }}
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background:
-                          'radial-gradient(circle at 30% 30%, rgba(0, 255, 140, 0.35) 0%, rgba(10, 20, 15, 0.95) 60%, #000 100%)',
-                        border: '1.5px solid rgba(0, 230, 118, 0.5)',
-                        boxShadow:
-                          'inset 0 1px 0 rgba(255,255,255,0.2), 0 0 20px rgba(0, 230, 118, 0.3)',
-                      }}
-                    >
-                      <span className="font-bold text-2xl text-volt drop-shadow-[0_0_6px_rgba(0,230,118,0.6)]">
-                        7
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-bold text-sm text-white">Lv.7 Closer</span>
-                        <span className="font-mono text-[10px] font-bold text-volt tabular-nums">
-                          3,450 XP
-                        </span>
-                      </div>
-                      <div
-                        className="h-2 rounded-full overflow-hidden"
-                        style={{ background: 'rgba(255,255,255,0.06)' }}
-                      >
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: '68%',
-                            background: 'linear-gradient(90deg, #00E676 0%, #7dff9f 100%)',
-                            boxShadow: '0 0 8px rgba(0, 230, 118, 0.6)',
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Daily Challenge card */}
-                <div
-                  className="relative glass-volt rounded-2xl p-3.5 max-w-sm mx-auto mt-3"
-                  style={{ transform: 'rotate(-0.5deg)' }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl glass-inset flex items-center justify-center flex-shrink-0">
-                      <Target size={16} className="text-volt" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt">
-                        Daily Drill
-                      </p>
-                      <p className="font-body text-sm text-white truncate">
-                        Daxxify duration objection — under 45s
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Vault entry card */}
-                <div
-                  className="relative glass rounded-2xl p-5 max-w-md mx-auto mt-4"
-                  style={{ transform: 'rotate(0.75deg)' }}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <span className="inline-block glass-inset rounded-md px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
-                          Customer Story
-                        </span>
-                        <span className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt">
-                          <Trophy size={9} />
-                          Personal Best
-                        </span>
-                      </div>
-                      <p className="font-bold text-base text-white leading-tight">
-                        Chen — Botox to Daxxify v3
-                      </p>
-                      <p className="font-mono text-[10px] uppercase tracking-wider text-white/40 mt-1.5">
-                        Mar 28, 2026
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center flex-shrink-0">
-                      <span
-                        className="font-bold text-4xl text-volt leading-none tabular-nums"
-                        style={{ textShadow: '0 0 16px rgba(0, 230, 118, 0.5)' }}
-                      >
-                        9.2
-                      </span>
-                      <span className="font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-white/40 mt-1">
-                        score
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Copy */}
-              <div className="order-1 lg:order-2">
-                <span className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt mb-5">
-                  <BookOpen className="w-3 h-3" />
-                  Story Vault
-                </span>
-                <h2
-                  id="story-vault-heading"
-                  className="font-bold text-[32px] sm:text-[48px] md:text-[64px] leading-[0.9] text-white mb-5 tracking-tight"
-                >
-                  Practice before you&apos;re{' '}
-                  <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                    live
-                  </span>
-                  .
-                </h2>
-                <p className="font-body text-lg sm:text-xl text-white/70 mb-6 leading-relaxed">
-                  Every rep knows what they should&apos;ve said — on the drive
-                  home. StreetNotes gives you a place to rehearse the three
-                  things that actually win deals: your pitch, your objection
-                  comebacks, and your customer stories. Talk them out. Get
-                  scored. Walk in ready.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
-                  {[
-                    { Icon: Rocket, label: 'Your pitch', body: 'The 30-second open that decides whether the rest of the meeting matters. Rehearse it until it sounds natural.' },
-                    { Icon: Shield, label: 'Objection handling', body: '“Too expensive.” “Patients don’t ask for it.” Drill the comebacks until they’re instinct, not improv.' },
-                    { Icon: BookOpen, label: 'Customer stories', body: 'Real wins from the field, turned into short stories you can tell in any injector’s office.' },
-                    { Icon: Mic, label: 'Practice mode', body: 'Talk into your phone. Get scored on clarity, timing, and structure. Try again. Nail it before it counts.' },
-                  ].map((f) => (
-                    <div
-                      key={f.label}
-                      className="glass rounded-xl p-3.5 flex items-start gap-3"
-                    >
-                      <div
-                        className="w-9 h-9 rounded-lg glass-inset flex items-center justify-center flex-shrink-0"
-                        style={{
-                          boxShadow:
-                            'inset 0 2px 4px rgba(0,0,0,0.5), 0 0 12px rgba(0,230,118,0.12)',
-                        }}
-                      >
-                        <f.Icon className="w-4 h-4 text-volt" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-sm text-white leading-tight">
-                          {f.label}
-                        </p>
-                        <p className="font-body text-xs text-white/55 mt-0.5 leading-relaxed">
-                          {f.body}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── FREE TOOL CTA ── */}
-        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="free-tool-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="glass-volt rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
-              {/* Giant watermark */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 flex items-center justify-center font-bold text-[220px] sm:text-[320px] text-volt/[0.04] pointer-events-none select-none leading-none"
-              >
-                MIC
-              </div>
-
-              <div className="relative">
-                <span className="inline-flex items-center gap-2 glass-inset rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-volt animate-pulse" />
-                  Free — no signup required
-                </span>
-
-                <h2
-                  id="free-tool-heading"
-                  className="font-bold text-[32px] sm:text-[56px] md:text-[72px] text-white mb-5 leading-[0.9] tracking-tight"
-                >
-                  Try it after your{' '}
-                  <span className="text-volt drop-shadow-[0_0_30px_rgba(0,230,118,0.45)]">
-                    next call
-                  </span>
-                </h2>
-
-                <p className="font-body text-base sm:text-lg md:text-xl text-white/70 max-w-xl mx-auto mb-10 leading-relaxed">
-                  Talk for 60 seconds. Get your CRM fields, your follow-ups,
-                  and the prep for your next stop. No account. No download. No
-                  reason not to.
-                </p>
-
-                <a
-                  href="/debrief"
-                  className="inline-flex items-center gap-2 font-bold text-lg sm:text-xl bg-volt text-black rounded-xl px-8 py-4 sm:px-10 sm:py-5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
-                >
-                  Try it free
-                  <span aria-hidden="true">→</span>
-                </a>
-
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mt-5">
-                  60 seconds. Structured CRM fields. Free forever.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── BENEFITS ── */}
-        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="benefits-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
-              What changes
-            </span>
-            <h2
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="benefits-heading">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionIntro
+              kicker="What changes"
+              title="What changes when every visit gets remembered"
+              highlight="every visit gets remembered"
               id="benefits-heading"
-              className="font-bold text-[30px] sm:text-[56px] md:text-[72px] lg:text-[88px] leading-[0.9] text-white mt-3 mb-12 sm:mb-16 tracking-tight"
-            >
-              What changes when nothing{' '}
-              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                drops.
-              </span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-              {[
-                {
-                  title: 'You remember every injector',
-                  body: 'Preferences, patient volume, objection history — on every account. You walk in like you were just there yesterday.',
-                },
-                {
-                  title: 'You prep in 30 seconds, not 20 minutes',
-                  body: 'Your pre-visit brief pulls from every conversation on your territory. The right objection, answered, ready to go.',
-                },
-                {
-                  title: 'You see competitive moves early',
-                  body: 'Every brand mention from every rep on your team shows up as territory intelligence — not six months later in a sales-kickoff slide.',
-                },
-                {
-                  title: 'Your CRM is accurate for once',
-                  body: 'Voice in, fields out. No Friday-night CRM catch-up. No forecast calls where you wing it. Pipeline data that actually matches the deals.',
-                },
-              ].map((b) => (
+            />
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {benefits.map((b) => (
                 <div
                   key={b.title}
-                  className="glass rounded-2xl p-6 sm:p-8 hover:border-volt/30 hover:shadow-glow-volt transition-all duration-300 cursor-default"
+                  className="sn-card flex h-full flex-col rounded-2xl p-6 md:min-h-[260px] sm:p-8"
                 >
-                  <h3 className="font-bold text-xl sm:text-2xl md:text-3xl text-white mb-3 leading-tight">
+                  <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl border border-volt/20 bg-volt/10 text-volt shadow-[0_0_24px_rgba(0,230,118,0.12)]">
+                    <b.Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-2xl font-bold leading-tight text-white sm:text-3xl">
                     {b.title}
                   </h3>
-                  <p className="font-body text-white/60 text-base sm:text-lg leading-relaxed">
+                  <p className="mt-3 text-base leading-relaxed text-white/62 sm:text-lg">
                     {b.body}
                   </p>
                 </div>
@@ -754,124 +437,50 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── BRAND LEADER MODULE ── */}
-        <section
-          className="border-t border-volt/10 py-16 sm:py-24"
-          aria-labelledby="brand-leader-heading"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="glass rounded-3xl p-8 sm:p-12 md:p-16 max-w-4xl mx-auto relative overflow-hidden">
-              {/* Background wash */}
-              <div
-                aria-hidden="true"
-                className="absolute -right-10 -top-10 w-72 h-72 pointer-events-none opacity-50"
-                style={{
-                  background:
-                    'radial-gradient(circle, rgba(0,230,118,0.12) 0%, transparent 60%)',
-                }}
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="intel-heading">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+            <div>
+              <SectionIntro
+                kicker="Competitor notes"
+                title="Save what practices say about other brands"
+                highlight="other brands"
+                id="intel-heading"
+                compact
               />
-
-              <div className="relative">
-                <span className="inline-flex items-center gap-2 glass-inset rounded-full px-4 py-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt mb-6">
-                  <Building2 className="w-3 h-3" />
-                  For VPs of Sales at brands
-                </span>
-
-                <h2
-                  id="brand-leader-heading"
-                  className="font-bold text-[28px] sm:text-[44px] md:text-[56px] leading-[0.95] text-white mb-6 tracking-tight"
-                >
-                  Running sales at an aesthetic brand?{' '}
-                  <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                    Your reps have a tool now.
-                  </span>
-                </h2>
-
-                <p className="font-body text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed max-w-2xl">
-                  Veeva was built for pharma. Your horizontal CRM was built for
-                  nobody. Aesthetic practice software was built for the practice.
-                  StreetNotes is the first tool built for the rep — and the
-                  visibility layer you&apos;ve been missing.
-                </p>
-
-                <a
-                  href="/for-leaders"
-                  className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-7 py-4 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt-lg"
-                >
-                  Request a pilot
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
+              <p className="mt-6 text-lg leading-relaxed text-white/70 sm:text-xl">
+                If a practice mentions another product, StreetNotes saves it.
+                Your team can see which other brands are coming up in the field.
+              </p>
             </div>
+            <IntelPreview />
           </div>
         </section>
 
-        {/* ── CREDIBILITY ── */}
-        <section className="border-t border-volt/10 py-16 sm:py-24" aria-labelledby="credibility-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold">
-              Why us
-            </span>
-            <h2
-              id="credibility-heading"
-              className="font-bold text-[28px] sm:text-[52px] md:text-[68px] lg:text-[84px] leading-[0.9] text-white mt-3 mb-8 sm:mb-12 tracking-tight"
-            >
-              Built by people{' '}
-              <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
-                from inside the industry
-              </span>
-            </h2>
-
-            {/* Founder card */}
-            <div className="glass rounded-2xl p-6 sm:p-10 md:p-12 max-w-3xl mb-8">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80 font-bold mb-3">
-                Our co-founder
-              </p>
-              <p className="font-body text-lg sm:text-xl md:text-2xl text-white/85 mb-5 leading-relaxed">
-                <ShinyText
-                  text="Spent years inside aesthetic software —"
-                  color="#e5e7eb"
-                  shineColor="#00E676"
-                  speed={3}
-                  spread={120}
-                  className="font-body text-lg sm:text-xl md:text-2xl"
-                />{' '}
-                building the tools your accounts actually use every day.
-              </p>
-              <p className="font-body text-base sm:text-lg text-white/60 leading-relaxed">
-                He watched brand reps walk in with pharma CRMs that couldn&apos;t
-                handle aesthetic reality: unit counts, injector preferences,
-                practice-manager dynamics. He watched injectors get asked for
-                the same unit ranges three visits in a row because nothing got
-                remembered in between. StreetNotes is what he wishes he&apos;d
-                had then.
-              </p>
-            </div>
-
-            {/* Insider-language proof grid */}
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="story-vault-heading">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+            <StoryVaultPreview />
             <div>
-              <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt/80 font-bold mb-5">
-                StreetNotes knows…
+              <SectionIntro
+                kicker="Story vault"
+                title="Practice what to say next"
+                highlight="Practice"
+                id="story-vault-heading"
+                compact
+              />
+              <p className="mt-6 text-lg leading-relaxed text-white/70 sm:text-xl">
+                Turn real visit notes into short practice sessions. Work on
+                what to say before the next meeting.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {[
-                  '40 units vs 100 units is a different patient conversation',
-                  'Daxxify duration objection ≠ Xeomin objection',
-                  '“Filler fatigue” is a real buying signal',
-                  'Practice manager ≠ MA ≠ injector — different asks, different timing',
-                  'RHA, Restylane, Juvéderm, Versa are not the same conversation',
-                  'Aesthetic Next, AMWC, Vegas Cosmetic — buying windows, not just conferences',
-                ].map((fact) => (
-                  <div
-                    key={fact}
-                    className="glass rounded-xl p-4 flex items-start gap-3"
-                  >
-                    <div className="w-7 h-7 rounded-lg glass-inset flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-volt" />
-                    </div>
-                    <p className="font-body text-sm sm:text-base text-white/80 leading-relaxed">
-                      {fact}
-                    </p>
+                  { Icon: Shield, label: 'Practice answers' },
+                  { Icon: Trophy, label: 'Score your practice' },
+                  { Icon: Target, label: 'Daily practice' },
+                  { Icon: Users, label: 'Team story library' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3.5">
+                    <item.Icon className="h-4 w-4 text-volt" aria-hidden="true" />
+                    <span className="text-sm font-bold text-white/86">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -879,99 +488,473 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── FINAL CTA ── */}
-        <section className="border-t border-volt/10 py-16 sm:py-28 relative" aria-labelledby="final-cta-heading">
-          {/* Ambient glow */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 pointer-events-none opacity-60"
-            style={{
-              background:
-                'radial-gradient(ellipse at center, rgba(0,230,118,0.18) 0%, transparent 60%)',
-            }}
-          />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <h2
-              id="final-cta-heading"
-              className="font-bold text-[40px] sm:text-[80px] md:text-[112px] lg:text-[140px] leading-[0.9] text-white mb-6 tracking-tight"
-            >
-              Nothing{' '}
-              <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
-                drops.
-              </span>
-            </h2>
-            <p className="font-body text-lg sm:text-xl md:text-2xl text-white/60 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
-              Every conversation. Every preference. Every objection. All in.
-            </p>
-
-            <div className="mb-10 flex justify-center">
-              <BetaCounter />
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="testimonials-heading">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionIntro
+              kicker="Field proof"
+              title="Reps use it because it is simple"
+              highlight="simple"
+              id="testimonials-heading"
+            />
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {testimonials.map((t) => (
+                <figure
+                  key={t.name}
+                  className="sn-card flex h-full flex-col rounded-2xl p-6 md:min-h-[315px] sm:p-8"
+                >
+                  <div className="mb-5 flex items-center justify-between gap-4">
+                    <Quote className="h-8 w-8 text-volt" aria-hidden="true" />
+                    <div className="flex gap-1 text-[#fbbf24]" aria-label="5 out of 5 stars">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="h-4 w-4 fill-current" aria-hidden="true" />
+                      ))}
+                    </div>
+                  </div>
+                  <blockquote className="text-lg leading-relaxed text-white/82">
+                    &ldquo;{t.quote}&rdquo;
+                  </blockquote>
+                  <figcaption className="mt-auto flex items-center gap-3 pt-6">
+                    <span className="grid h-11 w-11 place-items-center rounded-full border border-volt/25 bg-volt/12 font-bold text-volt">
+                      {t.initials}
+                    </span>
+                    <span>
+                      <span className="block font-bold text-white">{t.name}</span>
+                      <span className="block text-sm text-white/52">{t.role}</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
             </div>
+          </div>
+        </section>
 
-            {/* Dual CTAs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto text-left">
-              {/* Rep track */}
-              <div className="glass rounded-2xl p-6 sm:p-8">
-                <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt font-bold mb-4">
-                  For the field
-                </p>
-                <p className="font-bold text-xl sm:text-2xl text-white mb-5 leading-tight">
-                  Join the beta.
-                </p>
-                <WaitlistForm />
-              </div>
-
-              {/* Brand leader track */}
-              <div className="glass-volt rounded-2xl p-6 sm:p-8 flex flex-col">
-                <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-volt font-bold mb-4">
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="leaders-heading">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="sn-card relative overflow-hidden rounded-3xl p-6 min-[380px]:p-8 sm:p-12 md:p-16">
+              <div className="absolute inset-y-0 right-0 hidden w-1/3 bg-[linear-gradient(90deg,transparent,rgba(251,191,36,0.13))] lg:block" aria-hidden="true" />
+              <div className="relative max-w-3xl">
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#fbbf24]/25 bg-[#fbbf24]/10 px-4 py-2 font-mono text-xs font-bold uppercase text-[#fbbf24]">
+                  <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
                   For sales leaders
-                </p>
-                <p className="font-bold text-xl sm:text-2xl text-white mb-5 leading-tight">
-                  Request a pilot.
-                </p>
-                <p className="font-body text-sm sm:text-base text-white/70 mb-6 leading-relaxed flex-1">
-                  Purpose-built for aesthetic sales teams, deployed at 150–200
-                  seats.
+                </div>
+                <h2 id="leaders-heading" className="font-display text-[42px] leading-[0.95] text-white sm:text-[64px] md:text-[78px]">
+                  Give your reps an easier way to fill CRM.
+                </h2>
+                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70 sm:text-xl">
+                  StreetNotes helps reps push better field updates into
+                  Salesforce or Veeva after every visit, including opportunity
+                  updates when a deal moves. Leaders get cleaner CRM data and a
+                  clearer view of what is happening with customers.
                 </p>
                 <a
                   href="/for-leaders"
-                  className="inline-flex items-center gap-2 font-bold text-base sm:text-lg bg-volt text-black rounded-xl px-6 py-3.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] shadow-glow-volt self-start"
+                  className="mt-8 inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-volt px-7 py-4 font-bold text-black shadow-glow-volt transition-all duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
                 >
                   Request a pilot
-                  <span aria-hidden="true">→</span>
+                  <ArrowRight size={19} aria-hidden="true" />
                 </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-volt/10 py-12 sm:py-24" aria-labelledby="faq-heading">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:px-8">
+            <div>
+              <SectionIntro
+                kicker="FAQ"
+                title="Common questions"
+                highlight="questions"
+                id="faq-heading"
+                compact
+              />
+              <p className="mt-6 text-lg leading-relaxed text-white/66">
+                Clear answers before you try StreetNotes.
+              </p>
+            </div>
+            <div className="space-y-3">
+              {faqs.map((faq) => (
+                <details key={faq.question} className="sn-faq rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                  <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-bold text-white sm:text-lg">
+                    {faq.question}
+                    <span className="sn-faq-icon grid h-8 w-8 flex-shrink-0 place-items-center rounded-full border border-volt/20 bg-volt/10 text-volt">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/62">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-volt/10 py-12 sm:py-28" aria-labelledby="final-cta-heading">
+          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+            <div className="mx-auto mb-8 flex justify-center">
+              <BetaCounter />
+            </div>
+            <h2 id="final-cta-heading" className="font-display text-[52px] leading-[0.9] text-white min-[380px]:text-[58px] sm:text-[104px] md:text-[136px]">
+              Try it after your{' '}
+              <span className="text-volt drop-shadow-[0_0_40px_rgba(0,230,118,0.45)]">
+                next visit.
+              </span>
+            </h2>
+            <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-white/64 sm:text-xl md:text-2xl">
+              Talk for one minute. See the CRM fields and opportunity update it
+              creates. Decide if it helps before you sign up for anything.
+            </p>
+
+            <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-5 text-left md:grid-cols-2">
+              <div className="rounded-2xl border border-volt/35 bg-volt/12 p-6 shadow-glow-volt sm:p-8">
+                <p className="font-mono text-xs font-bold uppercase text-volt">For the field</p>
+                <p className="mt-3 text-2xl font-bold leading-tight text-white">
+                  Try the free visit recap.
+                </p>
+                <p className="mt-4 text-base leading-relaxed text-white/72">
+                  No signup. No credit card. Run a real 60-second recap and
+                  see the Salesforce/Veeva-ready fields and opportunity update
+                  immediately.
+                </p>
+                <a
+                  href="/debrief"
+                  className="mt-6 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-volt px-6 py-3.5 font-bold text-black shadow-glow-volt transition-all duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
+                >
+                  Try it free
+                  <ArrowRight size={18} aria-hidden="true" />
+                </a>
+              </div>
+
+              <div className="rounded-2xl border border-volt/24 bg-volt/10 p-6 shadow-glow-volt sm:p-8">
+                <p className="font-mono text-xs font-bold uppercase text-volt">For sales leaders</p>
+                <p className="mt-3 text-2xl font-bold leading-tight text-white">Request a pilot.</p>
+                <p className="mt-4 text-base leading-relaxed text-white/70">
+                  Help your team fill the right CRM fields and keep
+                  opportunities current.
+                </p>
+                <a
+                  href="/for-leaders"
+                  className="mt-6 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-volt px-6 py-3.5 font-bold text-black transition-all duration-200 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
+                >
+                  Request a pilot
+                  <ArrowRight size={18} aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+
+            <div id="waitlist" className="sn-card mx-auto mt-6 max-w-3xl rounded-2xl p-6 text-left sm:p-8">
+              <p className="font-mono text-xs font-bold uppercase text-volt">
+                Want early access updates too?
+              </p>
+              <p className="mt-3 text-xl font-bold leading-tight text-white sm:text-2xl">
+                Join the beta list after you try the free tool.
+              </p>
+              <div className="mt-5">
+                <WaitlistForm />
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-volt/10 py-8 sm:py-10 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      <footer className="relative z-10 border-t border-volt/10 bg-black/22 py-10">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 md:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
+          <div>
             <Logo size="sm" href={null} />
-            <ShinyText
-              text="— a ForgeTime.ai product"
-              color="#4b5563"
-              shineColor="#00E676"
-              speed={3}
-              spread={120}
-              className="font-mono text-[10px] uppercase tracking-[0.15em]"
-            />
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/55">
+              Voice-to-CRM for sales reps. Talk after a visit and get CRM
+              fields, tasks, and opportunity updates ready for Salesforce or
+              Veeva.
+            </p>
+            <p className="mt-4 font-mono text-xs uppercase text-volt/78">
+              hello@streetnotes.ai
+            </p>
           </div>
+          <div>
+            <h3 className="font-bold text-white">Product</h3>
+            <ul className="mt-4 space-y-3 text-sm text-white/58">
+              <li><a href="/debrief" className="inline-flex min-h-[44px] min-w-[44px] items-center hover:text-volt">Try free visit recap</a></li>
+              <li><a href="/for-leaders" className="inline-flex min-h-[44px] min-w-[44px] items-center hover:text-volt">Sales leader pilot</a></li>
+              <li><a href="/voice-to-crm-aesthetic-sales-reps" className="inline-flex min-h-[44px] min-w-[44px] items-center hover:text-volt">Voice-to-CRM overview</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-bold text-white">Legal</h3>
+            <ul className="mt-4 space-y-3 text-sm text-white/58">
+              <li><a href="/contact" className="inline-flex min-h-[44px] min-w-[44px] items-center hover:text-volt">Contact</a></li>
+              <li><a href="/privacy" className="inline-flex min-h-[44px] min-w-[44px] items-center hover:text-volt">Privacy</a></li>
+              <li><a href="/terms" className="inline-flex min-h-[44px] min-w-[44px] items-center hover:text-volt">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="mx-auto mt-8 flex max-w-7xl flex-col gap-3 border-t border-white/10 px-4 pt-6 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <ShinyText
-            text="Built for aesthetic reps who carry the bag"
-            color="#4b5563"
+            text="StreetNotes.ai - a ForgeTime.ai product"
+            color="#6b7280"
             shineColor="#00E676"
             speed={3}
             spread={120}
-            delay={1.5}
-            className="font-mono text-[10px] uppercase tracking-[0.15em]"
+            className="font-mono text-xs uppercase"
           />
+          <p className="font-mono text-xs uppercase text-white/36">
+            Copyright 2026 StreetNotes.ai. All rights reserved.
+          </p>
         </div>
       </footer>
+    </div>
+  )
+}
+
+function SectionIntro({
+  kicker,
+  title,
+  highlight,
+  id,
+  compact = false,
+}: {
+  kicker: string
+  title: string
+  highlight: string
+  id: string
+  compact?: boolean
+}) {
+  const [before, after] = title.split(highlight)
+
+  return (
+    <div className={compact ? '' : 'mb-12 sm:mb-16'}>
+      <span className="font-mono text-xs font-bold uppercase text-volt/82">{kicker}</span>
+      <h2
+        id={id}
+        className={`mt-3 font-display leading-[0.9] text-white ${
+          compact ? 'text-[38px] min-[380px]:text-[42px] sm:text-[64px] md:text-[78px]' : 'text-[40px] min-[380px]:text-[46px] sm:text-[76px] md:text-[96px]'
+        }`}
+      >
+        {before}
+        <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
+          {highlight}
+        </span>
+        {after}
+      </h2>
+    </div>
+  )
+}
+
+function ComparisonCard({
+  label,
+  title,
+  body,
+  tone = 'volt',
+}: {
+  label: string
+  title: string
+  body: string
+  tone?: 'volt' | 'red'
+}) {
+  return (
+    <div
+      className={`sn-compare-card rounded-2xl p-6 sm:p-8 lg:p-10 ${
+        tone === 'volt' ? 'sn-card sn-streetnotes-card' : 'sn-before-card'
+      }`}
+    >
+      <span className={`font-mono text-xs font-bold uppercase ${tone === 'volt' ? 'text-volt' : 'text-red-300/82'}`}>
+        {label}
+      </span>
+      <p className={`mt-4 text-2xl font-bold leading-tight min-[380px]:text-3xl sm:text-4xl ${tone === 'volt' ? 'text-white' : 'text-white/56'}`}>
+        {title}
+      </p>
+      <p className="mt-4 text-base leading-relaxed text-white/62 sm:text-lg">
+        {body}
+      </p>
+    </div>
+  )
+}
+
+function ProductConsole() {
+  return (
+    <div className="relative">
+      <div className="absolute -inset-5 rounded-[2rem] bg-[linear-gradient(135deg,rgba(0,230,118,0.2),rgba(125,211,252,0.12),rgba(251,191,36,0.08))] blur-2xl" aria-hidden="true" />
+      <div className="sn-card relative overflow-hidden rounded-3xl p-4 shadow-glass-lift-lg sm:p-5">
+        <div className="mb-4 flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl border border-volt/30 bg-volt/12">
+              <Mic className="h-5 w-5 text-volt" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="font-bold text-white">Visit recap</p>
+              <p className="text-sm text-white/50">Patel Aesthetics</p>
+            </div>
+          </div>
+          <span className="rounded-full border border-volt/22 bg-volt/10 px-3 py-1 font-mono text-xs font-bold text-volt">
+            00:47
+          </span>
+        </div>
+
+        <div className="space-y-3">
+          {[
+            { label: 'CRM field: interest', value: 'A longer-lasting treatment option', color: 'bg-volt' },
+            { label: 'CRM field: question', value: 'Does it cost more, and is it worth it?', color: 'bg-[#fbbf24]' },
+            { label: 'Opportunity update', value: 'Create trial opportunity for Patel Aesthetics', color: 'bg-[#7dd3fc]' },
+          ].map((item) => (
+            <div key={item.label} className="rounded-2xl border border-white/10 bg-black/22 p-4">
+              <div className="flex items-center gap-2">
+                <span className={`h-2 w-2 rounded-full ${item.color}`} />
+                <p className="font-mono text-[11px] font-bold uppercase text-white/45">{item.label}</p>
+              </div>
+              <p className="mt-2 text-base font-bold leading-snug text-white">{item.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-volt/20 bg-volt/10 p-4">
+          <div className="flex items-center gap-2 text-volt">
+            <Lock className="h-4 w-4" aria-hidden="true" />
+            <p className="font-mono text-[11px] font-bold uppercase">Review before CRM update</p>
+          </div>
+          <p className="mt-2 text-sm leading-relaxed text-white/68">
+            You approve each field, task, and opportunity change before it is
+            pushed to Salesforce or Veeva.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function OutputPreview() {
+  return (
+    <div className="sn-card rounded-3xl p-4 sm:p-6">
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <div>
+          <p className="font-mono text-xs font-bold uppercase text-volt">CRM field preview</p>
+          <h3 className="mt-1 text-2xl font-bold text-white">Patel Aesthetics</h3>
+        </div>
+        <Clock className="h-6 w-6 text-[#7dd3fc]" aria-hidden="true" />
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {[
+          ['Contact field', 'Dr. Priya Patel'],
+          ['Product field', 'Botox, trying another option'],
+          ['Question field', 'Will patients pay more if it lasts longer?'],
+          ['Opportunity field', 'Create trial opportunity'],
+          ['Task field', 'Send a short info sheet and check in Friday'],
+        ].map(([label, value]) => (
+          <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+            <p className="font-mono text-[11px] font-bold uppercase text-white/42">{label}</p>
+            <p className="mt-2 text-sm font-bold leading-snug text-white sm:text-base">{value}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 rounded-2xl border border-[#fbbf24]/20 bg-[#fbbf24]/10 p-4">
+        <p className="font-mono text-[11px] font-bold uppercase text-[#fbbf24]">Push target</p>
+        <p className="mt-2 text-sm leading-relaxed text-white/72">
+          Approved fields update the matching record, or create a new
+          opportunity when the visit creates a real sales chance.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function IntelPreview() {
+  return (
+    <div className="relative min-h-0 sm:min-h-[420px]">
+      <div className="sn-card relative ml-auto max-w-md rounded-2xl p-4 min-[380px]:p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <span className="font-mono text-xs font-bold uppercase text-volt/82">Other brands mentioned</span>
+          <span className="font-mono text-xs text-white/42">Last 30 days</span>
+        </div>
+        <div className="space-y-3">
+          {competitorRows.map((c) => (
+            <div key={c.name} className="flex items-center gap-3">
+              <span className="w-20 truncate text-xs font-bold text-white">{c.name}</span>
+              <div className="flex-1">
+                <div
+                  className="flex h-5 overflow-hidden rounded-md border border-white/10 bg-white/[0.04]"
+                  style={{ width: `${c.pct}%`, minWidth: 20 }}
+                >
+                  <div className="h-full bg-volt" style={{ width: `${c.pos}%` }} />
+                  <div className="h-full bg-red-400" style={{ width: `${c.neg}%` }} />
+                  <div className="h-full bg-slate-300" style={{ width: `${100 - c.pos - c.neg}%` }} />
+                </div>
+              </div>
+              <span className="w-6 text-right text-sm font-bold tabular-nums text-white">{c.count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="sn-card relative mr-auto mt-4 max-w-sm rounded-2xl p-5">
+        <div className="flex items-start gap-3">
+          <MessageSquareQuote className="mt-0.5 h-5 w-5 flex-shrink-0 text-volt" aria-hidden="true" />
+          <div>
+            <p className="text-sm italic leading-relaxed text-white/84">
+              &ldquo;Dr. Patel said her patients keep asking if the longer-lasting option is worth the higher price.&rdquo;
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="rounded-md border border-volt/20 bg-volt/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-volt">
+                Daxxify
+              </span>
+              <span className="font-mono text-[10px] uppercase text-white/48">Worth following up</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="relative mt-4 max-w-[270px] rounded-2xl border border-[#7dd3fc]/22 bg-[#7dd3fc]/10 p-4 min-[380px]:ml-8">
+        <div className="flex items-center gap-3">
+          <FileText className="h-5 w-5 text-[#7dd3fc]" aria-hidden="true" />
+          <div>
+            <p className="font-mono text-[10px] font-bold uppercase text-[#7dd3fc]">Weekly summary</p>
+            <p className="text-sm font-bold text-white">Customers keep asking about price</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function StoryVaultPreview() {
+  return (
+    <div className="relative order-2 min-h-0 lg:order-1 lg:min-h-[410px]">
+      <div className="sn-card mx-auto max-w-md rounded-2xl p-4">
+        <div className="flex items-center gap-4">
+          <div className="grid h-14 w-14 place-items-center rounded-2xl border border-volt/40 bg-volt/10">
+            <span className="font-display text-4xl leading-none text-volt">7</span>
+          </div>
+          <div className="flex-1">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm font-bold text-white">Lv.7 Closer</span>
+              <span className="font-mono text-xs font-bold text-volt tabular-nums">3,450 XP</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-white/8">
+              <div className="h-full w-[68%] rounded-full bg-[linear-gradient(90deg,#00E676,#7dd3fc)]" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto mt-4 max-w-sm rounded-2xl border border-volt/24 bg-volt/10 p-4">
+        <div className="flex items-center gap-3">
+          <Target className="h-5 w-5 text-volt" aria-hidden="true" />
+          <div>
+            <p className="font-mono text-[10px] font-bold uppercase text-volt">Daily practice</p>
+            <p className="text-sm text-white">Answer the price question in under 45 seconds</p>
+          </div>
+        </div>
+      </div>
+      <div className="sn-card mx-auto mt-4 max-w-md rounded-2xl p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <span className="rounded-md border border-volt/20 bg-volt/10 px-2 py-1 font-mono text-[10px] font-bold uppercase text-volt">
+              Customer story
+            </span>
+            <p className="mt-3 text-lg font-bold leading-tight text-white">Chen follow-up story v3</p>
+            <p className="mt-1 font-mono text-xs uppercase text-white/42">Personal best</p>
+          </div>
+          <div className="text-center">
+            <span className="font-display text-6xl leading-none text-volt">9.2</span>
+            <span className="block font-mono text-[10px] uppercase text-white/42">score</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

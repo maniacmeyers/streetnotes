@@ -14,7 +14,7 @@ const SIZE_MAP: Record<LogoSize, { h: number; w: number; cls: string }> = {
   xs: { h: 24, w: 100, cls: 'h-6 w-auto' },
   sm: { h: 32, w: 133, cls: 'h-8 w-auto' },
   md: { h: 40, w: 166, cls: 'h-10 w-auto' },
-  lg: { h: 56, w: 233, cls: 'h-12 sm:h-14 w-auto' },
+  lg: { h: 56, w: 233, cls: 'h-9 max-w-[148px] min-[380px]:h-10 min-[380px]:max-w-[166px] sm:h-14 sm:max-w-none w-auto' },
 }
 
 export default function Logo({

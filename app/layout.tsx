@@ -22,10 +22,50 @@ const ranchers = Ranchers({
 })
 
 export const metadata: Metadata = {
-  title: 'StreetNotes.ai — Voice-to-CRM for Sales Reps',
+  metadataBase: new URL('https://streetnotes.ai'),
+  title: {
+    default: 'StreetNotes.ai | Voice-to-CRM for Sales Reps',
+    template: '%s | StreetNotes.ai',
+  },
   description:
-    'Stop losing deals because you forgot what happened in the parking lot. Hit record, talk, and your CRM updates itself.',
+    'Try StreetNotes free. Talk for 60 seconds after a sales visit and get CRM fields, tasks, and opportunity updates ready for Salesforce or Veeva.',
+  keywords: [
+    'voice to CRM',
+    'sales reps',
+    'medical aesthetics CRM',
+    'field sales notes',
+    'Veeva CRM',
+    'sales call debrief',
+    'competitive intelligence for sales teams',
+  ],
   applicationName: 'StreetNotes',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'StreetNotes.ai | Voice-to-CRM for Sales Reps',
+    description:
+      'Try StreetNotes free. Talk after a sales visit and get CRM fields, tasks, and opportunity updates ready for Salesforce or Veeva.',
+    url: 'https://streetnotes.ai',
+    siteName: 'StreetNotes.ai',
+    images: [
+      {
+        url: '/icon-512.png',
+        width: 512,
+        height: 512,
+        alt: 'StreetNotes.ai logo',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'StreetNotes.ai | Voice-to-CRM for Sales Reps',
+    description:
+      'Try the free 60-second visit recap and see the CRM fields and opportunity update it creates.',
+    images: ['/icon-512.png'],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

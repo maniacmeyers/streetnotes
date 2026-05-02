@@ -6,16 +6,16 @@ import LeaderContactForm from '@/components/leader-contact-form'
 export const metadata: Metadata = {
   title: 'StreetNotes for Sales Leaders — Field intelligence for aesthetic sales teams',
   description:
-    'StreetNotes is the field-intelligence layer for aesthetic sales teams. Purpose-built for injectable and device reps, deployed at 150–200 seats. Request a 60-day pilot.',
+    'StreetNotes is the field-intelligence layer for aesthetic sales teams. Purpose-built for injectable and device reps. Request a 30-day pilot with up to 25 seats.',
 }
 
 const gapItems = [
   {
-    label: 'Pharma CRMs (Veeva)',
-    body: 'Built for the pharma rep-to-physician detail call. Don’t understand injectors, unit counts, practice managers, or the way aesthetic buying cycles actually work.',
+    label: 'Legacy CRM workflows (Veeva)',
+    body: 'Built around rep activity and required fields. StreetNotes adds the missing visit context: injectors, unit counts, practice managers, and aesthetic buying cycles.',
   },
   {
-    label: 'Horizontal CRMs (Salesforce, HubSpot)',
+    label: 'Horizontal CRMs (Salesforce)',
     body: 'Built for everyone, optimized for no one. Your reps bend their workflow to fit the tool. Most of the field intelligence never makes it in.',
   },
   {
@@ -30,20 +30,20 @@ const gapItems = [
 
 const pilotPhases = [
   {
-    label: 'Week 0 — Kickoff',
-    body: 'We sit down with your sales leadership and define what success looks like. Usually: unit-count lift in the cohort, trial conversions, and how fast new competitor moves show up in your pipeline. Rep cohort selected — 25 seats across 2–3 territories.',
+    label: 'Day 0 — Kickoff',
+    body: 'We sit down with your sales leadership and define what success looks like. Usually: unit-count lift in the cohort, trial conversions, and how fast new competitor moves show up in your pipeline. Rep cohort selected — up to 25 seats across 2–3 territories.',
   },
   {
-    label: 'Weeks 1–2 — Onboarding',
-    body: 'Our team runs rep training. We stand up the CRM integration (Salesforce or HubSpot). Your territory data loads. First injector debriefs get recorded before week two is done.',
+    label: 'Days 1–7 — Onboarding',
+    body: 'Our team runs rep training. We stand up the CRM integration path for Salesforce or Veeva, load the territory context, and get the first injector debriefs recorded in week one.',
   },
   {
-    label: 'Weeks 3–8 — In production',
-    body: 'Reps use it daily. Weekly rollup review with your sales leadership. Territory heatmap shows competitor shifts your reps are seeing in real time — usually weeks before they surface in pipeline data.',
+    label: 'Days 8–23 — In production',
+    body: 'Reps use it daily. Weekly rollup reviews with your sales leadership show account memory, objection patterns, and competitor shifts your reps are seeing in real time.',
   },
   {
-    label: 'Week 9 — Decision',
-    body: 'Results review against the metrics you set. Expand to full brand deployment (150–200 seats) or walk. No pressure, no lock-in, no cleanup cost if you walk.',
+    label: 'Days 24–30 — Decision',
+    body: 'Results review against the metrics you set. Expand, extend, or walk. No pressure, no multi-year lock-in, no cleanup cost if you walk.',
   },
 ]
 
@@ -59,11 +59,11 @@ const dashboardCapabilities = [
 const faqItems = [
   {
     q: 'How is this different from Veeva?',
-    a: 'Veeva was built for pharma — prescription-driven, heavily regulated, call-plan-centric. Aesthetics runs on a different engine: injector relationships, unit counts, practice-manager dynamics, buying windows around conferences. Veeva doesn’t model any of that. StreetNotes was built for it from the first line of code.',
+    a: 'Veeva is the system many teams already use to record activity. StreetNotes is the field layer reps actually use after a visit: it captures injector relationships, unit counts, practice-manager dynamics, buying windows, and follow-ups, then prepares the right fields for Veeva or Salesforce.',
   },
   {
     q: 'Which CRMs do you integrate with?',
-    a: 'Salesforce and HubSpot are live today. Others — including Veeva, if your org is on it — can be added as part of a pilot scope.',
+    a: 'StreetNotes is being built around Salesforce and Veeva first. Pilot scope includes mapping the fields your reps need to update.',
   },
   {
     q: 'What about recording consent and data security?',
@@ -79,7 +79,7 @@ const faqItems = [
   },
   {
     q: 'What does the contract look like?',
-    a: '60-day paid pilot at 25 seats. If the success metrics we set together are hit, expand to annual at $179/seat for 10 or more seats. Manager seat is free on any multi-rep team. No multi-year lock-in.',
+    a: '30-day paid pilot with up to 25 seats. If the success metrics we set together are hit, expand to annual at $179/seat for 10 or more seats. Manager seat is free on any multi-rep team. No multi-year lock-in.',
   },
 ]
 
@@ -152,8 +152,8 @@ export default function ForLeadersPage() {
               Switching stories. The field intelligence that actually moves
               share stays in your reps&apos; heads. StreetNotes captures it 60
               seconds after each visit and structures it into your CRM —
-              purpose-built for aesthetic sales teams, deployed at 150–200
-              seats.
+              purpose-built for aesthetic sales teams and piloted with up to
+              25 seats before wider rollout.
             </p>
 
             <a
@@ -213,14 +213,14 @@ export default function ForLeadersPage() {
               id="deploy-heading"
               className="font-bold text-[28px] sm:text-[48px] md:text-[64px] leading-[0.95] text-white mt-3 mb-4 tracking-tight"
             >
-              60-day pilot.{' '}
+              30-day pilot.{' '}
               <span className="text-volt drop-shadow-[0_0_24px_rgba(0,230,118,0.3)]">
                 Hands-on.
               </span>
             </h2>
             <p className="font-body text-lg sm:text-xl text-white/70 mb-10 sm:mb-14 leading-relaxed max-w-3xl">
-              25 seats, 9 weeks, success metrics defined with you upfront.
-              Expand or walk. No multi-year lock-in.
+              Up to 25 seats, 30 days, success metrics defined with you
+              upfront. Expand, extend, or walk. No multi-year lock-in.
             </p>
 
             <div className="space-y-3 sm:space-y-4">
@@ -308,13 +308,13 @@ export default function ForLeadersPage() {
                   $199<span className="text-2xl text-white/60">/seat/mo</span>
                 </p>
                 <p className="font-body text-white/60 text-sm sm:text-base mb-6">
-                  25 seats, 60 days. Full functionality, manager seat included.
+                  Up to 25 seats, 30 days. Full functionality, manager seat included.
                 </p>
                 <ul className="space-y-2 text-white/70 text-sm sm:text-base">
                   <li>· Success metrics defined upfront</li>
                   <li>· Hands-on onboarding</li>
                   <li>· Weekly leadership review</li>
-                  <li>· Month-to-month during pilot</li>
+                  <li>· Clear expand, extend, or walk decision</li>
                 </ul>
               </div>
 
