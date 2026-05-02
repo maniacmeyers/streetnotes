@@ -227,6 +227,11 @@ export async function seedStandardPitchesForDomain(
  * Ensure the standard pitches exist in the team vault for the given
  * domain. If any standard pitches are already present, this is a no-op.
  */
+/**
+ * Make sure all 3 standard pitches exist in the team vault for the
+ * given domain. Re-seeds if fewer than 3 are present (handles partial
+ * inserts from a prior failed run).
+ */
 export async function ensureStandardPitchesForDomain(
   supabase: SupabaseClient,
   domain: string,
@@ -237,10 +242,9 @@ export async function ensureStandardPitchesForDomain(
     .select('id')
     .eq('bdr_email', standardEmail)
     .eq('shared_to_team', true)
-    .limit(1)
 
   if (error) return
-  if (data && data.length > 0) return
+  if (data && data.length >= STANDARD_PITCHES.length) return
 
   await seedStandardPitchesForDomain(supabase, domain)
 }

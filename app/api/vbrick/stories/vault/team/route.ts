@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isVbrickUser } from '@/lib/vbrick/config'
-import {
-  ensureStandardPitchesForDomain,
-  STANDARD_PITCH_DOMAINS,
-} from '@/lib/vbrick/seeds/standard-pitches'
+import { ensureStandardPitchesForDomain } from '@/lib/vbrick/seeds/standard-pitches'
 
 export const runtime = 'nodejs'
 
@@ -82,15 +79,14 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient()
 
-  // For authorized standard-pitch domains, lazily seed the 3 standard
-  // elevator pitches if they're missing. Idempotent — no-op when already
-  // seeded.
-  if ((STANDARD_PITCH_DOMAINS as readonly string[]).includes(domain)) {
-    try {
-      await ensureStandardPitchesForDomain(supabase, domain)
-    } catch {
-      // Non-fatal — continue with whatever's already in the vault.
-    }
+  // Seed the 3 standard Vbrick pitches into the caller's domain if
+  // they're not already there. Idempotent — no-op when seeded. We do
+  // this for ANY non-free domain so a new VBrick tenant doesn't have
+  // to be hardcoded into a list to see the canonical pitches.
+  try {
+    await ensureStandardPitchesForDomain(supabase, domain)
+  } catch {
+    // Non-fatal — continue with whatever's already in the vault.
   }
 
   const { data, error } = await supabase

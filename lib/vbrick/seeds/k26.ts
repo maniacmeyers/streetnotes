@@ -323,19 +323,23 @@ export async function seedK26Campaign(
 }
 
 /**
- * Make sure the K26 campaign exists. No-op if a K26 row is already in
- * the campaigns table.
+ * Make sure an ACTIVE K26 campaign exists. If a K26 row exists but its
+ * status is draft / archived / rejected (e.g. from an old manual seed),
+ * this re-seeds — `seedK26Campaign` wipes prior K26 rows then inserts
+ * a fresh 'active' row. Non-Jeff BDRs only see active/approved
+ * campaigns, so a stuck-draft row is invisible to the team.
+ *
+ * No-op when an active K26 row already exists.
  */
 export async function ensureK26Campaign(supabase: SupabaseClient): Promise<void> {
   const { data, error } = await supabase
     .from('campaigns')
-    .select('id')
+    .select('id, status')
     .eq('created_by', K26_OWNER)
     .eq('event_name', K26_EVENT)
-    .limit(1)
 
   if (error) return
-  if (data && data.length > 0) return
+  if (data && data.some((r) => r.status === 'active')) return
 
   await seedK26Campaign(supabase)
 }

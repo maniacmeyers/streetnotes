@@ -20,19 +20,22 @@ interface LeaderboardProps {
 }
 
 function TrendArrow({ value }: { value: number }) {
-  if (value > 0.5) return <TrendingUp className="w-3.5 h-3.5" style={{ color: neuTheme.colors.score.green }} />
-  if (value < -0.5) return <TrendingDown className="w-3.5 h-3.5" style={{ color: neuTheme.colors.score.red }} />
-  return <Minus className="w-3.5 h-3.5" style={{ color: neuTheme.colors.text.subtle }} />
+  if (value > 0.5) return <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" style={{ color: neuTheme.colors.score.green }} />
+  if (value < -0.5) return <TrendingDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" style={{ color: neuTheme.colors.score.red }} />
+  return <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" style={{ color: neuTheme.colors.text.subtle }} />
 }
 
-function PlayerAvatar({ name, isLeading }: { name: string; isLeading: boolean }) {
+function PlayerAvatar({ name, isLeading, size = 48 }: { name: string; isLeading: boolean; size?: number }) {
   const initial = name.charAt(0).toUpperCase()
   return (
-    <div className="relative">
+    <div className="relative" style={{ width: size, height: size }}>
       <div
-        className="w-12 h-12 rounded-full flex items-center justify-center font-inter font-bold text-lg"
-        style={
-          isLeading
+        className="rounded-full flex items-center justify-center font-inter font-bold"
+        style={{
+          width: size,
+          height: size,
+          fontSize: size * 0.4,
+          ...(isLeading
             ? {
                 background: `linear-gradient(135deg, ${neuTheme.colors.accent.primary}, ${neuTheme.colors.accent.hover})`,
                 color: '#ffffff',
@@ -41,111 +44,71 @@ function PlayerAvatar({ name, isLeading }: { name: string; isLeading: boolean })
                 background: neuTheme.colors.bg,
                 boxShadow: neuTheme.shadows.raisedSm,
                 color: neuTheme.colors.text.muted,
-              }
-        }
+              }),
+        }}
       >
         {initial}
       </div>
       {isLeading && (
-        <Crown className="w-4 h-4 text-amber-400 absolute -top-2 -right-1" />
+        <Crown className="w-3.5 h-3.5 text-amber-400 absolute -top-1.5 -right-1" />
       )}
     </div>
   )
 }
 
-function MetricRow({
-  label,
-  valueA,
-  valueB,
-  trendA,
-  trendB,
-  suffix,
-  decimals,
-  delay,
-}: {
+interface MetricRowProps {
   label: string
   valueA: number
   valueB: number
   trendA: number
   trendB: number
-  suffix?: string
   decimals?: number
   delay: number
-}) {
+}
+
+function MetricRow({ label, valueA, valueB, trendA, trendB, decimals, delay }: MetricRowProps) {
   const aLeads = valueA > valueB
   const bLeads = valueB > valueA
 
   return (
     <motion.div
-      className="py-2 sm:py-3"
+      className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-4 py-2 sm:py-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay, duration: 0.4 }}
     >
-      {/* Mobile-only: label on its own row, then two values flanking */}
-      <div className="sm:hidden">
-        <p
-          className="text-[10px] uppercase tracking-[0.12em] font-inter text-center mb-1"
-          style={{ color: neuTheme.colors.text.muted }}
+      {/* Player A */}
+      <div className="flex items-center gap-1 justify-end overflow-hidden">
+        <TrendArrow value={trendA} />
+        <span
+          className="font-fira-code font-bold text-base sm:text-xl tabular-nums"
+          style={{
+            color: aLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+          }}
         >
-          {label}
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-1.5 justify-center">
-            <TrendArrow value={trendA} />
-            <span
-              className="font-fira-code font-bold text-xl tabular-nums"
-              style={{
-                color: aLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
-              }}
-            >
-              <CountUp value={valueA} decimals={decimals || 0} suffix={suffix} />
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5 justify-center">
-            <span
-              className="font-fira-code font-bold text-xl tabular-nums"
-              style={{
-                color: bLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
-              }}
-            >
-              <CountUp value={valueB} decimals={decimals || 0} suffix={suffix} />
-            </span>
-            <TrendArrow value={trendB} />
-          </div>
-        </div>
+          <CountUp value={valueA} decimals={decimals || 0} />
+        </span>
       </div>
 
-      {/* sm+: centered horizontal row */}
-      <div className="hidden sm:grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-        <div className="flex items-center gap-2 justify-end">
-          <TrendArrow value={trendA} />
-          <span
-            className="font-fira-code font-bold text-xl tabular-nums"
-            style={{
-              color: aLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
-            }}
-          >
-            <CountUp value={valueA} decimals={decimals || 0} suffix={suffix} />
-          </span>
-        </div>
+      {/* Label */}
+      <span
+        className="text-[9px] sm:text-[10px] uppercase tracking-[0.08em] sm:tracking-[0.12em] font-inter text-center px-0.5 sm:px-1 leading-tight"
+        style={{ color: neuTheme.colors.text.muted, maxWidth: 110 }}
+      >
+        {label}
+      </span>
+
+      {/* Player B */}
+      <div className="flex items-center gap-1 overflow-hidden">
         <span
-          className="text-[10px] uppercase tracking-[0.12em] font-inter text-center min-w-[140px] px-1"
-          style={{ color: neuTheme.colors.text.muted }}
+          className="font-fira-code font-bold text-base sm:text-xl tabular-nums"
+          style={{
+            color: bLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
+          }}
         >
-          {label}
+          <CountUp value={valueB} decimals={decimals || 0} />
         </span>
-        <div className="flex items-center gap-2">
-          <span
-            className="font-fira-code font-bold text-xl tabular-nums"
-            style={{
-              color: bLeads ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
-            }}
-          >
-            <CountUp value={valueB} decimals={decimals || 0} suffix={suffix} />
-          </span>
-          <TrendArrow value={trendB} />
-        </div>
+        <TrendArrow value={trendB} />
       </div>
     </motion.div>
   )
@@ -156,7 +119,6 @@ export function Leaderboard({ players }: LeaderboardProps) {
 
   const [a, b] = players
 
-  // Count total category wins
   const aWins = [
     a.elevatorPitch > b.elevatorPitch,
     a.objectionHandling > b.objectionHandling,
@@ -182,96 +144,89 @@ export function Leaderboard({ players }: LeaderboardProps) {
       </h3>
 
       <div
-        className="rounded-2xl p-4 sm:p-6 overflow-hidden relative"
+        className="rounded-2xl p-3 sm:p-6 overflow-hidden relative w-full"
         style={{
           background: neuTheme.colors.bg,
           boxShadow: neuTheme.shadows.raised,
         }}
       >
-        <div className="relative">
-          {/* Player names */}
-          <div className="grid grid-cols-2 sm:grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4 mb-2">
-            <motion.div
-              className="flex flex-col items-center sm:items-end gap-1"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+        {/* Header — same 3-col grid as metric rows so columns align */}
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-4 mb-2">
+          <motion.div
+            className="flex flex-col items-end gap-1 min-w-0"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <PlayerAvatar name={a.name} isLeading={aWins > bWins} size={40} />
+            <h4
+              className="font-inter font-black text-xs sm:text-lg uppercase tracking-tight sm:tracking-wide truncate w-full text-right"
+              style={{ color: neuTheme.colors.text.heading }}
             >
-              <PlayerAvatar name={a.name} isLeading={aWins > bWins} />
-              <h4
-                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate w-full text-center sm:text-right max-w-full"
-                style={{ color: neuTheme.colors.text.heading }}
-              >
-                {a.name}
-              </h4>
-            </motion.div>
+              {a.name}
+            </h4>
+          </motion.div>
 
-            <motion.div
-              className="hidden sm:flex items-center"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.4, type: 'spring' }}
+          <motion.span
+            className="font-inter font-black text-sm sm:text-2xl px-1"
+            style={{ color: neuTheme.colors.text.subtle }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.4, type: 'spring' }}
+          >
+            VS
+          </motion.span>
+
+          <motion.div
+            className="flex flex-col items-start gap-1 min-w-0"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <PlayerAvatar name={b.name} isLeading={bWins > aWins} size={40} />
+            <h4
+              className="font-inter font-black text-xs sm:text-lg uppercase tracking-tight sm:tracking-wide truncate w-full text-left"
+              style={{ color: neuTheme.colors.text.heading }}
             >
-              <span
-                className="font-inter font-black text-2xl"
-                style={{ color: neuTheme.colors.text.subtle }}
-              >
-                VS
-              </span>
-            </motion.div>
-
-            <motion.div
-              className="flex flex-col items-center sm:items-start gap-1"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <PlayerAvatar name={b.name} isLeading={bWins > aWins} />
-              <h4
-                className="font-inter font-black text-sm sm:text-lg uppercase tracking-wide truncate w-full text-center sm:text-left max-w-full"
-                style={{ color: neuTheme.colors.text.heading }}
-              >
-                {b.name}
-              </h4>
-            </motion.div>
-          </div>
-
-          <div
-            className="h-px my-3"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
-            }}
-          />
-
-          {/* Metrics — story practice sessions, this week */}
-          <MetricRow
-            label="Elevator Pitch"
-            valueA={a.elevatorPitch}
-            valueB={b.elevatorPitch}
-            trendA={a.elevatorTrend}
-            trendB={b.elevatorTrend}
-            delay={0.5}
-          />
-          <MetricRow
-            label="Objection Handling"
-            valueA={a.objectionHandling}
-            valueB={b.objectionHandling}
-            trendA={a.objectionTrend}
-            trendB={b.objectionTrend}
-            delay={0.6}
-          />
-          <MetricRow
-            label="Customer Stories"
-            valueA={a.customerStory}
-            valueB={b.customerStory}
-            trendA={a.customerTrend}
-            trendB={b.customerTrend}
-            delay={0.7}
-          />
+              {b.name}
+            </h4>
+          </motion.div>
         </div>
 
+        <div
+          className="h-px my-2 sm:my-3"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
+          }}
+        />
+
+        <MetricRow
+          label="Elevator Pitch"
+          valueA={a.elevatorPitch}
+          valueB={b.elevatorPitch}
+          trendA={a.elevatorTrend}
+          trendB={b.elevatorTrend}
+          delay={0.5}
+        />
+        <MetricRow
+          label="Objection"
+          valueA={a.objectionHandling}
+          valueB={b.objectionHandling}
+          trendA={a.objectionTrend}
+          trendB={b.objectionTrend}
+          delay={0.6}
+        />
+        <MetricRow
+          label="Customer Story"
+          valueA={a.customerStory}
+          valueB={b.customerStory}
+          trendA={a.customerTrend}
+          trendB={b.customerTrend}
+          delay={0.7}
+        />
+
         <motion.p
-          className="text-[10px] font-inter text-center mt-4"
+          className="text-[9px] sm:text-[10px] font-inter text-center mt-3 sm:mt-4"
           style={{ color: neuTheme.colors.text.muted }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
