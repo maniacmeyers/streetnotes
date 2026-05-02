@@ -75,7 +75,7 @@ export function DashboardDebriefFlow({
 
   async function autoExtract(sessionId: string, transcript: string) {
     setProcessingStep('extracting')
-    const res = await fetch('/api/debrief/structure', {
+    const res = await fetch('/api/vbrick/debrief/structure', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -146,7 +146,7 @@ export function DashboardDebriefFlow({
     setError(null)
 
     try {
-      const res = await fetch('/api/debrief/structure', {
+      const res = await fetch('/api/vbrick/debrief/structure', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
