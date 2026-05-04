@@ -19,7 +19,10 @@ interface NeuTabsProps {
 export function NeuTabs({ tabs, activeTab, onChange, className = '' }: NeuTabsProps) {
   return (
     <div
-      className={`flex gap-1 p-1.5 ${className}`}
+      className={`overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
+    >
+    <div
+      className="inline-flex min-w-full gap-1 p-1.5"
       style={{
         background: neuTheme.colors.bg,
         boxShadow: neuTheme.shadows.inset,
@@ -35,7 +38,7 @@ export function NeuTabs({ tabs, activeTab, onChange, className = '' }: NeuTabsPr
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.id)}
-            className="relative flex items-center justify-center gap-2 flex-1 py-2.5 px-4 outline-none font-satoshi text-sm font-medium"
+            className="relative flex items-center justify-center gap-2 flex-1 shrink-0 py-2.5 px-4 outline-none font-satoshi text-sm font-medium"
             style={{
               color: isActive ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
               borderRadius: neuTheme.radii.sm,
@@ -55,13 +58,14 @@ export function NeuTabs({ tabs, activeTab, onChange, className = '' }: NeuTabsPr
                 transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
               />
             )}
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="relative z-10 flex items-center gap-2 whitespace-nowrap">
               {tab.icon}
               {tab.label}
             </span>
           </button>
         )
       })}
+    </div>
     </div>
   )
 }

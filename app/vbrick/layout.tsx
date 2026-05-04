@@ -44,7 +44,7 @@ export default function VbrickLayout({
 }) {
   return (
     <div
-      className={`${inter.variable} ${firaCode.variable} ${generalSans.variable} ${satoshi.variable} min-h-screen`}
+      className={`${inter.variable} ${firaCode.variable} ${generalSans.variable} ${satoshi.variable} min-h-screen overflow-x-hidden`}
       style={{ background: '#e0e5ec' }}
     >
       {children}

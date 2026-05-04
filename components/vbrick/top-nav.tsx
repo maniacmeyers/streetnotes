@@ -168,7 +168,7 @@ export function TopNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex-1 flex flex-col items-center gap-0.5 px-1 py-1.5 text-[11px] no-underline"
+              className="flex-1 min-w-0 flex flex-col items-center gap-0.5 px-0.5 py-1.5 text-[11px] no-underline"
               style={{
                 color: isActive ? neuTheme.colors.accent.primary : neuTheme.colors.text.muted,
                 fontWeight: isActive ? 600 : 500,
@@ -176,8 +176,8 @@ export function TopNav() {
                 minHeight: 44,
               }}
             >
-              <Icon className="w-[18px] h-[18px]" />
-              {item.label}
+              <Icon className="w-[18px] h-[18px] shrink-0" />
+              <span className="truncate max-w-full">{item.label}</span>
             </Link>
           )
         })}

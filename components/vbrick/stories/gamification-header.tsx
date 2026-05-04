@@ -76,8 +76,8 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
     >
       {/* Level + XP + Streak Row */}
       <motion.div variants={cascadeIn} custom={0}>
-        <NeuCard padding="md" hover={false}>
-          <div className="flex items-center gap-4">
+        <NeuCard padding="md" hover={false} className="overflow-hidden">
+          <div className="flex items-center gap-3 min-w-0">
             {/* Level Badge */}
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
@@ -125,24 +125,18 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
             </div>
 
             {/* Streak */}
-            <div className="flex flex-col items-center shrink-0 ml-2">
+            <div className="flex flex-col items-center shrink-0">
               <Flame
-                size={22}
+                size={20}
                 style={{
                   color: streakActive ? '#f97316' : neuTheme.colors.text.subtle,
                 }}
               />
               <span
-                className="font-general-sans font-bold text-sm tabular-nums"
+                className="font-general-sans font-bold text-sm tabular-nums leading-tight"
                 style={{ color: streakActive ? '#f97316' : neuTheme.colors.text.subtle }}
               >
                 {state.current_streak}
-              </span>
-              <span
-                className="text-[9px] uppercase tracking-widest font-satoshi"
-                style={{ color: neuTheme.colors.text.subtle }}
-              >
-                streak
               </span>
             </div>
           </div>

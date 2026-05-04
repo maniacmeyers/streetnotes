@@ -337,17 +337,17 @@ export default function StoryVaultPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       >
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="font-general-sans font-bold text-2xl tracking-tight" style={{ color: '#2d3436' }}>
+        <div className="flex items-center justify-between gap-3 mb-2 min-w-0">
+          <h1 className="font-general-sans font-bold text-2xl tracking-tight truncate min-w-0" style={{ color: '#2d3436' }}>
             Story Vault
           </h1>
           {email && ['jeff@forgetime.ai', 'jeff@careermaniacs.com'].includes(email) && (
             <a
               href="/vbrick/dashboard/stories/manager"
-              className="flex items-center gap-2 font-satoshi text-xs font-medium"
+              className="flex items-center gap-1.5 font-satoshi text-xs font-medium shrink-0"
               style={{ color: neuTheme.colors.accent.primary }}
             >
-              <BarChart3 size={14} /> Manager View
+              <BarChart3 size={14} /> <span className="hidden sm:inline">Manager View</span><span className="sm:hidden">Manager</span>
             </a>
           )}
         </div>
