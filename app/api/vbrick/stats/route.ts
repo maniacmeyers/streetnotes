@@ -8,6 +8,7 @@ import {
   getTodayCallCount,
   updateWeeklyStats,
   getStoryPracticeCounts,
+  getLastPracticeAt,
   getWeekStart,
 } from '@/lib/vbrick/stats'
 import { VBRICK_CONFIG } from '@/lib/vbrick/config'
@@ -39,14 +40,22 @@ export async function GET(request: Request) {
     const lastWeekEndISO = new Date(thisWeekStart).toISOString()
     const thisWeekStartISO = new Date(thisWeekStart).toISOString()
 
+    // Floor practice counts at the leaderboard kickoff so older sessions
+    // never appear in the head-to-head — fair start for all BDRs.
+    const kickoff = VBRICK_CONFIG.leaderboardStartDate
+    const flooredThisWeekStart = thisWeekStartISO > kickoff ? thisWeekStartISO : kickoff
+    const flooredLastWeekStart = lastWeekStartISO > kickoff ? lastWeekStartISO : kickoff
+    const flooredLastWeekEnd = lastWeekEndISO > kickoff ? lastWeekEndISO : kickoff
+
     const allBdrs = await Promise.all(
       VBRICK_CONFIG.bdrEmails.map(async (bdrEmail) => {
-        const [stats, lastStats, bdrStreak, thisWeekPractice, lastWeekPractice] = await Promise.all([
+        const [stats, lastStats, bdrStreak, thisWeekPractice, lastWeekPractice, lastPracticeAt] = await Promise.all([
           getWeeklyStats(bdrEmail, supabase),
           getLastWeekStats(bdrEmail, supabase),
           calculateStreakDays(bdrEmail, supabase),
-          getStoryPracticeCounts(bdrEmail, supabase, thisWeekStartISO),
-          getStoryPracticeCounts(bdrEmail, supabase, lastWeekStartISO, lastWeekEndISO),
+          getStoryPracticeCounts(bdrEmail, supabase, flooredThisWeekStart),
+          getStoryPracticeCounts(bdrEmail, supabase, flooredLastWeekStart, flooredLastWeekEnd),
+          getLastPracticeAt(bdrEmail, supabase),
         ])
         const fallbackName = bdrEmail.split('@')[0].split('.')[0]
         const displayName = VBRICK_CONFIG.bdrDisplayNames[bdrEmail]
@@ -65,6 +74,7 @@ export async function GET(request: Request) {
           elevatorTrend: thisWeekPractice.elevatorPitch - lastWeekPractice.elevatorPitch,
           objectionTrend: thisWeekPractice.objectionHandling - lastWeekPractice.objectionHandling,
           customerTrend: thisWeekPractice.customerStory - lastWeekPractice.customerStory,
+          lastPracticeAt,
         }
       })
     )

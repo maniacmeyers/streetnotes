@@ -13,6 +13,25 @@ interface PlayerKPIs {
   elevatorTrend: number
   objectionTrend: number
   customerTrend: number
+  lastPracticeAt: string | null
+}
+
+function formatLastPracticed(iso: string | null): string {
+  if (!iso) return 'Never'
+  const then = new Date(iso).getTime()
+  if (Number.isNaN(then)) return 'Never'
+  const diffMs = Date.now() - then
+  const minutes = Math.floor(diffMs / 60_000)
+  if (minutes < 1) return 'Just now'
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d ago`
+  const weeks = Math.floor(days / 7)
+  if (weeks < 4) return `${weeks}w ago`
+  const months = Math.floor(days / 30)
+  return `${months}mo ago`
 }
 
 interface LeaderboardProps {
@@ -59,6 +78,7 @@ function PlayerAvatar({ name, isLeading, size = 40 }: { name: string; isLeading:
 interface PlayerStats {
   name: string
   isLeading: boolean
+  lastPracticeAt: string | null
   elevator: { value: number; trend: number; lead: boolean }
   objection: { value: number; trend: number; lead: boolean }
   customer: { value: number; trend: number; lead: boolean }
@@ -111,11 +131,17 @@ function PlayerStatBlock({ player, delay }: { player: PlayerStats; delay: number
       <PlayerAvatar name={player.name} isLeading={player.isLeading} size={40} />
       <div className="flex-1 min-w-0">
         <h4
-          className="font-inter font-black text-sm uppercase tracking-tight truncate mb-1"
+          className="font-inter font-black text-sm uppercase tracking-tight truncate"
           style={{ color: neuTheme.colors.text.heading }}
         >
           {player.name}
         </h4>
+        <p
+          className="text-[10px] font-inter mb-1 truncate"
+          style={{ color: neuTheme.colors.text.subtle }}
+        >
+          Last: {formatLastPracticed(player.lastPracticeAt)}
+        </p>
         <MetricLine label="Elevator Pitch" value={player.elevator.value} trend={player.elevator.trend} lead={player.elevator.lead} />
         <MetricLine label="Objection" value={player.objection.value} trend={player.objection.trend} lead={player.objection.lead} />
         <MetricLine label="Customer Story" value={player.customer.value} trend={player.customer.trend} lead={player.customer.lead} />
@@ -192,6 +218,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
   const aStats: PlayerStats = {
     name: a.name,
     isLeading: aWins > bWins,
+    lastPracticeAt: a.lastPracticeAt,
     elevator: { value: a.elevatorPitch, trend: a.elevatorTrend, lead: a.elevatorPitch > b.elevatorPitch },
     objection: { value: a.objectionHandling, trend: a.objectionTrend, lead: a.objectionHandling > b.objectionHandling },
     customer: { value: a.customerStory, trend: a.customerTrend, lead: a.customerStory > b.customerStory },
@@ -200,6 +227,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
   const bStats: PlayerStats = {
     name: b.name,
     isLeading: bWins > aWins,
+    lastPracticeAt: b.lastPracticeAt,
     elevator: { value: b.elevatorPitch, trend: b.elevatorTrend, lead: b.elevatorPitch > a.elevatorPitch },
     objection: { value: b.objectionHandling, trend: b.objectionTrend, lead: b.objectionHandling > a.objectionHandling },
     customer: { value: b.customerStory, trend: b.customerTrend, lead: b.customerStory > a.customerStory },
@@ -261,6 +289,12 @@ export function Leaderboard({ players }: LeaderboardProps) {
               >
                 {a.name}
               </h4>
+              <p
+                className="text-[10px] font-inter w-full text-right truncate"
+                style={{ color: neuTheme.colors.text.subtle }}
+              >
+                Last: {formatLastPracticed(a.lastPracticeAt)}
+              </p>
             </motion.div>
             <motion.span
               className="font-inter font-black text-2xl px-2"
@@ -284,6 +318,12 @@ export function Leaderboard({ players }: LeaderboardProps) {
               >
                 {b.name}
               </h4>
+              <p
+                className="text-[10px] font-inter w-full text-left truncate"
+                style={{ color: neuTheme.colors.text.subtle }}
+              >
+                Last: {formatLastPracticed(b.lastPracticeAt)}
+              </p>
             </motion.div>
           </div>
 

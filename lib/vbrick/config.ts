@@ -75,6 +75,11 @@ export const VBRICK_CONFIG = {
     'kara.pryor@vbrick.com': 'Kara',
   } as Record<string, string>,
 
+  // Head-to-head practice counter floor. Practices before this timestamp
+  // do not count toward the leaderboard — keeps the competition fair when
+  // older test/seed practice sessions exist in the database.
+  leaderboardStartDate: '2026-05-04T00:00:00Z',
+
   coachingPrompts: [
     "Who'd you talk to?",
     "What's actually going on at this account?",

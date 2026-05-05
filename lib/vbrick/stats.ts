@@ -263,3 +263,22 @@ export async function getStoryPracticeCounts(
   counts.total = counts.elevatorPitch + counts.objectionHandling + counts.customerStory
   return counts
 }
+
+/**
+ * Most recent story_practice_sessions.created_at for a BDR. Used for the
+ * "Last practiced N ago" indicator on the head-to-head leaderboard.
+ * Returns null if the BDR has never practiced.
+ */
+export async function getLastPracticeAt(
+  email: string,
+  supabase: SupabaseClient,
+): Promise<string | null> {
+  const { data } = await supabase
+    .from('story_practice_sessions')
+    .select('created_at')
+    .eq('bdr_email', email.toLowerCase())
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  return (data?.created_at as string | undefined) ?? null
+}
