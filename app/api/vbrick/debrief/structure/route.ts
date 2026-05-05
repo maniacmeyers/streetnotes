@@ -5,25 +5,37 @@ import {
   VBRICK_BDR_SYSTEM_PROMPT,
   VBRICK_BDR_USER_PROMPT_TEMPLATE,
 } from '@/lib/vbrick/debrief/prompts'
-import type { VbrickBDRStructuredOutput } from '@/lib/debrief/types'
+import {
+  VBRICK_EVENT_SYSTEM_PROMPT,
+  VBRICK_EVENT_USER_PROMPT_TEMPLATE,
+} from '@/lib/vbrick/debrief/event-prompts'
+import type { VbrickBDRStructuredOutput, EventConversationOutput } from '@/lib/debrief/types'
 import type { CIExtraction } from '@/lib/ci/types'
 import { processCIMentions } from '@/lib/ci/pipeline'
+import { activeDebriefMode, type DebriefMode } from '@/lib/vbrick/config'
 
 export const runtime = 'nodejs'
 export const maxDuration = 45
 
 /**
- * VBrick BDR-mode debrief structure endpoint.
+ * VBrick debrief structure endpoint.
  *
- * Returns a VbrickBDRStructuredOutput (mode: 'bdr-cold-call') with SPIN
- * scoring + AE briefing — the shape the VBrick command center deal sheet
- * expects. The public /api/debrief/structure endpoint was repurposed for
- * the aesthetic vertical and no longer returns BDR shape.
+ * Routes to one of two prompts based on the `mode` field in the request
+ * body. Both shapes get persisted to debrief_sessions.structured_output;
+ * `structured_output.mode` is the discriminator the UI keys off of.
+ *
+ *  - 'bdr-cold-call'        → VBRICK_BDR_SYSTEM_PROMPT (cold-call shape)
+ *  - 'event-conversation'   → VBRICK_EVENT_SYSTEM_PROMPT (K26 booth shape)
+ *
+ * If the client doesn't send `mode`, we default to whatever
+ * `activeDebriefMode()` returns based on the K26 window — keeps callers
+ * that haven't been updated to send mode still working correctly.
  */
-
 export async function POST(request: Request) {
   try {
-    const { sessionId, transcript } = await request.json()
+    const body = await request.json()
+    const { sessionId, transcript } = body
+    const requestedMode = (body.mode as DebriefMode | undefined) ?? activeDebriefMode()
 
     if (!sessionId || !transcript) {
       return NextResponse.json(
@@ -43,13 +55,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 })
     }
 
+    const isEventMode = requestedMode === 'event-conversation'
+    const systemPrompt = isEventMode ? VBRICK_EVENT_SYSTEM_PROMPT : VBRICK_BDR_SYSTEM_PROMPT
+    const userPrompt = isEventMode
+      ? VBRICK_EVENT_USER_PROMPT_TEMPLATE(transcript)
+      : VBRICK_BDR_USER_PROMPT_TEMPLATE(transcript)
+
     const openai = getOpenAIClient()
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       response_format: { type: 'json_object' },
       messages: [
-        { role: 'system', content: VBRICK_BDR_SYSTEM_PROMPT },
-        { role: 'user', content: VBRICK_BDR_USER_PROMPT_TEMPLATE(transcript) },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
       temperature: 0.3,
     })
@@ -59,17 +77,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No response from AI' }, { status: 502 })
     }
 
-    let structured: VbrickBDRStructuredOutput
+    let structured: VbrickBDRStructuredOutput | EventConversationOutput
     try {
-      structured = JSON.parse(content) as VbrickBDRStructuredOutput
+      structured = JSON.parse(content)
     } catch {
       return NextResponse.json({ error: 'AI returned invalid data' }, { status: 502 })
     }
 
-    // Force the mode tag so the client guard (`isBDROutput`) passes even if
-    // the model omits it.
+    // Force the mode tag so client guards (`isBDROutput` / `isEventOutput`)
+    // pass even if the model omits it.
     if (structured && typeof structured === 'object') {
-      structured.mode = 'bdr-cold-call'
+      ;(structured as { mode: string }).mode = isEventMode
+        ? 'vbrick-event-conversation'
+        : 'bdr-cold-call'
     }
 
     await supabase
@@ -77,7 +97,7 @@ export async function POST(request: Request) {
       .update({ structured_output: structured as unknown as Record<string, unknown> })
       .eq('id', sessionId)
 
-    const ciMentions = structured.ciMentions as CIExtraction[] | undefined
+    const ciMentions = (structured as { ciMentions?: CIExtraction[] }).ciMentions
     if (ciMentions && ciMentions.length > 0) {
       try {
         await processCIMentions(
@@ -86,12 +106,12 @@ export async function POST(request: Request) {
           {
             repEmail: session.email,
             companyName: structured.contactSnapshot?.company,
-            sourceType: 'bdr-call',
+            sourceType: isEventMode ? 'debrief' : 'bdr-call',
           },
           supabase,
         )
       } catch {
-        // Non-fatal — CI pipeline failures should not block deal-sheet display.
+        // Non-fatal — CI pipeline failures should not block result display.
       }
     }
 
