@@ -80,6 +80,13 @@ export const VBRICK_CONFIG = {
   // older test/seed practice sessions exist in the database.
   leaderboardStartDate: '2026-05-04T00:00:00Z',
 
+  // K26 (ServiceNow Knowledge 26 in Las Vegas, May 5–8 2026). Within this
+  // window, the debrief flow defaults to event-conversation mode instead
+  // of cold-call mode. After it expires, behavior reverts automatically;
+  // the constant is left in place for future events — bump the dates and
+  // it kicks back in.
+  eventModeWindow: { start: '2026-05-05', end: '2026-05-08' },
+
   coachingPrompts: [
     "Who'd you talk to?",
     "What's actually going on at this account?",
@@ -93,6 +100,24 @@ export const VBRICK_CONFIG = {
 export function isVbrickBdr(email: string): boolean {
   const clean = email.toLowerCase().trim()
   return VBRICK_CONFIG.bdrEmails.includes(clean)
+}
+
+// True when today's date falls inside the active event window. Compared
+// at day granularity in UTC so a BDR debriefing late at night doesn't
+// flip modes mid-shift.
+export function isInEventWindow(now: Date = new Date()): boolean {
+  const today = now.toISOString().split('T')[0]
+  const { start, end } = VBRICK_CONFIG.eventModeWindow
+  return today >= start && today <= end
+}
+
+// Mode the debrief flow should request from the structure endpoint when
+// the BDR taps record. Today: 'event-conversation' during the K26 window,
+// 'bdr-cold-call' otherwise.
+export type DebriefMode = 'bdr-cold-call' | 'event-conversation'
+
+export function activeDebriefMode(now: Date = new Date()): DebriefMode {
+  return isInEventWindow(now) ? 'event-conversation' : 'bdr-cold-call'
 }
 
 // Vbrick product context injected into AI prompts
