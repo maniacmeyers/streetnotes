@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import {
+  AESTHETIC_CALL_SEGMENTS,
+  AESTHETIC_DEAL_STAGES,
+  AESTHETIC_MODALITIES,
+} from '@/lib/voice-engine/ontology'
 
 export const ConfidenceLevel = z.enum(['high', 'medium', 'low'])
 export type ConfidenceLevel = z.infer<typeof ConfidenceLevel>
@@ -13,6 +18,7 @@ export const Attendee = z.object({
       'Influencer',
       'End User',
       'Blocker',
+      'Gatekeeper',
       'Technical Evaluator',
       'Economic Buyer',
       'Legal / Procurement',
@@ -28,6 +34,30 @@ export const FollowUpTask = z.object({
   owner: z.enum(['rep', 'prospect']),
   dueDate: z.string().optional(),
   priority: z.enum(['high', 'medium', 'low']),
+  confidence: ConfidenceLevel,
+})
+
+export const CIMentionSchema = z.object({
+  competitorName: z.string(),
+  contextQuote: z.string(),
+  sentiment: z.enum(['positive', 'negative', 'neutral']),
+  mentionCategory: z.enum([
+    'pricing',
+    'features',
+    'switching',
+    'satisfaction',
+    'comparison',
+    'contract',
+    'migration',
+    'general',
+  ]),
+})
+
+export const SwitchingStorySchema = z.object({
+  fromBrand: z.string().optional(),
+  toBrand: z.string().optional(),
+  reason: z.string(),
+  evidence: z.string().optional(),
   confidence: ConfidenceLevel,
 })
 
@@ -67,8 +97,19 @@ export const CRMNoteSchema = z.object({
   competitorsMentioned: z.array(z.string()).optional(),
   productsDiscussed: z.array(z.string()).optional(),
   painPoints: z.array(z.string()).optional(),
+  risks: z.array(z.string()).optional(),
 
   attendees: z.array(Attendee).optional(),
+
+  dealSegment: z.enum(AESTHETIC_CALL_SEGMENTS).optional(),
+  aestheticDealStage: z.enum(AESTHETIC_DEAL_STAGES).optional(),
+  modality: z.enum(AESTHETIC_MODALITIES).optional(),
+  unitVolume: z.string().optional(),
+  syringeVolume: z.string().optional(),
+  vialCount: z.string().optional(),
+  buyingWindow: z.string().optional(),
+  switchingStories: z.array(SwitchingStorySchema).optional(),
+  ciMentions: z.array(CIMentionSchema).optional(),
 })
 
 export type CRMNote = z.infer<typeof CRMNoteSchema>

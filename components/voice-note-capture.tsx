@@ -10,6 +10,7 @@ import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { useAudioAnalyser } from '@/hooks/use-audio-analyser'
 import type { CRMNote } from '@/lib/notes/schema'
 import type { PushResult, CrmCandidate } from '@/lib/crm/push/types'
+import type { PushPlan } from '@/lib/crm/schema/types'
 import EditableStructuredOutput from '@/components/notes/editable-structured-output'
 import MicInstrument from '@/components/mic-instrument'
 import { BrutalCard, BrutalButton } from '@/components/streetnotes/brutal'
@@ -52,6 +53,7 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
 
   const [isStructuring, setIsStructuring] = useState(false)
   const [structured, setStructured] = useState<CRMNote | null>(null)
+  const [pushPlan, setPushPlan] = useState<PushPlan | undefined>(undefined)
   const [structureError, setStructureError] = useState<string | null>(null)
 
   const [isSaving, setIsSaving] = useState(false)
@@ -117,6 +119,7 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
     setTranscribeError(null)
     setIsTranscribing(false)
     setStructured(null)
+    setPushPlan(undefined)
     setStructureError(null)
     setIsStructuring(false)
     setSavedNoteId(null)
@@ -154,6 +157,7 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
     setTranscript('')
     setTranscribeError(null)
     setStructured(null)
+    setPushPlan(undefined)
     setStructureError(null)
     setSavedNoteId(null)
 
@@ -187,6 +191,7 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
 
     setIsStructuring(true)
     setStructured(null)
+    setPushPlan(undefined)
     setStructureError(null)
     setSavedNoteId(null)
 
@@ -207,8 +212,16 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
         return
       }
 
-      const payload = (await response.json()) as { structured: CRMNote }
-      setStructured(payload.structured)
+      const payload = (await response.json()) as {
+        structured: { crmNote: CRMNote; pushPlan?: PushPlan } | CRMNote
+      }
+      if ('crmNote' in payload.structured) {
+        setStructured(payload.structured.crmNote)
+        setPushPlan(payload.structured.pushPlan)
+      } else {
+        setStructured(payload.structured)
+        setPushPlan(undefined)
+      }
     } catch {
       setStructureError('Network error while structuring. Please try again.')
     } finally {
@@ -226,7 +239,10 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
       const response = await fetch('/api/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript, structured }),
+        body: JSON.stringify({
+          transcript,
+          structured: pushPlan ? { crmNote: structured, pushPlan } : structured,
+        }),
       })
 
       if (!response.ok) {

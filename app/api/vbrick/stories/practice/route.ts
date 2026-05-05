@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
   try {
     // Step 1: Transcribe
-    const transcript = await transcribeAudio(audio)
+    const { transcript } = await transcribeAudio(audio)
 
     // Step 2: Score with GPT-4o
     const { system, user } = getScoringPrompt(

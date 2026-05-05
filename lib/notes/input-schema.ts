@@ -18,6 +18,7 @@ const attendeeSchema = {
         'Influencer',
         'End User',
         'Blocker',
+        'Gatekeeper',
         'Technical Evaluator',
         'Economic Buyer',
         'Legal / Procurement',
@@ -40,6 +41,41 @@ const followUpTaskSchema = {
     confidence: confidenceEnum,
   },
   required: ['task', 'owner', 'priority', 'confidence'],
+} as const
+
+const ciMentionSchema = {
+  type: 'object',
+  properties: {
+    competitorName: { type: 'string' },
+    contextQuote: { type: 'string' },
+    sentiment: { type: 'string', enum: ['positive', 'negative', 'neutral'] },
+    mentionCategory: {
+      type: 'string',
+      enum: [
+        'pricing',
+        'features',
+        'switching',
+        'satisfaction',
+        'comparison',
+        'contract',
+        'migration',
+        'general',
+      ],
+    },
+  },
+  required: ['competitorName', 'contextQuote', 'sentiment', 'mentionCategory'],
+} as const
+
+const switchingStorySchema = {
+  type: 'object',
+  properties: {
+    fromBrand: { type: 'string' },
+    toBrand: { type: 'string' },
+    reason: { type: 'string' },
+    evidence: { type: 'string' },
+    confidence: confidenceEnum,
+  },
+  required: ['reason', 'confidence'],
 } as const
 
 export const CRM_NOTE_INPUT_SCHEMA = {
@@ -81,8 +117,51 @@ export const CRM_NOTE_INPUT_SCHEMA = {
     competitorsMentioned: { type: 'array', items: { type: 'string' } },
     productsDiscussed: { type: 'array', items: { type: 'string' } },
     painPoints: { type: 'array', items: { type: 'string' } },
+    risks: { type: 'array', items: { type: 'string' } },
 
     attendees: { type: 'array', items: attendeeSchema },
+
+    dealSegment: {
+      type: 'string',
+      enum: [
+        'injector-check-in',
+        'new-practice',
+        'practice-manager',
+        'device-demo',
+        'lunch-learn',
+        'conference',
+      ],
+    },
+    aestheticDealStage: {
+      type: 'string',
+      enum: [
+        'New account (no trial)',
+        'Trialing (vials/units out)',
+        'Low volume',
+        'Growing',
+        'Loyal',
+        'At risk of switching',
+        'Lost to competitor',
+      ],
+    },
+    modality: {
+      type: 'string',
+      enum: [
+        'neurotoxin',
+        'HA filler',
+        'biostimulator',
+        'energy device',
+        'skincare',
+        'practice-management',
+        'unknown',
+      ],
+    },
+    unitVolume: { type: 'string' },
+    syringeVolume: { type: 'string' },
+    vialCount: { type: 'string' },
+    buyingWindow: { type: 'string' },
+    switchingStories: { type: 'array', items: switchingStorySchema },
+    ciMentions: { type: 'array', items: ciMentionSchema },
   },
 } as const
 

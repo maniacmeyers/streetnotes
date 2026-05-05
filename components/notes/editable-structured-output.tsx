@@ -128,6 +128,7 @@ const ATTENDEE_ROLES = [
   'Influencer',
   'End User',
   'Blocker',
+  'Gatekeeper',
   'Technical Evaluator',
   'Economic Buyer',
   'Legal / Procurement',

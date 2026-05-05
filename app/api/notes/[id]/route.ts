@@ -67,8 +67,14 @@ export async function PATCH(
 
   if (!existing) return jsonError('Note not found', 404)
 
+  const structured = body.structured_output
+  const crmNote =
+    'crmNote' in structured && typeof structured.crmNote === 'object' && structured.crmNote !== null
+      ? (structured.crmNote as Record<string, unknown>)
+      : structured
+
   const title =
-    [body.structured_output.contactName, body.structured_output.company]
+    [crmNote.contactName, crmNote.company]
       .filter(Boolean)
       .join(' — ') || undefined
 

@@ -33,8 +33,13 @@ export async function POST(request: Request) {
     return jsonError('Missing structured output', 400)
   }
 
+  const crmNote =
+    'crmNote' in structured && typeof structured.crmNote === 'object' && structured.crmNote !== null
+      ? (structured.crmNote as Record<string, unknown>)
+      : structured
+
   const title =
-    [structured.contactName, structured.company].filter(Boolean).join(' — ') ||
+    [crmNote.contactName, crmNote.company].filter(Boolean).join(' — ') ||
     transcript.slice(0, 60).trim()
 
   const { data, error } = await supabase

@@ -6,6 +6,8 @@ export type MemoryCategory =
   | 'competitors'
   | 'products'
   | 'dealStages'
+  | 'modalities'
+  | 'buyingWindows'
 
 export type MemoryEntry = {
   value: string
@@ -19,6 +21,8 @@ export type UserMemory = {
   competitors: MemoryEntry[]
   products: MemoryEntry[]
   dealStages: MemoryEntry[]
+  modalities: MemoryEntry[]
+  buyingWindows: MemoryEntry[]
 }
 
 export const EMPTY_USER_MEMORY: UserMemory = {
@@ -27,6 +31,8 @@ export const EMPTY_USER_MEMORY: UserMemory = {
   competitors: [],
   products: [],
   dealStages: [],
+  modalities: [],
+  buyingWindows: [],
 }
 
 const HALF_LIFE_DAYS = 60
@@ -78,6 +84,8 @@ export function aggregateEntities(
   const competitors: ScoredAccumulator = new Map()
   const products: ScoredAccumulator = new Map()
   const dealStages: ScoredAccumulator = new Map()
+  const modalities: ScoredAccumulator = new Map()
+  const buyingWindows: ScoredAccumulator = new Map()
 
   for (const row of notes) {
     const structured = row.structured_output
@@ -92,6 +100,9 @@ export function aggregateEntities(
     bump(contacts, structured.contactName, score, createdAt)
     bump(companies, structured.company, score, createdAt)
     bump(dealStages, structured.dealStage, score, createdAt)
+    bump(dealStages, structured.aestheticDealStage, score, createdAt)
+    bump(modalities, structured.modality, score, createdAt)
+    bump(buyingWindows, structured.buyingWindow, score, createdAt)
 
     for (const competitor of structured.competitorsMentioned ?? []) {
       bump(competitors, competitor, score, createdAt)
@@ -102,6 +113,16 @@ export function aggregateEntities(
     for (const attendee of structured.attendees ?? []) {
       bump(contacts, attendee.name, score, createdAt)
     }
+    for (const risk of structured.risks ?? []) {
+      bump(products, risk, score * 0.25, createdAt)
+    }
+    for (const story of structured.switchingStories ?? []) {
+      bump(competitors, story.fromBrand, score, createdAt)
+      bump(competitors, story.toBrand, score, createdAt)
+    }
+    for (const mention of structured.ciMentions ?? []) {
+      bump(competitors, mention.competitorName, score, createdAt)
+    }
   }
 
   return {
@@ -110,6 +131,8 @@ export function aggregateEntities(
     competitors: topEntries(competitors),
     products: topEntries(products),
     dealStages: topEntries(dealStages),
+    modalities: topEntries(modalities),
+    buyingWindows: topEntries(buyingWindows),
   }
 }
 
@@ -127,7 +150,9 @@ export function isMemoryEmpty(memory: UserMemory): boolean {
     memory.companies.length === 0 &&
     memory.competitors.length === 0 &&
     memory.products.length === 0 &&
-    memory.dealStages.length === 0
+    memory.dealStages.length === 0 &&
+    memory.modalities.length === 0 &&
+    memory.buyingWindows.length === 0
   )
 }
 
@@ -140,12 +165,16 @@ export function buildClaudeContextBlock(memory: UserMemory): string {
   const competitors = formatEntries(memory.competitors, 10)
   const products = formatEntries(memory.products, 10)
   const stages = formatEntries(memory.dealStages, 8)
+  const modalities = formatEntries(memory.modalities, 8)
+  const buyingWindows = formatEntries(memory.buyingWindows, 8)
 
   if (contacts) lines.push(`Known Contacts: ${contacts}`)
   if (companies) lines.push(`Known Companies: ${companies}`)
   if (competitors) lines.push(`Known Competitors: ${competitors}`)
   if (products) lines.push(`Known Products: ${products}`)
   if (stages) lines.push(`Recent Deal Stages: ${stages}`)
+  if (modalities) lines.push(`Recent Modalities: ${modalities}`)
+  if (buyingWindows) lines.push(`Buying Windows: ${buyingWindows}`)
 
   const raw = lines.join('\n')
   const MAX_CHARS = 2000

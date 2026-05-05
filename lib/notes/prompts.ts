@@ -1,23 +1,31 @@
-export const STRUCTURE_SYSTEM_PROMPT = `You are a CRM data extraction engine for StreetNotes. You take a sales rep's post-meeting voice dump — raw, unstructured verbal notes recorded right after a meeting — and extract structured data that maps directly to CRM fields.
+import { buildAestheticOntologyBlock } from '@/lib/voice-engine/ontology'
+
+export const STRUCTURE_SYSTEM_PROMPT = `You are a CRM data extraction engine for StreetNotes. You take an aesthetic sales rep's post-visit voice dump — raw, unstructured notes recorded right after an injector visit, practice-manager meeting, device demo, lunch and learn, or conference booth conversation — and extract structured data that maps directly to CRM fields.
 
 You are NOT a sales coach. You do NOT analyze deal patterns, buyer psychology, or give advice. You extract facts and structure them for CRM entry.
+
+${buildAestheticOntologyBlock()}
 
 WHAT YOU EXTRACT:
 
 1. CONTACT INFO
-- contactName: the prospect's name. Omit if not stated.
-- company: the prospect's company. Omit if not stated.
+- contactName: the primary person in the account. Usually the injector, practice manager, owner, or medical director. Omit if not stated.
+- company: the practice/account name. Omit if not stated.
 
 2. DEAL SNAPSHOT
 - dealStage: infer from context. Must be one of: "Prospecting", "Discovery", "Demo / Evaluation", "Proposal / Pricing", "Negotiation", "Verbal Commit", "Closed Won", "Closed Lost". Omit if not enough info.
+- aestheticDealStage: if possible, infer the aesthetic account stage: "New account (no trial)", "Trialing (vials/units out)", "Low volume", "Growing", "Loyal", "At risk of switching", "Lost to competitor".
 - estimatedValue: deal size, ARR, contract value. Omit if not stated.
 - closeDate: when the deal might close. Omit if no clue.
+- dealSegment: classify the call as one of "injector-check-in", "new-practice", "practice-manager", "device-demo", "lunch-learn", or "conference".
+- modality: one of "neurotoxin", "HA filler", "biostimulator", "energy device", "skincare", "practice-management", or "unknown".
+- unitVolume, syringeVolume, vialCount, buyingWindow: capture these exact commercial signals whenever mentioned.
 
 3. ATTENDEES
 People mentioned in the meeting. For each:
 - name: full name if given
-- title: job title if mentioned
-- role: one of "Decision Maker", "Champion", "Influencer", "End User", "Blocker", "Technical Evaluator", "Economic Buyer", "Legal / Procurement", "Unknown"
+- title: job title if mentioned. In aesthetics this may be injector, MD, PA, NP, RN, practice manager, medical director, owner, MA, front desk.
+- role: one of "Decision Maker", "Champion", "Influencer", "End User", "Blocker", "Gatekeeper", "Technical Evaluator", "Economic Buyer", "Legal / Procurement", "Unknown"
 - sentiment: "positive", "neutral", "negative", or "unknown"
 - confidence: "high" (explicitly stated), "medium" (inferred), "low" (guessed)
 
@@ -39,6 +47,9 @@ A concise paragraph (3-5 sentences) summarizing the meeting as a rep would write
 - competitorsMentioned: competitors or alternatives discussed. Omit or empty array if none.
 - productsDiscussed: your products, features, or services that came up. Omit or empty array if none.
 - painPoints: problems the prospect is experiencing. Omit or empty array if none.
+- risks: things that could stall the account, slow an order, or cause a switch. Omit or empty array if none.
+- switchingStories: switching narratives with fromBrand, toBrand, reason, evidence, and confidence when the transcript mentions moving from one product/brand to another.
+- ciMentions: detailed competitor-intelligence mentions. Include competitorName, contextQuote, sentiment ("positive", "negative", "neutral"), and mentionCategory ("pricing", "features", "switching", "satisfaction", "comparison", "contract", "migration", "general").
 
 CONFIDENCE INDICATORS:
 For each major field, include a confidence level:
@@ -52,6 +63,9 @@ Each attendee and follow-up task has its own confidence field.
 RULES:
 - Extract ONLY what was explicitly stated or clearly implied. NEVER fabricate names, companies, deal values, or dates.
 - If a field has no supporting evidence, OMIT it entirely. Do not use placeholder strings like "Not mentioned".
+- Capture unit counts, syringe volumes, vial counts, pricing per unit, trial quantities, and buying windows exactly as spoken.
+- Capture practice-role dynamics: injector vs practice manager vs MA vs medical director vs owner.
+- Capture switching stories and objection specifics, especially duration, onset, spread, patient comfort, bruising, pricing, rebates, and competitor loyalty.
 - For follow-up tasks, infer reasonable dates from context ("by Friday" → "Friday", "next week" → "next week"). Omit dueDate if impossible to infer.
 - Keep everything tight. Reps scan CRM records, they don't read novels.
 - When confidence is low, still extract but flag it — let the user decide whether to keep it.`
@@ -76,64 +90,89 @@ export const STRUCTURE_FEW_SHOT_EXAMPLES = [
     content: `Extract structured CRM data from this transcript:
 
 ---
-Just got out of a meeting with Sarah Chen, she's the VP of Engineering at Acme Corp. Great call. They're using Datadog right now but she said they're frustrated with the pricing — paying about 200K a year. She wants to see a demo next week with her team. Budget is there, they already have approval for a replacement tool. Main concern is migration complexity. I need to send her the migration playbook by Friday. Her boss is Tom Rodriguez, the CTO — she said he's supportive but wants to see ROI numbers. Deal could be around 150K ARR.
+Just left Dr. Patel at Patel Aesthetics. She's running about 60 to 80 units of Botox per patient, mostly women 35 to 55, and she had two patients last week ask about Daxxify duration. She wants to trial it. Practice manager Maria is the one I need to loop in on pricing. Dr. Patel doesn't handle orders. I mentioned our loyalty rebate and Maria asked for the Q2 terms in writing. Dr. Patel said her Juvederm volume is steady but she's curious about RHA 4 for lower face. Next step is send Maria the Q2 rebate sheet and drop off four trial vials of Daxxify before Aesthetic Next.
 ---`,
   },
   {
     role: 'assistant' as const,
     content: JSON.stringify({
-      contactName: 'Sarah Chen',
+      contactName: 'Dr. Patel',
       contactNameConfidence: 'high',
-      company: 'Acme Corp',
+      company: 'Patel Aesthetics',
       companyConfidence: 'high',
       dealStage: 'Demo / Evaluation',
       dealStageConfidence: 'medium',
-      estimatedValue: '$150K ARR',
+      aestheticDealStage: 'Growing',
+      dealSegment: 'injector-check-in',
+      modality: 'neurotoxin',
+      estimatedValue: '60-80 units Botox per patient; Juvederm volume steady',
       estimatedValueConfidence: 'high',
+      buyingWindow: 'Before Aesthetic Next',
+      unitVolume: '60-80 Botox units per patient',
+      vialCount: '4 trial vials of Daxxify',
       meetingSummary: [
-        'Met with Sarah Chen (VP Engineering) at Acme Corp to discuss replacing Datadog ($200K/yr current spend)',
-        'Budget already approved for replacement tool — pricing frustration is the driver',
-        'Migration complexity is the primary concern — need to address with playbook',
-        'CTO Tom Rodriguez is supportive but wants ROI justification',
-        'Demo with engineering team planned for next week',
+        'Dr. Patel is running 60-80 Botox units per patient with steady Juvederm volume',
+        'Two patients asked about Daxxify duration last week, creating interest in a Daxxify trial',
+        'Practice Manager Maria handles pricing and orders, not Dr. Patel',
+        'Maria asked for Q2 loyalty rebate terms in writing',
+        'Dr. Patel is curious about RHA 4 for lower-face work',
       ],
       nextSteps: [
         {
-          task: 'Send migration playbook to Sarah Chen',
+          task: 'Send Q2 rebate sheet to Maria',
           owner: 'rep',
-          dueDate: 'Friday',
+          dueDate: 'This week',
           priority: 'high',
           confidence: 'high',
         },
         {
-          task: 'Prepare ROI analysis for CTO review',
+          task: 'Drop off 4 trial vials of Daxxify at Patel Aesthetics',
           owner: 'rep',
-          priority: 'high',
-          confidence: 'medium',
-        },
-        {
-          task: 'Schedule demo with engineering team',
-          owner: 'rep',
-          dueDate: 'Next week',
+          dueDate: 'Before Aesthetic Next',
           priority: 'high',
           confidence: 'high',
         },
       ],
       opportunityNotes:
-        'Met with Sarah Chen, VP of Engineering at Acme Corp. Currently on Datadog at $200K/yr with budget approved to switch — pricing frustration is the main driver. Migration complexity is a concern. CTO Tom Rodriguez is aware and supportive but needs ROI numbers. Sending migration playbook by Friday, demo with engineering team next week.',
-      competitorsMentioned: ['Datadog'],
-      painPoints: ['Current tool pricing ($200K/yr)', 'Migration complexity concerns'],
+        'Visited Patel Aesthetics with injector Dr. Patel. She is running 60-80 Botox units per patient and has steady Juvederm volume. Two patients asked about Daxxify duration last week, so she wants to trial Daxxify. Practice Manager Maria handles ordering and pricing and requested Q2 loyalty rebate terms in writing. Next step is sending Maria the rebate sheet and dropping off four trial vials before Aesthetic Next.',
+      competitorsMentioned: ['Botox', 'Daxxify', 'Juvederm', 'RHA'],
+      productsDiscussed: ['Daxxify trial vials', 'Q2 loyalty rebate', 'RHA 4'],
+      painPoints: ['Patient duration questions on Botox'],
+      risks: ['Daxxify trial could shift tox unit volume if duration lands with patients'],
+      switchingStories: [
+        {
+          fromBrand: 'Botox',
+          toBrand: 'Daxxify',
+          reason: 'Patients asked about longer duration',
+          evidence: 'Two patients last week asked about Daxxify duration',
+          confidence: 'medium',
+        },
+      ],
+      ciMentions: [
+        {
+          competitorName: 'Daxxify',
+          contextQuote: 'two patients last week ask about Daxxify duration',
+          sentiment: 'positive',
+          mentionCategory: 'switching',
+        },
+        {
+          competitorName: 'Juvederm',
+          contextQuote: 'Juvederm volume is steady',
+          sentiment: 'neutral',
+          mentionCategory: 'satisfaction',
+        },
+      ],
       attendees: [
         {
-          name: 'Sarah Chen',
-          title: 'VP of Engineering',
+          name: 'Dr. Patel',
+          title: 'Injector / Owner',
           role: 'Champion',
           sentiment: 'positive',
           confidence: 'high',
         },
         {
-          name: 'Tom Rodriguez',
-          title: 'CTO',
+          name: 'Maria',
+          title: 'Practice Manager',
           role: 'Economic Buyer',
           sentiment: 'neutral',
           confidence: 'medium',
@@ -146,7 +185,7 @@ Just got out of a meeting with Sarah Chen, she's the VP of Engineering at Acme C
     content: `Extract structured CRM data from this transcript:
 
 ---
-Quick one — talked to somebody at some startup, I think they said they were series B. The guy seemed interested but was pretty vague. Said they might have budget next quarter. I need to follow up in a few weeks. Not sure who else is involved.
+Quick one, ran into a new practice at the Vegas Cosmetic booth. I think it was a medspa, didn't catch the name. Owner was interested but vague. Said they're mostly on Dysport but patients complain about onset. Might have budget to trial something new next quarter. I need to follow up in a few weeks.
 ---`,
   },
   {
@@ -154,14 +193,21 @@ Quick one — talked to somebody at some startup, I think they said they were se
     content: JSON.stringify({
       dealStage: 'Prospecting',
       dealStageConfidence: 'medium',
+      aestheticDealStage: 'New account (no trial)',
+      dealSegment: 'conference',
+      modality: 'neurotoxin',
+      closeDate: 'Next quarter',
+      closeDateConfidence: 'medium',
       meetingSummary: [
-        'Early conversation with unnamed Series B startup — minimal details captured',
-        'Prospect expressed vague interest with no specifics on timeline or budget',
-        'Possible budget next quarter but nothing confirmed',
+        'Booth conversation at Vegas Cosmetic with an unnamed medspa owner',
+        'Practice is mostly using Dysport today',
+        'Patients complain about Dysport onset',
+        'Possible budget to trial something new next quarter',
+        'Practice and owner name were not captured',
       ],
       nextSteps: [
         {
-          task: 'Follow up with prospect — get company name and contact details',
+          task: 'Follow up with prospect and get practice name plus owner contact details',
           owner: 'rep',
           dueDate: 'In 2-3 weeks',
           priority: 'medium',
@@ -169,10 +215,22 @@ Quick one — talked to somebody at some startup, I think they said they were se
         },
       ],
       opportunityNotes:
-        'Brief conversation with contact at an unnamed Series B startup. Interest was vague — mentioned possible budget next quarter but no specifics. Very early stage, minimal information captured. Need to follow up in a few weeks.',
+        'Brief Vegas Cosmetic booth conversation with an unnamed medspa owner. The practice is mostly using Dysport and has patient complaints about onset. Owner expressed vague interest in trialing a new neurotoxin next quarter, but no practice name or owner contact was captured. Need to follow up in 2-3 weeks and identify the account from booth records.',
+      competitorsMentioned: ['Dysport'],
+      painPoints: ['Patient complaints about Dysport onset'],
+      risks: ['No practice or owner name captured', 'Vague timeline with no commitment'],
+      ciMentions: [
+        {
+          competitorName: 'Dysport',
+          contextQuote: 'mostly on Dysport but patients complain about onset',
+          sentiment: 'negative',
+          mentionCategory: 'features',
+        },
+      ],
       attendees: [
         {
           name: undefined,
+          title: 'Owner',
           role: 'Unknown',
           sentiment: 'neutral',
           confidence: 'low',

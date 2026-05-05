@@ -1,30 +1,31 @@
 import { NextResponse } from 'next/server'
-import { getOpenAIClient } from '@/lib/openai/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendNotification } from '@/lib/resend'
-import {
-  DEBRIEF_SYSTEM_PROMPT,
-  DEBRIEF_USER_PROMPT_TEMPLATE,
-} from '@/lib/debrief/prompts'
-import type { DebriefOutput, DebriefStructuredOutput } from '@/lib/debrief/types'
-import type { CIExtraction } from '@/lib/ci/types'
 import { processCIMentions } from '@/lib/ci/pipeline'
+import {
+  structureTranscript,
+  StructureProviderAuthError,
+  StructureValidationError,
+} from '@/lib/voice-engine/structure'
+import { getDebriefMemory, invalidateDebriefMemory } from '@/lib/user-memory/server'
+import { EMPTY_USER_MEMORY } from '@/lib/user-memory/scoring'
+import { crmNoteToDebriefOutput } from '@/lib/debrief/adapter'
 
 export const runtime = 'nodejs'
-export const maxDuration = 45
+export const maxDuration = 60
+
+function jsonError(message: string, status: number) {
+  return NextResponse.json({ error: message }, { status })
+}
 
 export async function POST(request: Request) {
   try {
     const { sessionId, transcript } = await request.json()
 
     if (!sessionId || !transcript) {
-      return NextResponse.json(
-        { error: 'Missing sessionId or transcript' },
-        { status: 400 }
-      )
+      return jsonError('Missing sessionId or transcript', 400)
     }
 
-    // Validate session
     const supabase = createAdminClient()
     const { data: session } = await supabase
       .from('debrief_sessions')
@@ -33,70 +34,51 @@ export async function POST(request: Request) {
       .single()
 
     if (!session) {
-      return NextResponse.json({ error: 'Invalid session' }, { status: 400 })
+      return jsonError('Invalid session', 400)
     }
 
-    const systemPrompt = DEBRIEF_SYSTEM_PROMPT
-    const userPrompt = DEBRIEF_USER_PROMPT_TEMPLATE(transcript)
-
-    const openai = getOpenAIClient()
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      response_format: { type: 'json_object' },
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.3,
-    })
-
-    const content = completion.choices[0]?.message?.content
-    if (!content) {
-      return NextResponse.json(
-        { error: 'No response from AI' },
-        { status: 502 }
-      )
-    }
-
-    let structured: DebriefOutput
+    let memory = EMPTY_USER_MEMORY
     try {
-      structured = JSON.parse(content) as DebriefOutput
-    } catch {
-      return NextResponse.json(
-        { error: 'AI returned invalid data' },
-        { status: 502 }
-      )
+      memory = await getDebriefMemory(session.email)
+    } catch (err) {
+      if (process.env.DEBUG_USER_MEMORY) {
+        console.error('[debrief/structure] memory load failed, continuing without:', err)
+      }
     }
 
-    // Save to session
+    const { crmNote } = await structureTranscript({
+      transcript,
+      memory,
+    })
+    const structured = crmNoteToDebriefOutput(crmNote)
+
     await supabase
       .from('debrief_sessions')
       .update({ structured_output: structured as unknown as Record<string, unknown> })
       .eq('id', sessionId)
 
-    // Process CI mentions
-    const dealData = structured as DebriefStructuredOutput
-    const ciMentions = dealData.ciMentions as CIExtraction[] | undefined
+    invalidateDebriefMemory(session.email)
+
+    const ciMentions = structured.ciMentions
     if (ciMentions && ciMentions.length > 0) {
       await processCIMentions(
         sessionId,
         ciMentions,
         {
           repEmail: session.email,
-          companyName: dealData.dealSnapshot?.companyName,
-          dealStage: dealData.dealSnapshot?.dealStage,
-          dealSegment: dealData.dealSegment,
+          companyName: structured.dealSnapshot.companyName,
+          dealStage: structured.dealSnapshot.dealStage,
+          dealSegment: structured.dealSegment,
           sourceType: 'debrief',
         },
         supabase
       )
     }
 
-    // Notify on completion
-    const company = structured.dealSnapshot?.companyName || 'Unknown'
-    const stage = structured.dealSnapshot?.dealStage || 'Unknown'
-    const taskCount = structured.followUpTasks?.length || 0
-    const attendeeCount = structured.attendees?.length || 0
+    const company = structured.dealSnapshot.companyName || 'Unknown'
+    const stage = structured.dealSnapshot.dealStage || 'Unknown'
+    const taskCount = structured.followUpTasks.length
+    const attendeeCount = structured.attendees.length
     await sendNotification(
       `Brain Dump completed: ${session.email} — ${company} (${stage})`,
       [
@@ -106,10 +88,10 @@ export async function POST(request: Request) {
         `Company: ${company}`,
         `Deal Stage: ${stage}`,
         `Segment: ${structured.dealSegment || 'unknown'}`,
-        `Est. Value: ${structured.dealSnapshot?.estimatedValue || 'Not mentioned'}`,
+        `Est. Value: ${structured.dealSnapshot.estimatedValue || 'Not mentioned'}`,
         `Attendees: ${attendeeCount}`,
         `Follow-Up Tasks: ${taskCount}`,
-        `Risks: ${structured.risks?.length || 0}`,
+        `Risks: ${structured.risks.length}`,
         '',
         `Session: ${sessionId}`,
         `Time: ${new Date().toISOString()}`,
@@ -120,10 +102,14 @@ export async function POST(request: Request) {
     )
 
     return NextResponse.json({ structured })
-  } catch {
-    return NextResponse.json(
-      { error: 'Failed to extract deal data' },
-      { status: 502 }
-    )
+  } catch (error) {
+    console.error('[debrief/structure] Error:', error)
+    if (error instanceof StructureProviderAuthError) {
+      return jsonError('AI provider authentication failed', 502)
+    }
+    if (error instanceof StructureValidationError) {
+      return jsonError(error.message, 502)
+    }
+    return jsonError('Failed to extract deal data', 502)
   }
 }

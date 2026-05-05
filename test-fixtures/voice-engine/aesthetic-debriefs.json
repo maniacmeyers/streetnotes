@@ -1,0 +1,62 @@
+[
+  {
+    "id": "injector-check-in-tox-duration",
+    "transcript": "Just left Dr. Patel at Patel Aesthetics. She's running 60 to 80 units of Botox per patient and had two patients ask about Daxxify duration last week. Practice manager Maria handles orders and asked for Q2 rebate terms. Need to send Maria the sheet and drop four trial vials before Aesthetic Next.",
+    "expected": {
+      "company": "Patel Aesthetics",
+      "contactIncludes": "Patel",
+      "dealSegment": "injector-check-in",
+      "modality": "neurotoxin",
+      "competitorsMentioned": ["Botox", "Daxxify"],
+      "mustMention": ["60", "80", "Q2", "four trial vials", "Aesthetic Next"]
+    }
+  },
+  {
+    "id": "practice-manager-pricing",
+    "transcript": "Practice manager Lauren at Glow House is pushing back on price per unit. They're loyal to Dysport right now but open to a trial if we can show patient retention and rebate math. Dr. Kim was not in the room. Follow up Friday with the pricing grid.",
+    "expected": {
+      "company": "Glow House",
+      "contactIncludes": "Lauren",
+      "dealSegment": "practice-manager",
+      "modality": "neurotoxin",
+      "competitorsMentioned": ["Dysport"],
+      "mustMention": ["price per unit", "rebate", "Friday"]
+    }
+  },
+  {
+    "id": "device-demo",
+    "transcript": "Device demo at Westside Derm for Dr. Shaw and their lead aesthetician. They compared our device to Morpheus8 and Sofwave. Main concern was patient downtime and whether the handpiece is comfortable. Owner wants a proposal next week.",
+    "expected": {
+      "company": "Westside Derm",
+      "contactIncludes": "Shaw",
+      "dealSegment": "device-demo",
+      "modality": "energy device",
+      "competitorsMentioned": ["Morpheus8", "Sofwave"],
+      "mustMention": ["downtime", "handpiece", "proposal next week"]
+    }
+  },
+  {
+    "id": "conference-incomplete",
+    "transcript": "Quick Vegas Cosmetic booth conversation. Didn't catch the practice name. Owner said they're mostly on Restylane and curious about RHA for lower face, but timing is vague. Need to find the badge scan and follow up in two weeks.",
+    "expected": {
+      "company": null,
+      "contactIncludes": null,
+      "dealSegment": "conference",
+      "modality": "HA filler",
+      "competitorsMentioned": ["Restylane", "RHA"],
+      "mustMention": ["badge scan", "two weeks"]
+    }
+  },
+  {
+    "id": "switching-story",
+    "transcript": "Dr. Chen at Lift Aesthetics has moved about half of her Botox patients to Daxxify because they keep asking for longer duration. She still uses Juvederm Ultra for lips but is testing RHA 3. Risk is the owner wants better rebate terms before increasing volume.",
+    "expected": {
+      "company": "Lift Aesthetics",
+      "contactIncludes": "Chen",
+      "dealSegment": "injector-check-in",
+      "modality": "neurotoxin",
+      "competitorsMentioned": ["Botox", "Daxxify", "Juvederm", "RHA"],
+      "mustMention": ["half", "longer duration", "rebate"]
+    }
+  }
+]

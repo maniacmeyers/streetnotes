@@ -124,6 +124,16 @@ export function reconcileCRMNote(note: CRMNote, memory: UserMemory): CRMNote {
     memory.products,
     'productsDiscussed'
   )
+  next.aestheticDealStage = substituteScalar(
+    note.aestheticDealStage,
+    memory.dealStages,
+    'aestheticDealStage'
+  ) as typeof note.aestheticDealStage
+  next.buyingWindow = substituteScalar(
+    note.buyingWindow,
+    memory.buyingWindows,
+    'buyingWindow'
+  )
 
   if (note.attendees && note.attendees.length > 0) {
     next.attendees = note.attendees.map((attendee) => {
@@ -133,6 +143,23 @@ export function reconcileCRMNote(note: CRMNote, memory: UserMemory): CRMNote {
       debugLog(attendee.name, canonical.value, 'attendees[].name')
       return { ...attendee, name: canonical.value }
     })
+  }
+
+  if (note.switchingStories && note.switchingStories.length > 0) {
+    next.switchingStories = note.switchingStories.map((story) => ({
+      ...story,
+      fromBrand: substituteScalar(story.fromBrand, memory.competitors, 'switchingStories[].fromBrand'),
+      toBrand: substituteScalar(story.toBrand, memory.competitors, 'switchingStories[].toBrand'),
+    }))
+  }
+
+  if (note.ciMentions && note.ciMentions.length > 0) {
+    next.ciMentions = note.ciMentions.map((mention) => ({
+      ...mention,
+      competitorName:
+        substituteScalar(mention.competitorName, memory.competitors, 'ciMentions[].competitorName') ??
+        mention.competitorName,
+    }))
   }
 
   return next

@@ -6,6 +6,12 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 
 ---
 
+## 2026-05-05
+
+- **Planned voice-engine unification** for the authenticated app and free `/debrief` tool: one shared transcription path, one aesthetic ontology, one canonical schema, and memory-aware structuring for both surfaces. Plan: `docs/plans/2026-05-05-voice-engine-unification-plan.md`.
+- Key finding: both routes already use `gpt-4o-transcribe`, but the paid app owns self-learning/CRM-schema logic while the free tool owns the richer aesthetic ontology. Next implementation should merge those strengths before any database migration.
+- Implemented the shared engine locally: common transcription helper, shared Anthropic structuring service, optional aesthetic schema fields, email-scoped debrief memory, adapter for free-tool results, and 5 fixture scenarios. Verification: fixture script, lint, and build passed.
+
 ## 2026-04-22
 
 - **Voice architecture shift for VBrick sparring:** MediaRecorder + homemade client-VAD + HTTP Whisper/chat/TTS → direct WebRTC to OpenAI Realtime API (`gpt-4o-realtime-preview-2024-12-17`) with server-side VAD and ephemeral tokens. Sub-second turns, native interruption. New branch `feat/vbrick-realtime-sparring` off `90a0b36` (pre-fail clean commit). PR #3 open.
