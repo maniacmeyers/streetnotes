@@ -59,15 +59,20 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: REALTIME_MODEL,
-        voice: persona.voice,
         instructions,
-        modalities: ['audio', 'text'],
-        turn_detection: {
-          type: 'server_vad',
-          silence_duration_ms: 600,
-          prefix_padding_ms: 300,
+        audio: {
+          input: {
+            transcription: { model: 'whisper-1' },
+            turn_detection: {
+              type: 'server_vad',
+              silence_duration_ms: 600,
+              prefix_padding_ms: 300,
+            },
+          },
+          output: {
+            voice: persona.voice,
+          },
         },
-        input_audio_transcription: { model: 'whisper-1' },
       }),
     })
 
