@@ -21,11 +21,11 @@ interface PushPlanReviewProps {
 }
 
 const GLASS_BASE =
-  'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)]'
+  'fg-card'
 const BTN_VOLT =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed'
+  'fg-action'
 const BTN_GHOST =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 disabled:opacity-40'
+  'fg-secondary-action px-4'
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
@@ -95,9 +95,9 @@ function getCompatibleFields(
 }
 
 const CONFIDENCE_STYLES: Record<string, string> = {
-  high: 'border-volt/40 bg-volt/15 text-volt',
-  medium: 'border-white/20 bg-white/5 text-white/60',
-  low: 'border-amber-500/40 bg-amber-500/10 text-amber-300',
+  high: 'bg-[#A8855A] text-[#FAF6EE]',
+  medium: 'bg-[#D4A28A]/28 text-[#8B6B40]',
+  low: 'bg-[#F2EBDF] text-[#8B6B40]',
 }
 
 const OBJECT_ORDER: TargetObject[] = [
@@ -172,7 +172,7 @@ export default function PushPlanReview({
         )
         if (original && targetField !== original.targetField) {
           newRules.push({
-            crmType: pushPlan.crmType as 'salesforce' | 'hubspot',
+            crmType: pushPlan.crmType as 'salesforce',
             sourceField,
             targetObject: targetObject as TargetObject,
             targetField,
@@ -184,32 +184,27 @@ export default function PushPlanReview({
     onConfirm(finalPlan, newRules)
   }
 
-  const crmLabel =
-    pushPlan.crmType === 'salesforce'
-      ? 'Salesforce'
-      : pushPlan.crmType === 'hubspot'
-        ? 'HubSpot'
-        : 'CRM'
+  const crmLabel = pushPlan.crmType === 'salesforce' ? 'Salesforce' : 'CRM'
 
   if (pushPlan.assignments.length === 0) {
     return (
-      <div className={`${GLASS_BASE} p-5`}>
-        <p className="font-body text-sm text-white/60">No fields to push.</p>
+      <div className={`${GLASS_BASE} p-[22px]`}>
+        <p className="text-sm text-[#3D332A]">No fields to push.</p>
       </div>
     )
   }
 
   return (
-    <div className={`${GLASS_BASE} p-5 flex flex-col gap-5`}>
+    <div className={`${GLASS_BASE} flex flex-col gap-5 p-[22px]`}>
       {/* Header */}
-      <h3 className="font-display uppercase text-lg text-white leading-none">
+      <h3 className="text-[21px] font-extrabold tracking-[-0.02em] text-[#1A1410]">
         Push to {crmLabel}
       </h3>
 
       {/* Offline warning */}
       {isOffline && (
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-md px-4 py-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-amber-300">
+        <div className="fg-inset px-4 py-3">
+          <p className="text-sm font-extrabold text-[#8B6B40]">
             Reconnect to push
           </p>
         </div>
@@ -217,8 +212,8 @@ export default function PushPlanReview({
 
       {/* Schema missing notice */}
       {!schema && (
-        <div className="rounded-xl border border-white/8 bg-white/[0.02] px-4 py-3">
-          <p className="text-xs text-white/40">
+        <div className="fg-inset px-4 py-3">
+          <p className="text-xs text-[#3D332A]">
             Couldn&apos;t load your CRM schema. Using default field mapping.
           </p>
         </div>
@@ -229,7 +224,7 @@ export default function PushPlanReview({
         const assignments = grouped.get(obj)!
         return (
           <fieldset key={obj} className="flex flex-col gap-3 border-none p-0 m-0">
-            <legend className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50 pb-1">
+            <legend className="pb-1 text-xs font-extrabold text-[#3D332A]">
               {objectLabel(obj)}
             </legend>
 
@@ -248,21 +243,21 @@ export default function PushPlanReview({
               return (
                 <div
                   key={key}
-                  className={`flex flex-col gap-1.5 rounded-xl px-4 py-3 ${
+                  className={`fg-inset flex flex-col gap-2 px-4 py-3 ${
                     isLow
-                      ? 'ring-1 ring-amber-500/40 bg-black/40'
-                      : 'bg-black/40'
-                  } border border-white/6 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]`}
+                      ? 'ring-1 ring-[#8B6B40]/35'
+                      : ''
+                  }`}
                   aria-label={`${humanizeSourceField(a.sourceField)} mapped to ${currentTarget} on ${objectLabel(obj)}`}
                 >
                   <div className="flex items-center gap-2 flex-wrap">
                     {/* Source label */}
-                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50">
+                    <span className="text-xs font-extrabold text-[#3D332A]">
                       {humanizeSourceField(a.sourceField)}
                     </span>
 
                     {/* Arrow */}
-                    <span className="text-white/30" aria-hidden="true">
+                    <span className="text-[#A8855A]" aria-hidden="true">
                       &rarr;
                     </span>
 
@@ -271,7 +266,7 @@ export default function PushPlanReview({
                       value={currentTarget}
                       onChange={e => handleOverride(key, e.target.value)}
                       aria-label={`Target field for ${humanizeSourceField(a.sourceField)}`}
-                      className="rounded-lg border border-white/15 bg-black/60 text-white/90 font-mono text-xs px-2 py-1.5 min-w-0 max-w-[180px]"
+                      className="fg-input min-h-[48px] max-w-full px-3 py-2 text-xs"
                     >
                       {/* Always include the current target as an option */}
                       {schema ? (
@@ -293,7 +288,7 @@ export default function PushPlanReview({
 
                     {/* Confidence chip */}
                     <span
-                      className={`inline-block rounded-md border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold backdrop-blur-md ${CONFIDENCE_STYLES[a.confidence] ?? CONFIDENCE_STYLES.medium}`}
+                      className={`inline-block rounded-full px-2.5 py-1 text-[10px] font-extrabold ${CONFIDENCE_STYLES[a.confidence] ?? CONFIDENCE_STYLES.medium}`}
                     >
                       {a.confidence}
                     </span>
@@ -301,21 +296,21 @@ export default function PushPlanReview({
                     {/* Custom field badge */}
                     {a.isCustomField && (
                       <span
-                        className="text-[10px]"
+                        className="rounded-full bg-[#D4A28A]/24 px-2 py-1 text-[10px] font-extrabold text-[#8B6B40]"
                         title="Custom field"
                         aria-label="Custom field"
                       >
-                        &#127991;
+                        Custom
                       </span>
                     )}
                   </div>
 
                   {/* Value preview */}
-                  <p className="font-body text-sm text-white/80">{truncatedValue}</p>
+                  <p className="text-sm leading-6 text-[#3D332A]">{truncatedValue}</p>
 
                   {/* Low confidence reason */}
                   {isLow && a.reason && (
-                    <p className="text-xs text-amber-300/80">{a.reason}</p>
+                    <p className="text-xs text-[#8B6B40]">{a.reason}</p>
                   )}
                 </div>
               )
@@ -325,20 +320,21 @@ export default function PushPlanReview({
       })}
 
       {/* Remember changes checkbox */}
-      <label className="flex items-center gap-2 cursor-pointer">
+      <label className="flex min-h-[48px] cursor-pointer items-center gap-2">
         <input
           type="checkbox"
           checked={rememberChanges}
           onChange={e => setRememberChanges(e.target.checked)}
-          className="rounded border-white/20 bg-black/40 text-volt focus:ring-volt/50"
+          className="h-5 w-5 rounded"
+          style={{ accentColor: '#A8855A' }}
         />
-        <span className="font-mono text-xs text-white/60">
+        <span className="text-sm font-medium text-[#3D332A]">
           Remember my changes
         </span>
       </label>
 
       {/* Action buttons */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-3">
         <button
           type="button"
           onClick={onCancel}

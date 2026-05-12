@@ -27,15 +27,16 @@ export default function RecordingLabPage() {
     : 0
 
   return (
-    <main className="px-6 py-8 flex flex-col gap-6">
+    <main className="fg-page flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Recording Lab</h1>
-        <p className="text-base text-gray-500">
+        <span className="fg-eyebrow">Device Check</span>
+        <h1 className="fg-title mt-3">Recording Lab</h1>
+        <p className="fg-subtitle">
           Device validation for microphone capture before transcription integration.
         </p>
       </div>
 
-      <div className="rounded-md border border-gray-200 p-4 flex flex-col gap-3 text-base">
+      <div className="fg-card p-[22px] flex flex-col gap-3 text-base text-[#3D332A]">
         <p>
           Status: <span className="font-medium">{status}</span>
         </p>
@@ -57,17 +58,17 @@ export default function RecordingLabPage() {
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
-          <p className="text-base text-red-700">{error}</p>
+        <div className="fg-inset px-4 py-3">
+          <p className="text-base font-bold text-[#8B6B40]">{error}</p>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="fg-sticky-footer -mx-4 flex flex-col gap-3">
         <button
           type="button"
           onClick={() => void startRecording()}
           disabled={status === 'recording' || status === 'requesting_permission' || !isSupported}
-          className="min-h-[44px] rounded-md bg-black text-white text-base font-medium disabled:bg-gray-400"
+          className="fg-action"
         >
           Start Recording
         </button>
@@ -75,14 +76,14 @@ export default function RecordingLabPage() {
           type="button"
           onClick={stopRecording}
           disabled={status !== 'recording'}
-          className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium disabled:text-gray-400"
+          className="fg-secondary-action px-5"
         >
           Stop Recording
         </button>
         <button
           type="button"
           onClick={resetRecording}
-          className="min-h-[44px] rounded-md border border-gray-300 bg-white text-base font-medium"
+          className="fg-secondary-action px-5"
         >
           Reset
         </button>

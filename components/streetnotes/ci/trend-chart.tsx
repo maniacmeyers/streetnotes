@@ -26,8 +26,8 @@ interface TrendChartProps {
 }
 
 const LINE_PALETTE = [
-  '#00E676', // volt
-  '#FFFFFF', // white
+  '#A8855A', // volt
+  '#3D332A', // white
   '#FFB800', // amber
   '#f87171', // red
   '#818cf8', // indigo
@@ -109,7 +109,7 @@ export function TrendChart({ data, loading }: TrendChartProps) {
   const merged = mergeData(data)
 
   return (
-    <div className="glass rounded-2xl p-5 sm:p-6">
+    <div className="glass rounded-2xl p-5">
       {/* Legend */}
       <div className="flex items-center flex-wrap gap-3 mb-4">
         {data.map((series, i) => (
@@ -119,7 +119,7 @@ export function TrendChart({ data, loading }: TrendChartProps) {
               style={{
                 background: LINE_PALETTE[i % LINE_PALETTE.length],
                 boxShadow:
-                  i === 0 ? '0 0 8px rgba(0, 230, 118, 0.6)' : undefined,
+                  i === 0 ? '0 0 8px rgba(212, 162, 138, 0.6)' : undefined,
               }}
             />
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70">
@@ -144,7 +144,7 @@ export function TrendChart({ data, loading }: TrendChartProps) {
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(0,230,118,0.3)', strokeWidth: 1 }} />
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(212,162,138,0.3)', strokeWidth: 1 }} />
           {data.map((series, i) => (
             <Line
               key={series.competitorName}

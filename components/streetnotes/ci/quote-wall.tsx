@@ -11,7 +11,7 @@ interface QuoteWallProps {
 }
 
 const SENTIMENT_DOT: Record<string, { color: string; glow: string }> = {
-  positive: { color: '#00E676', glow: '0 0 10px rgba(0, 230, 118, 0.6)' },
+  positive: { color: '#A8855A', glow: '0 0 10px rgba(212, 162, 138, 0.6)' },
   negative: { color: '#f87171', glow: '0 0 10px rgba(248, 113, 113, 0.5)' },
   neutral: { color: '#9ca3af', glow: 'none' },
 }
@@ -63,10 +63,11 @@ export function QuoteWall({ mentions, loading }: QuoteWallProps) {
         />
         <input
           type="text"
+          inputMode="search"
           placeholder="Search quotes, competitors, accounts..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full glass rounded-xl pl-11 pr-4 py-3 font-mono text-sm text-white placeholder:text-white/40 outline-none focus:border-volt/40 transition-all min-h-[44px]"
+          className="w-full glass rounded-xl pl-11 pr-4 py-3 font-mono text-sm text-white placeholder:text-white/40 outline-none focus:border-volt/40 transition-all min-h-[48px]"
         />
       </div>
 

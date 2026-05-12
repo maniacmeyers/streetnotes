@@ -6,6 +6,42 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 
 ---
 
+## 2026-05-11
+
+- **VBrick briefings reverted to SPIN format.** Commit `ece4cd0` (K26 event-conversation debrief mode, added 2026-05-05 for the ServiceNow Knowledge 26 booth window) reverted at Jeff's request. Debrief flow is back to pure SPIN cold-call mode for all dates.
+- Deleted the K26 event PDF route, event results card, event cheat sheet, event prompts, event PDF renderer, and the design spec. Reverted `app/api/vbrick/debrief/structure/route.ts`, dashboard page, debrief flow, recent-calls, types, and config to pre-K26 state.
+- Other K26 surfaces (campaign playbook seed at `app/api/vbrick/campaigns/seed-k26/route.ts`, sparring scenarios) left intact — separate from the briefing format. Revert is staged not committed. See: [[2026-05-11-vbrick-k26-debrief-revert]].
+
+## 2026-05-08
+
+- **FieldGlow landing content repositioned.** Removed the timed 60-second framing in favor of a calmer brain-dump promise: "Brain dump. FieldGlow learns."
+- **Public FieldGlow claims narrowed and sharpened:** Salesforce-only for now, with live competitive intel, Story Vault, and self-learning field memory kept central instead of pushed below generic voice-to-CRM.
+- Scarcity copy removed from the FieldGlow pilot CTA; metadata prepared for `https://fieldglow.app`. Production deployed to Vercel and aliased to `fieldglow.app` / `www.fieldglow.app`; GoDaddy DNS still needs to point those hosts to Vercel. Verification: `npm run lint`, `npm run build`, `git diff --check`, and deployed rendered-page checks. See: [[2026-05-08-fieldglow-landing-content-reposition]].
+
+## 2026-05-07
+
+- **Field Glow logo and app design deployed live.** Added the uploaded Field Glow mark to the mobile app header and refreshed favicon/PWA icons from the new logo asset.
+- Production alias `https://streetnotes.ai` now serves the Field Glow login/app shell; Vercel deployment `https://streetnotes-2obsm7e8p-jeffs-projects-5eeb0328.vercel.app` was promoted to production.
+- Verification: `npm run lint`, `npm run build`, `git diff --check`, live `HTTP/2 200` check on `/login`, and production Playwright mobile screenshot `output/playwright/field-glow-live-login-390x844.png`. See: [[2026-05-07-fieldglow-logo-production-deploy]].
+
+- **Field Glow mobile polish pass implemented.** Completed the P0/P1 UI/UX audit items: 48px touch targets, auth secondary action sizing, idle mic canvas pause, capture back/refresh guard, capture overscroll containment, and mobile input modes for CRM value/date/search fields.
+- **Mobile verification added:** Playwright screenshots saved in `output/playwright/` for login 360x740, login 390x844, and sign-up 430x932. `/login` and `/sign-up` checked at 360/390/430 widths: no horizontal overflow and no visible target under 48px.
+- Verification: `npm run lint`, `npm run build`, `git diff --check`. Protected `/dashboard` redirects to `/login` without an authenticated browser session, so capture-flow screenshot coverage remains a follow-up with auth state. See: [[2026-05-07-fieldglow-mobile-polish-pass]].
+
+- **Field Glow UI/UX Pro audit captured.** Installed/tried `mobile-ux`, then ran `ui-ux-pro-max` design-system, UX, style, typography, chart, and Next.js guidance passes against the mobile app. Captured the consolidated recommendations in `docs/plans/2026-05-07-field-glow-ui-ux-pro-audit.md`.
+- **Decision guardrail:** rejected UI Pro's generic lavender/green wellness palette and Varela/Nunito typography for Field Glow; keep the explicit bronze/cream Field Glow style guide and Plus Jakarta Sans / DM Sans. Useful rules: evolved soft UI, 48px touch targets, aria/status feedback, reduced motion, input modes, lighter mic animation, and mobile smoke matrix.
+- Obsidian brain updated: `../_brain/sessions/2026-05-07-fieldglow-ui-ux-pro-audit.md`, `../_brain/CONTEXT.md`, `../_brain/MOC.md`. Cached GitNexus wiki sync run via `./scripts/sync-wiki.sh`.
+
+- **Authenticated app UI rebranded from StreetNotes to Field Glow.** Added warm mobile-only neumorphic tokens/utilities, Field Glow metadata/manifest/package naming, phone-width app shell, no desktop sidebar, and bottom-nav/mobile action treatment.
+- **Core mobile surfaces re-skinned without intended functionality changes:** auth, dashboard, mic/capture flow, transcript/review, note detail, push-plan review, settings/setup/export, story wrapper, intel wrapper, shared tabs, and inline volt/green values in Story/CI app components.
+- Verification passed: `npm run lint`, `npm run build`, `git diff --check`. GitNexus MCP unavailable; used `.gitnexus/wiki/*` docs for orientation. See: [[2026-05-07-fieldglow-mobile-app-rebrand]].
+
+## 2026-05-06
+
+- **FieldGlow landing page at `/fieldglow` built and aesthetically corrected through three iterations.** Inherited dark-navy + rose-gold glassmorphism scaffold rejected (AI-slop-with-beauty-filter cliché). Rebuilt as editorial luxury — Fraunces serif (variable, w/ SOFT/WONK/opsz axes) + DM Sans, warm bone paper, single gilt accent. Then pulled back from magazine theater per Jeff: stripped Roman numerals, *Vol. 01* dateline, drop cap, asterism, "From the FieldGlow Brief" attribution. Kept editorial typography minus the cosplay.
+- **Hero rewritten in plain English** (Hopkins specificity + Halbert directness): three concrete outcomes — Salesforce updates, competitor intel, pitch vault. *"The more you use it, the smarter it gets."* promoted from buried moat section to hero kicker, italic gilt with shimmer. Brand wall (Allergan/Galderma/Merz/etc) pulled in favor of generic category line per [[Brand deals first revenue model]] — re-add specific names only when signed pilots land.
+- **`components/shiny-text.tsx` ported across as-is** with gilt-palette params (`color: #8B6B40`, `shineColor: #E8C9A0`; blush variant for dark Apply section). Pattern captured: ShinyText `inline-block` + `background-clip: text` clips italic SOFT/WONK descenders unless `line-height` is loose (≥ 1.5) on the inline-block — fix applied to all 8 instances. See: [[2026-05-06-fieldglow-landing-editorial-pullback]].
+
 ## 2026-05-05
 
 - **Planned voice-engine unification** for the authenticated app and free `/debrief` tool: one shared transcription path, one aesthetic ontology, one canonical schema, and memory-aware structuring for both surfaces. Plan: `docs/plans/2026-05-05-voice-engine-unification-plan.md`.
@@ -69,3 +105,20 @@ Append-only log of notable outcomes from Claude Code sessions in this repo. Writ
 - Removed stale CodeGraph MCP config (never installed, caused "Failed to reconnect" errors).
 - Built Obsidian Second Brain: `_brain/` with CONTEXT.md, MOC.md, decisions/, patterns/, sessions/, evolution/. Design doc: `docs/plans/2026-04-18-second-brain-design.md`.
 - Created `.obsidianignore` to hide code from Obsidian graph. Seeded 5 decisions, 3 patterns, 1 evolution note, 1 session note.
+
+## 2026-05-09
+
+- **Direction shift: first Field Glow rollout is Salesforce-only.** HubSpot stripped from the UI — settings CRM picker, export flavor selector, CRM connections card, push-plan-review label branch. Server routes (`app/api/auth/hubspot/*`, `lib/crm/hubspot.ts`) intentionally preserved for re-enable later.
+- Full mobile UX review across Dashboard / Stories / Intel / Settings + cross-surface consistency, then implementation pass on every approved fix. Highlights: Field Balance floor (`Math.max(12, …)`) removed, sign-out moved off Dashboard to Settings, Intel CTA "Generate weekly brief" promoted from icon-only to labeled action, Recent Notes / Dashboard stats now surface a real "Couldn't load · Retry" state instead of `.catch(() => {})`-swallowing the 500. Field Glow logo background (cream box + neumorphic shadow) removed.
+- **Backend gap surfaced.** Migration `013_crm_push_log.sql` (adds `notes.push_status` + `crm_push_log` table) was never applied — `/api/notes` returns 500. Supabase MCP unauth + local Docker off, so SQL handed back to Jeff for the Supabase SQL editor.
+- Verification: `npx tsc --noEmit` clean; iPhone-14-Pro Playwright screenshots re-captured at `/tmp/sn-{dashboard,stories,intel,settings,recording-lab}-full.png`.
+- Session note: `_brain/sessions/2026-05-09-fieldglow-app-ux-review-fix-pass.md`.
+
+## 2026-05-10
+
+- **Migration 013 applied to remote Supabase via the management API SQL endpoint** — closes the gap surfaced 2026-05-09 where `/api/notes` was 500-ing on `column notes.push_status does not exist`. `crm_push_log` table + `notes.push_status` column verified present. Dashboard stats + Recent Notes now render proper empty states instead of the defensive "Couldn't load" UI.
+- **Migration tracking mismatch identified.** Local `supabase/migrations/` has 19 numeric/dated files; remote `supabase_migrations.schema_migrations` records six timestamp-named entries with zero overlap. Likely caused by some migrations applied via `supabase db push` and others pasted into the Dashboard SQL editor over the project's history. `db push` is unsafe until reconciled.
+- **Reconciliation queued for next session.** Recommended Path A: audit every local migration against live remote schema → `supabase migration repair --status applied` for already-present changes, run + repair for missing ones, decide per-entry on the six orphan timestamps. Self-contained handoff prompt written for the fresh-session agent.
+- Session note: `_brain/sessions/2026-05-10-supabase-migration-013-applied-and-reconciliation-handoff.md`.
+- **Migration tracking reconciliation — closed.** Audit-and-repair pass executed end-to-end (Path A', adapted from Path A to handle duplicate-prefix collisions on `002`/`014`/`015`). Renamed 6 local files (filename only, no SQL changes) to their already-applied timestamp versions: `001 → 20260408171907`, `002_add_instance_url → 20260408171913`, `014_original_structured_output → 20260410200159`, `014_tighten_rls_policies → 20260413185516`, `015_add_exported_at_to_notes → 20260413213144`, `20260419_sparring_partner → 20260420190005`. Applied the 5 truly-missing migrations via the management API (`012_story_challenges`, `015_crm_schema_cache`, `016_crm_field_rules`, `017_crm_export_log`, `018_user_preferences`). Ran `supabase migration repair --status applied` for 16 versions to backfill tracking. **Final state: 22 local files = 22 tracked rows, zero orphans, zero pending. `supabase db push` is now safe.**
+- Session note: `_brain/sessions/2026-05-10-supabase-migration-reconciliation.md`.

@@ -16,12 +16,11 @@ interface GlassTabsProps {
 }
 
 /**
- * Glass segmented tab bar — matches the debrief/dashboard aesthetic.
- * Active tab floats on a volt-tinted glass-inset with a glow bar above.
+ * Warm segmented tab bar for the Field Glow mobile app.
  */
 export function GlassTabs({ items, activeId, onChange, className = '' }: GlassTabsProps) {
   return (
-    <div className={`glass rounded-2xl p-1.5 flex gap-1 ${className}`}>
+    <div className={`fg-card-sm flex gap-1 rounded-[24px] p-1.5 ${className}`}>
       {items.map((item) => {
         const isActive = item.id === activeId
         return (
@@ -29,10 +28,10 @@ export function GlassTabs({ items, activeId, onChange, className = '' }: GlassTa
             key={item.id}
             type="button"
             onClick={() => onChange(item.id)}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-xl font-mono text-[11px] sm:text-xs uppercase tracking-[0.15em] font-bold transition-all duration-200 relative cursor-pointer ${
+            className={`relative flex min-h-[48px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-full px-3 py-2.5 text-[12px] font-extrabold transition-all duration-300 ${
               isActive
-                ? 'text-volt bg-volt/10 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2),inset_0_-1px_0_0_rgba(0,0,0,0.4),0_0_24px_rgba(0,230,118,0.25)] border border-volt/30'
-                : 'text-white/50 hover:text-white border border-transparent'
+                ? 'bg-[#A8855A] text-[#FAF6EE] shadow-[0_10px_18px_rgba(168,133,90,0.28)]'
+                : 'text-[#3D332A]'
             }`}
             aria-pressed={isActive}
           >

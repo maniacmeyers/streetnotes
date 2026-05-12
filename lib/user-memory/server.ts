@@ -27,6 +27,17 @@ function normalizeEmail(email: string): string {
   return email.toLowerCase().trim()
 }
 
+function extractCRMNote(value: unknown): CRMNote | null {
+  if (!value || typeof value !== 'object') return null
+
+  const record = value as Record<string, unknown>
+  if ('crmNote' in record && record.crmNote && typeof record.crmNote === 'object') {
+    return record.crmNote as CRMNote
+  }
+
+  return value as CRMNote
+}
+
 export async function getUserMemory(userId: string): Promise<UserMemory> {
   if (!userId) return EMPTY_USER_MEMORY
 
@@ -53,14 +64,18 @@ export async function getUserMemory(userId: string): Promise<UserMemory> {
     }
 
     const rows = data
-      .filter(
-        (row): row is { structured_output: CRMNote; created_at: string } =>
-          row.structured_output != null && typeof row.created_at === 'string'
+      .filter((row): row is { structured_output: unknown; created_at: string } =>
+        row.structured_output != null && typeof row.created_at === 'string'
       )
-      .map((row) => ({
-        structured_output: row.structured_output as CRMNote,
-        created_at: row.created_at,
-      }))
+      .map((row) => {
+        const crmNote = extractCRMNote(row.structured_output)
+        if (!crmNote) return null
+        return {
+          structured_output: crmNote,
+          created_at: row.created_at,
+        }
+      })
+      .filter((row): row is { structured_output: CRMNote; created_at: string } => row !== null)
 
     const memory = aggregateEntities(rows)
     memoryCache.set(userId, { memory, expiresAt: now + CACHE_TTL_MS })

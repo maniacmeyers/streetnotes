@@ -1,9 +1,15 @@
 import type { Metadata, Viewport } from 'next'
-import { Plus_Jakarta_Sans, Space_Mono, Ranchers } from 'next/font/google'
+import { DM_Sans, Plus_Jakarta_Sans, Space_Mono } from 'next/font/google'
 import './globals.css'
 import PWARegister from '@/components/pwa-register'
 
 const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-heading',
+  weight: ['400', '500', '600', '700', '800'],
+})
+
+const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-body',
   weight: ['400', '500', '600', '700', '800'],
@@ -15,45 +21,40 @@ const spaceMono = Space_Mono({
   weight: ['400', '700'],
 })
 
-const ranchers = Ranchers({
-  subsets: ['latin'],
-  variable: '--font-display',
-  weight: '400',
-})
-
 export const metadata: Metadata = {
-  metadataBase: new URL('https://streetnotes.ai'),
+  metadataBase: new URL('https://fieldglow.app'),
   title: {
-    default: 'StreetNotes.ai | Voice-to-CRM for Sales Reps',
-    template: '%s | StreetNotes.ai',
+    default: 'Field Glow | Voice-to-Salesforce Field Intelligence',
+    template: '%s | Field Glow',
   },
   description:
-    'Try StreetNotes free. Talk for 60 seconds after a sales visit and get CRM fields, tasks, and opportunity updates ready for Salesforce or Veeva.',
+    'Field Glow turns field brain dumps into Salesforce-ready updates, live competitor intel, and Story Vault material that gets smarter with every debrief.',
   keywords: [
-    'voice to CRM',
-    'sales reps',
+    'voice to Salesforce',
+    'aesthetic sales reps',
     'medical aesthetics CRM',
     'field sales notes',
-    'Veeva CRM',
+    'Salesforce field sales',
     'sales call debrief',
-    'competitive intelligence for sales teams',
+    'live competitive intelligence for sales teams',
+    'sales story vault',
   ],
-  applicationName: 'StreetNotes',
+  applicationName: 'Field Glow',
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'StreetNotes.ai | Voice-to-CRM for Sales Reps',
+    title: 'Field Glow | Voice-to-Salesforce Field Intelligence',
     description:
-      'Try StreetNotes free. Talk after a sales visit and get CRM fields, tasks, and opportunity updates ready for Salesforce or Veeva.',
-    url: 'https://streetnotes.ai',
-    siteName: 'StreetNotes.ai',
+      'Brain dump after a field visit and get Salesforce-ready notes, live competitor intel, and story material your team can reuse.',
+    url: 'https://fieldglow.app',
+    siteName: 'Field Glow',
     images: [
       {
         url: '/icon-512.png',
         width: 512,
         height: 512,
-        alt: 'StreetNotes.ai logo',
+        alt: 'Field Glow app icon',
       },
     ],
     locale: 'en_US',
@@ -61,15 +62,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'StreetNotes.ai | Voice-to-CRM for Sales Reps',
+    title: 'Field Glow | Voice-to-Salesforce Field Intelligence',
     description:
-      'Try the free 60-second visit recap and see the CRM fields and opportunity update it creates.',
+      'Brain dump after a field visit and get Salesforce-ready notes, live competitor intel, and reusable story material.',
     images: ['/icon-512.png'],
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'StreetNotes',
+    statusBarStyle: 'default',
+    title: 'Field Glow',
   },
   formatDetection: {
     telephone: false,
@@ -89,7 +90,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: 'cover',
-  themeColor: '#061222',
+  themeColor: '#FAF6EE',
 }
 
 export default function RootLayout({
@@ -100,11 +101,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${plusJakarta.variable} ${spaceMono.variable} ${ranchers.variable} font-body min-h-screen bg-dark antialiased`}
+        className={`${plusJakarta.variable} ${dmSans.variable} ${spaceMono.variable} font-body min-h-screen bg-[#FAF6EE] text-[#1A1410] antialiased`}
       >
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-volt focus:text-black focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:uppercase focus:font-bold focus:border-2 focus:border-black"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-full focus:bg-[#A8855A] focus:px-4 focus:py-2 focus:font-heading focus:text-sm focus:font-bold focus:text-[#FAF6EE]"
         >
           Skip to main content
         </a>

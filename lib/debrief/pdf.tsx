@@ -11,129 +11,164 @@ import {
 } from '@react-pdf/renderer'
 import type { DebriefStructuredOutput, DealSegment } from './types'
 
-const LOGO_PATH = path.join(process.cwd(), 'public', 'streetnotes_logo.png')
+const LOGO_PATH = path.join(process.cwd(), 'public', 'fieldglow', 'brand', 'logo.png')
 
-/* ─── Palette ─── */
+/* ─── Field Glow palette ───
+   Source: components/fieldglow/styles.css. Treat as a hard boundary. */
 const C = {
-  volt: '#00E676',
-  voltDark: '#00C853',
-  voltBg: '#E8F5E9',
-  red: '#EF4444',
-  redBg: '#FEF2F2',
-  amber: '#F59E0B',
-  amberBg: '#FFFBEB',
-  blue: '#3B82F6',
-  blueBg: '#EFF6FF',
-  dark: '#111827',
-  darkSoft: '#1F2937',
+  paper: '#F2EBDF',
+  paper2: '#EBE3D5',
+  cream: '#FAF6EE',
   white: '#FFFFFF',
-  gray50: '#F9FAFB',
-  gray100: '#F3F4F6',
-  gray200: '#E5E7EB',
-  gray300: '#D1D5DB',
-  gray400: '#9CA3AF',
-  gray500: '#6B7280',
-  gray700: '#374151',
-  gray900: '#111827',
+  ink: '#1A1410',
+  ink2: '#3D332A',
+  mute: '#7A6F62',
+  muteSoft: '#9C9085',
+  line: '#D4C7B2',
+  lineSoft: '#E7DDC9',
+  gilt: '#A8855A',
+  giltDeep: '#8B6B40',
+  giltSoft: '#EAD9BD',
+  blush: '#D4A28A',
+  blushSoft: '#F5E2D5',
 }
 
+/* Sentiment + priority kept inside the Field Glow palette. No red/green/blue. */
 function sentimentColor(s: string): string {
-  if (s === 'positive') return C.volt
-  if (s === 'negative') return C.red
-  if (s === 'neutral') return C.blue
-  return C.gray400
+  if (s === 'positive') return C.gilt
+  if (s === 'negative') return C.ink
+  if (s === 'neutral') return C.mute
+  return C.muteSoft
 }
 
 function priorityAccent(p: string): string {
-  if (p === 'high') return C.red
-  if (p === 'medium') return C.amber
-  return C.gray300
+  if (p === 'high') return C.giltDeep
+  if (p === 'medium') return C.gilt
+  return C.line
 }
 
 function priorityBg(p: string): string {
-  if (p === 'high') return C.redBg
-  if (p === 'medium') return C.amberBg
-  return C.gray100
+  if (p === 'high') return C.giltSoft
+  if (p === 'medium') return C.blushSoft
+  return C.paper2
 }
 
 function priorityColor(p: string): string {
-  if (p === 'high') return C.red
-  if (p === 'medium') return C.amber
-  return C.gray400
+  if (p === 'high') return C.giltDeep
+  if (p === 'medium') return C.ink2
+  return C.mute
 }
-
 
 /* ─── Styles ─── */
 const s = StyleSheet.create({
-  /* Pages */
+  /* Pages — cream "paper" so the editorial tone reads through */
   page: {
     paddingTop: 0,
-    paddingBottom: 56,
+    paddingBottom: 60,
     paddingHorizontal: 0,
     fontFamily: 'Helvetica',
     fontSize: 10,
-    color: C.gray700,
-    backgroundColor: C.white,
+    color: C.ink2,
+    backgroundColor: C.cream,
   },
 
   bodyPage: {
-    paddingTop: 52,
-    paddingBottom: 56,
+    paddingTop: 64,
+    paddingBottom: 60,
     paddingHorizontal: 0,
     fontFamily: 'Helvetica',
     fontSize: 10,
-    color: C.gray700,
-    backgroundColor: C.white,
+    color: C.ink2,
+    backgroundColor: C.cream,
   },
 
-  /* Top accent */
-  topBar: {
+  /* ── Cover page ── */
+
+  /* Top gilt hairline (the only chrome above the masthead) */
+  topGiltRule: {
     width: '100%',
-    height: 5,
-    backgroundColor: C.volt,
+    height: 1.5,
+    backgroundColor: C.gilt,
   },
 
-  /* Header */
-  header: {
-    backgroundColor: C.dark,
-    paddingTop: 28,
-    paddingBottom: 28,
-    paddingHorizontal: 40,
+  /* Masthead — WHITE band so the bronze logo always renders cleanly */
+  masthead: {
+    backgroundColor: C.white,
+    paddingTop: 26,
+    paddingBottom: 22,
+    paddingHorizontal: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: C.line,
   },
 
-  headerRow: {
+  mastheadRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 22,
+    alignItems: 'center',
   },
 
-  logo: { width: 110, height: 28 },
+  logo: { width: 132, height: 50 },
 
-  metaCol: { alignItems: 'flex-end' },
-  metaText: { fontSize: 8, color: C.gray400, marginBottom: 1 },
+  mastheadMetaCol: { alignItems: 'flex-end' },
 
-  docLabel: {
+  mastheadMetaLabel: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 7,
+    letterSpacing: 2.4,
+    textTransform: 'uppercase',
+    color: C.mute,
+    marginBottom: 3,
+  },
+
+  mastheadMetaText: {
+    fontSize: 9,
+    color: C.ink2,
+    marginBottom: 1,
+  },
+
+  /* Hero — editorial "issue" title block on paper */
+  hero: {
+    backgroundColor: C.paper,
+    paddingTop: 40,
+    paddingBottom: 36,
+    paddingHorizontal: 48,
+  },
+
+  eyebrowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+
+  eyebrowRule: {
+    width: 36,
+    height: 1,
+    backgroundColor: C.gilt,
+    marginRight: 12,
+  },
+
+  eyebrowText: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 8,
-    letterSpacing: 3,
+    letterSpacing: 3.2,
     textTransform: 'uppercase',
-    color: C.volt,
-    marginBottom: 8,
+    color: C.ink2,
   },
 
   companyName: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 30,
-    color: C.white,
-    letterSpacing: -0.5,
-    marginBottom: 4,
+    fontFamily: 'Times-Roman',
+    fontSize: 38,
+    color: C.ink,
+    letterSpacing: -1,
+    lineHeight: 1.05,
+    marginBottom: 10,
   },
 
   contactLine: {
-    fontSize: 11,
-    color: C.gray400,
-    marginBottom: 16,
+    fontFamily: 'Times-Italic',
+    fontSize: 13,
+    color: C.ink2,
+    marginBottom: 22,
   },
 
   badgeRow: {
@@ -142,279 +177,271 @@ const s = StyleSheet.create({
   },
 
   badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderWidth: 1,
   },
 
   badgeText: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 8,
-    letterSpacing: 0.8,
+    letterSpacing: 1.6,
     textTransform: 'uppercase',
   },
 
-  /* Section header bar (dark bg, white text, colored left accent) */
-  sectionHeaderBar: {
+  /* ── Section header — gilt rule + tracked uppercase, no dark bar ── */
+  sectionHeaderWrap: {
+    marginHorizontal: 48,
+    marginTop: 28,
+    marginBottom: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: C.darkSoft,
-    marginHorizontal: 40,
-    marginTop: 0,
   },
 
-  sectionHeaderAccent: {
-    width: 4,
-    alignSelf: 'stretch',
+  sectionHeaderRule: {
+    width: 28,
+    height: 1,
+    backgroundColor: C.gilt,
+    marginRight: 12,
   },
 
   sectionHeaderText: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 9,
-    letterSpacing: 2,
+    letterSpacing: 3,
     textTransform: 'uppercase',
-    color: C.white,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    color: C.ink,
   },
 
-  /* Section divider line */
-  sectionDivider: {
-    height: 1,
-    backgroundColor: C.gray200,
-    marginHorizontal: 40,
+  sectionHeaderCount: {
+    fontFamily: 'Times-Italic',
+    fontSize: 10,
+    color: C.gilt,
+    marginLeft: 8,
   },
 
-  /* Content area (40px horizontal padding) */
-  sectionContent: {
-    paddingHorizontal: 40,
-    paddingTop: 14,
-    paddingBottom: 16,
-  },
-
-  /* Opportunity Details: left accent bar wrapper */
-  oppDetailsWrapper: {
+  /* Section divider — three-dot asterism */
+  asterismRow: {
     flexDirection: 'row',
-    marginHorizontal: 40,
-    marginTop: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 18,
+    marginBottom: 4,
   },
 
-  oppDetailsAccent: {
-    width: 4,
-    backgroundColor: C.volt,
+  asterismDot: {
+    fontFamily: 'Times-Italic',
+    fontSize: 9,
+    color: C.gilt,
+    letterSpacing: 8,
   },
 
+  /* Content area */
+  sectionContent: {
+    paddingHorizontal: 48,
+  },
+
+  /* ── Opportunity Details ── */
   oppDetailsBody: {
-    flex: 1,
-    paddingLeft: 16,
-    paddingTop: 14,
-    paddingBottom: 16,
-    paddingRight: 0,
+    paddingHorizontal: 48,
   },
 
-  /* CRM field rows */
   fieldRow: {
     flexDirection: 'row',
-    paddingVertical: 7,
+    paddingVertical: 9,
     borderBottomWidth: 1,
-    borderBottomColor: C.gray200,
+    borderBottomColor: C.lineSoft,
   },
 
   fieldLabel: {
-    width: '28%',
+    width: '32%',
     fontFamily: 'Helvetica-Bold',
-    fontSize: 8,
-    letterSpacing: 0.5,
+    fontSize: 7,
+    letterSpacing: 2,
     textTransform: 'uppercase',
-    color: C.gray500,
-    paddingTop: 1,
+    color: C.mute,
+    paddingTop: 2,
   },
 
   fieldValue: {
-    width: '72%',
-    fontSize: 10,
-    color: C.gray900,
-    fontFamily: 'Helvetica-Bold',
+    width: '68%',
+    fontFamily: 'Times-Roman',
+    fontSize: 12,
+    color: C.ink,
+    lineHeight: 1.3,
   },
 
   fieldValueEmpty: {
-    width: '72%',
-    fontSize: 10,
-    color: C.gray300,
-    fontStyle: 'italic',
+    width: '68%',
+    fontFamily: 'Times-Italic',
+    fontSize: 11,
+    color: C.muteSoft,
   },
 
-  /* Attendees */
+  /* ── Attendees — paper card with hairline rule ── */
   attendeeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    gap: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     marginBottom: 6,
-    backgroundColor: C.gray50,
-    borderRadius: 4,
+    backgroundColor: C.paper,
+    borderWidth: 1,
+    borderColor: C.line,
   },
 
   attendeeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
   },
 
   attendeeName: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 10,
-    color: C.gray900,
+    fontFamily: 'Times-Roman',
+    fontSize: 12,
+    color: C.ink,
   },
 
   attendeeDetail: {
-    fontSize: 9,
-    color: C.gray500,
+    fontFamily: 'Times-Italic',
+    fontSize: 10,
+    color: C.ink2,
   },
 
   attendeeRole: {
-    fontSize: 8,
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 0.5,
+    fontSize: 7,
+    letterSpacing: 1.6,
     textTransform: 'uppercase',
-    color: C.voltDark,
-    backgroundColor: C.voltBg,
-    paddingHorizontal: 7,
+    color: C.giltDeep,
+    backgroundColor: C.giltSoft,
+    paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 3,
+    borderWidth: 0.5,
+    borderColor: C.gilt,
   },
 
-  /* Tasks */
+  /* ── Tasks — editorial check-line ── */
   taskCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginBottom: 6,
-    backgroundColor: C.white,
-    borderRadius: 4,
-    gap: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+    marginBottom: 4,
+    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    borderBottomColor: C.lineSoft,
+    gap: 12,
   },
 
   taskLeftBorder: {
-    width: 3,
+    width: 2,
     alignSelf: 'stretch',
-    borderRadius: 2,
   },
 
   taskCheckbox: {
     width: 11,
     height: 11,
-    borderWidth: 1.5,
-    borderColor: C.gray300,
-    borderRadius: 2,
-    marginTop: 1,
+    borderWidth: 1,
+    borderColor: C.gilt,
+    marginTop: 3,
   },
 
   taskText: {
     flex: 1,
-    fontSize: 9,
-    color: C.gray700,
-    lineHeight: 1.4,
+    fontFamily: 'Times-Roman',
+    fontSize: 11,
+    color: C.ink,
+    lineHeight: 1.45,
   },
 
   taskMeta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
+    marginTop: 2,
   },
 
   taskDate: {
-    fontSize: 7,
-    color: C.gray500,
+    fontFamily: 'Times-Italic',
+    fontSize: 8,
+    color: C.mute,
   },
 
   taskPriority: {
-    fontSize: 7,
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 0.5,
+    fontSize: 6.5,
+    letterSpacing: 1.4,
     textTransform: 'uppercase',
-    paddingHorizontal: 6,
+    paddingHorizontal: 7,
     paddingVertical: 3,
-    borderRadius: 3,
+    borderWidth: 0.5,
   },
 
-  /* Call summary */
+  /* ── Call summary — numbered folio (italic gilt) ── */
   summaryBullet: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 7,
-    gap: 10,
+    marginBottom: 12,
+    gap: 14,
   },
 
-  bulletCircle: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: C.dark,
-    justifyContent: 'center',
+  bulletFolio: {
+    width: 26,
     alignItems: 'center',
-    marginTop: 0,
+    paddingTop: 0,
   },
 
   bulletNumber: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 8,
-    color: C.volt,
+    fontFamily: 'Times-Italic',
+    fontSize: 22,
+    color: C.gilt,
+    lineHeight: 1,
   },
 
   summaryText: {
     flex: 1,
-    fontSize: 9,
-    color: C.gray700,
-    lineHeight: 1.5,
-    paddingTop: 2,
+    fontFamily: 'Times-Roman',
+    fontSize: 11,
+    color: C.ink,
+    lineHeight: 1.55,
+    paddingTop: 5,
   },
 
-  /* Notes box */
-  notesWrapper: {
-    flexDirection: 'row',
-    marginHorizontal: 40,
-    marginTop: 0,
-  },
-
-  notesAccent: {
-    width: 4,
-    backgroundColor: C.volt,
-  },
-
+  /* ── Notes box ── */
   notesBody: {
-    flex: 1,
-    backgroundColor: C.gray50,
+    marginHorizontal: 48,
+    backgroundColor: C.paper,
     borderWidth: 1,
-    borderLeftWidth: 0,
-    borderColor: C.gray200,
-    padding: 14,
+    borderColor: C.line,
+    paddingVertical: 18,
+    paddingHorizontal: 22,
   },
 
   notesText: {
-    fontSize: 9,
-    color: C.gray700,
+    fontFamily: 'Times-Roman',
+    fontSize: 11,
+    color: C.ink,
     lineHeight: 1.6,
   },
 
-  /* Tags */
+  /* ── Tags ── */
   tagsSection: {
     flexDirection: 'row',
-    gap: 24,
-    marginTop: 4,
+    gap: 28,
+    marginTop: 2,
   },
 
   tagColumn: { flex: 1 },
 
   tagColumnLabel: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 8,
-    letterSpacing: 1.5,
+    fontSize: 7,
+    letterSpacing: 2,
     textTransform: 'uppercase',
-    color: C.gray500,
-    marginBottom: 8,
+    color: C.mute,
+    marginBottom: 10,
   },
 
   tagWrap: {
@@ -426,91 +453,106 @@ const s = StyleSheet.create({
   tag: {
     fontSize: 8,
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 0.3,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: 4,
-    borderWidth: 1,
+    letterSpacing: 0.4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 0.5,
   },
 
-  /* Mind map */
+  /* ── Deal map — cream paper, gilt center, warm tinted branches ── */
   mapContainer: {
-    marginHorizontal: 40,
-    marginTop: 0,
-    backgroundColor: C.dark,
-    padding: 20,
+    marginHorizontal: 48,
+    backgroundColor: C.paper,
+    borderWidth: 1,
+    borderColor: C.line,
+    paddingTop: 26,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
   },
 
   mapCenter: {
     alignSelf: 'center',
-    backgroundColor: '#0D1117',
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-    borderRadius: 6,
-    marginBottom: 20,
+    backgroundColor: C.white,
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    marginBottom: 24,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: C.volt,
+    borderColor: C.gilt,
   },
 
   mapCenterName: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 14,
-    color: C.white,
-    marginBottom: 3,
+    fontFamily: 'Times-Roman',
+    fontSize: 15,
+    color: C.ink,
+    letterSpacing: -0.3,
+    marginBottom: 4,
   },
 
   mapCenterStage: {
-    fontSize: 9,
-    color: C.volt,
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 0.5,
+    fontSize: 7,
+    letterSpacing: 2.4,
+    textTransform: 'uppercase',
+    color: C.giltDeep,
   },
 
   mapGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 8,
   },
 
   mapBranch: {
-    width: '48%',
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 10,
-    marginBottom: 4,
+    width: '48.5%',
+    borderWidth: 0.75,
+    padding: 12,
+    marginBottom: 0,
   },
 
   mapBranchLabel: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 7,
-    letterSpacing: 1,
+    letterSpacing: 2,
     textTransform: 'uppercase',
-    marginBottom: 5,
+    marginBottom: 8,
   },
 
   mapBranchItem: {
-    fontSize: 8,
-    color: C.gray300,
-    lineHeight: 1.4,
+    fontFamily: 'Times-Roman',
+    fontSize: 9,
+    color: C.ink2,
+    lineHeight: 1.45,
     marginBottom: 2,
-    paddingLeft: 6,
   },
 
-  /* Footer */
+  mapBranchMore: {
+    fontFamily: 'Times-Italic',
+    fontSize: 8,
+    color: C.mute,
+    marginTop: 4,
+  },
+
+  /* ── Footer ── */
   footer: {
     position: 'absolute',
-    bottom: 18,
-    left: 40,
-    right: 40,
-    paddingTop: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: C.white,
+    paddingTop: 10,
+    paddingBottom: 12,
+    paddingHorizontal: 48,
+    borderTopWidth: 1,
+    borderTopColor: C.line,
     flexDirection: 'column',
     alignItems: 'stretch',
   },
 
-  footerAccentLine: {
-    height: 2,
-    backgroundColor: '#66F0A3',
+  footerGiltRule: {
+    width: 36,
+    height: 1,
+    backgroundColor: C.gilt,
     marginBottom: 8,
   },
 
@@ -520,81 +562,131 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
 
-  footerLogo: { width: 55, height: 14 },
-  footerText: { fontSize: 7, color: C.gray400 },
+  footerLogo: { width: 70, height: 27 },
 
-  /* Fixed header for body pages */
+  footerMetaCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+
+  footerText: {
+    fontSize: 7,
+    color: C.mute,
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
+    fontFamily: 'Helvetica-Bold',
+  },
+
+  /* ── Fixed body-page header ── */
   bodyHeader: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: C.dark,
-    paddingVertical: 10,
-    paddingHorizontal: 40,
+    backgroundColor: C.white,
+    paddingVertical: 12,
+    paddingHorizontal: 48,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: C.line,
   },
 
-  bodyHeaderLogo: { width: 80, height: 20 },
+  bodyHeaderLogo: { width: 88, height: 33 },
 
   bodyHeaderTitle: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 8,
-    color: C.gray400,
-    letterSpacing: 2,
+    fontSize: 7,
+    color: C.mute,
+    letterSpacing: 2.6,
     textTransform: 'uppercase',
   },
 
-  /* CTA Page */
+  /* ── CTA page — cream/white editorial closing spread ── */
   ctaPage: {
     paddingTop: 0,
     paddingBottom: 0,
     paddingHorizontal: 0,
     fontFamily: 'Helvetica',
-    backgroundColor: C.dark,
+    backgroundColor: C.white,
+  },
+
+  ctaTopGilt: {
+    width: '100%',
+    height: 1.5,
+    backgroundColor: C.gilt,
   },
 
   ctaContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 60,
+    paddingHorizontal: 60,
+    paddingTop: 90,
+    paddingBottom: 90,
   },
 
-  ctaLogo: { width: 200, height: 50, marginBottom: 40 },
-  ctaDivider: { width: '40%', height: 2, backgroundColor: C.volt, marginBottom: 32 },
+  ctaLogo: { width: 240, height: 90, marginBottom: 32 },
+
+  ctaEyebrowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 28,
+  },
+
+  ctaEyebrowRule: {
+    width: 32,
+    height: 1,
+    backgroundColor: C.gilt,
+    marginHorizontal: 12,
+  },
+
+  ctaEyebrowText: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 8,
+    letterSpacing: 3.2,
+    textTransform: 'uppercase',
+    color: C.ink2,
+  },
 
   ctaHeadline: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 16,
-    color: C.white,
+    fontFamily: 'Times-Italic',
+    fontSize: 26,
+    color: C.ink,
     textAlign: 'center',
-    lineHeight: 1.5,
-    marginBottom: 12,
+    lineHeight: 1.25,
+    marginBottom: 18,
+    letterSpacing: -0.4,
+    paddingHorizontal: 20,
   },
 
   ctaSubline: {
-    fontSize: 13,
-    color: C.gray400,
+    fontFamily: 'Times-Roman',
+    fontSize: 12,
+    color: C.ink2,
     textAlign: 'center',
-    lineHeight: 1.6,
+    lineHeight: 1.7,
     marginBottom: 36,
+    paddingHorizontal: 30,
   },
 
   ctaUrlBox: {
-    backgroundColor: C.volt,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 4,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: C.gilt,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
   },
 
   ctaUrl: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 14,
-    color: C.dark,
-    letterSpacing: 1,
+    fontSize: 12,
+    color: C.giltDeep,
+    letterSpacing: 4,
+    textTransform: 'uppercase',
   },
 })
 
@@ -602,41 +694,45 @@ const s = StyleSheet.create({
 
 function SectionHeader({
   title,
-  accentColor,
   count,
 }: {
   title: string
-  accentColor: string
   count?: number
 }) {
   return (
-    <View style={s.sectionHeaderBar}>
-      <View style={[s.sectionHeaderAccent, { backgroundColor: accentColor }]} />
-      <Text style={s.sectionHeaderText}>
-        {title}
-        {count !== undefined ? ` (${count})` : ''}
-      </Text>
+    <View style={s.sectionHeaderWrap}>
+      <View style={s.sectionHeaderRule} />
+      <Text style={s.sectionHeaderText}>{title}</Text>
+      {count !== undefined && (
+        <Text style={s.sectionHeaderCount}>· {count}</Text>
+      )}
     </View>
   )
 }
 
-function SectionDivider() {
-  return <View style={s.sectionDivider} />
+function Asterism() {
+  return (
+    <View style={s.asterismRow}>
+      <Text style={s.asterismDot}>{'⁂'}</Text>
+    </View>
+  )
 }
 
 function PageFooter() {
   return (
     <View style={s.footer} fixed>
-      <View style={s.footerAccentLine} />
+      <View style={s.footerGiltRule} />
       <View style={s.footerRow}>
         <Image src={LOGO_PATH} style={s.footerLogo} />
-        <Text
-          style={s.footerText}
-          render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
-          }
-        />
-        <Text style={s.footerText}>Confidential</Text>
+        <View style={s.footerMetaCol}>
+          <Text
+            style={s.footerText}
+            render={({ pageNumber, totalPages }) =>
+              `Page ${pageNumber} / ${totalPages}`
+            }
+          />
+          <Text style={s.footerText}>Confidential</Text>
+        </View>
       </View>
     </View>
   )
@@ -646,7 +742,7 @@ function BodyPageHeader() {
   return (
     <View style={s.bodyHeader} fixed>
       <Image src={LOGO_PATH} style={s.bodyHeaderLogo} />
-      <Text style={s.bodyHeaderTitle}>Deal Intelligence Report</Text>
+      <Text style={s.bodyHeaderTitle}>The Field Brief · Volume I</Text>
     </View>
   )
 }
@@ -669,7 +765,6 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
       ? `${primary.name}${primary.title !== 'Not mentioned' ? ` — ${primary.title}` : ''}`
       : null
 
-  // Mind map branches
   interface MapBranch {
     label: string
     color: string
@@ -683,9 +778,9 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
   if (d.attendees.length > 0 && d.attendees[0].name !== 'Not mentioned') {
     mapBranches.push({
       label: 'Attendees',
-      color: C.blue,
-      bg: '#1E293B',
-      border: '#334155',
+      color: C.ink,
+      bg: C.cream,
+      border: C.line,
       items: d.attendees.map(
         (a) => `${a.name}${a.role !== 'Unknown' ? ` (${a.role})` : ''}`
       ),
@@ -694,45 +789,45 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
   if (d.followUpTasks.length > 0) {
     mapBranches.push({
       label: 'Tasks',
-      color: C.voltDark,
-      bg: '#0D2818',
-      border: '#145A32',
+      color: C.giltDeep,
+      bg: C.giltSoft,
+      border: C.gilt,
       items: d.followUpTasks.map((t) => t.task),
     })
   }
   if (d.painPoints.length > 0) {
     mapBranches.push({
       label: 'Pain Points',
-      color: C.amber,
-      bg: '#1C1405',
-      border: '#4A3700',
+      color: C.ink2,
+      bg: C.blushSoft,
+      border: C.blush,
       items: d.painPoints,
     })
   }
   if (d.risks.length > 0) {
     mapBranches.push({
       label: 'Risks',
-      color: C.red,
-      bg: '#1C0505',
-      border: '#4A0E0E',
+      color: C.ink,
+      bg: C.paper2,
+      border: C.mute,
       items: d.risks,
     })
   }
   if (d.competitorsMentioned.length > 0) {
     mapBranches.push({
       label: 'Competitors',
-      color: C.gray400,
-      bg: '#1A1A1A',
-      border: '#333333',
+      color: C.mute,
+      bg: C.cream,
+      border: C.line,
       items: d.competitorsMentioned,
     })
   }
   if (d.productsDiscussed.length > 0) {
     mapBranches.push({
       label: 'Products',
-      color: C.voltDark,
-      bg: '#0D2818',
-      border: '#145A32',
+      color: C.giltDeep,
+      bg: C.cream,
+      border: C.gilt,
       items: d.productsDiscussed,
     })
   }
@@ -743,40 +838,59 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
   return (
     <Document>
       {/* ═══════════════════════════════════════════
-          PAGE 1 — DEAL TEAR SHEET
+          PAGE 1 — COVER · DEAL TEAR SHEET
           ═══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
-        <View style={s.topBar} />
+        <View style={s.topGiltRule} />
 
-        {/* Dark header */}
-        <View style={s.header}>
-          <View style={s.headerRow}>
+        {/* WHITE masthead so the bronze logo renders cleanly */}
+        <View style={s.masthead}>
+          <View style={s.mastheadRow}>
             <Image src={LOGO_PATH} style={s.logo} />
-            <View style={s.metaCol}>
-              <Text style={s.metaText}>{date}</Text>
-              <Text style={s.metaText}>{email}</Text>
+            <View style={s.mastheadMetaCol}>
+              <Text style={s.mastheadMetaLabel}>Field Brief</Text>
+              <Text style={s.mastheadMetaText}>{date}</Text>
+              <Text style={s.mastheadMetaText}>{email}</Text>
             </View>
           </View>
+        </View>
 
-          <Text style={s.docLabel}>Deal Tear Sheet</Text>
+        {/* Hero — editorial paper block */}
+        <View style={s.hero}>
+          <View style={s.eyebrowRow}>
+            <View style={s.eyebrowRule} />
+            <Text style={s.eyebrowText}>Deal Tear Sheet</Text>
+          </View>
+
           <Text style={s.companyName}>
             {snap.companyName !== 'Not mentioned'
               ? snap.companyName
               : 'Post-Call Summary'}
           </Text>
+
           {contactDisplay && (
             <Text style={s.contactLine}>{contactDisplay}</Text>
           )}
 
           <View style={s.badgeRow}>
-            <View style={[s.badge, { backgroundColor: C.volt }]}>
-              <Text style={[s.badgeText, { color: C.dark }]}>
+            <View
+              style={[
+                s.badge,
+                { backgroundColor: C.ink, borderColor: C.ink },
+              ]}
+            >
+              <Text style={[s.badgeText, { color: C.cream }]}>
                 {snap.dealStage}
               </Text>
             </View>
             {snap.estimatedValue !== 'Not mentioned' && (
-              <View style={[s.badge, { backgroundColor: '#1E293B' }]}>
-                <Text style={[s.badgeText, { color: C.white }]}>
+              <View
+                style={[
+                  s.badge,
+                  { backgroundColor: C.cream, borderColor: C.gilt },
+                ]}
+              >
+                <Text style={[s.badgeText, { color: C.giltDeep }]}>
                   {snap.estimatedValue}
                 </Text>
               </View>
@@ -785,39 +899,34 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
         </View>
 
         {/* ── Opportunity Details ── */}
-        <SectionHeader title="Opportunity Details" accentColor={C.volt} />
-        <View style={s.oppDetailsWrapper}>
-          <View style={s.oppDetailsAccent} />
-          <View style={s.oppDetailsBody}>
-            {[
-              { label: 'Account', value: snap.companyName },
-              { label: 'Deal Stage', value: snap.dealStage },
-              { label: 'Amount', value: snap.estimatedValue },
-              { label: 'Close Date', value: snap.closeDate },
-              { label: 'Next Step', value: snap.nextStep },
-            ].map((f) => (
-              <View key={f.label} style={s.fieldRow}>
-                <Text style={s.fieldLabel}>{f.label}</Text>
-                <Text
-                  style={
-                    f.value === 'Not mentioned'
-                      ? s.fieldValueEmpty
-                      : s.fieldValue
-                  }
-                >
-                  {f.value}
-                </Text>
-              </View>
-            ))}
-          </View>
+        <SectionHeader title="Opportunity Details" />
+        <View style={s.oppDetailsBody}>
+          {[
+            { label: 'Account', value: snap.companyName },
+            { label: 'Deal Stage', value: snap.dealStage },
+            { label: 'Amount', value: snap.estimatedValue },
+            { label: 'Close Date', value: snap.closeDate },
+            { label: 'Next Step', value: snap.nextStep },
+          ].map((f) => (
+            <View key={f.label} style={s.fieldRow}>
+              <Text style={s.fieldLabel}>{f.label}</Text>
+              <Text
+                style={
+                  f.value === 'Not mentioned' || f.value === 'Not specified'
+                    ? s.fieldValueEmpty
+                    : s.fieldValue
+                }
+              >
+                {f.value}
+              </Text>
+            </View>
+          ))}
         </View>
-
-        <SectionDivider />
 
         {/* ── Meeting Attendees ── */}
         {hasAttendees && (
           <View wrap={false}>
-            <SectionHeader title="Meeting Attendees" accentColor={C.blue} />
+            <SectionHeader title="Meeting Attendees" />
             <View style={s.sectionContent}>
               {d.attendees.map((att, i) => (
                 <View key={i} style={s.attendeeCard}>
@@ -829,7 +938,7 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                   />
                   <Text style={s.attendeeName}>{att.name}</Text>
                   {att.title !== 'Not mentioned' && (
-                    <Text style={s.attendeeDetail}>{att.title}</Text>
+                    <Text style={s.attendeeDetail}>· {att.title}</Text>
                   )}
                   {att.role !== 'Unknown' && (
                     <Text style={s.attendeeRole}>{att.role}</Text>
@@ -837,7 +946,6 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 </View>
               ))}
             </View>
-            <SectionDivider />
           </View>
         )}
 
@@ -846,7 +954,6 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
           <View wrap={false}>
             <SectionHeader
               title="Follow-Up Tasks"
-              accentColor={C.amber}
               count={d.followUpTasks.length}
             />
             <View style={s.sectionContent}>
@@ -859,40 +966,42 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                     ]}
                   />
                   <View style={s.taskCheckbox} />
-                  <Text style={s.taskText}>{task.task}</Text>
-                  <View style={s.taskMeta}>
-                    {task.dueDate !== 'Not specified' && (
-                      <Text style={s.taskDate}>{task.dueDate}</Text>
-                    )}
-                    <Text
-                      style={[
-                        s.taskPriority,
-                        {
-                          color: priorityColor(task.priority),
-                          backgroundColor: priorityBg(task.priority),
-                        },
-                      ]}
-                    >
-                      {task.priority}
-                    </Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={s.taskText}>{task.task}</Text>
+                    <View style={s.taskMeta}>
+                      {task.dueDate !== 'Not specified' && (
+                        <Text style={s.taskDate}>{task.dueDate}</Text>
+                      )}
+                      <Text
+                        style={[
+                          s.taskPriority,
+                          {
+                            color: priorityColor(task.priority),
+                            backgroundColor: priorityBg(task.priority),
+                            borderColor: priorityAccent(task.priority),
+                          },
+                        ]}
+                      >
+                        {task.priority}
+                      </Text>
+                    </View>
                   </View>
                 </View>
               ))}
             </View>
-            <SectionDivider />
           </View>
         )}
 
         {/* ── Call Summary ── */}
         {d.callSummary.filter((p) => p && p.trim()).length > 0 && (
           <View wrap={false}>
-            <SectionHeader title="Call Summary" accentColor={C.volt} />
+            <SectionHeader title="Call Summary" />
             <View style={s.sectionContent}>
               {d.callSummary
                 .filter((p) => p && p.trim())
                 .map((point, i) => (
                   <View key={i} style={s.summaryBullet} wrap={false}>
-                    <View style={s.bulletCircle}>
+                    <View style={s.bulletFolio}>
                       <Text style={s.bulletNumber}>{i + 1}</Text>
                     </View>
                     <Text style={s.summaryText}>{point}</Text>
@@ -902,6 +1011,7 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
           </View>
         )}
 
+        <Asterism />
         <PageFooter />
       </Page>
 
@@ -915,23 +1025,18 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
         {/* ── Opportunity Notes ── */}
         {d.opportunityNotes && (
           <View wrap={false}>
-            <SectionHeader title="Opportunity Notes" accentColor={C.volt} />
-            <View style={s.notesWrapper}>
-              <View style={s.notesAccent} />
-              <View style={s.notesBody}>
-                <Text style={s.notesText}>{d.opportunityNotes}</Text>
-              </View>
+            <SectionHeader title="Opportunity Notes" />
+            <View style={s.notesBody}>
+              <Text style={s.notesText}>{d.opportunityNotes}</Text>
             </View>
-            <SectionDivider />
           </View>
         )}
 
         {/* ── Deal Map ── */}
         {mapBranches.length > 0 && (
           <View wrap={false}>
-            <SectionHeader title="Deal Map" accentColor={C.volt} />
+            <SectionHeader title="Deal Map" />
             <View style={s.mapContainer}>
-              {/* Central node */}
               <View style={s.mapCenter}>
                 <Text style={s.mapCenterName}>
                   {snap.companyName !== 'Not mentioned'
@@ -941,7 +1046,6 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 <Text style={s.mapCenterStage}>{snap.dealStage}</Text>
               </View>
 
-              {/* Branches as cards */}
               <View style={s.mapGrid}>
                 {mapBranches.map((branch) => (
                   <View
@@ -961,28 +1065,25 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                     </Text>
                     {branch.items.slice(0, 4).map((item, i) => (
                       <Text key={i} style={s.mapBranchItem}>
-                        {'\u2022'} {item}
+                        {'—'} {item}
                       </Text>
                     ))}
                     {branch.items.length > 4 && (
-                      <Text
-                        style={[s.mapBranchItem, { color: C.gray500, fontStyle: 'italic' }]}
-                      >
-                        +{branch.items.length - 4} more
+                      <Text style={s.mapBranchMore}>
+                        + {branch.items.length - 4} more
                       </Text>
                     )}
                   </View>
                 ))}
               </View>
             </View>
-            <SectionDivider />
           </View>
         )}
 
         {/* ── Pain Points + Risks ── */}
         {(d.painPoints.length > 0 || d.risks.length > 0) && (
           <View wrap={false}>
-            <SectionHeader title="Signals" accentColor={C.red} />
+            <SectionHeader title="Signals" />
             <View style={s.sectionContent}>
               <View style={s.tagsSection}>
                 {d.painPoints.length > 0 && (
@@ -995,9 +1096,9 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                           style={[
                             s.tag,
                             {
-                              color: C.blue,
-                              backgroundColor: C.blueBg,
-                              borderColor: '#BFDBFE',
+                              color: C.ink2,
+                              backgroundColor: C.blushSoft,
+                              borderColor: C.blush,
                             },
                           ]}
                         >
@@ -1017,9 +1118,9 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                           style={[
                             s.tag,
                             {
-                              color: C.red,
-                              backgroundColor: C.redBg,
-                              borderColor: '#FECACA',
+                              color: C.ink,
+                              backgroundColor: C.paper,
+                              borderColor: C.mute,
                             },
                           ]}
                         >
@@ -1031,7 +1132,6 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                 )}
               </View>
             </View>
-            <SectionDivider />
           </View>
         )}
 
@@ -1039,7 +1139,7 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
         {(d.competitorsMentioned.length > 0 ||
           d.productsDiscussed.length > 0) && (
           <View wrap={false}>
-            <SectionHeader title="Landscape" accentColor={C.gray400} />
+            <SectionHeader title="Landscape" />
             <View style={s.sectionContent}>
               <View style={s.tagsSection}>
                 {d.competitorsMentioned.length > 0 && (
@@ -1052,9 +1152,9 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                           style={[
                             s.tag,
                             {
-                              color: C.gray500,
-                              backgroundColor: C.gray100,
-                              borderColor: C.gray300,
+                              color: C.mute,
+                              backgroundColor: C.cream,
+                              borderColor: C.line,
                             },
                           ]}
                         >
@@ -1074,9 +1174,9 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
                           style={[
                             s.tag,
                             {
-                              color: C.voltDark,
-                              backgroundColor: C.voltBg,
-                              borderColor: '#A7F3D0',
+                              color: C.giltDeep,
+                              backgroundColor: C.giltSoft,
+                              borderColor: C.gilt,
                             },
                           ]}
                         >
@@ -1090,44 +1190,56 @@ export function DebriefPDF({ data, email, date }: PDFProps) {
             </View>
           </View>
         )}
+
+        <Asterism />
       </Page>
 
       {/* ═══════════════════════════════════════════
-          LAST PAGE — CTA
+          LAST PAGE — CTA (white background, gilt accents)
           ═══════════════════════════════════════════ */}
       <Page size="A4" style={s.ctaPage}>
+        <View style={s.ctaTopGilt} />
+
         <View style={s.ctaContainer}>
           <Image src={LOGO_PATH} style={s.ctaLogo} />
-          <View style={s.ctaDivider} />
+
+          <View style={s.ctaEyebrowRow}>
+            <View style={s.ctaEyebrowRule} />
+            <Text style={s.ctaEyebrowText}>Field Intelligence</Text>
+            <View style={s.ctaEyebrowRule} />
+          </View>
+
           <Text style={s.ctaHeadline}>
-            60 seconds of talking. Every CRM field filled.
+            Sixty seconds of voice.{'\n'}Every field, filled.
           </Text>
+
           <Text style={s.ctaSubline}>
-            No typing. No tab switching. No missed fields.{'\n'}
-            Connect StreetNotes and this happens after every call.
+            No typing. No tab-switching. No missed fields.{'\n'}
+            Field Glow captures what the day gives you,{'\n'}
+            and returns it as the record you needed.
           </Text>
+
           <View style={s.ctaUrlBox}>
-            <Text style={s.ctaUrl}>streetnotes.ai</Text>
+            <Text style={s.ctaUrl}>fieldglow.app</Text>
           </View>
         </View>
 
-        <View style={[s.footer, { left: 40, right: 40, bottom: 18 }]}>
-          <View style={[s.footerAccentLine, { backgroundColor: '#4D9E6A' }]} />
+        <View style={s.footer}>
+          <View style={s.footerGiltRule} />
           <View style={s.footerRow}>
             <Image src={LOGO_PATH} style={s.footerLogo} />
-            <Text
-              style={[s.footerText, { color: C.gray400 }]}
-              render={({ pageNumber, totalPages }) =>
-                `Page ${pageNumber} of ${totalPages}`
-              }
-            />
-            <Text style={[s.footerText, { color: C.gray400 }]}>
-              Confidential
-            </Text>
+            <View style={s.footerMetaCol}>
+              <Text
+                style={s.footerText}
+                render={({ pageNumber, totalPages }) =>
+                  `Page ${pageNumber} / ${totalPages}`
+                }
+              />
+              <Text style={s.footerText}>Confidential</Text>
+            </View>
           </View>
         </View>
       </Page>
     </Document>
   )
 }
-

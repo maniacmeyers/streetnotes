@@ -14,7 +14,7 @@ interface CompetitorTrackerProps {
 }
 
 const SENTIMENT_COLORS = {
-  positive: '#00E676',
+  positive: '#A8855A',
   negative: '#dc2626',
   neutral: '#9ca3af',
 }
@@ -40,9 +40,12 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
 
   if (sorted.length === 0) {
     return (
-      <div className="glass rounded-2xl p-8 text-center">
-        <p className="font-mono text-xs uppercase tracking-wider font-bold text-white/50">
-          No competitor data yet.
+      <div className="fg-card p-8 text-center">
+        <p className="text-xl font-extrabold text-[#1A1410]">
+          No competitors tracked yet
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[#3D332A]">
+          Save a debrief that mentions a competitor and they&apos;ll show up here.
         </p>
       </div>
     )
@@ -87,7 +90,7 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
                       style={{
                         width: `${posPct}%`,
                         background: SENTIMENT_COLORS.positive,
-                        boxShadow: '0 0 12px rgba(0, 230, 118, 0.6)',
+                        boxShadow: '0 0 12px rgba(212, 162, 138, 0.6)',
                       }}
                     />
                   )}
@@ -122,7 +125,7 @@ export function CompetitorTracker({ data, loading }: CompetitorTrackerProps) {
               className="w-2.5 h-2.5 rounded-full"
               style={{
                 background: SENTIMENT_COLORS[s],
-                boxShadow: s === 'positive' ? '0 0 8px rgba(0, 230, 118, 0.6)' : undefined,
+                boxShadow: s === 'positive' ? '0 0 8px rgba(212, 162, 138, 0.6)' : undefined,
               }}
             />
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/60">

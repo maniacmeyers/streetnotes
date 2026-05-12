@@ -21,13 +21,13 @@ import type { StoryScore } from '@/lib/vbrick/story-types'
 function scoreColor(score: number): string {
   if (score <= 3) return '#f87171'
   if (score <= 6) return '#fbbf24'
-  return '#00E676'
+  return '#A8855A'
 }
 
 function scoreGlow(score: number): string {
   if (score <= 3) return '0 0 16px rgba(248, 113, 113, 0.5)'
   if (score <= 6) return '0 0 16px rgba(251, 191, 36, 0.5)'
-  return '0 0 20px rgba(0, 230, 118, 0.6)'
+  return '0 0 20px rgba(212, 162, 138, 0.6)'
 }
 
 interface ScoreCardProps {
@@ -56,11 +56,11 @@ function getDimensionScore(score: StoryScore, key: string): number {
 const GLASS_BASE =
   'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)]'
 const GLASS_VOLT =
-  'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)]'
+  'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(212,162,138,0.25),inset_0_1px_0_rgba(255,255,255,0.22)]'
 const BTN_VOLT =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed'
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition disabled:opacity-40 disabled:cursor-not-allowed'
 const BTN_GHOST =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 disabled:opacity-40'
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition disabled:opacity-40'
 
 export function ScoreCard({
   score,
@@ -122,8 +122,8 @@ export function ScoreCard({
   async function handleNativeShare() {
     if (!shareUrl) return
     const shareData = {
-      title: 'Beat this StreetNotes score',
-      text: `I scored ${score.composite.toFixed(1)} on StreetNotes Story Vault. Can you beat it?`,
+      title: 'Beat this Field Glow score',
+      text: `I scored ${score.composite.toFixed(1)} on Field Glow Story Vault. Can you beat it?`,
       url: shareUrl,
     }
     if (typeof navigator !== 'undefined' && 'share' in navigator) {

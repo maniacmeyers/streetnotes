@@ -16,19 +16,15 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 pb-safe md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[calc(14px+env(safe-area-inset-bottom))] pt-3"
       aria-label="Main navigation"
       style={{
-        background: 'linear-gradient(180deg, rgba(6, 18, 34, 0) 0%, rgba(6, 18, 34, 0.95) 40%, rgba(6, 18, 34, 1) 100%)',
+        background: 'linear-gradient(to top, #FAF6EE 72%, rgba(250, 246, 238, 0))',
       }}
     >
-      <div className="max-w-md mx-auto px-3 pb-2 pt-3">
+      <div className="mx-auto max-w-[430px]">
         <div
-          className="glass rounded-2xl flex items-stretch justify-around h-16 overflow-hidden"
-          style={{
-            boxShadow:
-              'inset 0 1px 0 0 rgba(255,255,255,0.18), 0 -4px 30px -10px rgba(0, 230, 118, 0.15), 0 10px 40px -10px rgba(0, 0, 0, 0.8)',
-          }}
+          className="fg-card-sm flex h-16 items-stretch justify-around overflow-hidden rounded-[24px]"
         >
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
@@ -37,19 +33,19 @@ export default function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[44px] px-2 font-mono text-[9px] uppercase tracking-[0.15em] font-bold transition-all duration-200 relative ${
-                  isActive ? 'text-volt' : 'text-white/50 hover:text-white'
+                className={`relative flex min-h-[56px] flex-1 flex-col items-center justify-center gap-0.5 px-2 text-[11px] font-extrabold transition-all duration-300 ${
+                  isActive ? 'text-[#8B6B40]' : 'text-[#3D332A]/70'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {isActive && (
                   <span
-                    className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-8 rounded-full bg-volt"
-                    style={{ boxShadow: '0 0 8px rgba(0, 230, 118, 0.8)' }}
+                    className="absolute left-1/2 top-1.5 h-1 w-7 -translate-x-1/2 rounded-full bg-[#A8855A]"
+                    style={{ boxShadow: '0 8px 16px rgba(212, 162, 138, 0.42)' }}
                     aria-hidden="true"
                   />
                 )}
-                <Icon className={`w-5 h-5 ${isActive ? 'drop-shadow-[0_0_6px_rgba(0,230,118,0.6)]' : ''}`} aria-hidden="true" />
+                <Icon className="h-5 w-5" aria-hidden="true" />
                 <span>{item.label}</span>
               </Link>
             )

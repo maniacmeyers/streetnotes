@@ -32,6 +32,16 @@ export class StructureProviderAuthError extends Error {
   }
 }
 
+export class StructureProviderModelError extends Error {
+  constructor(message = 'AI extraction model is unavailable') {
+    super(message)
+    this.name = 'StructureProviderModelError'
+  }
+}
+
+const STRUCTURE_MODEL =
+  process.env.ANTHROPIC_STRUCTURE_MODEL || 'claude-sonnet-4-6'
+
 interface StructureTranscriptOptions {
   transcript: string
   memory: UserMemory
@@ -209,7 +219,7 @@ When the transcript is ambiguous, prefer names and entities from USER CONTEXT. E
     messages.push({ role: 'user', content: structureUserPrompt(transcript.trim()) })
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-6-20250514',
+      model: STRUCTURE_MODEL,
       max_tokens: 4096,
       system: systemBlocks,
       messages,
@@ -266,6 +276,14 @@ When the transcript is ambiguous, prefer names and entities from USER CONTEXT. E
       (error as { status: number }).status === 401
     ) {
       throw new StructureProviderAuthError()
+    }
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'status' in error &&
+      (error as { status: number }).status === 404
+    ) {
+      throw new StructureProviderModelError()
     }
     throw error
   }

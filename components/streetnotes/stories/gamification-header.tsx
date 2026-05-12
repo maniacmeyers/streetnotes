@@ -68,12 +68,12 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
             style={{
               background:
                 'radial-gradient(circle at 30% 30%, rgba(0, 255, 140, 0.35) 0%, rgba(10, 20, 15, 0.95) 60%, #000 100%)',
-              border: '1.5px solid rgba(0, 230, 118, 0.5)',
+              border: '1.5px solid rgba(212, 162, 138, 0.5)',
               boxShadow:
-                'inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.5), 0 0 20px rgba(0, 230, 118, 0.3)',
+                'inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.5), 0 0 20px rgba(212, 162, 138, 0.3)',
             }}
           >
-            <span className="font-bold text-2xl text-volt leading-none drop-shadow-[0_0_6px_rgba(0,230,118,0.6)]">
+            <span className="font-bold text-2xl text-volt leading-none drop-shadow-[0_0_6px_rgba(212,162,138,0.6)]">
               {state.level}
             </span>
           </div>
@@ -101,8 +101,8 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${Math.min(100, Math.max(0, state.level_progress))}%`,
-                  background: 'linear-gradient(90deg, #00E676 0%, #7dff9f 100%)',
-                  boxShadow: '0 0 8px rgba(0, 230, 118, 0.6)',
+                  background: 'linear-gradient(90deg, #A8855A 0%, #D4A28A 100%)',
+                  boxShadow: '0 0 8px rgba(212, 162, 138, 0.6)',
                 }}
               />
             </div>
@@ -121,13 +121,13 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
               className={streakActive ? 'text-volt' : 'text-white/20'}
               style={
                 streakActive
-                  ? { filter: 'drop-shadow(0 0 6px rgba(0, 230, 118, 0.6))' }
+                  ? { filter: 'drop-shadow(0 0 6px rgba(212, 162, 138, 0.6))' }
                   : undefined
               }
             />
             <span
               className={`font-display text-2xl tabular-nums leading-none ${
-                streakActive ? 'text-volt drop-shadow-[0_0_6px_rgba(0,230,118,0.6)]' : 'text-white/20'
+                streakActive ? 'text-volt drop-shadow-[0_0_6px_rgba(212,162,138,0.6)]' : 'text-white/20'
               }`}
             >
               {state.current_streak}
@@ -143,13 +143,13 @@ export function GamificationHeader({ email }: GamificationHeaderProps) {
       <div className="glass-volt rounded-2xl p-3.5">
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-xl glass-inset flex items-center justify-center shrink-0"
+            className="w-12 h-12 rounded-xl glass-inset flex items-center justify-center shrink-0"
             style={{
               boxShadow:
-                'inset 0 2px 4px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.1), 0 0 12px rgba(0,230,118,0.2)',
+                'inset 0 2px 4px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.1), 0 0 12px rgba(212,162,138,0.2)',
             }}
           >
-            <Target size={16} className="text-volt drop-shadow-[0_0_4px_rgba(0,230,118,0.6)]" />
+            <Target size={16} className="text-volt drop-shadow-[0_0_4px_rgba(212,162,138,0.6)]" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt">

@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import BottomNav from '@/components/dashboard/bottom-nav'
-import SideNav from '@/components/dashboard/side-nav'
-import Logo from '@/components/brand/logo'
+import FieldGlowLogo from '@/components/fieldglow/logo'
 
 export default async function ProtectedLayout({
   children,
@@ -17,35 +16,25 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#061222] text-white relative overflow-x-hidden">
-      {/* Ambient volt glow wash — same energy as /debrief */}
-      <div
-        aria-hidden="true"
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] pointer-events-none opacity-50 z-0"
-        style={{
-          background:
-            'radial-gradient(circle, rgba(0,230,118,0.12) 0%, rgba(0,230,118,0.03) 40%, transparent 70%)',
-        }}
-      />
+    <div className="fg-app relative overflow-x-hidden">
+      <div className="fg-mobile-frame relative">
+        <header className="fg-header sticky top-0 z-40">
+          <div className="flex min-h-[52px] items-center justify-between">
+            <a href="/dashboard" className="inline-flex min-h-[48px] items-center" aria-label="Field Glow home">
+              <FieldGlowLogo size="md" />
+            </a>
+            <span className="fg-eyebrow max-w-[150px] truncate">
+              {user.email?.split('@')[0]}
+            </span>
+          </div>
+        </header>
 
-      <SideNav email={user.email} />
-
-      <header className="md:hidden sticky top-0 z-40 border-b border-volt/20 bg-[#061222]/80 backdrop-blur-xl pt-safe">
-        <div className="max-w-md mx-auto px-4 flex items-center justify-between h-14">
-          <Logo size="sm" href="/dashboard" priority />
-          <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
-            {user.email?.split('@')[0]}
-          </span>
-        </div>
-      </header>
-
-      <main className="relative z-10 md:pl-64">
-        <div className="max-w-md mx-auto pb-24 md:pb-10 md:pt-10">
+        <main id="main-content" className="relative z-10">
           {children}
-        </div>
-      </main>
+        </main>
 
-      <BottomNav />
+        <BottomNav />
+      </div>
     </div>
   )
 }

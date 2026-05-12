@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { getOpenAIClient } from '@/lib/openai/server'
 import { transcribeAudio } from '@/lib/openai/transcribe'
 import { getScoringPrompt } from '@/lib/vbrick/story-prompts'
 import { calculatePracticeXP, checkStreak, XP_AWARDS } from '@/lib/vbrick/gamification'
 import { SCORE_WEIGHTS } from '@/lib/vbrick/story-types'
 import type { StoryType, StoryScore } from '@/lib/vbrick/story-types'
+import { isVbrickUser } from '@/lib/vbrick/config'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -19,14 +21,35 @@ export async function POST(request: Request) {
   }
 
   const draftId = formData.get('draftId') as string
-  const email = formData.get('email') as string
+  const submittedEmail = formData.get('email') as string | null
   const audio = formData.get('audio')
 
-  if (!draftId || !email) {
-    return NextResponse.json({ error: 'Missing draftId or email' }, { status: 400 })
+  if (!draftId) {
+    return NextResponse.json({ error: 'Missing draftId' }, { status: 400 })
   }
   if (!(audio instanceof File)) {
     return NextResponse.json({ error: 'Missing audio file' }, { status: 400 })
+  }
+
+  const authSupabase = await createClient()
+  const {
+    data: { user },
+  } = await authSupabase.auth.getUser()
+
+  const sessionEmail = user?.email?.toLowerCase()
+  const fallbackEmail = submittedEmail?.toLowerCase() || null
+  const email = sessionEmail || fallbackEmail
+
+  if (!email) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (!sessionEmail && !isVbrickUser(email)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (sessionEmail && submittedEmail && submittedEmail.toLowerCase() !== sessionEmail) {
+    return NextResponse.json({ error: 'Email mismatch for authenticated user' }, { status: 403 })
   }
 
   const supabase = createAdminClient()

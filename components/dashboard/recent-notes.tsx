@@ -33,11 +33,11 @@ function timeAgo(dateStr: string): string {
 
 function PushBadge({ status }: { status: string | null }) {
   const base =
-    'font-mono text-[9px] uppercase tracking-[0.15em] font-bold px-2.5 py-1 rounded-md border backdrop-blur-sm'
-  if (!status) return <span className={`${base} text-white/50 border-white/15 bg-white/5`}>Draft</span>
-  if (status === 'success') return <span className={`${base} text-volt border-volt/40 bg-volt/10 shadow-[0_0_12px_rgba(0,230,118,0.2)]`}>Pushed</span>
-  if (status === 'failed') return <span className={`${base} text-red-400 border-red-400/40 bg-red-400/10`}>Failed</span>
-  if (status === 'pending') return <span className={`${base} text-amber-400 border-amber-400/40 bg-amber-400/10`}>Pending</span>
+    'rounded-full px-3 py-1 text-[11px] font-extrabold'
+  if (!status) return <span className={`${base} bg-[#D4A28A]/20 text-[#8B6B40]`}>Draft</span>
+  if (status === 'success') return <span className={`${base} bg-[#A8855A] text-[#FAF6EE] shadow-[0_10px_18px_rgba(168,133,90,0.32)]`}>Saved</span>
+  if (status === 'failed') return <span className={`${base} bg-[#8B6B40] text-[#FAF6EE]`}>Retry</span>
+  if (status === 'pending') return <span className={`${base} bg-[#D4A28A]/30 text-[#8B6B40]`}>Pending</span>
   return null
 }
 
@@ -45,16 +45,13 @@ function Skeleton() {
   return (
     <div className="space-y-3">
       {[1, 2, 3].map(i => (
-        <div
-          key={i}
-          className="glass rounded-xl px-4 py-4 animate-pulse"
-        >
+        <div key={i} className="fg-card-sm animate-pulse px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2 flex-1">
-              <div className="h-3.5 bg-white/10 rounded w-3/4" />
-              <div className="h-2.5 bg-white/5 rounded w-1/4" />
+              <div className="h-3.5 w-3/4 rounded bg-[#A8855A]/15" />
+              <div className="h-2.5 w-1/4 rounded bg-[#A8855A]/10" />
             </div>
-            <div className="h-5 bg-white/10 rounded w-14 ml-3" />
+            <div className="ml-3 h-5 w-14 rounded bg-[#A8855A]/15" />
           </div>
         </div>
       ))}
@@ -65,23 +62,47 @@ function Skeleton() {
 export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
   const [notes, setNotes] = useState<NoteListItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [retryKey, setRetryKey] = useState(0)
 
   useEffect(() => {
     setLoading(true)
+    setError(false)
     fetch('/api/notes')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`status ${res.status}`)
+        return res.json()
+      })
       .then(data => setNotes(data.notes ?? []))
-      .catch(() => {})
+      .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [refreshKey])
+  }, [refreshKey, retryKey])
 
   if (loading) return <Skeleton />
 
+  if (error) {
+    return (
+      <div className="fg-card p-6 text-center">
+        <p className="text-base font-extrabold text-[#1A1410]">Couldn&apos;t load notes</p>
+        <p className="mt-1 text-sm leading-6 text-[#3D332A]">
+          Network or backend issue. Try again.
+        </p>
+        <button
+          type="button"
+          onClick={() => setRetryKey(k => k + 1)}
+          className="fg-secondary-action mt-4 px-5"
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
+
   if (notes.length === 0) {
     return (
-      <div className="glass rounded-2xl p-8 text-center">
-        <p className="font-bold text-xl text-white">No notes yet</p>
-        <p className="font-mono text-[10px] uppercase tracking-wider text-white/50 mt-2">
+      <div className="fg-card p-8 text-center">
+        <p className="text-xl font-extrabold text-[#1A1410]">No results yet</p>
+        <p className="mt-2 text-sm font-medium leading-6 text-[#3D332A]">
           Tap the mic to capture your first one
         </p>
       </div>
@@ -102,14 +123,14 @@ export default function RecentNotes({ refreshKey }: { refreshKey?: number }) {
           >
             <Link
               href={`/notes/${note.id}`}
-              className="block glass rounded-xl px-4 py-3.5 min-h-[60px] cursor-pointer hover:border-volt/30 hover:shadow-glow-volt transition-all duration-200"
+              className="fg-card-sm block min-h-[68px] cursor-pointer rounded-[22px] px-4 py-4 transition-all duration-300 active:scale-[0.98]"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <p className="font-bold text-sm text-white truncate leading-tight">
+                  <p className="truncate text-[15px] font-extrabold leading-tight text-[#1A1410]">
                     {note.title || 'Untitled'}
                   </p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/40">
+                  <p className="mt-1 text-[13px] font-medium text-[#3D332A]">
                     {timeAgo(note.created_at)}
                   </p>
                 </div>

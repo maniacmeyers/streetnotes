@@ -12,6 +12,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        "fg-bg": "#FAF6EE",
+        "fg-surface": "#F2EBDF",
+        "fg-text": "#1A1410",
+        "fg-muted": "#3D332A",
+        "fg-accent": "#A8855A",
+        "fg-deep": "#8B6B40",
+        "fg-glow": "#D4A28A",
         dark: "#121212",
         black: "#000000",
         white: "#FFFFFF",
@@ -46,9 +53,10 @@ const config: Config = {
         ring: "#6366f1",
       },
       fontFamily: {
+        heading: ["var(--font-heading)", "Inter", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
-        display: ["var(--font-display)", "cursive"],
+        display: ["var(--font-heading)", "Inter", "system-ui", "sans-serif"],
         inter: ["var(--font-inter)", "sans-serif"],
         "fira-code": ["var(--font-fira-code)", "monospace"],
         "general-sans": ["var(--font-general-sans)", "sans-serif"],

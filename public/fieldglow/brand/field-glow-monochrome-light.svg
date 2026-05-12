@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 360" role="img" aria-labelledby="fg-mono-light-title fg-mono-light-desc">
+  <title id="fg-mono-light-title">Field Glow monochrome logo light on dark</title>
+  <desc id="fg-mono-light-desc">A light Field Glow F and G monogram with wordmark on a warm dark background.</desc>
+  <rect width="1120" height="360" fill="#1A1410"/>
+  <g transform="translate(64 58) scale(0.23828125)" fill="none" stroke="#FAF6EE" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M654 256C597 214 523 197 446 213C306 241 202 365 202 514C202 683 339 820 512 820C646 820 756 739 806 620" stroke-width="88"/>
+    <path d="M628 522H808V662" stroke-width="88"/>
+    <path d="M390 314V720" stroke-width="96"/>
+    <path d="M390 314H636" stroke-width="96"/>
+    <path d="M390 522H626" stroke-width="82"/>
+  </g>
+  <text x="360" y="205" fill="#FAF6EE" font-family="Optima, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="96" font-weight="500" letter-spacing="0">Field Glow</text>
+</svg>

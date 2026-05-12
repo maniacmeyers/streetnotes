@@ -3,11 +3,14 @@ import { createClient } from '@/lib/supabase/server'
 import { getValidTokens } from '@/lib/crm/token-refresh'
 import { pushToSalesforce } from '@/lib/crm/push/salesforce'
 import { pushToHubSpot } from '@/lib/crm/push/hubspot'
-import { pushToPipedrive } from '@/lib/crm/push/pipedrive'
 import type { CRMNote } from '@/lib/notes/schema'
 import type { PushResult, CachedStage } from '@/lib/crm/push/types'
 import type { PushPlan, CrmSchema } from '@/lib/crm/schema/types'
 import { getCachedSchema } from '@/lib/crm/schema/cache'
+import { isRateLimited } from '@/lib/security/rate-limit'
+
+const CRM_PUSH_LIMIT = 40
+const CRM_PUSH_WINDOW_MS = 15 * 60 * 1000
 
 /**
  * POST /api/crm/push
@@ -31,7 +34,7 @@ export async function POST(request: NextRequest) {
 
   const body = (await request.json().catch(() => null)) as {
     noteId?: string
-    crmType?: 'salesforce' | 'hubspot' | 'pipedrive'
+    crmType?: 'salesforce' | 'hubspot'
     existingContactId?: string
     existingDealId?: string
     dealStageCrmValue?: string
@@ -39,6 +42,14 @@ export async function POST(request: NextRequest) {
 
   if (!body?.noteId) {
     return NextResponse.json({ error: 'noteId is required' }, { status: 400 })
+  }
+
+  const key = `crm-push:${user.id}`
+  if (isRateLimited(key, CRM_PUSH_LIMIT, CRM_PUSH_WINDOW_MS)) {
+    return NextResponse.json(
+      { error: 'Too many CRM push requests. Please try again shortly.' },
+      { status: 429 }
+    )
   }
 
   // Load note and verify ownership
@@ -93,7 +104,7 @@ export async function POST(request: NextRequest) {
     crmType = types[0] as 'salesforce' | 'hubspot'
   }
 
-  if (!['salesforce', 'hubspot', 'pipedrive'].includes(crmType)) {
+  if (!['salesforce', 'hubspot'].includes(crmType)) {
     return NextResponse.json({ error: 'Invalid CRM type' }, { status: 400 })
   }
 
@@ -157,22 +168,13 @@ export async function POST(request: NextRequest) {
         dealStageCrmValue: body.dealStageCrmValue,
         cachedStages,
       }, pushPlan, crmSchema)
-    } else if (crmType === 'hubspot') {
+    } else {
       pushResult = await pushToHubSpot(tokens, crmNote, {
         existingContactId: body.existingContactId,
         existingDealId: body.existingDealId,
         dealStageCrmValue: body.dealStageCrmValue,
         cachedStages,
       }, pushPlan, crmSchema)
-    } else if (crmType === 'pipedrive') {
-      pushResult = await pushToPipedrive(tokens, crmNote, {
-        existingContactId: body.existingContactId,
-        existingDealId: body.existingDealId,
-        dealStageCrmValue: body.dealStageCrmValue,
-        cachedStages,
-      })
-    } else {
-      throw new Error(`Unsupported CRM type: ${crmType}`)
     }
   } catch (err) {
     console.error(`CRM push error (${crmType}):`, err)

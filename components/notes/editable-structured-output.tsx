@@ -9,22 +9,22 @@ interface Props {
 }
 
 const INPUT_CLASS =
-  'w-full rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3 text-base text-white placeholder:text-white/30 outline-none transition focus:border-volt/50 focus:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5),0_0_0_3px_rgba(0,230,118,0.15)] min-h-[44px]'
+  'fg-input'
 
-const SELECT_CLASS = `${INPUT_CLASS} appearance-none bg-black/40`
+const SELECT_CLASS = `${INPUT_CLASS} appearance-none`
 
 const TEXTAREA_CLASS =
-  'w-full rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3 text-base text-white placeholder:text-white/30 outline-none transition focus:border-volt/50 focus:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5),0_0_0_3px_rgba(0,230,118,0.15)] resize-y'
+  'fg-input resize-y'
 
 function confidenceBadge(level: ConfidenceLevel) {
   const styles: Record<ConfidenceLevel, string> = {
-    high: 'border-volt/40 bg-volt/15 text-volt',
-    medium: 'border-white/20 bg-white/5 text-white/60',
-    low: 'border-white/10 bg-white/[0.03] text-white/40',
+    high: 'bg-[#A8855A] text-[#FAF6EE]',
+    medium: 'bg-[#D4A28A]/28 text-[#8B6B40]',
+    low: 'bg-[#F2EBDF] text-[#8B6B40]',
   }
   return (
     <span
-      className={`inline-block rounded-md border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold backdrop-blur-md ${styles[level]}`}
+      className={`inline-block rounded-full px-2.5 py-1 text-[10px] font-extrabold ${styles[level]}`}
     >
       {level}
     </span>
@@ -44,7 +44,7 @@ function FieldLabel({
     <div className="flex items-center gap-2 mb-1.5">
       <label
         htmlFor={htmlFor}
-        className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50"
+        className="text-[13px] font-extrabold text-[#3D332A]"
       >
         {label}
       </label>
@@ -58,11 +58,13 @@ function TextInput({
   value,
   onChange,
   placeholder,
+  inputMode,
 }: {
   id: string
   value: string
   onChange: (v: string) => void
   placeholder?: string
+  inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
 }) {
   return (
     <input
@@ -71,6 +73,7 @@ function TextInput({
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
+      inputMode={inputMode}
       className={INPUT_CLASS}
     />
   )
@@ -94,14 +97,14 @@ function CollapsibleSection({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
-        className="flex items-center gap-2 font-display uppercase text-base text-white min-h-[44px] text-left"
+        className="flex min-h-[48px] items-center gap-2 text-left text-[16px] font-extrabold text-[#1A1410]"
       >
-        <span className="text-volt w-4 text-center" aria-hidden="true">
+        <span className="w-4 text-center text-[#A8855A]" aria-hidden="true">
           {isOpen ? '▾' : '▸'}
         </span>
         {title}
         {count !== undefined && (
-          <span className="font-mono text-[10px] tracking-[0.15em] text-white/40 font-bold">
+          <span className="text-xs font-bold text-[#3D332A]/70">
             ({count})
           </span>
         )}
@@ -146,7 +149,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
     <div className="flex flex-col gap-5">
       {/* Contact / Company — always visible */}
       <div className="flex flex-col gap-3">
-        <h3 className="font-display uppercase text-base text-white">Contact / Company</h3>
+        <h3 className="text-[16px] font-extrabold text-[#1A1410]">Contact / Company</h3>
         <div>
           <FieldLabel htmlFor="edit-contactName" label="Contact name" confidence={data.contactNameConfidence} />
           <TextInput
@@ -169,7 +172,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
 
       {/* Deal Snapshot — always visible */}
       <div className="flex flex-col gap-3">
-        <h3 className="font-display uppercase text-base text-white">Deal Snapshot</h3>
+        <h3 className="text-[16px] font-extrabold text-[#1A1410]">Deal Snapshot</h3>
         <div>
           <FieldLabel htmlFor="edit-dealStage" label="Stage" confidence={data.dealStageConfidence} />
           <select
@@ -195,6 +198,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             value={data.estimatedValue ?? ''}
             onChange={v => update({ estimatedValue: v || undefined })}
             placeholder="e.g. $50,000"
+            inputMode="decimal"
           />
         </div>
         <div>
@@ -204,6 +208,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             value={data.closeDate ?? ''}
             onChange={v => update({ closeDate: v || undefined })}
             placeholder="e.g. 2026-06-30"
+            inputMode="numeric"
           />
         </div>
       </div>
@@ -235,10 +240,10 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             {data.nextSteps.map((step, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-white/12 bg-white/5 backdrop-blur-md p-3 flex flex-col gap-2"
+                className="fg-inset flex flex-col gap-3 p-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+                  <span className="text-xs font-extrabold text-[#3D332A]">
                     Step {i + 1}
                   </span>
                   {confidenceBadge(step.confidence)}
@@ -253,7 +258,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                   }}
                   placeholder="Task description"
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-2">
                   <div>
                     <label htmlFor={`edit-step-${i}-owner`} className="sr-only">Owner</label>
                     <select
@@ -299,13 +304,14 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
                       update({ nextSteps: updated })
                     }}
                     placeholder="Due date (e.g. 2026-04-15)"
+                    inputMode="numeric"
                   />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
+          <p className="text-sm font-medium text-[#3D332A]">
             No next steps extracted.
           </p>
         )}
@@ -322,10 +328,10 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             {data.attendees.map((att, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-white/12 bg-white/5 backdrop-blur-md p-3 flex flex-col gap-2"
+                className="fg-inset flex flex-col gap-3 p-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+                  <span className="text-xs font-extrabold text-[#3D332A]">
                     Attendee {i + 1}
                   </span>
                   {confidenceBadge(att.confidence)}
@@ -394,7 +400,7 @@ export default function EditableStructuredOutput({ data, onChange }: Props) {
             ))}
           </div>
         ) : (
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
+          <p className="text-sm font-medium text-[#3D332A]">
             No attendees extracted.
           </p>
         )}

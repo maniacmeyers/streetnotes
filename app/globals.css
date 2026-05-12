@@ -9,8 +9,8 @@
   }
 
   ::selection {
-    background-color: #00E676;
-    color: #000000;
+    background-color: #D4A28A;
+    color: #1A1410;
   }
 }
 
@@ -338,14 +338,395 @@
 /* Better focus states for accessibility */
 @layer base {
   :focus-visible {
-    outline: 3px solid #00E676;
+    outline: 3px solid #A8855A;
     outline-offset: 2px;
   }
 
   input:focus-visible,
   textarea:focus-visible {
-    outline: 3px solid #00E676;
+    outline: 3px solid #A8855A;
     outline-offset: -1px;
+  }
+}
+
+@layer components {
+  .fg-app {
+    --color-bg: #FAF6EE;
+    --color-surface: #F2EBDF;
+    --color-text-primary: #1A1410;
+    --color-text-secondary: #3D332A;
+    --color-accent: #A8855A;
+    --color-accent-deep: #8B6B40;
+    --color-glow: #D4A28A;
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 22px;
+    --radius-xl: 28px;
+    --radius-2xl: 32px;
+    --radius-pill: 999px;
+    --space-page-x: 16px;
+    --space-card: 22px;
+    --space-section: 24px;
+    --transition-default: all 300ms ease-in-out;
+
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-body), Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .fg-mobile-frame {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100dvh;
+    margin-inline: auto;
+    background: var(--color-bg);
+  }
+
+  .fg-page {
+    padding: 20px var(--space-page-x) calc(96px + env(safe-area-inset-bottom));
+  }
+
+  .fg-header {
+    padding: calc(20px + env(safe-area-inset-top)) var(--space-page-x) 12px;
+    background: linear-gradient(to bottom, #FAF6EE 82%, rgba(250, 246, 238, 0));
+  }
+
+  .fg-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 30px;
+    border-radius: var(--radius-pill);
+    padding: 7px 11px;
+    background: rgba(212, 162, 138, 0.24);
+    color: var(--color-accent-deep);
+    font-family: var(--font-heading), Inter, system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .fg-title {
+    color: var(--color-text-primary);
+    font-family: var(--font-heading), Inter, system-ui, sans-serif;
+    font-size: clamp(30px, 8vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+
+  .fg-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.55;
+  }
+
+  .fg-card {
+    width: 100%;
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+    box-shadow:
+      7px 7px 16px rgba(139, 107, 64, 0.22),
+      -7px -7px 16px rgba(250, 246, 238, 0.95);
+  }
+
+  .fg-card-sm {
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow:
+      5px 5px 12px rgba(139, 107, 64, 0.2),
+      -5px -5px 12px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-featured-card {
+    border: 1.5px solid rgba(168, 133, 90, 0.32);
+    border-radius: var(--radius-2xl);
+    background: var(--color-surface);
+    box-shadow:
+      8px 8px 20px rgba(139, 107, 64, 0.22),
+      -8px -8px 20px rgba(250, 246, 238, 0.95),
+      0 16px 36px rgba(212, 162, 138, 0.24);
+  }
+
+  .fg-inset {
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow:
+      inset 4px 4px 9px rgba(139, 107, 64, 0.25),
+      inset -4px -4px 9px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-convex {
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, #FAF6EE, #F2EBDF);
+    box-shadow:
+      5px 5px 12px rgba(139, 107, 64, 0.22),
+      -5px -5px 12px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    background: var(--color-surface);
+    color: var(--color-accent);
+    box-shadow:
+      inset 3px 3px 7px rgba(139, 107, 64, 0.22),
+      inset -3px -3px 7px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 56px;
+    width: 100%;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, #A8855A, #8B6B40);
+    color: var(--color-bg);
+    font-family: var(--font-heading), Inter, system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    box-shadow:
+      6px 6px 14px rgba(139, 107, 64, 0.32),
+      -4px -4px 12px rgba(250, 246, 238, 0.72),
+      0 12px 24px rgba(212, 162, 138, 0.34);
+    transition: var(--transition-default);
+  }
+
+  .fg-action:active,
+  .fg-action[aria-pressed="true"] {
+    transform: scale(0.98);
+    box-shadow:
+      inset 4px 4px 8px rgba(26, 20, 16, 0.22),
+      inset -3px -3px 7px rgba(212, 162, 138, 0.28);
+  }
+
+  .fg-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.52;
+  }
+
+  .fg-secondary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, #FAF6EE, #F2EBDF);
+    color: var(--color-accent-deep);
+    font-family: var(--font-heading), Inter, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    box-shadow:
+      5px 5px 12px rgba(139, 107, 64, 0.22),
+      -5px -5px 12px rgba(250, 246, 238, 0.9);
+    transition: var(--transition-default);
+  }
+
+  .fg-secondary-action:active {
+    transform: scale(0.98);
+    box-shadow:
+      inset 4px 4px 8px rgba(139, 107, 64, 0.28),
+      inset -4px -4px 8px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 32px;
+    border-radius: var(--radius-pill);
+    padding: 8px 12px;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-family: var(--font-heading), Inter, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 10px 18px rgba(168, 133, 90, 0.38);
+  }
+
+  .fg-progress-track {
+    height: 12px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    box-shadow:
+      inset 3px 3px 7px rgba(139, 107, 64, 0.24),
+      inset -3px -3px 7px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-progress-fill {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, #A8855A, #D4A28A);
+    transition: width 300ms ease-in-out;
+  }
+
+  .fg-input {
+    min-height: 48px;
+    width: 100%;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 14px 16px;
+    box-shadow:
+      inset 4px 4px 9px rgba(139, 107, 64, 0.25),
+      inset -4px -4px 9px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-input::placeholder {
+    color: rgba(61, 51, 42, 0.48);
+  }
+
+  .fg-sticky-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 45;
+    padding: 14px var(--space-page-x) calc(14px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, #FAF6EE 72%, rgba(250, 246, 238, 0));
+  }
+
+  .fg-app .glass,
+  .fg-app .glass-volt {
+    background: var(--color-surface);
+    border: 0;
+    box-shadow:
+      7px 7px 16px rgba(139, 107, 64, 0.22),
+      -7px -7px 16px rgba(250, 246, 238, 0.95);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .fg-app .glass:hover,
+  .fg-app .glass-volt:hover {
+    transform: none;
+    border-color: transparent;
+  }
+
+  .fg-app .glass-inset {
+    background: var(--color-surface);
+    border: 0;
+    box-shadow:
+      inset 4px 4px 9px rgba(139, 107, 64, 0.25),
+      inset -4px -4px 9px rgba(250, 246, 238, 0.9);
+  }
+
+  .fg-app .text-volt {
+    color: var(--color-accent);
+  }
+
+  .fg-app .text-white,
+  .fg-app .text-black {
+    color: var(--color-text-primary);
+  }
+
+  .fg-app .text-white\/90,
+  .fg-app .text-white\/85,
+  .fg-app .text-white\/80,
+  .fg-app .text-white\/75,
+  .fg-app .text-white\/70,
+  .fg-app .text-white\/60,
+  .fg-app .text-white\/55,
+  .fg-app .text-white\/50,
+  .fg-app .text-white\/40,
+  .fg-app .text-white\/30,
+  .fg-app .text-white\/20,
+  .fg-app .text-gray-300,
+  .fg-app .text-gray-400,
+  .fg-app .text-gray-500,
+  .fg-app .text-red-400,
+  .fg-app .text-red-300,
+  .fg-app .text-amber-400,
+  .fg-app .text-amber-300,
+  .fg-app .text-amber-200\/90 {
+    color: var(--color-text-secondary);
+  }
+
+  .fg-app .text-volt\/80,
+  .fg-app .text-volt\/70,
+  .fg-app .text-volt\/60,
+  .fg-app .text-red-400\/60,
+  .fg-app .text-amber-300\/80 {
+    color: var(--color-accent-deep);
+  }
+
+  .fg-app .bg-volt {
+    background-color: var(--color-accent);
+  }
+
+  .fg-app .bg-black,
+  .fg-app .bg-black\/60,
+  .fg-app .bg-black\/40,
+  .fg-app .bg-black\/30,
+  .fg-app .bg-white,
+  .fg-app .bg-white\/10,
+  .fg-app .bg-white\/8,
+  .fg-app .bg-white\/5,
+  .fg-app .bg-white\/\[0\.03\],
+  .fg-app .bg-white\/\[0\.02\],
+  .fg-app .bg-red-400\/10,
+  .fg-app .bg-red-500\/10,
+  .fg-app .bg-amber-500\/10,
+  .fg-app .bg-amber-500\/8,
+  .fg-app .bg-volt\/20,
+  .fg-app .bg-volt\/15,
+  .fg-app .bg-volt\/10 {
+    background: var(--color-surface);
+  }
+
+  .fg-app .border-volt {
+    border-color: var(--color-accent);
+  }
+
+  .fg-app .border-white\/20,
+  .fg-app .border-white\/15,
+  .fg-app .border-white\/12,
+  .fg-app .border-white\/10,
+  .fg-app .border-white\/8,
+  .fg-app .border-white\/6,
+  .fg-app .border-red-400\/40,
+  .fg-app .border-red-500\/30,
+  .fg-app .border-amber-500\/40,
+  .fg-app .border-amber-500\/30,
+  .fg-app .border-amber-500\/20,
+  .fg-app .border-volt\/50,
+  .fg-app .border-volt\/40,
+  .fg-app .border-volt\/30,
+  .fg-app .border-volt\/22,
+  .fg-app .border-volt\/20,
+  .fg-app .border-volt\/15 {
+    border-color: rgba(168, 133, 90, 0.2);
+  }
+
+  .fg-app .shadow-glow-volt,
+  .fg-app .shadow-glow-volt-lg {
+    box-shadow:
+      0 0 0 1px rgba(168, 133, 90, 0.28),
+      0 12px 28px rgba(212, 162, 138, 0.32);
+  }
+
+  .fg-app .font-display,
+  .fg-app .font-mono {
+    font-family: var(--font-heading), Inter, system-ui, sans-serif;
+    letter-spacing: 0;
   }
 }
 

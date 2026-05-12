@@ -164,7 +164,7 @@ export function VoiceTextInput({
                 onClick={() => void handleStart()}
                 disabled={!isSupported}
                 aria-label="Start recording"
-                className="w-20 h-20 rounded-full border border-volt/50 bg-volt/15 backdrop-blur-md text-volt flex items-center justify-center transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)]"
+                className="w-20 h-20 rounded-full border border-volt/50 bg-volt/15 backdrop-blur-md text-volt flex items-center justify-center transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)]"
               >
                 <Mic size={32} />
               </button>
@@ -178,8 +178,8 @@ export function VoiceTextInput({
                 className="w-20 h-20 rounded-full border border-volt/60 bg-volt/20 text-volt flex items-center justify-center backdrop-blur-md"
                 animate={{
                   boxShadow: [
-                    '0 0 0 0px rgba(0,230,118,0.5), inset 0 1px 0 rgba(255,255,255,0.25)',
-                    '0 0 0 18px rgba(0,230,118,0), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    '0 0 0 0px rgba(212,162,138,0.5), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    '0 0 0 18px rgba(212,162,138,0), inset 0 1px 0 rgba(255,255,255,0.25)',
                   ],
                 }}
                 transition={{ duration: 1.4, repeat: Infinity, ease: 'easeOut' }}
@@ -246,7 +246,7 @@ export function VoiceTextInput({
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          <div className="rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] focus-within:border-volt/50 focus-within:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5),0_0_0_3px_rgba(0,230,118,0.15)] transition">
+          <div className="rounded-xl border border-white/15 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] focus-within:border-volt/50 focus-within:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5),0_0_0_3px_rgba(212,162,138,0.15)] transition">
             <textarea
               value={value}
               onChange={(e) =>

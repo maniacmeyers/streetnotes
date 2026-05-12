@@ -1,4 +1,4 @@
-const CACHE = 'streetnotes-shell-v2-2026-05-02'
+const CACHE = 'fieldglow-shell-v1'
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()

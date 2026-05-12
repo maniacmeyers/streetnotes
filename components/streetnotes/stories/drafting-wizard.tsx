@@ -70,7 +70,7 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
   const canAdvance = (answers[current.key] || '').trim().length > 10
 
   return (
-    <div className="rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5 sm:p-6">
+    <div className="rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(212,162,138,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5">
       {/* Progress */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-2">
@@ -86,8 +86,8 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
             className="h-full rounded-full transition-all duration-500"
             style={{
               width: `${Math.min(100, Math.max(0, progress))}%`,
-              background: 'linear-gradient(90deg, #00E676 0%, #7dff9f 100%)',
-              boxShadow: '0 0 8px rgba(0, 230, 118, 0.6)',
+              background: 'linear-gradient(90deg, #A8855A 0%, #D4A28A 100%)',
+              boxShadow: '0 0 8px rgba(212, 162, 138, 0.6)',
             }}
           />
         </div>
@@ -132,7 +132,7 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
           type="button"
           onClick={handleBack}
           disabled={loading}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ArrowLeft size={16} />
           Back
@@ -142,7 +142,7 @@ export function DraftingWizard({ draftId, framework, onComplete, onBack }: Draft
           type="button"
           onClick={handleNext}
           disabled={!canAdvance || loading}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>

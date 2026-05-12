@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 
 interface ExportLog {
   id: string
@@ -11,12 +11,13 @@ interface ExportLog {
 }
 
 const GLASS_BASE =
-  'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)]'
+  'fg-card'
 const BTN_VOLT =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]'
+  'fg-action'
 
-type Flavor = 'hubspot' | 'salesforce'
 type Preset = 'new' | 'today' | 'week' | 'all'
+
+const FLAVOR = 'salesforce' as const
 
 function startOfToday(): string {
   const d = new Date()
@@ -47,29 +48,14 @@ const PRESET_LABELS: Record<Preset, string> = {
 }
 
 export default function ActivityExport() {
-  const [flavor, setFlavor] = useState<Flavor>('hubspot')
   const [preset, setPreset] = useState<Preset>('new')
   const [downloading, setDownloading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recentExports, setRecentExports] = useState<ExportLog[]>([])
   const [showRecent, setShowRecent] = useState(false)
-  const [hasConnectedCrm, setHasConnectedCrm] = useState<boolean | null>(null)
-
-  useEffect(() => {
-    fetch('/api/crm/connections')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data?.connections) {
-          setHasConnectedCrm(data.connections.length > 0)
-        } else {
-          setHasConnectedCrm(false)
-        }
-      })
-      .catch(() => setHasConnectedCrm(false))
-  }, [])
 
   const buildParams = useCallback((): URLSearchParams => {
-    const params = new URLSearchParams({ flavor })
+    const params = new URLSearchParams({ flavor: FLAVOR })
     switch (preset) {
       case 'new':
         params.set('unexported', 'true')
@@ -84,7 +70,7 @@ export default function ActivityExport() {
         break
     }
     return params
-  }, [preset, flavor])
+  }, [preset])
 
   const handleDownload = async () => {
     setDownloading(true)
@@ -111,7 +97,7 @@ export default function ActivityExport() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `streetnotes-${flavor}-${new Date().toISOString().slice(0, 10)}.csv`
+      a.download = `field-glow-${FLAVOR}-${new Date().toISOString().slice(0, 10)}.csv`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -138,55 +124,22 @@ export default function ActivityExport() {
 
   return (
     <div className="flex flex-col gap-4">
-      {hasConnectedCrm === false && (
-        <div
-          className="rounded-xl border border-amber-500/20 bg-amber-500/8 backdrop-blur-md px-4 py-3"
-          role="status"
-          aria-live="polite"
-        >
-          <p className="font-body text-sm text-amber-200/90">
-            Your admin hasn&apos;t approved native CRM push yet. Use this export to get your call
-            activity into HubSpot or Salesforce in the meantime. When the admin green-lights
-            OAuth, native push turns on automatically.
-          </p>
-        </div>
-      )}
-
-      <div className={`${GLASS_BASE} p-5 flex flex-col gap-5`}>
-        {/* Flavor selector */}
-        <div className="flex gap-2">
-          {(['hubspot', 'salesforce'] as const).map(f => (
-            <button
-              key={f}
-              type="button"
-              onClick={() => setFlavor(f)}
-              className={`flex-1 rounded-xl border px-3 py-2.5 font-mono text-xs uppercase tracking-[0.15em] font-bold transition min-h-[44px] ${
-                flavor === f
-                  ? 'border-volt/50 bg-volt/15 text-volt'
-                  : 'border-white/12 bg-white/5 text-white/60 hover:bg-white/10'
-              }`}
-              aria-pressed={flavor === f}
-            >
-              {f === 'hubspot' ? 'HubSpot' : 'Salesforce'}
-            </button>
-          ))}
-        </div>
-
+      <div className={`${GLASS_BASE} flex flex-col gap-5 p-[22px]`}>
         {/* Export scope */}
         <div className="flex flex-col gap-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+          <p className="text-[16px] font-extrabold text-[#1A1410]">
             What to export
           </p>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-col gap-2">
             {(['new', 'today', 'week', 'all'] as const).map(key => (
               <button
                 key={key}
                 type="button"
                 onClick={() => setPreset(key)}
-                className={`rounded-lg border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] font-bold transition min-h-[44px] ${
+                className={`min-h-[48px] rounded-full px-3 py-2 text-sm font-extrabold transition active:scale-[0.98] ${
                   preset === key
-                    ? 'border-volt/40 bg-volt/10 text-volt'
-                    : 'border-white/10 bg-white/[0.03] text-white/50 hover:bg-white/5'
+                    ? 'bg-[#A8855A] text-[#FAF6EE]'
+                    : 'fg-convex text-[#8B6B40]'
                 }`}
                 aria-pressed={preset === key}
               >
@@ -204,11 +157,11 @@ export default function ActivityExport() {
           className={BTN_VOLT}
           aria-busy={downloading}
         >
-          {downloading ? 'Exporting...' : `Download ${flavor === 'hubspot' ? 'HubSpot' : 'Salesforce'} CSV`}
+          {downloading ? 'Exporting...' : 'Download Salesforce CSV'}
         </button>
 
         {error && (
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-red-400">
+          <p className="text-sm font-extrabold text-[#8B6B40]">
             {error}
           </p>
         )}
@@ -217,9 +170,22 @@ export default function ActivityExport() {
         <button
           type="button"
           onClick={() => void loadRecentExports()}
-          className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/40 hover:text-white/70 transition self-start min-h-[44px]"
+          className="flex min-h-[48px] items-center gap-2 self-start text-sm font-extrabold text-[#8B6B40] transition"
+          aria-expanded={showRecent}
         >
           {showRecent ? 'Hide recent exports' : 'Recent exports'}
+          <svg
+            className={`h-4 w-4 transition-transform ${showRecent ? 'rotate-180' : ''}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
         </button>
 
         {showRecent && recentExports.length > 0 && (
@@ -227,13 +193,13 @@ export default function ActivityExport() {
             {recentExports.map(exp => (
               <div
                 key={exp.id}
-                className="rounded-lg border border-white/6 bg-black/30 px-3 py-2 flex items-center justify-between"
+                className="fg-inset flex items-center justify-between px-3 py-2"
               >
                 <div className="flex flex-col">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">
+                  <p className="text-xs font-bold text-[#3D332A]">
                     {new Date(exp.created_at).toLocaleDateString()} · {exp.flavor}
                   </p>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/40">
+                  <p className="text-xs text-[#3D332A]/70">
                     {exp.row_count} rows · {formatBytes(exp.byte_size)}
                   </p>
                 </div>
@@ -243,7 +209,7 @@ export default function ActivityExport() {
         )}
 
         {showRecent && recentExports.length === 0 && (
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
+          <p className="text-sm text-[#3D332A]">
             No exports yet.
           </p>
         )}

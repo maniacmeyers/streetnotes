@@ -3,15 +3,19 @@ import { createClient } from '@/lib/supabase/server'
 import {
   structureTranscript,
   StructureProviderAuthError,
+  StructureProviderModelError,
   StructureValidationError,
 } from '@/lib/voice-engine/structure'
 import { EMPTY_USER_MEMORY } from '@/lib/user-memory/scoring'
 import { getUserMemory } from '@/lib/user-memory/server'
 import { getPreferredCrm, getCachedSchema, getStickyRules } from '@/lib/crm/schema/cache'
 import type { CrmSchema, StickyRule } from '@/lib/crm/schema/types'
+import { isRateLimited } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
+const STRUCTURE_LIMIT = 60
+const STRUCTURE_WINDOW_MS = 15 * 60 * 1000
 
 function jsonError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status })
@@ -25,6 +29,11 @@ export async function POST(request: Request) {
 
   if (!user) {
     return jsonError('Unauthorized', 401)
+  }
+
+  const key = `structure:${user.id}`
+  if (isRateLimited(key, STRUCTURE_LIMIT, STRUCTURE_WINDOW_MS)) {
+    return jsonError('Too many structuring requests. Please try again shortly.', 429)
   }
 
   let body: { transcript: string }
@@ -74,6 +83,9 @@ export async function POST(request: Request) {
     console.error('Structure API error:', error)
     if (error instanceof StructureProviderAuthError) {
       return jsonError('AI provider authentication failed', 502)
+    }
+    if (error instanceof StructureProviderModelError) {
+      return jsonError('AI extraction model is unavailable', 502)
     }
     if (error instanceof StructureValidationError) {
       return jsonError(error.message, 502)

@@ -33,23 +33,23 @@ interface PushLogEntry {
 }
 
 const GLASS_BASE =
-  'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)]'
+  'fg-card'
 const GLASS_VOLT =
-  'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)]'
+  'fg-featured-card'
 const BTN_VOLT =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25 disabled:opacity-40 disabled:cursor-not-allowed'
+  'fg-action'
 const BTN_GHOST =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10 disabled:opacity-40'
+  'fg-secondary-action px-4'
 
 function confidencePill(level: ConfidenceLevel) {
   const styles: Record<ConfidenceLevel, string> = {
-    high: 'border-volt/40 bg-volt/15 text-volt',
-    medium: 'border-white/20 bg-white/5 text-white/60',
-    low: 'border-white/10 bg-white/[0.03] text-white/40',
+    high: 'bg-[#A8855A] text-[#FAF6EE]',
+    medium: 'bg-[#D4A28A]/28 text-[#8B6B40]',
+    low: 'bg-[#F2EBDF] text-[#8B6B40]',
   }
   return (
     <span
-      className={`inline-block rounded-md border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] font-bold backdrop-blur-md ${styles[level]}`}
+      className={`inline-block rounded-full px-2.5 py-1 text-[10px] font-extrabold ${styles[level]}`}
     >
       {level}
     </span>
@@ -67,8 +67,8 @@ function SyncStatus({
 
   if (!pushStatus && !latest) {
     return (
-      <div className="rounded-xl border border-white/6 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+      <div className="fg-inset px-4 py-3">
+        <p className="text-sm font-bold text-[#3D332A]">
           Not pushed to CRM
         </p>
       </div>
@@ -77,26 +77,26 @@ function SyncStatus({
 
   if (pushStatus === 'success' && latest) {
     return (
-      <div className={`${GLASS_VOLT} px-4 py-3 flex flex-col gap-1`}>
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt">
+      <div className={`${GLASS_VOLT} flex flex-col gap-1 px-4 py-3`}>
+        <p className="text-sm font-extrabold text-[#8B6B40]">
           Pushed to {latest.crm_type}
         </p>
         {latest.contact_id && (
-          <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-volt/80">
+          <p className="text-xs font-bold text-[#3D332A]">
             Contact {latest.contact_created ? 'created' : 'found'}
           </p>
         )}
         {latest.deal_id && (
-          <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-volt/80">
+          <p className="text-xs font-bold text-[#3D332A]">
             Deal {latest.deal_created ? 'created' : 'updated'}
           </p>
         )}
         {latest.task_ids && latest.task_ids.length > 0 && (
-          <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-volt/80">
+          <p className="text-xs font-bold text-[#3D332A]">
             {latest.task_ids.length} task{latest.task_ids.length > 1 ? 's' : ''} created
           </p>
         )}
-        <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-volt/60 mt-1">
+        <p className="mt-1 text-xs font-medium text-[#3D332A]/75">
           {new Date(latest.updated_at).toLocaleString()}
         </p>
       </div>
@@ -105,14 +105,14 @@ function SyncStatus({
 
   if (pushStatus === 'failed' && latest) {
     return (
-      <div className="rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md px-4 py-3 flex flex-col gap-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-red-400">
+      <div className="fg-inset flex flex-col gap-1 px-4 py-3">
+        <p className="text-sm font-extrabold text-[#8B6B40]">
           Push failed
         </p>
         {latest.error_message && (
-          <p className="font-body text-xs text-red-300">{latest.error_message}</p>
+          <p className="text-xs text-[#3D332A]">{latest.error_message}</p>
         )}
-        <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-red-400/60 mt-1">
+        <p className="mt-1 text-xs font-medium text-[#3D332A]/75">
           {new Date(latest.updated_at).toLocaleString()}
         </p>
       </div>
@@ -121,8 +121,8 @@ function SyncStatus({
 
   if (pushStatus === 'pending') {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-md px-4 py-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-amber-300">
+      <div className="fg-inset px-4 py-3">
+        <p className="text-sm font-extrabold text-[#8B6B40]">
           Push pending...
         </p>
       </div>
@@ -144,10 +144,10 @@ function ReadOnlyField({
   if (!value) return null
   return (
     <div className="flex flex-col gap-1">
-      <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+      <p className="text-xs font-extrabold text-[#3D332A]">
         {label}
       </p>
-      <p className="font-body text-base text-white/90 flex items-center gap-2">
+      <p className="flex items-center gap-2 text-base text-[#1A1410]">
         {value} {confidence && confidencePill(confidence)}
       </p>
     </div>
@@ -164,10 +164,10 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <div className={`${GLASS_BASE} p-5 flex flex-col gap-3`}>
-      <h3 className="font-display uppercase text-lg text-white leading-none">
+    <div className={`${GLASS_BASE} flex flex-col gap-3 p-[22px]`}>
+      <h3 className="text-[21px] font-extrabold leading-tight tracking-[-0.02em] text-[#1A1410]">
         {index !== undefined && (
-          <span className="text-volt">{String(index).padStart(2, '0')} </span>
+          <span className="text-[#A8855A]">{String(index).padStart(2, '0')} </span>
         )}
         {title}
       </h3>
@@ -220,16 +220,16 @@ function StructuredFields({ data }: { data: CRMNote }) {
           {data.attendees.map((att, i) => (
             <div
               key={i}
-              className="rounded-xl border border-white/6 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3"
+              className="fg-inset px-4 py-3"
             >
-              <p className="font-body font-bold text-white flex items-center gap-2">
+              <p className="flex items-center gap-2 font-bold text-[#1A1410]">
                 {att.name || 'Unknown'} {confidencePill(att.confidence)}
               </p>
               {att.title && (
-                <p className="font-body text-sm text-white/70">{att.title}</p>
+                <p className="text-sm text-[#3D332A]">{att.title}</p>
               )}
               {att.role && att.role !== 'Unknown' && (
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mt-1">
+                <p className="mt-1 text-xs font-bold text-[#3D332A]">
                   {att.role} · {att.sentiment}
                 </p>
               )}
@@ -240,9 +240,12 @@ function StructuredFields({ data }: { data: CRMNote }) {
 
       {data.meetingSummary && data.meetingSummary.length > 0 && (
         <Section title="Meeting Summary" index={idx++}>
-          <ul className="list-disc list-inside font-body text-base text-white/85 space-y-1">
+          <ul className="space-y-2 text-base text-[#3D332A]">
             {data.meetingSummary.map((point, i) => (
-              <li key={i}>{point}</li>
+              <li key={i} className="flex gap-2">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#A8855A]" aria-hidden="true" />
+                <span>{point}</span>
+              </li>
             ))}
           </ul>
         </Section>
@@ -253,13 +256,13 @@ function StructuredFields({ data }: { data: CRMNote }) {
           {data.nextSteps.map((step, i) => (
             <div
               key={i}
-              className="rounded-xl border border-white/6 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3"
+              className="fg-inset px-4 py-3"
             >
-              <p className="font-body text-white/90 flex items-center gap-2">
+              <p className="flex items-center gap-2 text-[#1A1410]">
                 <span className="font-bold">{step.task}</span>
                 {confidencePill(step.confidence)}
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mt-1">
+              <p className="mt-1 text-xs font-bold text-[#3D332A]">
                 {step.owner === 'rep' ? 'You' : 'Prospect'}
                 {step.dueDate ? ` · ${step.dueDate}` : ''}
                 {' · '}
@@ -272,29 +275,32 @@ function StructuredFields({ data }: { data: CRMNote }) {
 
       {data.opportunityNotes && (
         <Section title="CRM Notes" index={idx++}>
-          <p className="font-body text-base text-white/85">{data.opportunityNotes}</p>
+          <p className="text-base leading-7 text-[#3D332A]">{data.opportunityNotes}</p>
         </Section>
       )}
 
       {data.painPoints && data.painPoints.length > 0 && (
         <Section title="Pain Points" index={idx++}>
-          <ul className="list-disc list-inside font-body text-base text-white/85 space-y-1">
+          <ul className="space-y-2 text-base text-[#3D332A]">
             {data.painPoints.map((p, i) => (
-              <li key={i}>{p}</li>
+              <li key={i} className="flex gap-2">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#A8855A]" aria-hidden="true" />
+                <span>{p}</span>
+              </li>
             ))}
           </ul>
         </Section>
       )}
 
       {data.competitorsMentioned && data.competitorsMentioned.length > 0 && (
-        <div className={`${GLASS_BASE} p-5 flex flex-wrap items-center gap-2`}>
-          <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+        <div className={`${GLASS_BASE} flex flex-wrap items-center gap-2 p-[22px]`}>
+          <span className="text-xs font-extrabold text-[#3D332A]">
             Competitors:
           </span>
           {data.competitorsMentioned.map((c, i) => (
             <span
               key={i}
-              className="inline-block rounded-md border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md"
+              className="inline-block rounded-full bg-[#D4A28A]/24 px-3 py-1 text-xs font-extrabold text-[#8B6B40]"
             >
               {c}
             </span>
@@ -303,14 +309,14 @@ function StructuredFields({ data }: { data: CRMNote }) {
       )}
 
       {data.productsDiscussed && data.productsDiscussed.length > 0 && (
-        <div className={`${GLASS_BASE} p-5 flex flex-wrap items-center gap-2`}>
-          <span className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/50">
+        <div className={`${GLASS_BASE} flex flex-wrap items-center gap-2 p-[22px]`}>
+          <span className="text-xs font-extrabold text-[#3D332A]">
             Products:
           </span>
           {data.productsDiscussed.map((p, i) => (
             <span
               key={i}
-              className="inline-block rounded-md border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md"
+              className="inline-block rounded-full bg-[#D4A28A]/24 px-3 py-1 text-xs font-extrabold text-[#8B6B40]"
             >
               {p}
             </span>
@@ -323,17 +329,17 @@ function StructuredFields({ data }: { data: CRMNote }) {
 
 function DetailSkeleton() {
   return (
-    <div className="px-4 py-6 flex flex-col gap-6 animate-pulse">
+    <div className="fg-page flex animate-pulse flex-col gap-6">
       <div className="flex items-center justify-between">
-        <div className="h-5 bg-white/10 rounded w-16" />
-        <div className="h-4 bg-white/5 rounded w-20" />
+        <div className="h-5 w-16 rounded bg-[#A8855A]/15" />
+        <div className="h-4 w-20 rounded bg-[#A8855A]/10" />
       </div>
-      <div className="h-10 bg-white/10 rounded w-2/3" />
+      <div className="h-10 w-2/3 rounded bg-[#A8855A]/15" />
       <div className={`${GLASS_BASE} h-16`} />
-      <div className={`${GLASS_BASE} p-4 flex flex-col gap-3`}>
-        <div className="h-4 bg-white/10 rounded w-1/3" />
-        <div className="h-4 bg-white/5 rounded w-full" />
-        <div className="h-4 bg-white/5 rounded w-2/3" />
+      <div className={`${GLASS_BASE} flex flex-col gap-3 p-4`}>
+        <div className="h-4 w-1/3 rounded bg-[#A8855A]/15" />
+        <div className="h-4 w-full rounded bg-[#A8855A]/10" />
+        <div className="h-4 w-2/3 rounded bg-[#A8855A]/10" />
       </div>
     </div>
   )
@@ -426,8 +432,8 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
 
   if (error || !note) {
     return (
-      <div className="px-4 py-6 flex flex-col gap-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-red-400">
+      <div className="fg-page flex flex-col gap-4">
+        <p className="text-sm font-extrabold text-[#8B6B40]">
           {error || 'Note not found'}
         </p>
         <button
@@ -446,7 +452,7 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
     !isPushing && note.push_status !== 'success' && note.push_status !== 'pending'
 
   return (
-    <div className="px-4 py-6 flex flex-col gap-5">
+    <div className="fg-page flex flex-col gap-5">
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <button
@@ -458,13 +464,13 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
           <ChevronLeft className="w-4 h-4" />
           Back
         </button>
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50">
+        <p className="text-sm font-bold text-[#3D332A]">
           {new Date(note.created_at).toLocaleDateString()}
         </p>
       </div>
 
       {/* Title */}
-      <h1 className="font-display uppercase text-4xl sm:text-5xl text-white leading-[0.85]">
+      <h1 className="fg-title">
         {note.title || 'Untitled'}
       </h1>
 
@@ -542,8 +548,8 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
       )}
 
       {pushError && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md px-4 py-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-red-400">
+        <div className="fg-inset px-4 py-3">
+          <p className="text-sm font-extrabold text-[#8B6B40]">
             {pushError}
           </p>
         </div>
@@ -560,7 +566,7 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
             onClick={() => setShowTranscript(!showTranscript)}
             aria-expanded={showTranscript}
             aria-label={showTranscript ? 'Hide transcript' : 'Show transcript'}
-            className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/60 hover:text-volt min-h-[44px]"
+            className="flex min-h-[48px] items-center gap-2 text-sm font-extrabold text-[#8B6B40]"
           >
             {showTranscript ? (
               <ChevronDown className="w-4 h-4" />
@@ -571,8 +577,8 @@ export default function NoteDetail({ noteId }: { noteId: string }) {
           </button>
           {showTranscript && (
             <div className={`mt-3 ${GLASS_BASE} p-5`}>
-              <div className="rounded-xl border border-white/6 bg-black/40 backdrop-blur-md shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] px-4 py-3">
-                <p className="font-body text-base text-white/85 whitespace-pre-wrap">
+              <div className="fg-inset px-4 py-3">
+                <p className="whitespace-pre-wrap text-base leading-7 text-[#3D332A]">
                   {note.raw_transcript}
                 </p>
               </div>

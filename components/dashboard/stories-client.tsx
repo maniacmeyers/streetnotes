@@ -159,11 +159,11 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   // Sub-views
   if (view !== 'home') {
     return (
-      <div className="px-4 pt-6 pb-4">
+      <div className="fg-page">
         <button
           type="button"
           onClick={handleBack}
-          className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest font-bold text-white/50 hover:text-volt min-h-[44px] mb-4 cursor-pointer transition-colors"
+          className="fg-secondary-action mb-4 px-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -234,14 +234,14 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
   ]
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="fg-page">
       {/* Header */}
       <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
+        <p className="fg-eyebrow">
           Practice & Perform
         </p>
-        <h1 className="font-bold text-3xl text-white leading-tight mt-1">
-          Story <span className="text-volt drop-shadow-[0_0_16px_rgba(0,230,118,0.4)]">Vault</span>
+        <h1 className="fg-title mt-3">
+          Story Vault
         </h1>
       </div>
 
@@ -272,8 +272,8 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                     {drafts.map((draft) => {
                       const statusBadge =
                         draft.status === 'completed'
-                          ? 'text-volt border-volt/40 bg-volt/10'
-                          : 'text-white/60 border-white/15 bg-white/5'
+                          ? 'bg-[#A8855A] text-[#FAF6EE]'
+                          : 'bg-[#D4A28A]/24 text-[#8B6B40]'
                       return (
                         <motion.div
                           key={draft.id}
@@ -287,7 +287,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                             onDelete={() => handleDeleteDraft(draft.id)}
                             variant="brutal"
                           >
-                            <div className="glass rounded-xl flex items-center gap-2 hover:border-volt/30 transition-all">
+                            <div className="fg-card-sm flex items-center gap-2 rounded-[22px] transition-all">
                               <button
                                 type="button"
                                 onClick={() => {
@@ -301,15 +301,15 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                                 }}
                                 className="flex-1 text-left px-4 py-3 min-h-[56px] bg-transparent border-none cursor-pointer rounded-xl"
                               >
-                                <p className="font-bold text-sm text-white leading-tight">
+                                <p className="text-sm font-extrabold leading-tight text-[#1A1410]">
                                   {draft.title}
                                 </p>
                                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/50 font-bold">
+                                  <span className="text-xs font-bold text-[#3D332A]">
                                     {STORY_TYPE_LABELS[draft.story_type]}
                                   </span>
                                   <span
-                                    className={`font-mono text-[9px] uppercase tracking-[0.15em] font-bold px-2 py-0.5 rounded border ${statusBadge}`}
+                                    className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${statusBadge}`}
                                   >
                                     {draft.status}
                                   </span>
@@ -322,7 +322,7 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
                                   handleDeleteDraft(draft.id)
                                 }}
                                 aria-label="Delete draft"
-                                className="flex items-center justify-center w-11 h-11 mr-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 cursor-pointer transition-colors duration-150"
+                                className="mr-1.5 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-[#8B6B40] transition-colors duration-150"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -342,12 +342,9 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
           <motion.div key="vault" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
             {personalVault.length === 0 ? (
               <div className="glass rounded-2xl p-8 text-center mt-2">
-                <Trophy
-                  className="w-10 h-10 mx-auto mb-3 text-volt"
-                  style={{ filter: 'drop-shadow(0 0 12px rgba(0, 230, 118, 0.5))' }}
-                />
-                <p className="font-bold text-xl text-white">No stories vaulted yet</p>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-white/50 mt-2">
+                <Trophy className="mx-auto mb-3 h-10 w-10 text-[#A8855A]" />
+                <p className="text-xl font-extrabold text-[#1A1410]">No stories vaulted yet</p>
+                <p className="mt-2 text-sm leading-6 text-[#3D332A]">
                   Record a personal best to save it here
                 </p>
               </div>
@@ -388,12 +385,9 @@ export default function StoriesClient({ userEmail }: { userEmail: string }) {
           <motion.div key="team" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
             {teamVault.length === 0 ? (
               <div className="glass rounded-2xl p-8 text-center mt-2">
-                <BookOpen
-                  className="w-10 h-10 mx-auto mb-3 text-volt"
-                  style={{ filter: 'drop-shadow(0 0 12px rgba(0, 230, 118, 0.5))' }}
-                />
-                <p className="font-bold text-xl text-white">No team stories yet</p>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-white/50 mt-2">
+                <BookOpen className="mx-auto mb-3 h-10 w-10 text-[#A8855A]" />
+                <p className="text-xl font-extrabold text-[#1A1410]">No team stories yet</p>
+                <p className="mt-2 text-sm leading-6 text-[#3D332A]">
                   Share one of your best from My Vault to start the library
                 </p>
               </div>

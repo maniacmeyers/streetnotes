@@ -25,9 +25,17 @@ function formatTimer(sec: number): string {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
-const INSTRUMENT_SIZE = 260
 const INSTRUMENT_SIZE_MOBILE = 220
 const BAR_COUNT = 56
+const FIELD_GLOW = {
+  bg: '#FAF6EE',
+  surface: '#F2EBDF',
+  text: '#1A1410',
+  secondary: '#3D332A',
+  accent: '#A8855A',
+  deep: '#8B6B40',
+  glow: '#D4A28A',
+}
 
 export default function MicInstrument({
   isRecording,
@@ -77,10 +85,12 @@ export default function MicInstrument({
       freqDataRef.current = new Uint8Array(analyserNode.frequencyBinCount)
     }
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const draw = () => {
       ctx.clearRect(0, 0, width, height)
 
-      const hasData = analyserNode && isRecording && freqDataRef.current
+      const hasData = analyserNode && isRecording && !prefersReducedMotion && freqDataRef.current
       if (hasData) {
         analyserNode.getByteFrequencyData(freqDataRef.current!)
       }
@@ -106,7 +116,7 @@ export default function MicInstrument({
         const y2 = cy + Math.sin(angle) * (innerR + length)
 
         const alpha = isRecording ? 0.35 + value * 0.65 : 0.18
-        ctx.strokeStyle = `rgba(0, 230, 118, ${alpha})`
+        ctx.strokeStyle = `rgba(168, 133, 90, ${alpha})`
         ctx.lineWidth = 2.5
         ctx.lineCap = 'round'
         ctx.beginPath()
@@ -114,11 +124,17 @@ export default function MicInstrument({
         ctx.lineTo(x2, y2)
         ctx.stroke()
       }
-
-      frameRef.current = requestAnimationFrame(draw)
     }
 
     draw()
+    if (isRecording && !prefersReducedMotion) {
+      const animate = () => {
+        draw()
+        frameRef.current = requestAnimationFrame(animate)
+      }
+      frameRef.current = requestAnimationFrame(animate)
+    }
+
     return () => cancelAnimationFrame(frameRef.current)
   }, [analyserNode, isRecording])
 
@@ -127,7 +143,7 @@ export default function MicInstrument({
   const nearMax = durationSec >= maxDurationSec - 30
 
   return (
-    <div className="flex flex-col items-center gap-5 sm:gap-6">
+    <div className="flex flex-col items-center gap-5">
       {/* The instrument */}
       <div
         className="relative flex items-center justify-center"
@@ -136,14 +152,6 @@ export default function MicInstrument({
           height: INSTRUMENT_SIZE_MOBILE,
         }}
       >
-        <style>{`
-          @media (min-width: 640px) {
-            .mic-instrument {
-              width: ${INSTRUMENT_SIZE}px !important;
-              height: ${INSTRUMENT_SIZE}px !important;
-            }
-          }
-        `}</style>
         <div
           className="mic-instrument absolute inset-0 flex items-center justify-center"
           style={{
@@ -155,7 +163,7 @@ export default function MicInstrument({
           <div
             className="absolute inset-0 rounded-full orbit-ring pointer-events-none"
             style={{
-              border: '1.5px dashed rgba(0, 230, 118, 0.25)',
+              border: '1.5px dashed rgba(168, 133, 90, 0.28)',
               maskImage:
                 'conic-gradient(from 0deg, black 0deg 270deg, transparent 270deg 360deg)',
               WebkitMaskImage:
@@ -170,7 +178,7 @@ export default function MicInstrument({
               className="absolute rounded-full pulse-ring pointer-events-none"
               style={{
                 inset: 10,
-                border: '3px solid rgba(239, 68, 68, 0.5)',
+                border: '3px solid rgba(139, 107, 64, 0.44)',
               }}
               aria-hidden="true"
             />
@@ -181,16 +189,12 @@ export default function MicInstrument({
             className="absolute rounded-full pointer-events-none"
             style={{
               inset: 18,
-              background:
-                'linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 50%, rgba(0,0,0,0.2) 100%)',
-              backdropFilter: 'blur(24px) saturate(160%)',
-              WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
+              background: FIELD_GLOW.surface,
+              border: '1px solid rgba(168, 133, 90, 0.18)',
               boxShadow: `
-                inset 0 2px 4px rgba(255, 255, 255, 0.25),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.5),
-                inset 0 0 60px rgba(0, 230, 118, 0.08),
-                0 30px 80px -20px rgba(0, 0, 0, 0.7)
+                8px 8px 18px rgba(139, 107, 64, 0.22),
+                -8px -8px 18px rgba(250, 246, 238, 0.95),
+                0 14px 28px rgba(212, 162, 138, 0.22)
               `,
             }}
             aria-hidden="true"
@@ -203,10 +207,10 @@ export default function MicInstrument({
               inset: 22,
               background: `conic-gradient(
                 from -90deg,
-                ${nearMax ? '#ef4444' : '#00E676'} 0%,
-                ${nearMax ? '#ef4444' : '#00E676'} ${progressPct}%,
-                rgba(255, 255, 255, 0.05) ${progressPct}%,
-                rgba(255, 255, 255, 0.05) 100%
+                ${nearMax ? FIELD_GLOW.deep : FIELD_GLOW.accent} 0%,
+                ${nearMax ? FIELD_GLOW.deep : FIELD_GLOW.accent} ${progressPct}%,
+                rgba(168, 133, 90, 0.12) ${progressPct}%,
+                rgba(168, 133, 90, 0.12) 100%
               )`,
               maskImage:
                 'radial-gradient(circle, transparent 0, transparent calc(50% - 4px), black calc(50% - 4px), black 50%, transparent 50%)',
@@ -232,40 +236,42 @@ export default function MicInstrument({
             onClick={handleClick}
             disabled={disabled && !isRecording}
             whileTap={{ scale: 0.94 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             className={`
               relative z-10 rounded-full
               flex flex-col items-center justify-center
               cursor-pointer
               ${disabled && !isRecording ? 'cursor-not-allowed' : ''}
-              ${isRecording ? 'breathe-red' : disabled ? '' : 'breathe-volt'}
             `}
             style={{
               width: 132,
               height: 132,
               background: isRecording
-                ? 'radial-gradient(circle at 30% 30%, #fca5a5 0%, #dc2626 45%, #7f1d1d 100%)'
+                ? `linear-gradient(145deg, ${FIELD_GLOW.deep}, ${FIELD_GLOW.accent})`
                 : disabled
-                  ? 'radial-gradient(circle at 30% 30%, #4b5563 0%, #1f2937 100%)'
-                  : 'radial-gradient(circle at 30% 30%, rgba(0, 255, 140, 0.25) 0%, rgba(10, 20, 15, 0.95) 55%, #000 100%)',
+                  ? `linear-gradient(145deg, ${FIELD_GLOW.surface}, ${FIELD_GLOW.bg})`
+                  : `linear-gradient(145deg, ${FIELD_GLOW.bg}, ${FIELD_GLOW.surface})`,
               border: isRecording
-                ? '2px solid rgba(255, 200, 200, 0.6)'
+                ? '1.5px solid rgba(168, 133, 90, 0.42)'
                 : disabled
-                  ? '2px solid rgba(255, 255, 255, 0.1)'
-                  : '2px solid rgba(0, 230, 118, 0.5)',
+                  ? '1.5px solid rgba(139, 107, 64, 0.12)'
+                  : '1.5px solid rgba(168, 133, 90, 0.32)',
+              boxShadow: isRecording
+                ? `inset 4px 4px 8px rgba(26, 20, 16, 0.22), inset -3px -3px 7px rgba(212, 162, 138, 0.28)`
+                : `6px 6px 14px rgba(139, 107, 64, 0.32), -4px -4px 12px rgba(250, 246, 238, 0.72), 0 12px 24px rgba(212, 162, 138, 0.34)`,
             }}
             aria-label={isRecording ? 'Stop recording' : 'Start recording'}
           >
             {isRecording ? (
               <>
-                <FaStop className="text-white text-xl mb-1 drop-shadow-lg" />
-                <span className="font-mono text-[22px] font-bold text-white tabular-nums leading-none drop-shadow-lg">
+                <FaStop className="mb-1 text-xl text-[#FAF6EE]" />
+                <span className="text-[22px] font-bold text-[#FAF6EE] tabular-nums leading-none">
                   {formatTimer(durationSec)}
                 </span>
               </>
             ) : (
               <FaMicrophone
-                className={`text-4xl sm:text-5xl drop-shadow-lg ${disabled ? 'text-gray-500' : 'text-volt'}`}
+                className={`text-4xl ${disabled ? 'text-[#8B6B40]/45' : 'text-[#A8855A]'}`}
               />
             )}
           </motion.button>
@@ -277,27 +283,27 @@ export default function MicInstrument({
         {isRecording ? (
           <>
             {!canStop && minDurationSec > 0 && (
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#3D332A]">
                 Min {minDurationSec}s • {Math.max(0, minDurationSec - durationSec)}s
               </p>
             )}
             {canStop && durationSec < maxDurationSec - 30 && (
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#8B6B40]">
                 Tap the core to stop
               </p>
             )}
             {durationSec >= maxDurationSec - 30 && (
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400 font-bold">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#8B6B40]">
                 Auto-stop in {maxDurationSec - durationSec}s
               </p>
             )}
           </>
         ) : (
-          <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em]">
+          <p className="text-xs font-extrabold uppercase tracking-[0.12em]">
             {disabled ? (
-              <span className="text-gray-500">Mic unavailable</span>
+              <span className="text-[#3D332A]/65">Mic unavailable</span>
             ) : (
-              <span className="text-volt/80">{idleLabel}</span>
+              <span className="text-[#8B6B40]">{idleLabel}</span>
             )}
           </p>
         )}

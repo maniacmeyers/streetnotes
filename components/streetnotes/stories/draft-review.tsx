@@ -54,7 +54,7 @@ export function DraftReview({ content, storyType, onStartPractice, onEdit }: Dra
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition"
           >
             <Pencil size={14} />
             Edit
@@ -63,7 +63,7 @@ export function DraftReview({ content, storyType, onStartPractice, onEdit }: Dra
           <button
             type="button"
             onClick={handleSave}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition"
           >
             <Check size={14} />
             Save
@@ -95,7 +95,7 @@ export function DraftReview({ content, storyType, onStartPractice, onEdit }: Dra
         <button
           type="button"
           onClick={onStartPractice}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-6 py-4 font-mono text-sm uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-6 py-4 font-mono text-sm uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition"
         >
           <Mic size={20} />
           Practice This Story

@@ -13,7 +13,6 @@ import type { PushResult, CrmCandidate } from '@/lib/crm/push/types'
 import type { PushPlan } from '@/lib/crm/schema/types'
 import EditableStructuredOutput from '@/components/notes/editable-structured-output'
 import MicInstrument from '@/components/mic-instrument'
-import { BrutalCard, BrutalButton } from '@/components/streetnotes/brutal'
 
 interface TranscribeSuccessResponse {
   transcript: string
@@ -23,6 +22,8 @@ interface TranscribeSuccessResponse {
 
 const MAX_RECORDING_SEC = 300 // 5 minutes cap
 const MIN_RECORDING_SEC = 3
+const FG_ACTION = 'fg-action'
+const FG_SECONDARY = 'fg-secondary-action px-5'
 
 interface VoiceNoteCaptureProps {
   autoStart?: boolean
@@ -357,22 +358,21 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
   const showInstrument = isRecording || (!audioBlob && !transcript && !structured && isSupported && status !== 'requesting_permission')
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-5">
       <div className="flex flex-col gap-1">
         <h2
-          className="font-display uppercase text-3xl text-white leading-[0.85]"
-          style={{ textShadow: '2px 2px 0px #000000' }}
+          className="text-[30px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1A1410]"
         >
-          Capture note
+          Capture result
         </h2>
-        <p className="font-mono text-xs uppercase tracking-widest font-bold text-volt">
+        <p className="text-sm font-extrabold text-[#8B6B40]">
           {pipelineLabel}
         </p>
       </div>
 
       {/* Mic instrument — idle entry point + recording state */}
       {showInstrument && (
-        <div className="flex flex-col items-center py-6 sm:py-8">
+        <div className="fg-featured-card flex flex-col items-center p-5">
           <MicInstrument
             isRecording={isRecording}
             disabled={!isSupported}
@@ -389,16 +389,16 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
       )}
 
       {!isSupported && (
-        <div className="bg-red-100 border-4 border-red-600 px-4 py-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-red-700 font-bold">
+        <div className="fg-inset px-4 py-3">
+          <p className="text-sm font-bold text-[#8B6B40]">
             This browser does not support audio recording.
           </p>
         </div>
       )}
 
       {activeError && (
-        <div className="bg-red-100 border-4 border-red-600 px-4 py-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-red-700 font-bold">
+        <div className="fg-inset px-4 py-3">
+          <p className="text-sm font-bold text-[#8B6B40]">
             {activeError}
           </p>
         </div>
@@ -406,8 +406,8 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
 
       {/* Success banners */}
       {pushResult?.success && (
-        <div className="bg-volt/20 border-4 border-volt px-4 py-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-volt font-bold">
+        <div className="fg-card-sm px-4 py-3">
+          <p className="text-sm font-bold text-[#8B6B40]">
             Pushed to CRM.
             {pushResult.contactId && (
               <> Contact {pushResult.contactCreated ? 'created' : 'found'}.</>
@@ -423,8 +423,8 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
       )}
 
       {hasSaved && !pushResult?.success && !isPushing && (
-        <div className="bg-volt/20 border-4 border-volt px-4 py-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-volt font-bold">
+        <div className="fg-card-sm px-4 py-3">
+          <p className="text-sm font-bold text-[#8B6B40]">
             Note saved.
           </p>
         </div>
@@ -432,15 +432,15 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
 
       {/* Candidate selection picker */}
       {pushCandidates && pushCandidates.length > 0 && (
-        <BrutalCard variant="white" padded>
-          <p className="font-display uppercase text-lg text-black mb-3">
+        <div className="fg-card p-[22px]">
+          <p className="mb-3 text-[21px] font-extrabold tracking-[-0.02em] text-[#1A1410]">
             Multiple {pushCandidates[0].type === 'contact' ? 'contacts' : 'deals'} found
           </p>
-          <div className="flex flex-col gap-2 mb-4">
+          <div className="mb-4 flex flex-col gap-2">
             {pushCandidates.map(c => (
               <label
                 key={c.id}
-                className="flex items-center gap-3 font-mono text-sm uppercase tracking-wider cursor-pointer min-h-[44px] border-2 border-black px-3 py-2"
+                className="fg-inset flex min-h-[48px] cursor-pointer items-center gap-3 px-3 py-3 text-sm font-bold text-[#1A1410]"
               >
                 <input
                   type="radio"
@@ -448,34 +448,32 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
                   value={c.id}
                   checked={selectedCandidateId === c.id}
                   onChange={() => setSelectedCandidateId(c.id)}
-                  className="w-5 h-5 accent-black"
+                  className="h-5 w-5 accent-[#A8855A]"
                 />
-                <span className="font-bold text-black">{c.name}</span>
-                {c.detail && <span className="text-black/60 normal-case">{c.detail}</span>}
+                <span className="font-bold text-[#1A1410]">{c.name}</span>
+                {c.detail && <span className="text-[#3D332A]">{c.detail}</span>}
               </label>
             ))}
           </div>
-          <BrutalButton
+          <button
             type="button"
             onClick={handleSelectCandidate}
             disabled={!selectedCandidateId || isPushing}
-            variant="primary"
-            size="md"
-            className="w-full"
+            className={FG_ACTION}
           >
             {isPushing ? 'Pushing...' : 'Push with selected'}
-          </BrutalButton>
-        </BrutalCard>
+          </button>
+        </div>
       )}
 
       {/* Audio preview (after recording stops) */}
       {audioBlob && !isRecording && (
         <div className="flex flex-col gap-2">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-gray-400 font-bold">
+          <p className="text-[13px] font-bold text-[#3D332A]">
             {formatBytes(audioBlob.size)} · {mimeType || audioBlob.type || 'unknown'}
           </p>
           {audioPreviewUrl && (
-            <audio controls src={audioPreviewUrl} className="w-full" style={{ filter: 'invert(1)' }} />
+            <audio controls src={audioPreviewUrl} className="w-full" />
           )}
         </div>
       )}
@@ -485,133 +483,129 @@ export default function VoiceNoteCapture({ autoStart, onSaved, onProgress }: Voi
         <div className="flex flex-col gap-2">
           <label
             htmlFor="transcript"
-            className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] font-bold text-white"
+            className="text-sm font-extrabold text-[#1A1410]"
           >
             Transcript
           </label>
           <textarea
             id="transcript"
             value={transcript}
-            readOnly
+            onChange={(event) => setTranscript(event.target.value)}
             rows={6}
-            className="w-full bg-white border-4 border-black font-body text-black px-4 py-3"
+            className="fg-input min-h-[160px] resize-y"
           />
         </div>
       )}
 
       {/* Editable structured output */}
       {structured && (
-        <BrutalCard variant="white" padded>
-          <h3 className="font-display uppercase text-xl text-black mb-1 leading-none">
+        <div className="fg-card p-[22px]">
+          <h3 className="mb-1 text-[22px] font-extrabold tracking-[-0.02em] text-[#1A1410]">
             Review &amp; Edit
           </h3>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-black/60 mb-4">
+          <p className="mb-4 text-sm font-medium leading-6 text-[#3D332A]">
             Edit any field before saving. Colored badges show extraction confidence.
           </p>
           <EditableStructuredOutput
             data={structured}
             onChange={setStructured}
           />
-        </BrutalCard>
+        </div>
       )}
 
       {/* Progressive action buttons — only show the next relevant action */}
-      <div className="flex flex-col gap-3">
+      <div className="fg-sticky-footer -mx-4 flex flex-col gap-3">
         {/* Stage: requesting mic permission */}
         {status === 'requesting_permission' && (
-          <BrutalButton type="button" disabled variant="primary" size="lg">
+          <button type="button" disabled className={FG_ACTION}>
             Requesting mic...
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: audio recorded — transcribe */}
         {hasStopped && !transcript && !isTranscribing && (
-          <BrutalButton
+          <button
             type="button"
             onClick={() => void handleTranscribe()}
-            variant="volt"
-            size="lg"
+            className={FG_ACTION}
           >
             Transcribe
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: transcribing */}
         {isTranscribing && (
-          <BrutalButton type="button" disabled variant="primary" size="lg">
+          <button type="button" disabled className={FG_ACTION}>
             Transcribing...
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: transcribed — structure */}
         {hasTranscript && !structured && !isStructuring && (
-          <BrutalButton
+          <button
             type="button"
             onClick={() => void handleStructure()}
-            variant="volt"
-            size="lg"
+            className={FG_ACTION}
           >
             Structure for CRM
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: structuring */}
         {isStructuring && (
-          <BrutalButton type="button" disabled variant="primary" size="lg">
+          <button type="button" disabled className={FG_ACTION}>
             Structuring...
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: structured — save */}
         {hasStructured && !hasSaved && !isSaving && (
-          <BrutalButton
+          <button
             type="button"
             onClick={() => void handleSave()}
-            variant="volt"
-            size="lg"
+            className={FG_ACTION}
           >
             Save note
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: saving */}
         {isSaving && (
-          <BrutalButton type="button" disabled variant="primary" size="lg">
+          <button type="button" disabled className={FG_ACTION}>
             Saving...
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: saved — push to CRM */}
         {hasSaved && !pushResult?.success && !isPushing && !pushCandidates && (
-          <BrutalButton
+          <button
             type="button"
             onClick={() => void handlePushToCRM()}
-            variant="volt"
-            size="lg"
+            className={FG_ACTION}
           >
             {pushError ? 'Retry push to CRM' : 'Push to CRM'}
-          </BrutalButton>
+          </button>
         )}
 
         {/* Stage: pushing */}
         {isPushing && !pushCandidates && (
-          <BrutalButton type="button" disabled variant="primary" size="lg">
+          <button type="button" disabled className={FG_ACTION}>
             Pushing to CRM...
-          </BrutalButton>
+          </button>
         )}
 
         {/* Done button — after save (skip push) or after push success */}
         {(hasSaved || hasPushed) && onSaved && (
-          <BrutalButton type="button" onClick={onSaved} variant="outline" size="md">
+          <button type="button" onClick={onSaved} className={FG_SECONDARY}>
             Done
-          </BrutalButton>
+          </button>
         )}
 
         {/* Reset — always available when there's work */}
         {hasWork && !isRecording && (
-          <BrutalButton type="button" onClick={handleReset} variant="ghost" size="sm">
+          <button type="button" onClick={handleReset} className={FG_SECONDARY}>
             Start over
-          </BrutalButton>
+          </button>
         )}
       </div>
 

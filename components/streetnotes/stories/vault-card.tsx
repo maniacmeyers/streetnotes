@@ -21,13 +21,13 @@ import { STORY_TYPE_LABELS, type VaultEntry } from '@/lib/vbrick/story-types'
 function scoreColor(score: number): string {
   if (score <= 3) return '#f87171'
   if (score <= 6) return '#fbbf24'
-  return '#00E676'
+  return '#A8855A'
 }
 
 function scoreGlow(score: number): string {
   if (score <= 3) return '0 0 16px rgba(248, 113, 113, 0.4)'
   if (score <= 6) return '0 0 16px rgba(251, 191, 36, 0.4)'
-  return '0 0 16px rgba(0, 230, 118, 0.5)'
+  return '0 0 16px rgba(212, 162, 138, 0.5)'
 }
 
 function formatDate(iso: string): string {
@@ -111,7 +111,7 @@ export function VaultCard({
     e.stopPropagation()
     if (!challengeUrl) return
     const shareData = {
-      title: 'Beat this StreetNotes score',
+      title: 'Beat this Field Glow score',
       text: `I scored ${entry.composite_score.toFixed(1)} on ${STORY_TYPE_LABELS[entry.story_type]}. Can you beat it?`,
       url: challengeUrl,
     }
@@ -135,7 +135,7 @@ export function VaultCard({
   }
 
   const containerClass = entry.is_personal_best
-    ? 'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5'
+    ? 'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(212,162,138,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5'
     : 'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] p-5'
 
   return (
@@ -153,7 +153,7 @@ export function VaultCard({
             {entry.is_personal_best && (
               <span
                 className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] font-bold text-volt"
-                style={{ textShadow: '0 0 8px rgba(0, 230, 118, 0.6)' }}
+                style={{ textShadow: '0 0 8px rgba(212, 162, 138, 0.6)' }}
               >
                 <Trophy size={10} />
                 Personal Best
@@ -227,7 +227,7 @@ export function VaultCard({
                 e.stopPropagation()
                 onPractice()
               }}
-              className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-xs uppercase tracking-[0.15em] px-4 py-2.5 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-volt min-h-[44px]"
+              className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-xs uppercase tracking-[0.15em] px-4 py-2.5 rounded-xl cursor-pointer active:scale-[0.98] transition-all shadow-glow-volt min-h-[48px]"
             >
               <Mic size={14} />
               Practice
@@ -241,7 +241,7 @@ export function VaultCard({
                 onAdopt()
               }}
               disabled={adopting}
-              className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-xs uppercase tracking-[0.15em] px-4 py-2.5 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-volt disabled:opacity-50 min-h-[44px]"
+              className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-xs uppercase tracking-[0.15em] px-4 py-2.5 rounded-xl cursor-pointer active:scale-[0.98] transition-all shadow-glow-volt disabled:opacity-50 min-h-[48px]"
             >
               {adopting ? (
                 'Adding...'
@@ -263,7 +263,7 @@ export function VaultCard({
             <button
               onClick={handleCreateChallenge}
               disabled={creatingChallenge}
-              className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[44px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[48px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 cursor-pointer transition-all disabled:opacity-50"
             >
               <Link2 size={12} />
               {creatingChallenge ? 'Creating…' : 'Share Challenge'}
@@ -283,7 +283,7 @@ export function VaultCard({
                 <button
                   type="button"
                   onClick={handleNativeShare}
-                  className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-[10px] uppercase tracking-[0.15em] px-3 py-2.5 rounded-lg cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-volt min-h-[44px]"
+                  className="inline-flex items-center gap-1.5 bg-volt text-black font-bold text-[10px] uppercase tracking-[0.15em] px-3 py-2.5 rounded-lg cursor-pointer active:scale-[0.98] transition-all shadow-glow-volt min-h-[48px]"
                 >
                   <Share2 size={12} />
                   Share
@@ -291,7 +291,7 @@ export function VaultCard({
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[44px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all"
+                  className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[48px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 cursor-pointer transition-all"
                 >
                   {copyFeedback === 'copied' ? (
                     <>
@@ -315,7 +315,7 @@ export function VaultCard({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[44px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 hover:text-volt hover:border-volt/40 cursor-pointer transition-all no-underline"
+                  className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2.5 min-h-[48px] font-mono text-[10px] uppercase tracking-[0.15em] font-bold text-white/70 cursor-pointer transition-all no-underline"
                 >
                   <ExternalLink size={12} />
                   Preview
@@ -342,7 +342,7 @@ export function VaultCard({
                   e.stopPropagation()
                   onDelete()
                 }}
-                className="glass rounded-md p-1.5 cursor-pointer transition-all hover:border-red-400/40 hover:text-red-400 text-white/60"
+                className="glass inline-flex min-h-[48px] min-w-[48px] cursor-pointer items-center justify-center rounded-md p-1.5 text-white/60 transition-all"
                 title="Delete from vault"
                 aria-label="Delete from vault"
               >
@@ -362,7 +362,7 @@ export function VaultCard({
               e.stopPropagation()
               onDelete()
             }}
-            className="inline-flex items-center gap-1.5 glass rounded-lg px-3 py-2 cursor-pointer transition-all hover:border-red-400/40 hover:text-red-400 text-white/60 font-mono text-[10px] uppercase tracking-[0.15em] font-bold"
+            className="inline-flex min-h-[48px] items-center gap-1.5 glass rounded-lg px-3 py-2 cursor-pointer transition-all text-white/60 font-mono text-[10px] uppercase tracking-[0.15em] font-bold"
             title="Delete from vault"
             aria-label="Delete from vault"
           >

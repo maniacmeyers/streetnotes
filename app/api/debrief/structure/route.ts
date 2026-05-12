@@ -5,6 +5,7 @@ import { processCIMentions } from '@/lib/ci/pipeline'
 import {
   structureTranscript,
   StructureProviderAuthError,
+  StructureProviderModelError,
   StructureValidationError,
 } from '@/lib/voice-engine/structure'
 import { getDebriefMemory, invalidateDebriefMemory } from '@/lib/user-memory/server'
@@ -106,6 +107,9 @@ export async function POST(request: Request) {
     console.error('[debrief/structure] Error:', error)
     if (error instanceof StructureProviderAuthError) {
       return jsonError('AI provider authentication failed', 502)
+    }
+    if (error instanceof StructureProviderModelError) {
+      return jsonError('AI extraction model is unavailable', 502)
     }
     if (error instanceof StructureValidationError) {
       return jsonError(error.message, 502)

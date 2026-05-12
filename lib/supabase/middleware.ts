@@ -45,11 +45,12 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/auth') ||
     pathname.startsWith('/api') ||
     pathname.startsWith('/debrief') ||
+    pathname.startsWith('/challenge') ||
     pathname.startsWith('/vbrick') ||
     pathname.startsWith('/vbrick-site') ||
-    pathname.startsWith('/ci') ||
     pathname.startsWith('/for-leaders') ||
     pathname.startsWith('/voice-to-crm-aesthetic-sales-reps') ||
+    pathname.startsWith('/fieldglow') ||
     pathname.startsWith('/contact') ||
     pathname.startsWith('/privacy') ||
     pathname.startsWith('/terms') ||

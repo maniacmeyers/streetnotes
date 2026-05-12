@@ -2,16 +2,16 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'StreetNotes.ai',
-    short_name: 'StreetNotes',
+    name: 'Field Glow',
+    short_name: 'Field Glow',
     description:
-      'Voice-to-CRM for sales reps. Talk for 60 seconds, review, push to your CRM.',
+      'Voice-to-CRM optimization for field reps. Talk, review, save, and push.',
     start_url: '/dashboard',
     scope: '/',
     display: 'standalone',
     orientation: 'portrait',
-    background_color: '#061222',
-    theme_color: '#061222',
+    background_color: '#FAF6EE',
+    theme_color: '#FAF6EE',
     categories: ['business', 'productivity', 'sales'],
     icons: [
       {

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 360" role="img" aria-labelledby="fg-lockup-title fg-lockup-desc">
+  <title id="fg-lockup-title">Field Glow horizontal logo lockup</title>
+  <desc id="fg-lockup-desc">Field Glow wordmark paired with a unified F and G monogram icon.</desc>
+  <g transform="translate(64 58) scale(0.23828125)">
+    <rect width="1024" height="1024" fill="#FAF6EE"/>
+    <circle cx="606" cy="408" r="284" fill="#F2EBDF"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M654 256C597 214 523 197 446 213C306 241 202 365 202 514C202 683 339 820 512 820C646 820 756 739 806 620" stroke="#1A1410" stroke-width="88"/>
+      <path d="M628 522H808V662" stroke="#1A1410" stroke-width="88"/>
+      <path d="M390 314V720" stroke="#1A1410" stroke-width="96"/>
+      <path d="M390 314H636" stroke="#1A1410" stroke-width="96"/>
+      <path d="M390 522H626" stroke="#A8855A" stroke-width="82"/>
+    </g>
+  </g>
+  <text x="360" y="205" fill="#1A1410" font-family="Optima, Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="96" font-weight="500" letter-spacing="0">Field Glow</text>
+</svg>

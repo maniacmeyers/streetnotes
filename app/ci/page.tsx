@@ -3,14 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
-  Shield,
   TrendingUp,
   Quote,
   Map,
   BarChart3,
   Users,
   Zap,
-  ArrowRight,
   AlertTriangle,
 } from 'lucide-react'
 import type {
@@ -38,76 +36,6 @@ function sentimentColor(s: string) {
   if (s === 'positive') return 'text-[#00E676]'
   if (s === 'negative') return 'text-[#FF5252]'
   return 'text-[#FFB300]'
-}
-
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
-function EmailGate({ onSubmit }: { onSubmit: (email: string) => void }) {
-  const [value, setValue] = useState('')
-  const [error, setError] = useState('')
-
-  function handle(e: React.FormEvent) {
-    e.preventDefault()
-    const trimmed = value.trim()
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setError('Enter a valid work email.')
-      return
-    }
-    onSubmit(trimmed)
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#121212]/95 backdrop-blur-sm px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-md bg-[#1a1a1a] border-3 border-[#00E676] rounded-xl p-8 shadow-[4px_4px_0px_#00E676]"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="w-7 h-7 text-[#00E676]" />
-          <h1 className="font-display text-2xl text-white tracking-wide">
-            StreetNotes CI
-          </h1>
-        </div>
-
-        <p className="text-white/70 font-body text-sm leading-relaxed mb-6">
-          Competitive intelligence pulled straight from your team&apos;s sales
-          calls. Enter your work email to access the dashboard.
-        </p>
-
-        <form onSubmit={handle} className="space-y-4">
-          <div>
-            <input
-              type="email"
-              placeholder="you@company.com"
-              value={value}
-              onChange={(e) => {
-                setValue(e.target.value)
-                setError('')
-              }}
-              className="w-full bg-[#121212] border-2 border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/40 font-body text-sm focus:outline-none focus:border-[#00E676] transition-colors"
-            />
-            {error && (
-              <p className="text-[#FF5252] text-xs mt-1.5 font-body">
-                {error}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-[#00E676] text-black font-body font-bold text-sm py-3 rounded-lg border-3 border-black shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center justify-center gap-2"
-          >
-            Enter Dashboard
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
-      </motion.div>
-    </div>
-  )
 }
 
 function StatCard({
@@ -159,9 +87,6 @@ const TABS: { key: TabKey; label: string; icon: React.ElementType }[] = [
 // ---------------------------------------------------------------------------
 
 export default function CIDashboardPage() {
-  const [email, setEmail] = useState<string | null>(null)
-  const [gateChecked, setGateChecked] = useState(false)
-
   const [timeRange, setTimeRange] = useState<CITimeRange>('30d')
   const [activeTab, setActiveTab] = useState<TabKey>('quotes')
 
@@ -176,23 +101,11 @@ export default function CIDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const stored = localStorage.getItem('ci-email')
-    if (stored) setEmail(stored)
-    setGateChecked(true)
-  }, [])
-
-  function handleEmailSubmit(submittedEmail: string) {
-    localStorage.setItem('ci-email', submittedEmail)
-    setEmail(submittedEmail)
-  }
-
   const fetchData = useCallback(async () => {
-    if (!email) return
     setLoading(true)
     setFetchError(null)
 
-    const params = new URLSearchParams({ email, timeRange })
+    const params = new URLSearchParams({ timeRange })
 
     try {
       const [statsRes, mentionsRes, trendsRes, heatmapRes] =
@@ -229,20 +142,14 @@ export default function CIDashboardPage() {
     } finally {
       setLoading(false)
     }
-  }, [email, timeRange])
+  }, [timeRange])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  if (!gateChecked) return null
-
   return (
     <>
-      <AnimatePresence>
-        {!email && <EmailGate onSubmit={handleEmailSubmit} />}
-      </AnimatePresence>
-
       <div className="min-h-screen font-body">
         {/* Header */}
         <header className="border-b border-white/10 px-6 py-5">

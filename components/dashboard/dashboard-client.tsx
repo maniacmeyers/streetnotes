@@ -2,11 +2,10 @@
 
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { Settings, ChevronLeft } from 'lucide-react'
+import { Settings, ChevronLeft, TrendingUp, Mic2, ScanLine, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import VoiceNoteCapture from '@/components/voice-note-capture'
 import RecentNotes from '@/components/dashboard/recent-notes'
-import SignOutButton from '@/components/sign-out-button'
 import MicInstrument from '@/components/mic-instrument'
 
 interface DashboardStats {
@@ -14,15 +13,21 @@ interface DashboardStats {
   thisWeek: number
 }
 
-export default function DashboardClient({ userEmail }: { userEmail: string }) {
+export default function DashboardClient({ userEmail: _userEmail }: { userEmail: string }) {
   const [isCapturing, setIsCapturing] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const hasWorkInProgress = useRef(false)
+  const captureGuardArmed = useRef(false)
   const [stats, setStats] = useState<DashboardStats>({ totalNotes: 0, thisWeek: 0 })
+  const [statsError, setStatsError] = useState(false)
 
   useEffect(() => {
+    setStatsError(false)
     fetch('/api/notes')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`status ${res.status}`)
+        return res.json()
+      })
       .then(data => {
         const notes = data.notes ?? []
         const now = new Date()
@@ -34,7 +39,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
         ).length
         setStats({ totalNotes: notes.length, thisWeek })
       })
-      .catch(() => {})
+      .catch(() => setStatsError(true))
   }, [refreshKey])
 
   const exitCapture = useCallback(() => {
@@ -53,26 +58,71 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
     exitCapture()
   }, [exitCapture])
 
+  useEffect(() => {
+    if (!isCapturing || captureGuardArmed.current) return
+
+    captureGuardArmed.current = true
+    window.history.pushState(
+      { ...(window.history.state ?? {}), fieldGlowCaptureGuard: true },
+      '',
+      window.location.href
+    )
+
+    const confirmCaptureExit = () => {
+      if (!hasWorkInProgress.current) return true
+      return window.confirm('You have an in-progress note. Leave and lose your work?')
+    }
+
+    const handlePopState = () => {
+      if (confirmCaptureExit()) {
+        captureGuardArmed.current = false
+        exitCapture()
+        return
+      }
+
+      window.history.pushState(
+        { ...(window.history.state ?? {}), fieldGlowCaptureGuard: true },
+        '',
+        window.location.href
+      )
+    }
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasWorkInProgress.current) return
+      event.preventDefault()
+      event.returnValue = ''
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      captureGuardArmed.current = false
+      window.removeEventListener('popstate', handlePopState)
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [exitCapture, isCapturing])
+
   // Capture mode — full screen recording flow
   if (isCapturing) {
     return (
-      <div className="px-4 py-6 flex flex-col">
-        <div className="flex items-center justify-between mb-6">
+      <div className="fg-page flex flex-col overscroll-y-contain">
+        <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
             onClick={handleBack}
-            className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest font-bold text-gray-400 hover:text-volt min-w-[44px] min-h-[44px] cursor-pointer transition-colors"
+            className="fg-secondary-action px-4"
             aria-label="Back to dashboard"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="h-5 w-5" />
             Back
           </button>
           <Link
             href="/settings"
-            className="w-11 h-11 flex items-center justify-center rounded-xl glass cursor-pointer"
+            className="fg-convex flex h-12 w-12 items-center justify-center"
             aria-label="Settings"
           >
-            <Settings className="w-5 h-5 text-volt" />
+            <Settings className="h-5 w-5 text-[#A8855A]" />
           </Link>
         </div>
         <VoiceNoteCapture
@@ -86,59 +136,33 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
 
   // Dashboard home
   return (
-    <div className="flex flex-col">
+    <div className="fg-page flex flex-col gap-6">
       {/* Greeting */}
-      <div className="px-4 pt-6">
+      <div>
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
+          className="flex flex-col gap-3"
         >
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
-            Welcome back
-          </p>
-          <h1 className="font-bold text-2xl text-white leading-tight mt-1">
-            Ready to <span className="text-volt drop-shadow-[0_0_16px_rgba(0,230,118,0.4)]">debrief</span>?
+          <span className="fg-eyebrow">Ready to debrief</span>
+          <h1 className="fg-title">
+            Log this visit now
           </h1>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-white/40 truncate max-w-[280px] mt-1.5">
-            {userEmail}
+          <p className="fg-subtitle">
+            Tap the mic. Brain dump everything. Get CRM-ready fields fast.
           </p>
         </motion.div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 px-4">
-        {/* Stats row — glass tiles */}
+      <div className="flex-1">
+        {/* Mic instrument — primary CTA */}
         <motion.div
-          className="grid grid-cols-2 gap-3 mt-5"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.4 }}
-        >
-          <div className="glass-volt rounded-2xl p-5 text-center">
-            <p className="font-bold text-4xl text-white leading-none tabular-nums drop-shadow-[0_0_12px_rgba(0,230,118,0.3)]">
-              {stats.thisWeek}
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold mt-2 text-volt/80">
-              This Week
-            </p>
-          </div>
-          <div className="glass rounded-2xl p-5 text-center">
-            <p className="font-bold text-4xl text-white leading-none tabular-nums">
-              {stats.totalNotes}
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold mt-2 text-white/50">
-              Total Notes
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Mic instrument — the centerpiece */}
-        <motion.div
-          className="flex flex-col items-center py-10"
+          className="fg-featured-card flex flex-col items-center p-6"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
           <MicInstrument
             isRecording={false}
@@ -152,38 +176,117 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
             idleLabel="Tap to debrief"
           />
 
-          <p className="font-bold text-2xl text-white mt-6 leading-none">
-            Debrief
+          <p className="mt-6 text-[26px] font-extrabold tracking-[-0.03em] text-[#1A1410] text-center">
+            Tap to debrief
           </p>
-          <p className="font-body text-sm text-white/50 mt-2">
-            Talk for 60 seconds after your call
+          <p className="mt-2 text-center text-[15px] leading-6 text-[#3D332A]">
+            Talk as long as you need. We turn raw thoughts into structured CRM-ready notes.
           </p>
+        </motion.div>
+
+        {/* Optimization summary */}
+        <motion.div
+          className="fg-card mt-5 p-[22px]"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.4 }}
+        >
+          <div className="flex items-center gap-4">
+            <span className="fg-icon">
+              <TrendingUp className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[21px] font-extrabold leading-tight tracking-[-0.02em] text-[#1A1410]">
+                Glow Score
+              </p>
+              <p className="mt-1 text-[15px] leading-6 text-[#3D332A]">
+                {statsError
+                  ? "Couldn't load your stats."
+                  : `${stats.thisWeek} scans this week, ${stats.totalNotes} total saved.`}
+              </p>
+            </div>
+          </div>
+          {statsError ? (
+            <button
+              type="button"
+              onClick={() => setRefreshKey(k => k + 1)}
+              className="fg-inset mt-5 flex w-full items-center justify-center gap-2 p-4 text-sm font-extrabold text-[#8B6B40]"
+            >
+              <AlertCircle className="h-4 w-4" />
+              Retry
+            </button>
+          ) : (
+            <div className="fg-inset mt-5 p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-bold text-[#3D332A]">Field Balance</span>
+                <span className="text-sm font-extrabold text-[#8B6B40]">
+                  {Math.min(100, stats.thisWeek * 18)}%
+                </span>
+              </div>
+              <div className="fg-progress-track">
+                <div
+                  className="fg-progress-fill"
+                  style={{ width: `${Math.min(100, stats.thisWeek * 18)}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Result cards */}
+        <motion.div
+          className="mt-5 flex flex-col gap-4"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <div className="fg-card p-[22px]">
+            <span className="fg-icon mb-4">
+              <ScanLine className="h-5 w-5" />
+            </span>
+            <p className="text-[21px] font-extrabold tracking-[-0.02em] text-[#1A1410]">
+              Weekly capture
+            </p>
+            <p className="mt-2 text-[15px] leading-6 text-[#3D332A]">
+              Recent field work converted into CRM-ready output.
+            </p>
+            <div className="mt-4 flex items-center justify-between rounded-full px-4 py-3 text-sm font-bold text-[#3D332A] fg-inset">
+              <span>This week</span>
+              <span className="text-2xl font-extrabold text-[#A8855A] tabular-nums">
+              {stats.thisWeek}
+              </span>
+            </div>
+          </div>
+          <div className="fg-card p-[22px]">
+            <span className="fg-icon mb-4">
+              <Mic2 className="h-5 w-5" />
+            </span>
+            <p className="text-[21px] font-extrabold tracking-[-0.02em] text-[#1A1410]">
+              Saved results
+            </p>
+            <p className="mt-2 text-[15px] leading-6 text-[#3D332A]">
+              Every saved note stays ready for review, export, or CRM push.
+            </p>
+            <div className="mt-4 flex items-center justify-between rounded-full px-4 py-3 text-sm font-bold text-[#3D332A] fg-inset">
+              <span>Total notes</span>
+              <span className="text-2xl font-extrabold text-[#A8855A] tabular-nums">
+              {stats.totalNotes}
+              </span>
+            </div>
+          </div>
         </motion.div>
 
         {/* Recent Notes */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.4 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
         >
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt/80">
-              Recent Notes
-            </h2>
-            <Link
-              href="/settings"
-              className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-volt transition-colors"
-            >
-              Settings →
-            </Link>
-          </div>
+          <h2 className="mb-3 text-[16px] font-extrabold text-[#1A1410]">
+            Recent Notes
+          </h2>
           <RecentNotes refreshKey={refreshKey} />
         </motion.div>
-
-        {/* Sign out */}
-        <div className="mt-8 mb-6 flex justify-start">
-          <SignOutButton />
-        </div>
       </div>
     </div>
   )

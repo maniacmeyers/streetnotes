@@ -1,0 +1,295 @@
+/* FieldGlow — editorial luxury design system.
+   Scoped to /fieldglow only. Aesop × Vogue Beauty × Augustinus Bader. */
+
+.fieldglow-root {
+  /* Paper & ink */
+  --fg-paper: #f2ebdf;
+  --fg-paper-2: #ebe3d5;
+  --fg-cream: #faf6ee;
+  --fg-ink: #1a1410;
+  --fg-ink-2: #3d332a;
+  --fg-mute: #7a6f62;
+  --fg-line: #d4c7b2;
+  --fg-line-soft: rgba(60, 50, 40, 0.08);
+
+  /* Gilt accent — used sparingly */
+  --fg-gilt: #a8855a;
+  --fg-gilt-deep: #8b6b40;
+  --fg-blush: #d4a28a;
+
+  background: var(--fg-paper);
+  color: var(--fg-ink);
+  font-family: var(--font-fg-body), -apple-system, system-ui, sans-serif;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.005em;
+  position: relative;
+}
+
+/* Paper grain — subtle SVG noise overlay across the whole page */
+.fieldglow-root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Display type — Fraunces with SOFT and OPSZ axes engaged */
+.fieldglow-root .fg-display {
+  font-family: var(--font-fg-display), 'Cormorant Garamond', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 0;
+  letter-spacing: -0.025em;
+  font-feature-settings: 'liga', 'kern', 'ss01';
+}
+.fieldglow-root .fg-display-soft {
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 0;
+}
+.fieldglow-root .fg-display-italic {
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+}
+
+/* Editorial eyebrow — small caps, letter-spaced, with gilt rule */
+.fieldglow-root .fg-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-ink-2);
+}
+.fieldglow-root .fg-eyebrow::before {
+  content: '';
+  width: 36px;
+  height: 1px;
+  background: var(--fg-gilt);
+}
+
+/* Magazine masthead — for logo & nav */
+.fieldglow-root .fg-masthead {
+  font-family: var(--font-fg-display), Georgia, serif;
+  font-variation-settings: 'opsz' 24, 'SOFT' 0;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Drop cap — first letter editorial treatment */
+.fieldglow-root .fg-dropcap::first-letter {
+  font-family: var(--font-fg-display), Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 5.2em;
+  line-height: 0.85;
+  float: left;
+  margin: 0.08em 0.12em 0 -0.04em;
+  color: var(--fg-gilt);
+}
+
+/* Pull quote — magazine-style oversized italic */
+.fieldglow-root .fg-pullquote {
+  font-family: var(--font-fg-display), Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--fg-ink);
+}
+
+/* Hairline rule — magazine section divider */
+.fieldglow-root .fg-rule {
+  border: 0;
+  border-top: 1px solid var(--fg-line);
+  margin: 0;
+}
+.fieldglow-root .fg-rule-thin {
+  border: 0;
+  border-top: 1px solid var(--fg-line-soft);
+  margin: 0;
+}
+
+/* Numbered chapter mark — used in regimen, features */
+.fieldglow-root .fg-folio {
+  font-family: var(--font-fg-display), Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg-gilt);
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+}
+
+/* Primary CTA — outlined gilt, fills on hover */
+.fieldglow-root .fg-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: transparent;
+  color: var(--fg-ink);
+  font-family: var(--font-fg-body), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.84rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid var(--fg-ink);
+  padding: 1rem 1.6rem;
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  transition: color 280ms ease, border-color 280ms ease;
+  cursor: pointer;
+}
+.fieldglow-root .fg-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fg-ink);
+  transform: translateY(101%);
+  transition: transform 380ms cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: -1;
+}
+.fieldglow-root .fg-btn-primary:hover {
+  color: var(--fg-paper);
+  border-color: var(--fg-ink);
+}
+.fieldglow-root .fg-btn-primary:hover::before {
+  transform: translateY(0);
+}
+.fieldglow-root .fg-btn-primary:focus-visible {
+  outline: 2px solid var(--fg-gilt);
+  outline-offset: 3px;
+}
+
+/* Secondary CTA — gilt accent variant */
+.fieldglow-root .fg-btn-gilt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  font-family: var(--font-fg-body), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.84rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid var(--fg-ink);
+  padding: 1rem 1.6rem;
+  border-radius: 0;
+  transition: background-color 280ms ease, color 280ms ease, border-color 280ms ease;
+  cursor: pointer;
+}
+.fieldglow-root .fg-btn-gilt:hover {
+  background: var(--fg-gilt);
+  border-color: var(--fg-gilt);
+  color: var(--fg-cream);
+}
+.fieldglow-root .fg-btn-gilt:focus-visible {
+  outline: 2px solid var(--fg-gilt);
+  outline-offset: 3px;
+}
+
+/* Editorial link — gilt underline draws in on hover */
+.fieldglow-root .fg-link {
+  position: relative;
+  color: var(--fg-ink-2);
+  text-decoration: none;
+  font-size: 0.84rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: color 220ms ease;
+}
+.fieldglow-root .fg-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: var(--fg-gilt);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 320ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.fieldglow-root .fg-link:hover {
+  color: var(--fg-ink);
+}
+.fieldglow-root .fg-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Section card — editorial paper card, very subtle */
+.fieldglow-root .fg-card {
+  background: var(--fg-cream);
+  border: 1px solid var(--fg-line);
+  transition: border-color 280ms ease, transform 280ms ease;
+}
+.fieldglow-root .fg-card-hover:hover {
+  border-color: var(--fg-gilt);
+  transform: translateY(-2px);
+}
+
+/* Hero ambient warm light — restrained, not animated */
+.fieldglow-root .fg-rake {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 78% 18%, rgba(212, 162, 138, 0.22), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 12% 100%, rgba(168, 133, 90, 0.10), transparent 55%);
+}
+
+/* Reveal-on-load animation */
+.fieldglow-root .fg-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: fg-reveal 900ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes fg-reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Gilt rule — drawn-in horizontal accent under headings */
+.fieldglow-root .fg-gilt-rule {
+  display: inline-block;
+  width: 60px;
+  height: 1px;
+  background: var(--fg-gilt);
+  vertical-align: middle;
+}
+
+/* Asterism — three-dot ornament for section dividers */
+.fieldglow-root .fg-asterism {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  color: var(--fg-gilt);
+  font-family: var(--font-fg-display), Georgia, serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  letter-spacing: 0.4em;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fieldglow-root .fg-reveal {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .fieldglow-root .fg-btn-primary::before {
+    transition: none;
+  }
+}

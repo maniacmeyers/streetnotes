@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { RefreshCw, FileText, Radar } from 'lucide-react'
+import { RefreshCw, Sparkles, Radar } from 'lucide-react'
 import { CompetitorTracker, QuoteWall, TrendChart } from '@/components/streetnotes/ci'
 import { GlassTabs } from '@/components/ui/glass-tabs'
 import type { QuoteFeedItem } from '@/lib/ci/types'
@@ -93,59 +93,72 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
   ]
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="fg-page">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
+          <p className="fg-eyebrow">
             Competitive
           </p>
-          <h1 className="font-bold text-3xl text-white leading-tight mt-1">
-            Comp <span className="text-volt drop-shadow-[0_0_16px_rgba(0,230,118,0.4)]">Intel</span>
+          <h1 className="fg-title mt-3">
+            Comp Intel
           </h1>
         </div>
-        <div className="flex items-center gap-2 mt-1">
-          <button
-            onClick={generateBrief}
-            disabled={generatingBrief}
-            className="w-11 h-11 flex items-center justify-center rounded-xl glass cursor-pointer hover:border-volt/40 transition-all disabled:opacity-50"
-            aria-label="Generate weekly brief"
-          >
-            <FileText className="w-4 h-4 text-volt" />
-          </button>
-          <button
-            onClick={fetchData}
-            className="w-11 h-11 flex items-center justify-center rounded-xl glass cursor-pointer hover:border-volt/40 transition-all"
-            aria-label="Refresh data"
-          >
-            <RefreshCw className="w-4 h-4 text-volt" />
-          </button>
-        </div>
+        <button
+          onClick={fetchData}
+          className="fg-convex mt-1 flex h-12 w-12 items-center justify-center"
+          aria-label="Refresh data"
+        >
+          <RefreshCw className="h-4 w-4 text-[#A8855A]" />
+        </button>
       </div>
+
+      {/* Generate brief CTA */}
+      <button
+        type="button"
+        onClick={generateBrief}
+        disabled={generatingBrief || totalMentions === 0}
+        className="fg-action mt-5 flex items-center justify-center gap-2 disabled:opacity-50"
+        aria-busy={generatingBrief}
+      >
+        {generatingBrief ? (
+          <>
+            <Radar className="h-4 w-4 animate-spin" />
+            Generating brief...
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4" />
+            Generate weekly brief
+          </>
+        )}
+      </button>
 
       {/* Stats row */}
       <motion.div
-        className="grid grid-cols-2 gap-3 mb-5 mt-5"
+        className="mb-5 mt-5 flex flex-col gap-3"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.4 }}
       >
-        <div className="glass-volt rounded-2xl p-5 text-center">
-          <p className="font-bold text-4xl text-white leading-none tabular-nums drop-shadow-[0_0_12px_rgba(0,230,118,0.3)]">
+        <div className="fg-card p-[22px] text-center">
+          <p className="text-4xl font-extrabold leading-none text-[#A8855A] tabular-nums">
             {totalMentions}
           </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold mt-2 text-volt/80">
-            Mentions
+          <p className="mt-2 text-sm font-extrabold text-[#8B6B40]">
+            {totalMentions === 1 ? 'Mention captured' : 'Mentions captured'}
           </p>
         </div>
-        <div className="glass rounded-2xl p-5 text-center">
-          <p className="font-bold text-lg text-white truncate leading-tight">
-            {topCompetitor}
-          </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold mt-2 text-white/50">
-            Top Competitor
-          </p>
-        </div>
+        {competitorData.length > 0 && (
+          <div className="fg-card p-[22px] text-center">
+            <p className="truncate text-lg font-extrabold leading-tight text-[#1A1410]">
+              {topCompetitor}
+            </p>
+            <p className="mt-2 text-sm font-extrabold text-[#3D332A]">
+              Top Competitor
+            </p>
+          </div>
+        )}
       </motion.div>
 
       {/* Tabs */}
@@ -156,7 +169,7 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
       {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Radar className="w-8 h-8 animate-spin text-volt" />
+          <Radar className="h-8 w-8 animate-spin text-[#A8855A]" />
         </div>
       ) : (
         <AnimatePresence mode="wait">
@@ -205,71 +218,64 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
             exit={{ opacity: 0 }}
           >
             <div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 backdrop-blur-sm"
+              style={{ background: 'rgba(26, 20, 16, 0.34)' }}
               onClick={() => setShowBrief(false)}
             />
             <motion.div
-              className="relative w-full max-w-md glass rounded-t-3xl p-6 pb-safe max-h-[80vh] overflow-y-auto"
+              className="relative max-h-[80vh] w-full max-w-[430px] overflow-y-auto rounded-t-[32px] bg-[#F2EBDF] p-6 pb-safe"
               style={{
-                background:
-                  'linear-gradient(180deg, rgba(10, 28, 48, 0.95) 0%, rgba(6, 18, 34, 0.98) 100%)',
-                backdropFilter: 'blur(28px) saturate(160%)',
-                WebkitBackdropFilter: 'blur(28px) saturate(160%)',
-                borderTop: '1px solid rgba(0, 230, 118, 0.3)',
-                borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRight: '1px solid rgba(255, 255, 255, 0.1)',
                 boxShadow:
-                  'inset 0 1px 0 rgba(255,255,255,0.2), 0 -20px 60px -10px rgba(0, 230, 118, 0.15), 0 -40px 80px -20px rgba(0, 0, 0, 0.8)',
+                  '8px 8px 20px rgba(139, 107, 64, 0.22), -8px -8px 20px rgba(250, 246, 238, 0.95), 0 -16px 36px rgba(212, 162, 138, 0.24)',
               }}
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
-              <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-5" />
+              <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#A8855A]/30" />
 
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-volt/80">
+              <p className="fg-eyebrow">
                 This Week
               </p>
-              <h2 className="font-bold text-2xl text-white leading-tight mt-1 mb-2">
+              <h2 className="mb-2 mt-3 text-2xl font-extrabold leading-tight text-[#1A1410]">
                 Weekly Brief
               </h2>
-              <p className="font-body text-sm text-white/70 mb-6 leading-relaxed">
+              <p className="mb-6 text-sm leading-relaxed text-[#3D332A]">
                 {weeklyBrief.headline}
               </p>
 
               <div className="space-y-5">
                 <div>
-                  <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt/70 mb-2">
+                  <h3 className="mb-2 text-sm font-extrabold text-[#8B6B40]">
                     Competitor Movement
                   </h3>
-                  <p className="font-body text-sm text-white/80 leading-relaxed">
+                  <p className="text-sm leading-relaxed text-[#3D332A]">
                     {weeklyBrief.competitor_movement}
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt/70 mb-2">
+                  <h3 className="mb-2 text-sm font-extrabold text-[#8B6B40]">
                     Rep Highlights
                   </h3>
-                  <p className="font-body text-sm text-white/80 leading-relaxed">
+                  <p className="text-sm leading-relaxed text-[#3D332A]">
                     {weeklyBrief.rep_highlights}
                   </p>
                 </div>
 
                 {weeklyBrief.suggested_actions.length > 0 && (
                   <div>
-                    <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-volt/70 mb-2.5">
+                    <h3 className="mb-2.5 text-sm font-extrabold text-[#8B6B40]">
                       Suggested Actions
                     </h3>
                     <ul className="space-y-2">
                       {weeklyBrief.suggested_actions.map((action, i) => (
                         <li key={i} className="flex items-start gap-2.5">
                           <span
-                            className="w-1.5 h-1.5 rounded-full bg-volt mt-1.5 flex-shrink-0"
-                            style={{ boxShadow: '0 0 6px rgba(0, 230, 118, 0.8)' }}
+                            className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#A8855A]"
                           />
-                          <span className="font-body text-sm text-white/80 leading-relaxed">
+                          <span className="text-sm leading-relaxed text-[#3D332A]">
                             {action}
                           </span>
                         </li>
@@ -282,7 +288,7 @@ export default function IntelClient({ userEmail }: { userEmail: string }) {
               <button
                 type="button"
                 onClick={() => setShowBrief(false)}
-                className="w-full mt-7 bg-volt text-black font-bold text-base py-4 rounded-xl uppercase tracking-wider shadow-glow-volt hover:shadow-glow-volt-lg transition-all cursor-pointer min-h-[44px]"
+                className="fg-action mt-7"
               >
                 Done
               </button>

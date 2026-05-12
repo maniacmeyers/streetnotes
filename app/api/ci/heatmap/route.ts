@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import type { HeatmapCell, CIMention, CISentiment } from '@/lib/ci/types'
+import { isVbrickUser } from '@/lib/vbrick/config'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -14,15 +16,22 @@ const TIME_RANGE_DAYS: Record<string, number> = {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    const email = searchParams.get('email')
     const timeRange = searchParams.get('timeRange') || '30d'
     const dimension = searchParams.get('dimension') || 'rep'
+    const queryEmail = searchParams.get('email')?.toLowerCase() || null
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json(
-        { error: 'Valid email parameter required.' },
-        { status: 400 }
-      )
+    const authSupabase = await createClient()
+    const {
+      data: { user },
+    } = await authSupabase.auth.getUser()
+
+    const effectiveEmail = user?.email?.toLowerCase() || queryEmail
+    if (!effectiveEmail) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    if (!user && !isVbrickUser(effectiveEmail)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     if (dimension !== 'rep' && dimension !== 'territory') {
@@ -32,7 +41,10 @@ export async function GET(request: Request) {
       )
     }
 
-    const domain = email.split('@')[1]
+    const domain = effectiveEmail.split('@')[1]?.toLowerCase()
+    if (!domain) {
+      return NextResponse.json({ error: 'Unable to resolve account domain.' }, { status: 400 })
+    }
     const supabase = createAdminClient()
 
     const days = TIME_RANGE_DAYS[timeRange]

@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { login } from './actions'
 import GoogleSignInButton from '@/components/google-sign-in-button'
-import { BrutalCard, BrutalButton, BrutalInput } from '@/components/streetnotes/brutal'
 
 interface LoginPageProps {
   searchParams: Promise<{ error?: string; message?: string }>
@@ -15,36 +14,27 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main
       id="main-content"
-      className="flex min-h-[100dvh] flex-col items-center justify-center px-4 sm:px-6 py-10"
+      className="flex min-h-[calc(100dvh-72px)] flex-col justify-center px-4 pb-[calc(24px+env(safe-area-inset-bottom))] pt-5"
     >
-      <div className="w-full max-w-md flex flex-col gap-6">
-        {/* Sticker badge, landing-page style */}
-        <div className="flex">
-          <span className="sticker -rotate-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.1em] text-black font-bold">
-            For reps who&apos;d rather sell than type
-          </span>
-        </div>
-
+      <div className="flex w-full flex-col gap-5">
         {/* Headline */}
         <div className="flex flex-col gap-2">
-          <h1
-            className="font-display uppercase text-[44px] sm:text-[64px] leading-[0.85] text-white"
-            style={{ textShadow: '4px 4px 0px #000000' }}
-          >
-            Sign <span className="text-volt">In</span>
+          <span className="fg-eyebrow">Field Glow</span>
+          <h1 className="fg-title mt-2">
+            Sign in
           </h1>
-          <p className="font-body text-base italic text-gray-300">
-            Welcome back. Talk your notes. Keep your deals moving.
+          <p className="fg-subtitle">
+            Welcome back. Capture the visit, review the result, keep moving.
           </p>
         </div>
 
-        <BrutalCard variant="white" padded>
+        <div className="fg-card p-5">
           {error && (
             <div
               role="alert"
-              className="mb-4 bg-red-100 border-4 border-red-600 px-4 py-3"
+              className="fg-inset mb-4 px-4 py-3"
             >
-              <p className="font-mono text-xs uppercase tracking-wider text-red-700 font-bold">
+              <p className="text-sm font-extrabold text-[#8B6B40]">
                 {decodeURIComponent(error)}
               </p>
             </div>
@@ -53,74 +43,76 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           {message && (
             <div
               role="status"
-              className="mb-4 bg-volt/20 border-4 border-volt px-4 py-3"
+              className="fg-card-sm mb-4 px-4 py-3"
             >
-              <p className="font-mono text-xs uppercase tracking-wider text-black font-bold">
+              <p className="text-sm font-extrabold text-[#8B6B40]">
                 {decodeURIComponent(message)}
               </p>
             </div>
           )}
 
-          <form className="flex flex-col gap-4" action={login}>
+          <form className="flex flex-col gap-3" action={login}>
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="email"
-                className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] font-bold text-black"
+                className="text-sm font-extrabold text-[#3D332A]"
               >
                 Email
               </label>
-              <BrutalInput
+              <input
                 id="email"
                 name="email"
                 type="email"
                 required
                 autoComplete="email"
+                className="fg-input"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="password"
-                className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] font-bold text-black"
+                className="text-sm font-extrabold text-[#3D332A]"
               >
                 Password
               </label>
-              <BrutalInput
+              <input
                 id="password"
                 name="password"
                 type="password"
                 required
                 minLength={6}
                 autoComplete="current-password"
+                className="fg-input"
               />
             </div>
 
-            <BrutalButton type="submit" variant="volt" size="lg" className="w-full mt-2">
-              Sign in →
-            </BrutalButton>
+            <button type="submit" className="fg-action mt-2">
+              Sign in
+            </button>
           </form>
 
           <div
-            className="flex items-center gap-3 my-5"
+            className="my-4 flex items-center gap-3"
             role="separator"
             aria-orientation="horizontal"
           >
-            <div className="flex-1 h-1 bg-black" aria-hidden="true" />
-            <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-black">
+            <div className="h-px flex-1 bg-[#A8855A]/30" aria-hidden="true" />
+            <span className="text-xs font-extrabold text-[#3D332A]">
               Or
             </span>
-            <div className="flex-1 h-1 bg-black" aria-hidden="true" />
+            <div className="h-px flex-1 bg-[#A8855A]/30" aria-hidden="true" />
           </div>
 
           <GoogleSignInButton />
-        </BrutalCard>
+        </div>
 
-        <p className="text-center font-mono text-xs uppercase tracking-wider text-gray-400">
-          New here?{' '}
-          <Link href="/sign-up" className="text-volt font-bold underline">
+        <div className="flex flex-col items-center gap-2 text-center text-sm font-medium text-[#3D332A]">
+          <span>New here?</span>
+          <Link href="/sign-up" className="fg-secondary-action px-5">
             Sign up
           </Link>
-        </p>
+        </div>
       </div>
     </main>
   )

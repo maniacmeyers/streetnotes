@@ -84,7 +84,7 @@ export function PracticeRecorder({
   const isStopped = recorder.status === 'stopped'
 
   const containerClass = isRecording
-    ? 'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(0,230,118,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5'
+    ? 'rounded-2xl border border-volt/22 bg-gradient-to-br from-volt/8 via-white/5 to-volt/3 backdrop-blur-xl shadow-[0_24px_80px_-20px_rgba(212,162,138,0.25),inset_0_1px_0_rgba(255,255,255,0.22)] p-5'
     : 'rounded-2xl border border-white/12 bg-gradient-to-br from-white/8 to-white/3 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] p-5'
 
   return (
@@ -107,7 +107,7 @@ export function PracticeRecorder({
           {/* Timer */}
           <span
             className={`font-display text-5xl tabular-nums leading-none ${
-              isRecording ? 'text-volt drop-shadow-[0_0_12px_rgba(0,230,118,0.6)]' : 'text-white/80'
+              isRecording ? 'text-volt drop-shadow-[0_0_12px_rgba(212,162,138,0.6)]' : 'text-white/80'
             }`}
           >
             {formatTime(recorder.durationSec)}
@@ -120,7 +120,7 @@ export function PracticeRecorder({
               <button
                 type="button"
                 onClick={() => recorder.startRecording()}
-                className="w-24 h-24 rounded-full border border-volt/50 bg-volt/15 text-volt backdrop-blur-md flex items-center justify-center transition hover:bg-volt/25 shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)]"
+                className="w-24 h-24 rounded-full border border-volt/50 bg-volt/15 text-volt backdrop-blur-md flex items-center justify-center transition shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)]"
                 aria-label="Start recording practice"
               >
                 <Mic size={36} />
@@ -136,8 +136,8 @@ export function PracticeRecorder({
                 className="w-24 h-24 rounded-full border border-volt/60 bg-volt/20 text-volt flex items-center justify-center backdrop-blur-md"
                 animate={{
                   boxShadow: [
-                    '0 0 0 0px rgba(0,230,118,0.5), inset 0 1px 0 rgba(255,255,255,0.25)',
-                    '0 0 0 22px rgba(0,230,118,0), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    '0 0 0 0px rgba(212,162,138,0.5), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    '0 0 0 22px rgba(212,162,138,0), inset 0 1px 0 rgba(255,255,255,0.25)',
                   ],
                 }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
@@ -179,14 +179,14 @@ export function PracticeRecorder({
               <button
                 type="button"
                 onClick={() => recorder.resetRecording()}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-white/80 backdrop-blur-md transition"
               >
                 Re-record
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(0,230,118,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-volt/25"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-volt/50 bg-volt/15 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] font-bold text-volt backdrop-blur-md shadow-[0_8px_24px_-8px_rgba(212,162,138,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] transition"
               >
                 Score My Delivery
               </button>
