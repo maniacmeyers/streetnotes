@@ -167,7 +167,7 @@ export function RealtimeSparringSession({
 
         if (!cancelled) {
           setPhase('in-call')
-          const firstName = (sessionData.personaName || 'Prospect').split(' ')[0]
+          const firstName = (sessionData.personaName?.trim() || 'Prospect').split(' ')[0] || 'Prospect'
           triggerGreeting(firstName)
         }
       } catch (err) {
