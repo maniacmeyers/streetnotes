@@ -152,6 +152,34 @@ export default function VbrickDashboardPage() {
     setView('view-debrief')
   }
 
+  async function handleDeleteRecentCall(id: string) {
+    // Optimistic remove
+    setRecentCalls(prev => prev.filter(c => c.id !== id))
+    setStoredOutputs(prev => {
+      const next = { ...prev }
+      delete next[id]
+      return next
+    })
+    // If we were viewing this debrief, drop back to the dashboard
+    if (viewingSessionId === id) {
+      setViewingSessionId(null)
+      setView('dashboard')
+    }
+
+    if (!email) return
+
+    try {
+      const url = `/api/vbrick/debriefs/${id}?email=${encodeURIComponent(email)}`
+      const res = await fetch(url, { method: 'DELETE' })
+      if (!res.ok) {
+        // Reconcile with server state
+        await fetchRecentDebriefs()
+      }
+    } catch {
+      await fetchRecentDebriefs()
+    }
+  }
+
   function handleIntentionComplete() {
     const today = new Date().toISOString().split('T')[0]
     localStorage.setItem(`vbrick_intention_${today}`, '1')
@@ -415,7 +443,11 @@ export default function VbrickDashboardPage() {
                 <h3 className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium mb-3" style={{ color: '#6366f1' }}>
                   Recent Debriefs
                 </h3>
-                <RecentCalls calls={recentCalls} onSelect={handleSelectDebrief} />
+                <RecentCalls
+                  calls={recentCalls}
+                  onSelect={handleSelectDebrief}
+                  onDelete={handleDeleteRecentCall}
+                />
               </motion.div>
 
               {stats && stats.allBdrs.length >= 2 && (
