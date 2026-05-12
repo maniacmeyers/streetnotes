@@ -98,109 +98,9 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
           '"Oh sorry. Would you happen to know who the best person at your company would be?" → "Great, thanks. Can I tell [name] you said hello?"',
       },
       {
-        label: '5. K26 follow-up',
+        label: '5. Soft close',
         hint:
-          '"Oh by the way, would you happen to be attending K26 in a few weeks?" If yes → booth/coffee. If no → "Do you know if anybody from your org is going?" → name → "Should I say hello for you?"',
-      },
-    ],
-  },
-
-  'k26-registration-push': {
-    id: 'k26-registration-push',
-    title: 'K26 — Registration Push',
-    subtitle:
-      'ServiceNow customer hasn\'t registered for Knowledge 26. Drive enrollment using the certified ServiceNow integration as the reason to go.',
-    estimatedMinutes: 3,
-    defaultPersonaId: 'disinterested-it-manager',
-    defaultAccent: 'general',
-    difficultyScore: 3,
-    scenarioContext: [
-      'CALL CONTEXT:',
-      'Your company is an existing ServiceNow customer. Knowledge 26 is ServiceNow\'s annual conference, a few weeks away in Las Vegas. You have heard about it but have not registered. Budget, timing, and whether it\'s worth the trip are all open questions for you.',
-      'The BDR is calling from VBrick (enterprise video platform with a certified ServiceNow integration). They will pitch K26 attendance as a chance to see the integration live, meet the ServiceNow product team, and walk away with a concrete reason to justify the trip.',
-      '',
-      'REACT HONESTLY based on your personality. You can be any of:',
-      '- Curious about the integration and on the fence about K26',
-      '- Already heard about K26 but dismissive ("maybe someone else on my team goes")',
-      '- Blocked by travel budget or timing',
-      '- Interested IF you can justify the trip to your boss',
-      '',
-      'Do NOT volunteer that you\'re interested in K26 yourself. Let the BDR raise it.',
-    ].join('\n'),
-    hardModeContext: [
-      'HARD MODE MODIFIERS:',
-      'You have a travel freeze in effect, OR your manager would have to approve the K26 ticket and you don\'t want to ask. Push back on "it\'s free to register" — the real cost is the flight, hotel, and three days away from your team.',
-      'You have also been pitched K26 three times this week by other vendors. The BDR needs to give you a concrete, substance-first reason — not a generic "you should come."',
-    ].join('\n'),
-    cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer "Hello?". You say their first and last name inquisitive ("Marcus Delgado?"). They confirm.' },
-      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
-      { label: '3. Qualification', hint: '"[First name], are you on the team that manages your ServiceNow and enterprise video stack?"' },
-      {
-        label: '4. K26 hook',
-        hint:
-          '"Okay cool. Quick reason for the call — VBrick just rolled out a certified ServiceNow integration, and the K26 team is walking through it live. Any chance you\'re going to be at Knowledge 26?"',
-      },
-      {
-        label: '5a. NOT REGISTERED path',
-        hint:
-          '"Would it help if I sent you the registration link and a 2-minute overview of the integration? That way if your manager asks why you\'re going, you\'ve got something concrete to point at."',
-      },
-      {
-        label: '5b. NOT ATTENDING path',
-        hint:
-          '"Totally understand. Would anyone else on your team be going? I can send them the link. And if it\'s okay, can I tell them you said hello?"',
-      },
-      {
-        label: '6. Bridge to integration',
-        hint:
-          '"Either way, the integration is the thing worth looking at — happy to send you the overview."',
-      },
-    ],
-  },
-
-  'k26-booth-drive': {
-    id: 'k26-booth-drive',
-    title: 'K26 — Booth Drive',
-    subtitle:
-      'ServiceNow customer already registered for K26. Pre-book a booth visit so they don\'t miss it in the floor chaos.',
-    estimatedMinutes: 3,
-    defaultPersonaId: 'enthusiastic-innovator',
-    defaultAccent: 'general',
-    difficultyScore: 3,
-    scenarioContext: [
-      'CALL CONTEXT:',
-      'Your company is a ServiceNow customer and you are registered for Knowledge 26. You are attending — flight is booked, agenda is filling up.',
-      'The BDR is calling from VBrick. They will ask you to lock in a 15-minute booth slot to see the certified ServiceNow integration live, meet the integration lead, and walk away with something concrete.',
-      '',
-      'REACT HONESTLY based on your personality. You can be any of:',
-      '- Genuinely interested in the ServiceNow + video integration story',
-      '- Packed schedule, hard to find a window',
-      '- Skeptical of booth pitches in general',
-      '- Willing to stop by IF it\'s a specific, timed slot (not "come by anytime")',
-      '- Dismissive ("I walk the floor, I don\'t schedule booths")',
-      '',
-      'Do NOT volunteer that you\'re interested — let the BDR earn the time on the calendar.',
-    ].join('\n'),
-    hardModeContext: [
-      'HARD MODE MODIFIERS:',
-      'Your schedule is already triple-booked with ServiceNow partner meetings and your own company\'s sessions. You push back on anything that feels like a walk-by — you only take meetings that are pre-briefed with a clear agenda.',
-      'You also had a bad booth experience at a past event (vendor wasted 20 minutes on a generic demo). You will explicitly ask: "What\'s the agenda? Who from your team will be there? How long?"',
-    ].join('\n'),
-    cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer. You say their first and last name inquisitive. They confirm.' },
-      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
-      { label: '3. Qualification', hint: '"Are you planning to be at Knowledge 26?"' },
-      {
-        label: '4. Booth pre-book hook',
-        hint:
-          '"Okay cool. The reason I\'m calling — I\'d like to lock in a 15-minute booth slot so you\'re not walking the floor hoping to catch us. We\'ll have our certified ServiceNow integration live on screen. Does Tuesday or Wednesday work better?"',
-      },
-      { label: '5. Agenda qualifier', hint: '"I\'ll have our ServiceNow integration lead there. I\'ll send you an agenda beforehand so it\'s not a generic demo."' },
-      {
-        label: '6. Session cross-sell',
-        hint:
-          '"We\'re also hosting a breakout session walking through a customer case study — happy to send the time and abstract so you can decide if it fits your agenda."',
+          '"Either way, would it be useful if I sent you a 2-minute overview of how we replaced Brightcove at [peer customer], plus one customer reference at your scale? You can decide if it\'s worth 15 minutes after that."',
       },
     ],
   },
@@ -274,56 +174,6 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
         label: '7. Soft close',
         hint:
           '"Here\'s what I\'d love to do — send you a 2-minute overview of how [reference customer at similar scale] runs theirs, and let you decide if it\'s worth a 15-minute follow-up. Fair?"',
-      },
-    ],
-  },
-
-  'k26-session-drive': {
-    id: 'k26-session-drive',
-    title: 'K26 — Session Attendance Drive',
-    subtitle:
-      'ServiceNow customer attending K26. Drive attendance at the VBrick breakout session — customer case study, not a demo.',
-    estimatedMinutes: 3,
-    defaultPersonaId: 'overwhelmed-cto',
-    defaultAccent: 'general',
-    difficultyScore: 4,
-    scenarioContext: [
-      'CALL CONTEXT:',
-      'Your company is a ServiceNow customer and you are registered for Knowledge 26.',
-      'The BDR is calling from VBrick. They will pitch you on attending VBrick\'s breakout session — a customer case study on using the certified ServiceNow integration inside Agentforce and Now Assist.',
-      '',
-      'REACT HONESTLY based on your personality. You can be any of:',
-      '- Sessions are the reason you attend — open to a good one',
-      '- Already built a full agenda, no room',
-      '- Will attend IF the speaker or topic is compelling',
-      '- Skeptical of vendor sessions (usually thinly-veiled product pitches)',
-      '- Will block it if it\'s at a conflicting time',
-      '',
-      'Do NOT volunteer your schedule — let the BDR ask.',
-    ].join('\n'),
-    hardModeContext: [
-      'HARD MODE MODIFIERS:',
-      'Your Knowledge 26 agenda is already locked and the VBrick session conflicts with a ServiceNow roadmap keynote you care about. Push back hard — "why should I skip the roadmap keynote for your session?"',
-      'You are also tired of vendor sessions that are 40 minutes of product demo. You will ask: "Is this a case study or a demo? Who\'s the speaker? What will I walk away with?"',
-    ].join('\n'),
-    cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer. You say their first and last name inquisitive. They confirm.' },
-      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
-      { label: '3. Qualification', hint: '"Are you attending Knowledge 26?" → "Have you built out your session agenda yet?"' },
-      {
-        label: '4. Session hook',
-        hint:
-          '"Okay cool. The reason I\'m calling — VBrick is hosting a breakout on how our certified ServiceNow integration is being used inside Agentforce and Now Assist. It\'s a customer case study, not a demo."',
-      },
-      {
-        label: '5. Substance qualifier',
-        hint:
-          '"The speaker is [customer name / title]. I\'ll send you the abstract and the session time so you can decide if it\'s worth blocking on your agenda."',
-      },
-      {
-        label: '6. Booth cross-sell',
-        hint:
-          '"If the session doesn\'t fit, I can lock in a 15-minute booth slot instead so you\'re not walking by hoping to catch us."',
       },
     ],
   },
@@ -887,6 +737,647 @@ export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
       { label: '5. Reframe as the fit', hint: '"That\'s actually where Vbrick fits best — one platform for internal AND external under unified governance."' },
       { label: '6. Recruit her', hint: '"Who in Marketing and Internal Comms should I loop in so we\'re not duplicating work?"' },
       { label: '7. Joint mapping close', hint: '"20 minutes — you, your VP of Comms, someone from Marketing. Map the current state together. Fair?"' },
+    ],
+  },
+
+  'cfo-vendor-consolidation': {
+    id: 'cfo-vendor-consolidation',
+    title: 'CFO — Vendor Consolidation & TCO',
+    subtitle:
+      'CFO at a manufacturer staring at 5 overlapping video contracts. Lead with cost, not features. Earn a TCO conversation, not a demo.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'budget-conscious-cfo',
+    defaultAccent: 'general',
+    difficultyScore: 5,
+    whyVbrickFits:
+      'Classic Vbrick CFO buyer: $340K/yr across Zoom, Webex, Vimeo, Kaltura, and departmental Stream accounts with no central governance. Consolidation to one platform is a hard-dollar story.',
+    repGoal:
+      'Earn 15 minutes for a 3-year TCO conversation. Do NOT pitch features. Do NOT ask for a demo. Bridge to her procurement counterpart with a peer reference at a similar manufacturer.',
+    openingContinuation:
+      '"...we work with CFOs at companies your size who are paying for 4 or 5 overlapping video tools and discovering shadow Zoom Pro accounts on expense reports. The consolidation story is usually a six-figure line item. Worth two minutes?"',
+    prospectTone:
+      'Clipped, efficient, numbers-first. Will give 30 seconds and either extend to 5 minutes or end the call. Allergic to feature pitches and soft ROI.',
+    likelyProspectResponses: [
+      '"What\'s the ROI? Show me the numbers."',
+      '"We just renewed Zoom Enterprise."',
+      '"Total cost over three years — what\'s your number?"',
+      '"Send me a TCO comparison and I\'ll have my team look."',
+      '"How does this not just add a sixth tool?"',
+      '"We\'re in cost-cutting mode."',
+      '"Procurement handles this — talk to them."',
+      '"What do you charge per user per year?"',
+    ],
+    strongRepResponses: [
+      '"Not asking for a renewal — asking if you have visibility into total video spend across the org."',
+      '"Most of our manufacturer customers were paying $250K–$400K across 4 or 5 tools. We replaced them with one line item averaging 30–40% lower."',
+      '"Happy to send a 3-year TCO model with your headcount plugged in. Who on your team owns vendor consolidation?"',
+      '"Not a demo. 20 minutes between you, your procurement lead, and our finance team. We do the TCO work; you decide if it\'s worth pursuing."',
+    ],
+    weakRepResponses: [
+      '"Our platform empowers enterprise video."',
+      '"Let me show you the features."',
+      '"The ROI is hard to quantify but trust us."',
+    ],
+    desiredOutcome:
+      'A 20-minute working session with Jennifer + her procurement lead, framed around 3-year TCO vs. her current stack, with a peer manufacturer reference.',
+    coachingNote:
+      'Jennifer does not buy features. She buys line items going down. Every sentence has to either name a dollar number or move toward one. The fastest credibility move is to name a peer manufacturer reference with a real consolidation savings figure ("they replaced Zoom + Webex + Vimeo + Stream and cut $180K annually"). DO NOT try to demo her. Route to her procurement counterpart and let the TCO model do the close.',
+    topMistakes: [
+      'Talking about features instead of total cost',
+      'Asking for a demo instead of a TCO conversation',
+      'Using soft ROI language ("better engagement," "productivity gains") with a hard-numbers buyer',
+    ],
+    topWinMoves: [
+      'Naming a peer manufacturer with a real consolidation savings figure',
+      'Offering to build the 3-year TCO model with her procurement lead',
+      'Acknowledging Zoom renewal without trying to replace it day one',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are CFO at a 5,000-employee industrial manufacturer. In Q3 budget review you flagged $340K of annual video spend across Zoom, Webex, Vimeo, Kaltura, and departmental Stream accounts — plus shadow Zoom Pro expenses you suspect. You just renewed Zoom Enterprise for 2 years.',
+      'You will engage with a BDR who leads with cost language and offers a 3-year TCO model.',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is YES from a vendor-economics perspective only: "From a vendor consolidation perspective, yes."',
+      '',
+      'SHARE (only when earned):',
+      '- Approximate spend ($340K across multiple tools) only if asked directly about total video spend',
+      '- Suspected shadow IT expensing only if rep asks about unmanaged tools',
+      '- You will NOT share contract dates or your CEO\'s name',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "I have 90 seconds. What\'s the ROI?" If the BDR cannot name a dollar number in the first response, push back with "skip the pitch — what\'s the number?" Give them one more chance.',
+      'You will admit the $340K figure ONLY if the BDR asks specifically about total video spend across the org. Generic "tell me about your stack" gets nothing.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Jennifer Hargrove?" → "This is Jennifer."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"Are you on the team responsible for your company\'s video strategy — internal, external, or both?"' },
+      { label: '4. Cost-led opener', hint: '"Ok, cool. I\'m calling because we work with CFOs at companies your size paying for 4 or 5 overlapping video tools. The consolidation story is usually a six-figure line item."' },
+      { label: '5. Sharp discovery', hint: '"Do you have visibility into total video spend across the org — including shadow Zoom Pro expenses on cards?"' },
+      { label: '6. Peer-anchor credibility', hint: 'Name a similar manufacturer + a specific consolidation savings figure (e.g., "$180K annually after replacing 4 tools").' },
+      { label: '7. Soft close', hint: '"20 minutes with you, your procurement lead, and our finance team. We build the 3-year TCO model. Fair?"' },
+    ],
+  },
+
+  'marketing-webinar-leadgen': {
+    id: 'marketing-webinar-leadgen',
+    title: 'VP Marketing — Webinars & Lead Gen Attribution',
+    subtitle:
+      'B2B SaaS VP of Marketing drowning in webinar tool sprawl. Tie Vbrick to pipeline attribution and consolidation — not "better webinars."',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'marketing-vp-saas',
+    defaultAccent: 'general',
+    difficultyScore: 4,
+    whyVbrickFits:
+      'ON24 + Zoom Webinar + GoToWebinar = 3 contracts, 3 reporting flows, broken attribution into HubSpot. Vbrick consolidates webinars + on-demand + customer-story video under one CRM-attributable platform.',
+    repGoal:
+      'Reframe Vbrick from "video platform" to "marketing-sourced pipeline lever." Earn 15 minutes with Diego + his marketing-ops lead, anchored on attribution and consolidation.',
+    openingContinuation:
+      '"...we work with VP Marketings at SaaS companies your size who run webinars across ON24, Zoom Webinar, and GoToWebinar — and the attribution back to HubSpot is broken. Most of them are quietly worried about it. Any of that resonate?"',
+    prospectTone:
+      'Fast, conversational, revenue-fluent. Will give the rep 60 seconds if they speak pipeline. Will polite-exit if they say "platform" twice.',
+    likelyProspectResponses: [
+      '"We just renewed ON24."',
+      '"How is this different from ON24?"',
+      '"Webinars aren\'t my biggest pain right now."',
+      '"What does this do for my pipeline number?"',
+      '"Our website team owns customer video, not me."',
+      '"Honestly, attribution is messy."',
+      '"Send me a peer reference."',
+      '"I don\'t have a video buyer on my team."',
+    ],
+    strongRepResponses: [
+      '"Not asking you to switch off ON24 day one. Quick question — when a prospect attends an ON24 webinar, can you trace that to pipeline in HubSpot today?"',
+      '"That\'s the gap most SaaS marketing leaders hit. We consolidate webinars + on-demand + customer-story video and push engagement data into HubSpot at the contact level."',
+      '"Most of our customers cut webinar costs 30% and finally got first-touch attribution on pipeline. Want a peer reference at a similar-stage SaaS?"',
+      '"15 minutes with you and your marketing-ops lead. Map the attribution gap together. Fair?"',
+    ],
+    weakRepResponses: [
+      '"Our enterprise video platform is the best in class."',
+      '"Let me show you a demo of our webinar features."',
+      '"AI-powered engagement insights will transform your marketing."',
+    ],
+    desiredOutcome:
+      'A 15-minute working session with Diego + his marketing-ops lead, anchored on webinar consolidation and HubSpot/Salesforce attribution, with a peer SaaS reference.',
+    coachingNote:
+      'Diego thinks in pipeline, MQL, and CMO conversations. The WIN move is to translate every Vbrick capability into a pipeline lever. "Engagement reporting" means nothing; "first-touch attribution into HubSpot" means everything. If you bring up "platform" twice he will exit. Lead with the attribution problem — he is already worried about it.',
+    topMistakes: [
+      'Pitching "webinar features" instead of pipeline attribution',
+      'Asking him to replace ON24 in the first sentence',
+      'Ignoring that customer-story video sits with the website team and acting like he owns it',
+    ],
+    topWinMoves: [
+      'Naming the ON24 → HubSpot attribution gap specifically',
+      'Offering to bring marketing-ops into the conversation early',
+      'Peer reference with a real consolidation + pipeline-lift figure',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are VP Marketing at a 1,200-employee mid-market B2B SaaS in data infrastructure. You run 8–10 webinars/quarter across ON24 (flagship), Zoom Webinar (smaller), GoToWebinar (legacy). Customer-story video sits with the website team. Attribution is messy — your CMO has asked twice this quarter.',
+      'You will engage with a BDR who speaks pipeline and attribution. You will polite-exit anyone who pitches "video platform."',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is YES for the external/marketing side: "Yeah, external — webinars and customer content sit with my team."',
+      '',
+      'SHARE (only when earned):',
+      '- Webinar tool sprawl (ON24 + Zoom Webinar + GoToWebinar) — only if rep asks about your webinar stack',
+      '- Attribution weakness — only if rep asks about pipeline reporting from webinars',
+      '- You will NOT share MQL or pipeline targets',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "Make this fast — what does it do for pipeline?" If the BDR uses the word "platform" without tying it to revenue, push back: "skip the platform language — pipeline number, please."',
+      'You will admit the ON24/HubSpot attribution gap ONLY if the BDR asks specifically about webinar-to-CRM data flow. Generic "tell me about your stack" gets nothing.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Diego Marquez?" → "Yeah, this is Diego."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"Are you on the team responsible for your company\'s video strategy — internal, external, or both?"' },
+      { label: '4. Pipeline-led opener', hint: '"Ok, cool. I\'m calling because we work with VP Marketings running webinars across ON24, Zoom Webinar, and GoToWebinar — and attribution back to HubSpot is broken."' },
+      { label: '5. Anchor discovery', hint: '"When a prospect attends a webinar today, can you trace that to pipeline in HubSpot?"' },
+      { label: '6. Consolidation reframe', hint: '"We replace 3 webinar tools with one, and push engagement into HubSpot at the contact level. Most SaaS customers cut spend 30% and finally got first-touch attribution."' },
+      { label: '7. Soft close', hint: '"15 minutes with you and your marketing-ops lead. Map the attribution gap. Fair?"' },
+    ],
+  },
+
+  'pharma-legal-ediscovery': {
+    id: 'pharma-legal-ediscovery',
+    title: 'Pharma Legal — eDiscovery & FDA Archival',
+    subtitle:
+      'General Counsel at a mid-size pharma. Lead with retention, eDiscovery, and FDA promotional review — NOT product features.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'compliance-heavy-legal',
+    defaultAccent: 'general',
+    difficultyScore: 6,
+    whyVbrickFits:
+      'Pharma has FDA promotional content rules, 7-year retention requirements, and eDiscovery exposure on every video asset. Marketing has been self-publishing product videos without legal review. Vbrick provides governed publishing, retention automation, legal hold, and audit trails.',
+    repGoal:
+      'Establish credibility on retention + eDiscovery in the first 60 seconds. Avoid product feature pitches. Route the conversation to his compliance team with the right artifacts.',
+    openingContinuation:
+      '"...we work with General Counsels in pharma who are dealing with Marketing self-publishing product video without legal review — and trying to get retention, legal hold, and FDA-readable audit trails on every asset. Worth two minutes?"',
+    prospectTone:
+      'Formal, careful, methodical. Will pepper the BDR with retention and audit-trail questions inside 60 seconds. Zero patience for marketing fluff.',
+    likelyProspectResponses: [
+      '"What\'s your retention policy?"',
+      '"Can you support 7-year retention with legal hold?"',
+      '"How does this handle FDA promotional review workflows?"',
+      '"We need everything archived and searchable for eDiscovery."',
+      '"Marketing can\'t self-publish video — that\'s a regulatory risk."',
+      '"What\'s your audit trail granularity? Who watched what, when?"',
+      '"We need a DPA and the SOC 2 attestation."',
+      '"Send me the documentation and I\'ll have my compliance team review."',
+    ],
+    strongRepResponses: [
+      '"Retention is configurable up to 10 years per content class with automated legal hold. Happy to send the spec."',
+      '"FDA-style review workflow — content can\'t publish without designated reviewer approval. Full audit log of every approval and edit."',
+      '"Per-viewer audit trail: timestamps, IP, device, watch percentage. Exportable for eDiscovery in standard formats."',
+      '"Not asking to close you. Who on your compliance team should I route the security and retention documentation to?"',
+    ],
+    weakRepResponses: [
+      '"Our platform is fully compliant — trust us."',
+      '"Let me show you the AI-powered features."',
+      '"We work with lots of pharma customers."',
+    ],
+    desiredOutcome:
+      'Security + retention documentation sent (SOC 2, DPA, retention spec, audit-trail capabilities), handoff to his compliance lead, and a formal review session scheduled.',
+    coachingNote:
+      'Robert will test you on retention, audit trail, and legal hold in the first minute. If you do not know your retention spec off the top of your head, he loses respect. The WIN move is to route to his compliance lead fast — pharma legal does not close, they route. Trying to close Robert directly is a trust-breaker. Frame yourself as the connector, not the seller.',
+    topMistakes: [
+      'Talking about features when he asked about retention',
+      'Not knowing your audit-trail capabilities off the top of your head',
+      'Trying to close him instead of routing to his compliance team',
+    ],
+    topWinMoves: [
+      'Naming retention duration + automated legal hold in the first 30 seconds',
+      'Offering per-viewer audit trail with eDiscovery export',
+      'Routing to his compliance lead instead of asking him to drive',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are General Counsel at an 8,000-employee mid-size pharmaceutical company. Marketing has been posting product videos without legal review. FDA has been asking about promotional materials. You are in eDiscovery prep on an unrelated matter — video content has been requested.',
+      'You will engage with a BDR who speaks retention, eDiscovery, and audit-trail language. You will polite-exit feature pitches inside 60 seconds.',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is YES from a governance and compliance perspective: "From a governance and compliance standpoint, yes."',
+      '',
+      'SHARE (only when earned):',
+      '- 7-year retention requirement for promotional content — only if rep asks about retention specifically',
+      '- Marketing self-publishing problem — only if rep asks about content governance or review workflows',
+      '- You will NOT share the eDiscovery matter or specific FDA inquiries',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You will open with "What\'s your retention policy and audit-trail granularity?" in the first minute. If the rep cannot answer concretely, accept "I\'ll confirm and send today" — but mentally note it.',
+      'You will share the Marketing self-publishing problem ONLY if the rep asks about content governance or review workflows. Generic "tell me about compliance" gets nothing.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Robert Blackwell?" → "This is Robert."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"Are you on the team responsible for your company\'s video governance — internal, external, or both?"' },
+      { label: '4. Governance-led opener', hint: '"Ok, cool. I\'m calling because we work with GCs in pharma where Marketing has been self-publishing product video without legal review — and need retention, legal hold, and FDA-readable audit trails."' },
+      { label: '5. Credentials upfront', hint: 'Name retention duration, automated legal hold, per-viewer audit trail, SOC 2 Type II, ISO 27001 in the first 30 seconds.' },
+      { label: '6. Route, don\'t close', hint: '"I don\'t need to own this. Who on your compliance team should I route the documentation to?"' },
+      { label: '7. Soft close', hint: '"I\'ll send the retention spec, audit-trail overview, SOC 2 letter, and DPA today. Your compliance lead drives from there. Fair?"' },
+    ],
+  },
+
+  'state-gov-rfp-active': {
+    id: 'state-gov-rfp-active',
+    title: 'State Gov — Active RFP (Competitive)',
+    subtitle:
+      'Procurement manager evaluating Vbrick vs Kaltura, Panopto, Microsoft Stream. Win the bid by understanding evaluation criteria — not by pitching features.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'price-shopping-procurement',
+    defaultAccent: 'general',
+    difficultyScore: 6,
+    whyVbrickFits:
+      'State agencies need single-vendor consolidation, public-sector pricing, multi-year fixed rates, and contracts via state vehicles. Vbrick has gov references, accessibility/Section 508 compliance, and on-prem/private cloud options.',
+    repGoal:
+      'Find out evaluation criteria, decision timeline, and what would tilt the bid toward Vbrick. Land a follow-up where the right Vbrick public-sector lead can join. Do NOT pitch features.',
+    openingContinuation:
+      '"...I saw the video platform RFP from your agency and wanted to make sure we\'re positioned correctly. Two questions before I send anything: what\'s the evaluation timeline, and which criteria carry the most weight?"',
+    prospectTone:
+      'Professional, transactional, process-fluent. Speaks RFP language: evaluation criteria, contract vehicles, multi-year terms. Will share process info but not preferences.',
+    likelyProspectResponses: [
+      '"Are you responding to the RFP or is this a cold call?"',
+      '"We need 3 compliant bids minimum."',
+      '"Pricing has to be public-sector friendly."',
+      '"State contract vehicle is required — are you on one?"',
+      '"Tell me about your public-sector experience."',
+      '"Section 508 accessibility is non-negotiable."',
+      '"We need fixed multi-year pricing."',
+      '"Our timeline is 6 weeks. Can you submit?"',
+    ],
+    strongRepResponses: [
+      '"Responding. Two questions to make sure we don\'t waste your time — what\'s the evaluation timeline, and which criteria are weighted highest?"',
+      '"We\'re on [state contract vehicle]. Public-sector pricing with 3-year fixed rates is standard for us."',
+      '"Section 508 compliant, with automated captioning and audit logs. Happy to send the VPAT today."',
+      '"Last quarter we deployed for [peer state agency]. Want me to introduce you to their procurement lead for a reference?"',
+    ],
+    weakRepResponses: [
+      '"Our pricing is enterprise — let me build a custom quote."',
+      '"Let me schedule a demo for your evaluation committee."',
+      '"We\'re the leader in enterprise video."',
+    ],
+    desiredOutcome:
+      'Linda shares evaluation criteria + timeline, agrees to receive the VPAT + state contract vehicle confirmation + peer agency reference, and connects the Vbrick public-sector lead with the technical evaluators.',
+    coachingNote:
+      'Linda is not a feature buyer — she is a process buyer. The WIN move is to demonstrate you understand state RFPs: contract vehicles, multi-year fixed pricing, public-sector references, VPAT/Section 508 documentation. The fastest credibility move is naming a peer state agency and offering their procurement lead as a reference. Do NOT try to demo. Route to her technical evaluators with the right artifacts.',
+    topMistakes: [
+      'Treating an RFP as a cold opportunity (it is not — she has 3 competing bids)',
+      'Pitching features instead of asking about evaluation criteria and weights',
+      'Not knowing your state contract vehicle status off the top of your head',
+    ],
+    topWinMoves: [
+      'Asking what is weighted highest in the evaluation',
+      'Naming a peer state agency with a real deployment',
+      'Sending the VPAT + contract vehicle confirmation + peer reference in one packaged email',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are Senior Procurement Manager at a 3,000-employee state government agency. You are running an active video platform RFP. Current vendor is raising prices 40% at renewal. You need 3 compliant bids. You are comparing Vbrick to Kaltura, Panopto, and Microsoft Stream. Timeline is 6 weeks.',
+      'You will engage with a BDR who knows public-sector process. You will dismiss anyone who pitches features.',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is YES, scoped to procurement: "I\'m running the procurement evaluation."',
+      '',
+      'SHARE (only when earned):',
+      '- Active RFP and 6-week timeline — share if rep asks about evaluation timing',
+      '- Competing vendors named (Kaltura, Panopto, Stream) — share only if rep asks specifically',
+      '- You will NOT share evaluation weights, budget ceiling, or your preference',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "Procurement. Are you responding to the RFP or is this a cold call?" Anything that sounds like an attempt to short-circuit the RFP process gets a polite "you\'ll need to go through the process."',
+      'You will share evaluation criteria categories (functionality, security, accessibility, total cost) — but not weights — if the rep asks intelligently.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Linda Kowalski?" → "This is Linda."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"I saw the RFP from your agency — are you running the procurement evaluation?"' },
+      { label: '4. Process-led opener', hint: '"Two quick questions so we don\'t waste your time — what\'s the evaluation timeline, and which criteria are weighted highest?"' },
+      { label: '5. Public-sector credibility', hint: 'Name state contract vehicle. Confirm Section 508 / VPAT. Offer multi-year fixed pricing.' },
+      { label: '6. Peer-agency reference', hint: '"Last quarter we deployed for [peer state agency]. Want their procurement lead as a reference?"' },
+      { label: '7. Packaged followup', hint: '"I\'ll send the VPAT, contract vehicle confirmation, and peer agency reference in one email today. Your evaluators take it from there."' },
+    ],
+  },
+
+  'sales-enablement-loom-sprawl': {
+    id: 'sales-enablement-loom-sprawl',
+    title: 'CRO — Sales Enablement Video Sprawl',
+    subtitle:
+      'CRO at a cybersecurity software company. AEs are recording rogue Loom videos. Tie Vbrick to ramp time and unapproved-claim risk — not "platform."',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'cro-sales-enablement',
+    defaultAccent: 'general',
+    difficultyScore: 5,
+    whyVbrickFits:
+      'AEs using Loom for prospect outreach create unmanaged content + unapproved-claim risk. Vbrick offers governed AE-recorded video with prospect engagement signal back to AEs, integrates with Salesforce/Highspot/Gong, and supports new-rep ramp content.',
+    repGoal:
+      'Reframe Vbrick from "video platform" to "ramp time + unapproved claim risk lever." Earn 20 minutes for Sasha + her VP Enablement, with one peer CRO reference.',
+    openingContinuation:
+      '"...we work with CROs in enterprise software where AEs are recording rogue Loom videos for prospects, and Legal has flagged at least one unapproved claim. Most of them care because it hits ramp time or win rate. Worth two minutes?"',
+    prospectTone:
+      'Outcomes-only, time-aware, irritated by jargon. Will engage if you speak ramp/win/ASP. Will exit if you say "platform" twice.',
+    likelyProspectResponses: [
+      '"AEs use Loom — they like it."',
+      '"We have Highspot for content."',
+      '"How is this different from Gong?"',
+      '"Enablement owns this, not me."',
+      '"I don\'t want another tool to roll out to AEs."',
+      '"What does this do for ramp time?"',
+      '"I have 90 seconds — go."',
+      '"Send me a peer CRO reference."',
+    ],
+    strongRepResponses: [
+      '"Not asking to replace Loom — asking if you have visibility when AE-recorded video contains unapproved claims."',
+      '"Most CROs who switched cut ramp time 4–6 weeks because new AEs got prospect engagement signal back when their videos got watched."',
+      '"Not pitching a platform — pitching a governance layer for what your AEs are already doing."',
+      '"Want a peer CRO reference at a similar-stage cybersecurity company with a real ramp-time number?"',
+    ],
+    weakRepResponses: [
+      '"Our enterprise video platform empowers your revenue team."',
+      '"Let me show you a demo of our AE features."',
+      '"AI-powered video coaching transforms your sales motion."',
+    ],
+    desiredOutcome:
+      'A 20-minute working session with Sasha + her VP Enablement, anchored on ramp time and unapproved-claim risk, with a peer CRO reference at a similar-stage cybersecurity firm.',
+    coachingNote:
+      'Sasha will polite-exit anyone using "platform" twice. Every Vbrick capability has to translate into a revenue lever: ramp time, win rate, ASP, deal velocity. The fastest credibility move is naming the unapproved-claim risk — she has lived this and Legal has flagged it. Do NOT try to close her. Route to her VP Enablement.',
+    topMistakes: [
+      'Using the word "platform" — she will exit',
+      'Pitching features instead of ramp/win/ASP impact',
+      'Asking her to roll out a new tool to AEs (the wrong frame)',
+    ],
+    topWinMoves: [
+      'Naming the unapproved-claim risk early',
+      'Translating every capability into ramp time or win rate',
+      'Routing to her VP Enablement with a peer CRO reference',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are CRO at a 4,500-employee enterprise cybersecurity software company. AEs use Loom for prospect outreach. Legal flagged one unapproved-claim video last quarter. New-rep ramp is 7 months; the board wants 5. You have Highspot (content) and Gong (calls). Sales-recorded video is the gap.',
+      'You will engage with a BDR who speaks ramp/win/ASP. You will exit if they say "platform" twice.',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is partial NO with a redirect: "Video strategy? No. Revenue strategy, yes. What does this do for it?"',
+      '',
+      'SHARE (only when earned):',
+      '- Loom usage and the unapproved-claim flag — only if rep asks about AE-recorded video specifically',
+      '- 7-month ramp time — only if rep asks about ramp',
+      '- You will NOT share the board ramp target',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "I have 90 seconds. What does this do for ramp or win rate?" Anything generic gets one push back ("skip the platform language — number, please?") and one more chance.',
+      'You will admit the unapproved-claim flag ONLY if the rep asks about AE-recorded video governance or Legal review specifically.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Sasha Kerrigan?" → "Speaking."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"Are you on the team responsible for your company\'s video strategy — internal, external, or both?"' },
+      { label: '4. Revenue-led opener', hint: '"Ok, cool. I\'m calling because we work with CROs where AEs are recording rogue Loom videos and Legal has flagged unapproved claims — and ramp time hasn\'t moved."' },
+      { label: '5. Anchor discovery', hint: '"Do you have visibility when AE-recorded video contains unapproved claims?" — then shut up.' },
+      { label: '6. Ramp/win reframe', hint: '"Most CROs who switched cut ramp time 4–6 weeks because new AEs got engagement signal back when prospects watched."' },
+      { label: '7. Soft close', hint: '"20 minutes with you and your VP Enablement, one peer CRO reference at a similar-stage cybersecurity firm. Fair?"' },
+    ],
+  },
+
+  'higher-ed-lecture-capture-renewal': {
+    id: 'higher-ed-lecture-capture-renewal',
+    title: 'Higher Ed — Lecture Capture Renewal Window',
+    subtitle:
+      'R1 university Director of Academic Tech. Panopto renewal in 9 months with a 32% price hike. Win with peer R1 references + LMS integration + accessibility.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'higher-ed-academic-tech',
+    defaultAccent: 'general',
+    difficultyScore: 4,
+    whyVbrickFits:
+      'Higher Ed needs faculty-friendly lecture capture, LMS integration (Canvas/Blackboard), automatic Section 508 / WCAG captioning, and peer R1 references. Panopto pricing pressure + faculty UX complaints create a switch window.',
+    repGoal:
+      'Pass the peer-institution test in the first 90 seconds. Earn a 30-minute working session with Ramon + his LMS counterpart. Stay out of feature-comparison wars.',
+    openingContinuation:
+      '"...we work with R1 universities whose Panopto renewals are coming up with 30%+ increases — and whose faculty are quietly saying the recording experience is too clunky. Worth two minutes?"',
+    prospectTone:
+      'Thoughtful, academic, polite-but-rigorous. Will test the rep on peer institutions early. Allergic to corporate-y language.',
+    likelyProspectResponses: [
+      '"Which peer R1 institutions do you work with?"',
+      '"We are a Panopto shop."',
+      '"Our faculty senate would have to weigh in."',
+      '"Accessibility has to be baked in, not bolted on."',
+      '"How does this integrate with Canvas / Blackboard?"',
+      '"Public university — pricing clears procurement."',
+      '"What\'s the faculty experience like?"',
+      '"How is caption accuracy on technical / STEM lectures?"',
+    ],
+    strongRepResponses: [
+      '"We deployed at [peer R1 university] last academic year. Happy to introduce you to their Academic Tech Director for a reference."',
+      '"Faculty workflow is one-click record from Canvas — the recording lives in the course shell automatically. No extra logins."',
+      '"Auto-captioning runs WCAG-AA out of the box; for STEM we offer per-discipline language models. Accuracy at peer institutions is averaging 96%."',
+      '"30-minute working session with you and your LMS counterpart. Map the integration against your current Panopto setup. Fair?"',
+    ],
+    weakRepResponses: [
+      '"Our platform transforms the academic experience."',
+      '"AI-powered learning analytics empower your faculty."',
+      '"We work with enterprises too, so we can scale."',
+    ],
+    desiredOutcome:
+      'A 30-minute working session with Ramon + his LMS administrator, anchored on faculty experience and LMS integration, with a peer R1 reference offered.',
+    coachingNote:
+      'Ramon will test you on peer R1 references inside 90 seconds. If you cannot name one, the call effectively ends — politely. The WIN move is to lead with a named peer institution and offer their Academic Tech Director as a reference. Stay in faculty-experience language. Avoid corporate words. Procurement gets involved later — first earn the academic-side advocate.',
+    topMistakes: [
+      'Not having a peer R1 reference ready',
+      'Using corporate-y language ("transformation," "synergies") with an academic',
+      'Pitching features without mentioning LMS integration',
+    ],
+    topWinMoves: [
+      'Naming a peer R1 institution with a real deployment',
+      'Leading with faculty workflow ("one click from Canvas")',
+      'Owning the accessibility conversation with concrete numbers',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are Director of Academic Technology Services at a 38,000-student public R1 research university. Panopto renewal is 9 months out with a 32% price hike. Faculty survey flagged the recording experience 11 times. Campus accessibility audit flagged STEM caption quality.',
+      'You will engage with a BDR who has peer R1 references and speaks academic-side language. You will polite-exit corporate-speak.',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is YES for academic-side video: "Yes — lecture capture and academic-tech video."',
+      '',
+      'SHARE (only when earned):',
+      '- Panopto renewal window and price hike — only if rep asks about current vendor or renewal timing',
+      '- Faculty UX complaints (11 mentions in survey) — only if rep asks about faculty experience',
+      '- Accessibility audit flag — only if rep asks about accessibility or captioning',
+      '- You will NOT share the exact renewal dollar figure',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "Which peer R1 institutions do you work with?" within the first 90 seconds. If the rep cannot name one, you say "appreciate the call but we tend to deploy where our peers have deployed" and start to wind down.',
+      'You will share Panopto renewal pain ONLY if rep asks about current stack or renewal specifically. Accessibility flag ONLY if asked about captioning or accessibility.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Dr. Ramon Patel?" → "This is Ramon, yes."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"Are you on the team responsible for your university\'s lecture capture and academic-tech video?"' },
+      { label: '4. Renewal-led opener', hint: '"Ok, cool. I\'m calling because we work with R1 universities whose Panopto renewals are coming up with 30%+ price increases — and whose faculty say the recording experience is too clunky."' },
+      { label: '5. Peer-institution credibility', hint: 'Name a peer R1 institution and offer their Academic Tech Director as a reference unprompted.' },
+      { label: '6. Faculty + accessibility frame', hint: '"One-click record from Canvas. WCAG-AA captions out of the box, STEM language models for technical lectures."' },
+      { label: '7. Soft close', hint: '"30 minutes with you and your LMS counterpart. Map the integration against your Panopto setup. Fair?"' },
+    ],
+  },
+
+  'chro-global-onboarding': {
+    id: 'chro-global-onboarding',
+    title: 'CHRO — Global Onboarding & Mobile EX',
+    subtitle:
+      'CHRO at a global services firm. Onboarding video fragmented across 40 countries. Lead with consistency, multilingual captions, and Board-level reporting.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'chro-services',
+    defaultAccent: 'general',
+    difficultyScore: 5,
+    whyVbrickFits:
+      'Global services firm with 40 country offices means inconsistent onboarding video, weak multilingual captioning, and no Board-ready engagement reporting. Vbrick provides one platform with localized captions, mobile-first delivery, and exec-level analytics.',
+    repGoal:
+      'Pass the peer-firm test in the first 90 seconds (Big 4 / MBB references). Earn 30 minutes for Helena + her global head of learning operations.',
+    openingContinuation:
+      '"...we work with CHROs at global professional services firms where onboarding video is scattered across country offices, multilingual captions are uneven, and the Board People Committee is asking for engagement reporting. Worth two minutes?"',
+    prospectTone:
+      'Polished, peer-aware, deliberate. Tests reps with "what are other firms doing?" inside the first minute. Allergic to fluff.',
+    likelyProspectResponses: [
+      '"What are other Big-4 / MBB firms doing here?"',
+      '"We are a Workday Learning shop."',
+      '"Onboarding sits with regional managing partners."',
+      '"We just refreshed our intranet last year."',
+      '"Anything global takes 18 months to roll out."',
+      '"Mobile is the daily reality for our consultants."',
+      '"How does multilingual captioning actually work?"',
+      '"The Board People Committee wants engagement reporting — I do not have it."',
+    ],
+    strongRepResponses: [
+      '"[Peer services firm] rolled out global onboarding video on Vbrick last year. Happy to introduce you to their Head of Learning Operations."',
+      '"We layer on Workday Learning — not replace it. Captions auto-localize into your top 8 languages with native-speaker QA on top."',
+      '"Mobile-first by default. Most consultants finish leadership content in under 4 minutes on phone."',
+      '"30 minutes with you and your global head of learning operations. Map the rollout against your Workday setup. Fair?"',
+    ],
+    weakRepResponses: [
+      '"Our platform transforms employee experience."',
+      '"AI-powered learning empowers your workforce."',
+      '"Let me set up a demo for your HR team."',
+    ],
+    desiredOutcome:
+      'A 30-minute working session with Helena + her global head of learning operations, anchored on global rollout pattern and Workday integration, with a peer professional-services firm reference.',
+    coachingNote:
+      'Helena will test you on peer firms (Big 4, MBB) inside the first 90 seconds. If you cannot name one, the conversation cools fast. The WIN move is to lead with a peer services-firm reference and offer their Head of Learning Operations as a contact. Frame Vbrick as a layer on top of Workday Learning — never a replacement. Mobile-first language is non-negotiable.',
+    topMistakes: [
+      'Not having a peer services-firm reference ready',
+      'Positioning Vbrick as a Workday Learning replacement',
+      'Ignoring the mobile-first reality of her consultant workforce',
+    ],
+    topWinMoves: [
+      'Naming a peer Big-4 / MBB firm with a real deployment',
+      'Framing as "layer on top of Workday Learning"',
+      'Speaking specifically to mobile + multilingual captioning',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are CHRO at a 18,000-employee global professional services firm in 40 countries. Onboarding video is fragmented (Workday Learning + regional SharePoint + country YouTube channels). Multilingual caption quality is uneven. Board People Committee wants engagement reporting on leadership content. You do not have it.',
+      'You will engage with a BDR who has peer Big-4 / MBB references and speaks Workday + mobile + multilingual language. You will dismiss feature pitches.',
+      '',
+      'OPENING STRUCTURE: your answer to qualification is YES for employee experience: "Yes — onboarding, leadership comms, employee experience video."',
+      '',
+      'SHARE (only when earned):',
+      '- Multilingual caption complaints from non-English markets — only if rep asks about global rollout or localization',
+      '- Board People Committee engagement-reporting gap — only if rep asks about leadership reporting',
+      '- You will NOT share country-specific issues or named partners unprompted',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "What are other Big-4 firms doing here?" inside the first minute. If the rep cannot name one, you say "let me know when you have a peer firm we can talk to" and start to wind down.',
+      'You will share the Board People Committee gap ONLY if rep asks about exec reporting or leadership content. Multilingual caption complaints ONLY if rep asks about localization.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Helena Stroud?" → "Speaking."' },
+      { label: '2. Help request', hint: '"I was hoping you could help me out, real quick."' },
+      { label: '3. Qualification', hint: '"Are you on the team responsible for your firm\'s employee experience video — onboarding, leadership comms, internal events?"' },
+      { label: '4. Global-led opener', hint: '"Ok, cool. I\'m calling because we work with CHROs at global services firms where onboarding video is scattered across country offices and the Board People Committee is asking for engagement reporting."' },
+      { label: '5. Peer-firm credibility', hint: 'Name a peer Big-4 / MBB firm and offer their Head of Learning Operations as a reference.' },
+      { label: '6. Workday + mobile frame', hint: '"We layer on Workday Learning — not replace it. Mobile-first by default. Native multilingual captions with local-speaker QA."' },
+      { label: '7. Soft close', hint: '"30 minutes with you and your global head of learning operations. Map the rollout against your Workday setup. Fair?"' },
+    ],
+  },
+
+  'telecom-ceo-gatekeeper': {
+    id: 'telecom-ceo-gatekeeper',
+    title: 'F500 CEO Gatekeeper — Earning the Pass-Through',
+    subtitle:
+      'Telecom F500 Executive Assistant blocks the CEO line. Skill: respect the gatekeeper, name a known CEO pain, route through her — never around her.',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'busy-exec-assistant',
+    defaultAccent: 'general',
+    difficultyScore: 5,
+    whyVbrickFits:
+      'F500 CEOs with quarterly all-hands at 50K employees are exactly Vbrick\'s sweet spot — broadcast scale, engagement reporting, captions. The challenge is getting past the gatekeeper without burning her.',
+    repGoal:
+      'Earn either (a) a pass-through to the CEO or (b) a named handoff to the right operating leader (typically CCO, CHRO, or Head of IT). Never disrespect the EA. Never try to go around her.',
+    openingContinuation:
+      '"...I work with CEOs at Fortune 500 companies running quarterly all-hands at scale — usually 30K+ employees on the broadcast. Wanted to ask Patricia first: is this the kind of thing she\'d want me to route through her or directly to whoever owns it?"',
+    prospectTone:
+      'Professional, formal, polite-but-firm. Has heard every pitch. Will pass you through ONLY if you treat her as a partner, not an obstacle.',
+    likelyProspectResponses: [
+      '"The CEO doesn\'t take cold calls."',
+      '"What is this regarding?"',
+      '"Can you send materials and I\'ll review?"',
+      '"We\'re not currently evaluating video platforms."',
+      '"We have an RFP process for new vendors."',
+      '"What company are you with?"',
+      '"I can pass this along — what\'s the value proposition for the CEO?"',
+      '"Your timing is terrible — we just renewed contracts."',
+    ],
+    strongRepResponses: [
+      '"Totally understand — and that\'s why I\'m calling you first. Quick context: most F500 CEOs we work with care about all-hands quality at scale. Has that been on the CEO\'s radar?"',
+      '"Not trying to put a meeting on the calendar. I want to make sure I\'m routing to the right person. Should this go to Comms, HR, or IT inside your org?"',
+      '"Last month [peer F500 CEO] and our CEO had a 15-minute call about how we fixed their all-hands. Happy to send a one-page summary you can decide whether to forward."',
+      '"Patricia, thank you. I won\'t go around you. What\'s the best way to make sure this lands with the right person on your team?"',
+    ],
+    weakRepResponses: [
+      '"Can you just put me through to the CEO?"',
+      '"What\'s the CEO\'s direct email?"',
+      '"This is urgent — I really need to speak with him today."',
+    ],
+    desiredOutcome:
+      'Patricia agrees to either (a) pass the one-pager to the CEO with her endorsement, or (b) hand you the name + email of the right operating leader (Comms, HR, or IT), with permission to use Patricia\'s name in the intro.',
+    coachingNote:
+      'Patricia gets pitched 50 times a month. She decides which ones reach the CEO. The win move is treating her as a partner: ask her where this fits, defer to her judgment, never try to go around her. The fastest credibility move is naming a peer F500 CEO who had a similar all-hands problem. Always thank her by name. The pass-through she controls is the most valuable referral in BDR work.',
+    topMistakes: [
+      'Asking for the CEO\'s direct line or email',
+      'Trying to manufacture urgency ("this is critical")',
+      'Treating her like an obstacle instead of a partner',
+    ],
+    topWinMoves: [
+      'Asking HER where this should be routed inside the org',
+      'Naming a peer F500 CEO with a real all-hands problem solved',
+      'Thanking her by name and respecting her judgment on next step',
+    ],
+    scenarioContext: [
+      'CALL CONTEXT:',
+      'You are EA to the CEO at a Fortune 500 telecom. The CEO is frustrated with video quality on monthly town halls (50K employees on the broadcast). The current contract just renewed for 2 years and the CEO hates it. The CEO is also slammed with merger discussions. You protect the CEO\'s time fiercely.',
+      'You will engage with a BDR who treats you as a partner. You will polite-exit anyone who tries to go around you.',
+      '',
+      'OPENING STRUCTURE: BDR is calling the CEO line. You answer first. Your answer to qualification is YES, but as gatekeeper: "I can help — what\'s this about?"',
+      '',
+      'SHARE (only when earned):',
+      '- The CEO\'s frustration with town-hall video quality — only if rep asks about all-hands or broadcast pain',
+      '- That the current contract just renewed — only if rep asks about timing',
+      '- You will NOT share the CEO\'s schedule, direct email, or the merger context',
+    ].join('\n'),
+    hardModeContext: [
+      'HARD MODE MODIFIERS:',
+      'You open with "This is Patricia. The CEO doesn\'t take cold calls — but I can help. What\'s this regarding?" If the rep asks for the CEO directly, you politely shut it down: "I handle all incoming for the CEO."',
+      'You will share the town-hall pain ONLY if the rep asks about large-event or all-hands quality specifically. You will share the just-renewed contract ONLY if rep asks about timing.',
+    ].join('\n'),
+    cheatCard: [
+      { label: '1. Name confirmation', hint: '"Patricia Langley?" → "This is Patricia, Executive Assistant to the CEO."' },
+      { label: '2. Help request (adjusted)', hint: '"I was hoping you could help me out — and route me, not around you."' },
+      { label: '3. Qualification (adjusted)', hint: '"Quick context — I work with CEOs running quarterly all-hands at F500 scale. Is that something Patricia would want routed through her, or directly to whoever owns it?"' },
+      { label: '4. Treat her as partner', hint: '"I won\'t go around you. What\'s the best way to make sure this lands with the right person on your team?"' },
+      { label: '5. Peer-CEO credibility', hint: 'Name a peer F500 CEO with a real all-hands problem solved.' },
+      { label: '6. One-pager offer', hint: '"Let me send a one-pager you can decide whether to forward — or who else on your team should see it first."' },
+      { label: '7. Clean exit', hint: '"Patricia, thank you. I\'ll send that today. Anyone else on your team I should copy?"' },
     ],
   },
 }
