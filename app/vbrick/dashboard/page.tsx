@@ -153,6 +153,7 @@ export default function VbrickDashboardPage() {
   }
 
   async function handleDeleteRecentCall(id: string) {
+    if (!email) return
     // Optimistic remove
     setRecentCalls(prev => prev.filter(c => c.id !== id))
     setStoredOutputs(prev => {
@@ -165,8 +166,6 @@ export default function VbrickDashboardPage() {
       setViewingSessionId(null)
       setView('dashboard')
     }
-
-    if (!email) return
 
     try {
       const url = `/api/vbrick/debriefs/${id}?email=${encodeURIComponent(email)}`
