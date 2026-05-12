@@ -14,6 +14,8 @@ import { isBDROutput, isVbrickBDROutput } from '@/lib/debrief/types'
 import { isVbrickBdr, VBRICK_CONFIG } from '@/lib/vbrick/config'
 import { useDashboard } from '@/lib/vbrick/dashboard-context'
 import { neuTheme } from '@/lib/vbrick/theme'
+import { useTour } from '@/lib/vbrick/tour/tour-context'
+import { hasSeenTour } from '@/lib/vbrick/tour/storage'
 
 interface StatsData {
   thisWeek: {
@@ -70,6 +72,7 @@ export default function VbrickDashboardPage() {
   // Use the layout's DashboardProvider so navigation guards in VbrickShell
   // see the same email value when the user clicks a tile.
   const { email, setEmail, hydrated } = useDashboard()
+  const { startTour } = useTour()
   const [emailInput, setEmailInput] = useState('')
   const [showIntention, setShowIntention] = useState(false)
   const [stats, setStats] = useState<StatsData | null>(null)
@@ -89,6 +92,16 @@ export default function VbrickDashboardPage() {
     fetchRecentDebriefs()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email])
+
+  // Auto-start onboarding tour on first visit, after dashboard renders.
+  useEffect(() => {
+    if (!email || showIntention || view !== 'dashboard') return
+    if (hasSeenTour(email)) return
+    const timeoutId = window.setTimeout(() => {
+      startTour()
+    }, 600)
+    return () => window.clearTimeout(timeoutId)
+  }, [email, showIntention, view, startTour])
 
   async function fetchStats() {
     if (!email) return

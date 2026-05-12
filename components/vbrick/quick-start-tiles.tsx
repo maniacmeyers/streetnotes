@@ -35,7 +35,7 @@ export function QuickStartTiles({ onDebrief }: QuickStartTilesProps = {}) {
   } as const
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+    <div data-tour="quick-start" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
       {tiles.map((tile, i) => {
         const Icon = tile.icon
         const inner = (
@@ -69,9 +69,12 @@ export function QuickStartTiles({ onDebrief }: QuickStartTilesProps = {}) {
           </>
         )
 
+        const isDebriefTile = tile.label === 'Debrief'
+
         return (
           <motion.div
             key={tile.label}
+            data-tour={isDebriefTile ? 'debrief' : undefined}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.05 * i }}

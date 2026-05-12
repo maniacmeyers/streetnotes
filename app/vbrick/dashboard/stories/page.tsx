@@ -350,6 +350,7 @@ export default function StoryVaultPage() {
   return (
     <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
       <motion.div
+        data-tour="story-vault"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
@@ -372,12 +373,14 @@ export default function StoryVaultPage() {
       </motion.div>
 
         {/* Tabs */}
-        <NeuTabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onChange={(id) => setActiveTab(id as TabId)}
-          className="mb-6"
-        />
+        <div data-tour="story-practice">
+          <NeuTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onChange={(id) => setActiveTab(id as TabId)}
+            className="mb-6"
+          />
+        </div>
 
         {/* Tab Content */}
         {activeTab === 'create' && (

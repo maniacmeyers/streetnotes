@@ -55,7 +55,7 @@ export default function SparringPage() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+    <div data-tour="sparring-scenarios" className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
       {lastResult && <ScoreDetail result={lastResult} onRunAgain={() => setMode('active')} onDismiss={() => setLastResult(null)} />}
 
       <div
@@ -100,7 +100,7 @@ export default function SparringPage() {
         </p>
 
         {/* Scenario picker */}
-        <div className="space-y-2">
+        <div data-tour="sparring-pick" className="space-y-2">
           <p className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium" style={{ color: neuTheme.colors.text.muted }}>
             Scenario
           </p>

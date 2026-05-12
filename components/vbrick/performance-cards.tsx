@@ -39,7 +39,7 @@ export function PerformanceCards({
   scoredCalls,
 }: PerformanceCardsProps) {
   return (
-    <div>
+    <div data-tour="performance">
       <h3
         className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium mb-3"
         style={{ color: neuTheme.colors.accent.primary }}

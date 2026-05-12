@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { useDashboard } from '@/lib/vbrick/dashboard-context'
+import { TakeTheTourButton } from './take-the-tour-button'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/vbrick/dashboard', icon: LayoutDashboard },
@@ -104,7 +105,8 @@ export function TopNav() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0" ref={menuRef}>
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0" ref={menuRef}>
+          <TakeTheTourButton compact />
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex items-center justify-center border-none cursor-pointer"

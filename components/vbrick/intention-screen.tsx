@@ -63,6 +63,7 @@ export function IntentionScreen({ email, onComplete }: IntentionScreenProps) {
 
   return (
     <div
+      data-tour="intention"
       className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6"
       style={{ background: neuTheme.colors.bg }}
     >
