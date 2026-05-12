@@ -6,7 +6,7 @@ import { composeRealtimeInstructions } from '@/lib/vbrick/realtime-instructions'
 export const runtime = 'nodejs'
 export const maxDuration = 30
 
-const REALTIME_MODEL = 'gpt-4o-realtime-preview-2024-12-17'
+const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL ?? 'gpt-realtime'
 const VALID_ACCENTS: readonly BDRAccent[] = ['irish', 'newZealand', 'general'] as const
 
 export async function POST(request: Request) {
@@ -56,13 +56,13 @@ export async function POST(request: Request) {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'OpenAI-Beta': 'realtime=v1',
       },
       body: JSON.stringify({
         model: REALTIME_MODEL,
         voice: persona.voice,
         instructions,
         modalities: ['audio', 'text'],
-        temperature: 0.8,
         turn_detection: {
           type: 'server_vad',
           silence_duration_ms: 600,
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       const text = await resp.text()
       console.error('Realtime session mint failed:', resp.status, text)
       return NextResponse.json(
-        { error: 'Failed to mint Realtime session' },
+        { error: 'Failed to mint Realtime session', upstreamStatus: resp.status, upstreamBody: text },
         { status: 502 },
       )
     }
