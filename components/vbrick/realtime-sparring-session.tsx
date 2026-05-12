@@ -6,7 +6,7 @@ import { Phone, PhoneOff } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { SPARRING_SCENARIOS, getScenarioById } from '@/lib/vbrick/sparring-scenarios'
 
-const REALTIME_API_URL = 'https://api.openai.com/v1/realtime'
+const REALTIME_API_URL = 'https://api.openai.com/v1/realtime/calls'
 
 type TranscriptTurn = { role: 'user' | 'assistant'; text: string; at: number }
 
@@ -108,7 +108,7 @@ export function RealtimeSparringSession({
         const offer = await pc.createOffer()
         await pc.setLocalDescription(offer)
 
-        const sdpResp = await fetch(`${REALTIME_API_URL}?model=${encodeURIComponent(sessionData.model)}`, {
+        const sdpResp = await fetch(REALTIME_API_URL, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${sessionData.clientSecret}`,
@@ -116,7 +116,11 @@ export function RealtimeSparringSession({
           },
           body: offer.sdp,
         })
-        if (!sdpResp.ok) throw new Error(`SDP exchange failed: ${sdpResp.status}`)
+        if (!sdpResp.ok) {
+          const errText = await sdpResp.text().catch(() => '')
+          console.error('SDP exchange failed:', sdpResp.status, errText)
+          throw new Error(`SDP exchange failed: ${sdpResp.status}${errText ? ` — ${errText.slice(0, 200)}` : ''}`)
+        }
         const answerSdp = await sdpResp.text()
         if (cancelled) return
         await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp })
