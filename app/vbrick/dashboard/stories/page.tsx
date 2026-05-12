@@ -24,6 +24,13 @@ import { STORY_TYPE_LABELS } from '@/lib/vbrick/story-types'
 type StoryView = 'home' | 'drafting' | 'review' | 'practice' | 'score'
 type TabId = 'create' | 'vault' | 'team' | 'leaderboard'
 
+function hasStarted(draft: StoryDraft): boolean {
+  if (draft.draft_content && draft.draft_content.trim().length > 0) return true
+  if (Array.isArray(draft.ai_conversation) && draft.ai_conversation.length > 0) return true
+  if (draft.framework_metadata && Object.keys(draft.framework_metadata).length > 0) return true
+  return false
+}
+
 export default function StoryVaultPage() {
   const [email, setEmail] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabId>('create')
@@ -386,13 +393,13 @@ export default function StoryVaultPage() {
         {activeTab === 'create' && (
           <motion.div variants={staggerContainer} initial="hidden" animate="visible">
             {/* Active Drafts */}
-            {drafts.some(d => d.status === 'draft') && (
+            {drafts.some(d => d.status === 'draft' && hasStarted(d)) && (
               <motion.div variants={cascadeIn} custom={0} className="mb-8">
                 <h2 className="font-general-sans font-semibold text-lg mb-4" style={{ color: neuTheme.colors.text.heading }}>
                   Continue Drafting
                 </h2>
                 <div className="space-y-3">
-                  {drafts.filter(d => d.status === 'draft').slice(0, 5).map((draft) => (
+                  {drafts.filter(d => d.status === 'draft' && hasStarted(d)).slice(0, 5).map((draft) => (
                     <NeuCard
                       key={draft.id}
                       padding="sm"
