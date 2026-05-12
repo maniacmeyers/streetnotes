@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         model: REALTIME_MODEL,
         voice: persona.voice,
         instructions,
-        output_modalities: ['audio'],
+        modalities: ['audio', 'text'],
         turn_detection: {
           type: 'server_vad',
           silence_duration_ms: 600,
