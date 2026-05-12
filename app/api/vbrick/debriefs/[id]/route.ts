@@ -8,18 +8,21 @@ export const runtime = 'nodejs'
 // Resolve the caller's effective email. Prefer the authenticated Supabase
 // session; fall back to a query-string email for the vbrick public tenant
 // (which uses localStorage identity because /vbrick + /api are public at
-// the middleware level).
-async function resolveCallerEmail(request: Request): Promise<string | null> {
+// the middleware level). DELETE requests carry no body, so a body-email
+// fallback is intentionally omitted.
+async function resolveCallerEmail(
+  request: Request,
+): Promise<{ email: string | null; isAuthenticated: boolean }> {
   const authClient = await createClient()
   const {
     data: { user },
   } = await authClient.auth.getUser()
-  if (user?.email) return user.email.toLowerCase()
+  if (user?.email) {
+    return { email: user.email.toLowerCase(), isAuthenticated: true }
+  }
 
   const queryEmail = new URL(request.url).searchParams.get('email')
-  if (queryEmail) return queryEmail.toLowerCase()
-
-  return null
+  return { email: queryEmail?.toLowerCase() ?? null, isAuthenticated: false }
 }
 
 // DELETE: Remove a debrief session. Requires ownership.
@@ -27,17 +30,13 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } },
 ) {
-  const callerEmail = await resolveCallerEmail(request)
+  const { email: callerEmail, isAuthenticated } = await resolveCallerEmail(request)
   if (!callerEmail) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // If no Supabase session backed the call, restrict to known vbrick users.
-  const authClient = await createClient()
-  const {
-    data: { user },
-  } = await authClient.auth.getUser()
-  if (!user && !isVbrickUser(callerEmail)) {
+  if (!isAuthenticated && !isVbrickUser(callerEmail)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -47,10 +46,14 @@ export async function DELETE(
     .select('email')
     .eq('id', params.id)
     .single()
-  if (fetchError || !existing) {
+  if (fetchError) {
+    console.error('Failed to fetch debrief session:', fetchError.message)
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
-  if ((existing.email as string).toLowerCase() !== callerEmail) {
+  if (!existing) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+  if ((existing.email ?? '').toLowerCase() !== callerEmail) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
