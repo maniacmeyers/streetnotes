@@ -13,7 +13,7 @@ interface DashboardStats {
   thisWeek: number
 }
 
-export default function DashboardClient({ userEmail: _userEmail }: { userEmail: string }) {
+export default function DashboardClient() {
   const [isCapturing, setIsCapturing] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const hasWorkInProgress = useRef(false)
