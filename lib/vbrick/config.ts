@@ -68,11 +68,16 @@ export const VBRICK_CONFIG = {
     needPayoff: 2.5,
   },
 
-  bdrNames: ['Butcher', 'Kara'] as string[],
-  bdrEmails: ['dylan.fawsitt@vbrick.com', 'kara.pryor@vbrick.com'] as string[],
+  bdrNames: ['Butcher', 'Kara', 'Annabelle'] as string[],
+  bdrEmails: [
+    'dylan.fawsitt@vbrick.com',
+    'kara.pryor@vbrick.com',
+    'annabelle.frost@vbrick.com',
+  ] as string[],
   bdrDisplayNames: {
     'dylan.fawsitt@vbrick.com': 'Butcher',
     'kara.pryor@vbrick.com': 'Kara',
+    'annabelle.frost@vbrick.com': 'Annabelle',
   } as Record<string, string>,
 
   // Head-to-head practice counter floor. Practices before this timestamp

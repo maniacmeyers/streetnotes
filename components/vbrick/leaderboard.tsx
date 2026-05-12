@@ -202,36 +202,34 @@ function DesktopMetricRow({ label, valueA, valueB, trendA, trendB, decimals, del
 export function Leaderboard({ players }: LeaderboardProps) {
   if (players.length < 2) return null
 
+  // Compute max per metric across all players — used to flag the leader on each row
+  const maxElevator = Math.max(...players.map((p) => p.elevatorPitch))
+  const maxObjection = Math.max(...players.map((p) => p.objectionHandling))
+  const maxCustomer = Math.max(...players.map((p) => p.customerStory))
+
+  // Build per-player stats and tally metric wins to identify the overall leader
+  const wins = players.map((p) =>
+    [
+      p.elevatorPitch === maxElevator && maxElevator > 0,
+      p.objectionHandling === maxObjection && maxObjection > 0,
+      p.customerStory === maxCustomer && maxCustomer > 0,
+    ].filter(Boolean).length,
+  )
+  const topWins = Math.max(...wins)
+
+  const allStats: PlayerStats[] = players.map((p, i) => ({
+    name: p.name,
+    isLeading: wins[i] === topWins && topWins > 0 && wins.filter((w) => w === topWins).length === 1,
+    lastPracticeAt: p.lastPracticeAt,
+    elevator: { value: p.elevatorPitch, trend: p.elevatorTrend, lead: p.elevatorPitch === maxElevator && maxElevator > 0 },
+    objection: { value: p.objectionHandling, trend: p.objectionTrend, lead: p.objectionHandling === maxObjection && maxObjection > 0 },
+    customer: { value: p.customerStory, trend: p.customerTrend, lead: p.customerStory === maxCustomer && maxCustomer > 0 },
+  }))
+
+  const isHeadToHead = players.length === 2
   const [a, b] = players
-
-  const aWins = [
-    a.elevatorPitch > b.elevatorPitch,
-    a.objectionHandling > b.objectionHandling,
-    a.customerStory > b.customerStory,
-  ].filter(Boolean).length
-  const bWins = [
-    b.elevatorPitch > a.elevatorPitch,
-    b.objectionHandling > a.objectionHandling,
-    b.customerStory > a.customerStory,
-  ].filter(Boolean).length
-
-  const aStats: PlayerStats = {
-    name: a.name,
-    isLeading: aWins > bWins,
-    lastPracticeAt: a.lastPracticeAt,
-    elevator: { value: a.elevatorPitch, trend: a.elevatorTrend, lead: a.elevatorPitch > b.elevatorPitch },
-    objection: { value: a.objectionHandling, trend: a.objectionTrend, lead: a.objectionHandling > b.objectionHandling },
-    customer: { value: a.customerStory, trend: a.customerTrend, lead: a.customerStory > b.customerStory },
-  }
-
-  const bStats: PlayerStats = {
-    name: b.name,
-    isLeading: bWins > aWins,
-    lastPracticeAt: b.lastPracticeAt,
-    elevator: { value: b.elevatorPitch, trend: b.elevatorTrend, lead: b.elevatorPitch > a.elevatorPitch },
-    objection: { value: b.objectionHandling, trend: b.objectionTrend, lead: b.objectionHandling > a.objectionHandling },
-    customer: { value: b.customerStory, trend: b.customerTrend, lead: b.customerStory > a.customerStory },
-  }
+  const aStats = allStats[0]
+  const bStats = allStats[1]
 
   return (
     <motion.div
@@ -257,14 +255,19 @@ export function Leaderboard({ players }: LeaderboardProps) {
       >
         {/* ─── Mobile: stacked per-player blocks ─── */}
         <div className="sm:hidden space-y-4">
-          <PlayerStatBlock player={aStats} delay={0.3} />
-          <div
-            className="h-px"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
-            }}
-          />
-          <PlayerStatBlock player={bStats} delay={0.4} />
+          {allStats.map((player, i) => (
+            <div key={player.name + i}>
+              {i > 0 && (
+                <div
+                  className="h-px mb-4"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${neuTheme.colors.shadow}40, transparent)`,
+                  }}
+                />
+              )}
+              <PlayerStatBlock player={player} delay={0.3 + i * 0.1} />
+            </div>
+          ))}
           <p
             className="text-[9px] font-inter text-center pt-1"
             style={{ color: neuTheme.colors.text.muted }}
@@ -273,7 +276,28 @@ export function Leaderboard({ players }: LeaderboardProps) {
           </p>
         </div>
 
-        {/* ─── Desktop: original head-to-head row ─── */}
+        {/* ─── Desktop (3+ players): horizontal grid of PlayerStatBlocks ─── */}
+        {!isHeadToHead && (
+          <div className="hidden sm:block">
+            <div
+              className="grid gap-6"
+              style={{ gridTemplateColumns: `repeat(${allStats.length}, minmax(0, 1fr))` }}
+            >
+              {allStats.map((player, i) => (
+                <PlayerStatBlock key={player.name + i} player={player} delay={0.3 + i * 0.1} />
+              ))}
+            </div>
+            <p
+              className="text-[10px] font-inter text-center mt-4"
+              style={{ color: neuTheme.colors.text.muted }}
+            >
+              Practice sessions this week · Resets Monday
+            </p>
+          </div>
+        )}
+
+        {/* ─── Desktop (2 players): original head-to-head VS row ─── */}
+        {isHeadToHead && (
         <div className="hidden sm:block">
           <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 mb-2">
             <motion.div
@@ -282,7 +306,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <PlayerAvatar name={a.name} isLeading={aWins > bWins} size={48} />
+              <PlayerAvatar name={a.name} isLeading={aStats.isLeading} size={48} />
               <h4
                 className="font-inter font-black text-lg uppercase tracking-wide truncate w-full text-right"
                 style={{ color: neuTheme.colors.text.heading }}
@@ -311,7 +335,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <PlayerAvatar name={b.name} isLeading={bWins > aWins} size={48} />
+              <PlayerAvatar name={b.name} isLeading={bStats.isLeading} size={48} />
               <h4
                 className="font-inter font-black text-lg uppercase tracking-wide truncate w-full text-left"
                 style={{ color: neuTheme.colors.text.heading }}
@@ -366,6 +390,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
             Practice sessions this week · Resets Monday
           </p>
         </div>
+        )}
       </div>
     </motion.div>
   )
