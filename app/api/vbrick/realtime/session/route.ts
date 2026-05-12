@@ -56,13 +56,12 @@ export async function POST(request: Request) {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'OpenAI-Beta': 'realtime=v1',
       },
       body: JSON.stringify({
         model: REALTIME_MODEL,
         voice: persona.voice,
         instructions,
-        modalities: ['audio', 'text'],
+        output_modalities: ['audio'],
         turn_detection: {
           type: 'server_vad',
           silence_duration_ms: 600,
