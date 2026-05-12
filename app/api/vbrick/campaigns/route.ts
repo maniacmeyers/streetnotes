@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { ensureK26Campaign } from '@/lib/vbrick/seeds/k26'
 
 export const runtime = 'nodejs'
 
@@ -11,14 +10,6 @@ export async function GET(request: Request) {
   const email = searchParams.get('email')
 
   const supabase = createAdminClient()
-
-  // Lazily seed the K26 campaign on first request so it's always
-  // visible without manually POSTing /seed-k26. No-op when present.
-  try {
-    await ensureK26Campaign(supabase)
-  } catch {
-    // Non-fatal — fall through to whatever's already in the DB.
-  }
 
   let query = supabase
     .from('campaigns')

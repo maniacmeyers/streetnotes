@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import { ArrowLeft, BookOpen, Shield, Rocket, Crown, BarChart3 } from 'lucide-react'
+import { ArrowLeft, BookOpen, Shield, Rocket, Crown, BarChart3, Mic } from 'lucide-react'
 import { NeuCard, NeuButton, NeuTabs } from '@/components/vbrick/neu'
 import { FrameworkPicker } from '@/components/vbrick/stories/framework-picker'
 import { DraftingWizard } from '@/components/vbrick/stories/drafting-wizard'
@@ -98,7 +98,7 @@ export default function StoryVaultPage() {
     const res = await fetch('/api/vbrick/stories/drafts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, storyType: type, title: STORY_TYPE_LABELS[type] }),
+      body: JSON.stringify({ email, storyType: type, title: null }),
     })
     if (res.ok) {
       const data = await res.json()
@@ -152,6 +152,18 @@ export default function StoryVaultPage() {
       body: JSON.stringify({ draft_content: content }),
     })
     setActiveDraft({ ...activeDraft, draft_content: content })
+  }
+
+  const handleEditTitle = async (title: string) => {
+    if (!activeDraft) return
+    const trimmed = title.trim()
+    const nextTitle = trimmed.length > 0 ? trimmed : null
+    await fetch(`/api/vbrick/stories/drafts/${activeDraft.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: nextTitle }),
+    })
+    setActiveDraft({ ...activeDraft, title: nextTitle })
   }
 
   const handleDeleteVaultEntry = async (entryId: string) => {
@@ -209,6 +221,9 @@ export default function StoryVaultPage() {
         setActiveDraft(data.draft as StoryDraft)
         setActiveFrameworkType(data.draft.story_type as StoryType)
         setView('practice')
+        // Refresh drafts so the adopted story appears in My Vault even if the
+        // user navigates away before completing a practice recording.
+        fetchDrafts()
       }
     } finally {
       setAdoptingId(null)
@@ -278,8 +293,10 @@ export default function StoryVaultPage() {
         <DraftReview
           content={activeDraft.draft_content}
           storyType={activeDraft.story_type as StoryType}
+          title={activeDraft.title}
           onStartPractice={handleStartPractice}
           onEdit={handleEditDraft}
+          onTitleChange={handleEditTitle}
         />
       </div>
     )
@@ -366,13 +383,13 @@ export default function StoryVaultPage() {
         {activeTab === 'create' && (
           <motion.div variants={staggerContainer} initial="hidden" animate="visible">
             {/* Active Drafts */}
-            {drafts.length > 0 && (
+            {drafts.some(d => d.status === 'draft') && (
               <motion.div variants={cascadeIn} custom={0} className="mb-8">
                 <h2 className="font-general-sans font-semibold text-lg mb-4" style={{ color: neuTheme.colors.text.heading }}>
                   Continue Drafting
                 </h2>
                 <div className="space-y-3">
-                  {drafts.filter(d => d.status !== 'completed').slice(0, 5).map((draft) => (
+                  {drafts.filter(d => d.status === 'draft').slice(0, 5).map((draft) => (
                     <NeuCard
                       key={draft.id}
                       padding="sm"
@@ -405,51 +422,94 @@ export default function StoryVaultPage() {
           </motion.div>
         )}
 
-        {activeTab === 'vault' && (
-          <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-            {/* Performance Trends */}
-            {email && (
-              <motion.div variants={cascadeIn} custom={0} className="mb-6">
-                <PerformanceTrends email={email} />
-              </motion.div>
-            )}
+        {activeTab === 'vault' && (() => {
+          const savedScripts = drafts.filter(d => d.status === 'practicing')
+          const hasContent = savedScripts.length > 0 || personalVault.length > 0
+          return (
+            <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+              {/* Saved scripts (drafted + adopted) ready to practice */}
+              {savedScripts.length > 0 && (
+                <motion.div variants={cascadeIn} custom={0} className="mb-8">
+                  <h2 className="font-general-sans font-semibold text-lg mb-4" style={{ color: neuTheme.colors.text.heading }}>
+                    Ready to Practice
+                  </h2>
+                  <div className="space-y-3">
+                    {savedScripts.map((draft) => (
+                      <NeuCard
+                        key={draft.id}
+                        padding="sm"
+                        radius="lg"
+                        className="flex items-center justify-between cursor-pointer"
+                        onClick={() => handleResumeDraft(draft)}
+                      >
+                        <div className="min-w-0">
+                          <div className="font-satoshi font-medium text-sm truncate" style={{ color: neuTheme.colors.text.heading }}>
+                            {draft.title || STORY_TYPE_LABELS[draft.story_type as StoryType]}
+                          </div>
+                          <div className="text-xs font-satoshi mt-0.5" style={{ color: neuTheme.colors.text.muted }}>
+                            {STORY_TYPE_LABELS[draft.story_type as StoryType]}
+                          </div>
+                        </div>
+                        <div
+                          className="flex items-center gap-1.5 shrink-0 ml-3 font-satoshi text-xs font-medium"
+                          style={{ color: neuTheme.colors.accent.primary }}
+                        >
+                          <Mic size={14} />
+                          Practice
+                        </div>
+                      </NeuCard>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
 
-            {personalVault.length === 0 ? (
-              <motion.div variants={cascadeIn} custom={1}>
-                <NeuCard variant="inset" className="text-center py-12">
-                  <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
-                    No stories in your vault yet. Record a practice session to add your first story.
-                  </p>
-                  <NeuButton
-                    variant="accent"
-                    size="sm"
-                    className="mt-4"
-                    onClick={() => setActiveTab('create')}
-                  >
-                    Start Drafting
-                  </NeuButton>
-                </NeuCard>
-              </motion.div>
-            ) : (
-              <div className="space-y-4">
-                {personalVault.map((entry, i) => (
-                  <motion.div key={entry.id} variants={cascadeIn} custom={i + 1} layout>
-                    <SwipeToDelete onDelete={() => handleDeleteVaultEntry(entry.id)}>
-                      <VaultCard
-                        entry={entry}
-                        showShare
-                        onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
-                        onPractice={() => handlePracticeFromVault(entry)}
-                        onDelete={() => handleDeleteVaultEntry(entry.id)}
-                        email={email || undefined}
-                      />
-                    </SwipeToDelete>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
+              {/* Performance Trends */}
+              {email && personalVault.length > 0 && (
+                <motion.div variants={cascadeIn} custom={1} className="mb-6">
+                  <PerformanceTrends email={email} />
+                </motion.div>
+              )}
+
+              {!hasContent ? (
+                <motion.div variants={cascadeIn} custom={2}>
+                  <NeuCard variant="inset" className="text-center py-12">
+                    <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
+                      No stories in your vault yet. Draft one or adopt a story from the Team Vault to start practicing.
+                    </p>
+                    <NeuButton
+                      variant="accent"
+                      size="sm"
+                      className="mt-4"
+                      onClick={() => setActiveTab('create')}
+                    >
+                      Start Drafting
+                    </NeuButton>
+                  </NeuCard>
+                </motion.div>
+              ) : personalVault.length > 0 && (
+                <div className="space-y-4">
+                  <h2 className="font-general-sans font-semibold text-lg mb-4" style={{ color: neuTheme.colors.text.heading }}>
+                    Best Performances
+                  </h2>
+                  {personalVault.map((entry, i) => (
+                    <motion.div key={entry.id} variants={cascadeIn} custom={i + 3} layout>
+                      <SwipeToDelete onDelete={() => handleDeleteVaultEntry(entry.id)}>
+                        <VaultCard
+                          entry={entry}
+                          showShare
+                          onToggleShare={() => handleToggleShare(entry.id, entry.shared_to_team)}
+                          onPractice={() => handlePracticeFromVault(entry)}
+                          onDelete={() => handleDeleteVaultEntry(entry.id)}
+                          email={email || undefined}
+                        />
+                      </SwipeToDelete>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )
+        })()}
 
         {activeTab === 'team' && (
           <motion.div variants={staggerContainer} initial="hidden" animate="visible">

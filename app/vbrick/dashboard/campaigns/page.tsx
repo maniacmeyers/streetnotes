@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import { ArrowLeft, Plus, Loader2, Sparkles, CheckCircle, FileText, Megaphone } from 'lucide-react'
+import { ArrowLeft, Plus, Loader2, Sparkles, CheckCircle, Megaphone } from 'lucide-react'
 import { NeuCard, NeuButton, NeuTabs, NeuBadge, NeuInput, NeuTextarea } from '@/components/vbrick/neu'
 import { FileUploader } from '@/components/vbrick/campaigns/file-uploader'
 import { ChannelViewer } from '@/components/vbrick/campaigns/channel-viewer'
@@ -13,12 +13,12 @@ import type { Campaign, CampaignFile, CampaignChannel } from '@/lib/vbrick/campa
 import { STATUS_LABELS } from '@/lib/vbrick/campaign-types'
 
 type PageView = 'list' | 'create' | 'detail'
-type DetailTab = 'files' | 'messaging' | 'personalize'
+type DetailTab = 'messaging' | 'personalize'
 
 export default function CampaignsPage() {
   const [email, setEmail] = useState<string | null>(null)
   const [view, setView] = useState<PageView>('list')
-  const [detailTab, setDetailTab] = useState<DetailTab>('files')
+  const [detailTab, setDetailTab] = useState<DetailTab>('messaging')
 
   // List state
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
@@ -98,7 +98,7 @@ export default function CampaignsPage() {
       setFiles([])
       setChannels([])
       setView('detail')
-      setDetailTab('files')
+      setDetailTab('messaging')
       // Reset form
       setFormName('')
       setFormDescription('')
@@ -112,7 +112,7 @@ export default function CampaignsPage() {
     setActiveCampaign(campaign)
     fetchCampaignDetail(campaign.id)
     setView('detail')
-    setDetailTab(campaign.status === 'draft' ? 'files' : 'messaging')
+    setDetailTab('messaging')
   }
 
   async function handleGenerate() {
@@ -287,10 +287,62 @@ export default function CampaignsPage() {
     const allApproved = channels.length > 0 && draftChannelCount === 0
 
     const detailTabs = [
-      { id: 'files' as const, label: `Files (${files.length})`, icon: <FileText size={14} /> },
       { id: 'messaging' as const, label: `Messaging (${channels.length})`, icon: <Megaphone size={14} /> },
       { id: 'personalize' as const, label: 'Personalize', icon: <Sparkles size={14} /> },
     ]
+
+    const needsSource = files.length === 0 && channels.length === 0
+    const sourceMaterialBlock = (
+      <motion.div variants={cascadeIn} custom={0}>
+        <NeuCard variant="inset" padding="md" className="mb-6">
+          <h3 className="font-general-sans font-semibold text-sm mb-1" style={{ color: neuTheme.colors.text.heading }}>
+            Source material
+          </h3>
+          <p className="font-satoshi text-xs mb-3" style={{ color: neuTheme.colors.text.subtle }}>
+            Upload battlecards, datasheets, or talk tracks. The AI uses them to generate channel messaging.
+            {files.length > 0 ? ` ${files.length} source${files.length === 1 ? '' : 's'} uploaded.` : ''}
+          </p>
+          <FileUploader
+            campaignId={activeCampaign.id}
+            email={email}
+            onUploadComplete={() => fetchCampaignDetail(activeCampaign.id)}
+          />
+          {files.length > 0 && (activeCampaign.status === 'draft' || activeCampaign.status === 'pending_approval') && (
+            <div className="mt-4">
+              <NeuButton
+                variant="accent"
+                size="md"
+                onClick={handleGenerate}
+                disabled={generating}
+                className="w-full"
+              >
+                {generating ? (
+                  <>
+                    <Loader2 size={16} className="mr-2 inline-block animate-spin" />
+                    Generating messaging (1–2 minutes)…
+                  </>
+                ) : channels.length > 0 ? (
+                  <>
+                    <Sparkles size={16} className="mr-2 inline-block" />
+                    Regenerate Messaging
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={16} className="mr-2 inline-block" />
+                    Generate Messaging from Sources
+                  </>
+                )}
+              </NeuButton>
+              {generateError && (
+                <p className="font-satoshi text-sm mt-2" style={{ color: neuTheme.colors.status.danger }}>
+                  {generateError}
+                </p>
+              )}
+            </div>
+          )}
+        </NeuCard>
+      </motion.div>
+    )
 
     return (
       <div className="min-h-screen p-6" style={{ background: neuTheme.colors.bg }}>
@@ -369,90 +421,24 @@ export default function CampaignsPage() {
             className="mb-6"
           />
 
-          {/* Files tab */}
-          {detailTab === 'files' && (
-            <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-              <motion.div variants={cascadeIn} custom={0}>
-                <FileUploader
-                  campaignId={activeCampaign.id}
-                  email={email}
-                  onUploadComplete={() => fetchCampaignDetail(activeCampaign.id)}
-                />
-              </motion.div>
-
-              {/* Existing files */}
-              {files.length > 0 && (
-                <motion.div variants={cascadeIn} custom={1} className="mt-6">
-                  <h3 className="font-general-sans font-semibold text-sm mb-3" style={{ color: neuTheme.colors.text.heading }}>
-                    Uploaded Files ({files.length})
-                  </h3>
-                  <div className="space-y-2">
-                    {files.map(f => (
-                      <NeuCard key={f.id} padding="sm" className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <FileText size={16} style={{ color: neuTheme.colors.accent.primary }} />
-                          <div>
-                            <p className="font-satoshi text-sm font-medium" style={{ color: neuTheme.colors.text.heading }}>
-                              {f.file_name}
-                            </p>
-                            <p className="font-satoshi text-xs" style={{ color: neuTheme.colors.text.subtle }}>
-                              {f.extracted_text ? `${f.extracted_text.length.toLocaleString()} chars extracted` : 'Processing...'}
-                            </p>
-                          </div>
-                        </div>
-                        <NeuBadge variant="success" size="sm">Uploaded</NeuBadge>
-                      </NeuCard>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Generate button */}
-              {files.length > 0 && (activeCampaign.status === 'draft' || activeCampaign.status === 'pending_approval') && (
-                <motion.div variants={cascadeIn} custom={2} className="mt-6">
-                  <NeuButton
-                    variant="accent"
-                    size="md"
-                    onClick={handleGenerate}
-                    disabled={generating}
-                    className="w-full"
-                  >
-                    {generating ? (
-                      <>
-                        <Loader2 size={16} className="mr-2 inline-block animate-spin" />
-                        Generating messaging across all channels (this takes 1-2 minutes)...
-                      </>
-                    ) : channels.length > 0 ? (
-                      <>
-                        <Sparkles size={16} className="mr-2 inline-block" />
-                        Regenerate All Messaging
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={16} className="mr-2 inline-block" />
-                        Generate Campaign Messaging
-                      </>
-                    )}
-                  </NeuButton>
-                  {generateError && (
-                    <p className="font-satoshi text-sm mt-2" style={{ color: neuTheme.colors.status.danger }}>
-                      {generateError}
-                    </p>
-                  )}
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-
           {/* Messaging tab */}
           {detailTab === 'messaging' && (
             <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-              <motion.div variants={cascadeIn} custom={0}>
+              {(needsSource || channels.length === 0) && sourceMaterialBlock}
+
+              <motion.div variants={cascadeIn} custom={1}>
                 {activeCampaign.status === 'generating' ? (
                   <NeuCard variant="inset" className="text-center py-12">
                     <Loader2 size={32} className="animate-spin mx-auto mb-4" style={{ color: neuTheme.colors.accent.primary }} />
                     <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
-                      AI is generating messaging for all channels. This takes 1-2 minutes...
+                      AI is generating messaging for all channels. This takes 1–2 minutes...
+                    </p>
+                  </NeuCard>
+                ) : channels.length === 0 ? (
+                  <NeuCard variant="inset" className="text-center py-12">
+                    <Megaphone size={28} className="mx-auto mb-3" style={{ color: neuTheme.colors.text.subtle }} />
+                    <p className="font-satoshi text-sm" style={{ color: neuTheme.colors.text.muted }}>
+                      Upload source material above, then generate messaging.
                     </p>
                   </NeuCard>
                 ) : (
@@ -467,7 +453,7 @@ export default function CampaignsPage() {
 
               {/* Approved count summary */}
               {channels.length > 0 && (
-                <motion.div variants={cascadeIn} custom={1} className="mt-4">
+                <motion.div variants={cascadeIn} custom={2} className="mt-4">
                   <p className="font-satoshi text-xs text-center" style={{ color: neuTheme.colors.text.subtle }}>
                     {approvedChannelCount} of {channels.length} channels approved
                   </p>

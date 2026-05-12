@@ -11,18 +11,39 @@ import { STORY_TYPE_LABELS, type StoryType } from '@/lib/vbrick/story-types'
 interface DraftReviewProps {
   content: string
   storyType: StoryType
+  title?: string | null
   onStartPractice: () => void
   onEdit: (content: string) => void
+  onTitleChange?: (title: string) => void
 }
 
-export function DraftReview({ content, storyType, onStartPractice, onEdit }: DraftReviewProps) {
+export function DraftReview({
+  content,
+  storyType,
+  title,
+  onStartPractice,
+  onEdit,
+  onTitleChange,
+}: DraftReviewProps) {
   const [editing, setEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(content)
+  const [titleDraft, setTitleDraft] = useState(title ?? '')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     setEditedContent(content)
   }, [content])
+
+  useEffect(() => {
+    setTitleDraft(title ?? '')
+  }, [title])
+
+  function handleTitleBlur() {
+    if (!onTitleChange) return
+    const next = titleDraft.trim()
+    if (next === (title ?? '').trim()) return
+    onTitleChange(next)
+  }
 
   useEffect(() => {
     if (editing && textareaRef.current) {
@@ -47,6 +68,38 @@ export function DraftReview({ content, storyType, onStartPractice, onEdit }: Dra
 
   return (
     <motion.div variants={fadeIn} initial="hidden" animate="visible">
+      {/* Title — user-editable name for this story */}
+      {onTitleChange && (
+        <div className="mb-4">
+          <label
+            className="block font-satoshi text-xs font-medium mb-2"
+            style={{ color: neuTheme.colors.text.subtle }}
+          >
+            Name this story
+          </label>
+          <input
+            type="text"
+            value={titleDraft}
+            onChange={(e) => setTitleDraft(e.target.value)}
+            onBlur={handleTitleBlur}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                ;(e.target as HTMLInputElement).blur()
+              }
+            }}
+            placeholder="e.g., Healthcare CIO 30-sec pitch"
+            maxLength={80}
+            className="w-full p-3 rounded-xl font-satoshi text-base outline-none"
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.inset,
+              color: neuTheme.colors.text.heading,
+            }}
+          />
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <NeuBadge variant="accent">{STORY_TYPE_LABELS[storyType]}</NeuBadge>
