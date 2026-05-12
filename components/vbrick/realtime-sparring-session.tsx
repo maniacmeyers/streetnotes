@@ -61,8 +61,48 @@ export function RealtimeSparringSession({
   const transcriptRef = useRef<TranscriptTurn[]>([])
   const sessionIdRef = useRef<string | null>(null)
   const personaIdRef = useRef<string | null>(null)
+  const hasGreetedRef = useRef(false)
 
   const scenario = getScenarioById(scenarioId) ?? SPARRING_SCENARIOS['brightcove-friction']
+
+  function triggerGreeting(personaFirstName: string) {
+    const dc = dcRef.current
+    if (!dc) return
+    if (hasGreetedRef.current) return
+
+    const send = () => {
+      if (hasGreetedRef.current) return
+      if (!dc || dc.readyState !== 'open') return
+      hasGreetedRef.current = true
+      try {
+        dc.send(
+          JSON.stringify({
+            type: 'response.create',
+            response: {
+              instructions:
+                "The phone just rang and you're picking up now. Open with a short, natural pickup greeting — vary it: 'Hello?' / 'Yeah?' / 'This is " +
+                personaFirstName +
+                ".' / 'Hey?'. ONE short utterance only. Do not start the conversation, do not introduce VBrick — just answer the phone.",
+            },
+          }),
+        )
+      } catch (err) {
+        console.error('Failed to send greeting trigger:', err)
+      }
+    }
+
+    if (dc.readyState === 'open') {
+      send()
+    } else {
+      const previousOpen = dc.onopen
+      dc.onopen = (ev) => {
+        try {
+          previousOpen?.call(dc, ev)
+        } catch {}
+        send()
+      }
+    }
+  }
 
   // --- Start the call on mount ---
   useEffect(() => {
@@ -125,7 +165,11 @@ export function RealtimeSparringSession({
         if (cancelled) return
         await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp })
 
-        if (!cancelled) setPhase('in-call')
+        if (!cancelled) {
+          setPhase('in-call')
+          const firstName = (sessionData.personaName || 'Prospect').split(' ')[0]
+          triggerGreeting(firstName)
+        }
       } catch (err) {
         console.error('Realtime start failed:', err)
         if (!cancelled) {
@@ -201,6 +245,7 @@ export function RealtimeSparringSession({
     localStreamRef.current = null
     pcRef.current = null
     dcRef.current = null
+    hasGreetedRef.current = false
   }
 
   async function endCall() {
