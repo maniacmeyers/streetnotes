@@ -51,26 +51,29 @@ export async function POST(request: Request) {
   )
 
   try {
-    const resp = await fetch('https://api.openai.com/v1/realtime/sessions', {
+    const resp = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: REALTIME_MODEL,
-        instructions,
-        audio: {
-          input: {
-            transcription: { model: 'whisper-1' },
-            turn_detection: {
-              type: 'server_vad',
-              silence_duration_ms: 600,
-              prefix_padding_ms: 300,
+        session: {
+          type: 'realtime',
+          model: REALTIME_MODEL,
+          instructions,
+          audio: {
+            input: {
+              transcription: { model: 'whisper-1' },
+              turn_detection: {
+                type: 'server_vad',
+                silence_duration_ms: 600,
+                prefix_padding_ms: 300,
+              },
             },
-          },
-          output: {
-            voice: persona.voice,
+            output: {
+              voice: persona.voice,
+            },
           },
         },
       }),
@@ -85,15 +88,34 @@ export async function POST(request: Request) {
       )
     }
 
-    const session = (await resp.json()) as {
-      id: string
-      client_secret: { value: string; expires_at: number }
+    // GA /v1/realtime/client_secrets response shape:
+    //   { value: 'ek_...', expires_at: 1700000000, session: { id: 'sess_...', ... } }
+    // Older legacy /v1/realtime/sessions shape (in case it ever falls back):
+    //   { id: 'sess_...', client_secret: { value, expires_at } }
+    type GaResponse = {
+      value?: string
+      expires_at?: number
+      session?: { id?: string }
+      client_secret?: { value?: string; expires_at?: number }
+      id?: string
+    }
+    const session = (await resp.json()) as GaResponse
+    const clientSecret = session.value ?? session.client_secret?.value
+    const expiresAt = session.expires_at ?? session.client_secret?.expires_at
+    const sessionId = session.session?.id ?? session.id ?? crypto.randomUUID()
+
+    if (!clientSecret) {
+      console.error('Realtime session mint: missing client secret', session)
+      return NextResponse.json(
+        { error: 'Realtime mint returned no client secret' },
+        { status: 502 },
+      )
     }
 
     return NextResponse.json({
-      sessionId: session.id,
-      clientSecret: session.client_secret.value,
-      expiresAt: session.client_secret.expires_at,
+      sessionId,
+      clientSecret,
+      expiresAt,
       model: REALTIME_MODEL,
       voice: persona.voice,
       personaId: persona.id,
