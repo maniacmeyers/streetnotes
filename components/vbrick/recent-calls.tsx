@@ -182,7 +182,7 @@ export function RecentCalls({ calls, onSelect, onDelete }: RecentCallsProps) {
               <SwipeToDelete
                 key={call.id}
                 onDelete={() => onDelete(call.id)}
-                radius={12}
+                radius={12 /* matches the row's rounded-xl */}
               >
                 {row}
               </SwipeToDelete>
