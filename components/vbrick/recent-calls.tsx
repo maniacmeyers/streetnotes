@@ -1,10 +1,11 @@
 'use client'
 
 import { motion, AnimatePresence } from 'motion/react'
-import { Phone } from 'lucide-react'
+import { Phone, Trash2 } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { DispositionDot, Badge } from './badge'
 import { scoreColorClass } from '@/lib/vbrick/colors'
+import { SwipeToDelete } from './swipe-to-delete'
 import type { CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 
 export interface RecentCall {
@@ -48,9 +49,10 @@ function statusLabel(status?: ProspectStatus): string {
 interface RecentCallsProps {
   calls: RecentCall[]
   onSelect?: (id: string) => void
+  onDelete?: (id: string) => void | Promise<void>
 }
 
-export function RecentCalls({ calls, onSelect }: RecentCallsProps) {
+export function RecentCalls({ calls, onSelect, onDelete }: RecentCallsProps) {
   if (calls.length === 0) {
     return (
       <div
@@ -74,82 +76,121 @@ export function RecentCalls({ calls, onSelect }: RecentCallsProps) {
   return (
     <div className="space-y-2">
       <AnimatePresence mode="popLayout">
-        {calls.map((call) => (
-          <motion.div
-            key={call.id}
-            role={onSelect ? 'button' : undefined}
-            tabIndex={onSelect ? 0 : undefined}
-            onClick={onSelect ? () => onSelect(call.debriefSessionId || call.id) : undefined}
-            onKeyDown={
-              onSelect
-                ? (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      onSelect(call.debriefSessionId || call.id)
+        {calls.map((call) => {
+          const handleSelect = onSelect
+            ? () => onSelect(call.debriefSessionId || call.id)
+            : undefined
+
+          const handleDeleteClick = onDelete
+            ? (e: React.MouseEvent) => {
+                e.stopPropagation()
+                if (typeof window !== 'undefined' && !window.confirm('Delete this debrief?')) return
+                void onDelete(call.id)
+              }
+            : undefined
+
+          const row = (
+            <motion.div
+              role={handleSelect ? 'button' : undefined}
+              tabIndex={handleSelect ? 0 : undefined}
+              onClick={handleSelect}
+              onKeyDown={
+                handleSelect
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleSelect()
+                      }
                     }
-                  }
-                : undefined
-            }
-            className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl transition-all duration-200 ${
-              onSelect ? 'cursor-pointer' : 'cursor-default'
-            }`}
-            style={{
-              background: neuTheme.colors.bg,
-              boxShadow: neuTheme.shadows.raisedSm,
-              touchAction: 'manipulation',
-            }}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.3 }}
-            layout
-            whileHover={onSelect ? { boxShadow: neuTheme.shadows.raised } : undefined}
-          >
-            <DispositionDot disposition={call.disposition} />
-
-            <div className="flex-1 min-w-0">
-              <p
-                className="font-inter font-semibold text-sm truncate"
-                style={{ color: neuTheme.colors.text.heading }}
-              >
-                {call.contactName}
-              </p>
-              <p
-                className="text-xs font-inter truncate"
-                style={{ color: neuTheme.colors.text.muted }}
-              >
-                {call.company}
-                <span className="sm:hidden ml-2" style={{ color: neuTheme.colors.text.subtle }}>
-                  · {formatRelativeTime(call.timestamp)}
-                </span>
-              </p>
-            </div>
-
-            {call.prospectStatus && (
-              <span className="hidden sm:inline-flex">
-                <Badge variant={statusVariant(call.prospectStatus)}>
-                  {statusLabel(call.prospectStatus)}
-                </Badge>
-              </span>
-            )}
-
-            <span
-              className={`font-fira-code font-bold text-sm min-w-[32px] text-right ${
-                call.spinScore ? scoreColorClass(call.spinScore) : ''
+                  : undefined
+              }
+              className={`group flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl transition-all duration-200 ${
+                handleSelect ? 'cursor-pointer' : 'cursor-default'
               }`}
-              style={!call.spinScore ? { color: neuTheme.colors.text.subtle } : undefined}
+              style={{
+                background: neuTheme.colors.bg,
+                boxShadow: neuTheme.shadows.raisedSm,
+                touchAction: 'manipulation',
+              }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              layout
+              whileHover={handleSelect ? { boxShadow: neuTheme.shadows.raised } : undefined}
             >
-              {call.spinScore ? call.spinScore.toFixed(1) : '—'}
-            </span>
+              <DispositionDot disposition={call.disposition} />
 
-            <span
-              className="hidden sm:inline text-xs font-fira-code min-w-[50px] text-right"
-              style={{ color: neuTheme.colors.text.subtle }}
-            >
-              {formatRelativeTime(call.timestamp)}
-            </span>
-          </motion.div>
-        ))}
+              <div className="flex-1 min-w-0">
+                <p
+                  className="font-inter font-semibold text-sm truncate"
+                  style={{ color: neuTheme.colors.text.heading }}
+                >
+                  {call.contactName}
+                </p>
+                <p
+                  className="text-xs font-inter truncate"
+                  style={{ color: neuTheme.colors.text.muted }}
+                >
+                  {call.company}
+                  <span className="sm:hidden ml-2" style={{ color: neuTheme.colors.text.subtle }}>
+                    · {formatRelativeTime(call.timestamp)}
+                  </span>
+                </p>
+              </div>
+
+              {call.prospectStatus && (
+                <span className="hidden sm:inline-flex">
+                  <Badge variant={statusVariant(call.prospectStatus)}>
+                    {statusLabel(call.prospectStatus)}
+                  </Badge>
+                </span>
+              )}
+
+              <span
+                className={`font-fira-code font-bold text-sm min-w-[32px] text-right ${
+                  call.spinScore ? scoreColorClass(call.spinScore) : ''
+                }`}
+                style={!call.spinScore ? { color: neuTheme.colors.text.subtle } : undefined}
+              >
+                {call.spinScore ? call.spinScore.toFixed(1) : '—'}
+              </span>
+
+              <span
+                className="hidden sm:inline text-xs font-fira-code min-w-[50px] text-right"
+                style={{ color: neuTheme.colors.text.subtle }}
+              >
+                {formatRelativeTime(call.timestamp)}
+              </span>
+
+              {handleDeleteClick && (
+                <button
+                  type="button"
+                  onClick={handleDeleteClick}
+                  aria-label="Delete debrief"
+                  className="hidden sm:inline-flex items-center justify-center w-7 h-7 ml-1 rounded-full opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                  style={{ color: neuTheme.colors.text.subtle }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+            </motion.div>
+          )
+
+          if (onDelete) {
+            return (
+              <SwipeToDelete
+                key={call.id}
+                onDelete={() => onDelete(call.id)}
+                radius={12}
+              >
+                {row}
+              </SwipeToDelete>
+            )
+          }
+
+          return <div key={call.id}>{row}</div>
+        })}
       </AnimatePresence>
     </div>
   )
