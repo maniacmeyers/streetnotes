@@ -96,44 +96,6 @@ export function isVbrickBDROutput(output: unknown): output is VbrickBDRStructure
   return isBDROutput(output) && 'spin' in output
 }
 
-/* ─── Event Conversation Types (K26 ServiceNow event in Vegas, May 2026) ─── */
-
-export type EngagementType =
-  | 'walked-by'
-  | 'scheduled-meeting'
-  | 'demo-watcher'
-  | 'referral'
-  | 'lead-scan'
-  | 'other'
-
-export type DemoWatched = 'full' | 'partial' | 'none'
-
-export type EventTemperature = 'hot' | 'warm' | 'cold' | 'not-a-fit'
-
-export interface EventConversationOutput {
-  mode: 'vbrick-event-conversation'
-  contactSnapshot: { name: string; title: string; company: string; email: string }
-  engagementType: EngagementType
-  demoWatched: DemoWatched
-  temperature: EventTemperature
-  badgeCollected: boolean
-  servicenowModules: string[]
-  currentSolution: string
-  theTruth: string
-  objections: string[]
-  followupCommitment: string
-  nextAction: { action: string; when: string }
-  aeBriefing: string | null
-  ciMentions: CIExtraction[]
-}
-
-export function isEventOutput(output: unknown): output is EventConversationOutput {
-  return typeof output === 'object'
-    && output !== null
-    && 'mode' in output
-    && (output as EventConversationOutput).mode === 'vbrick-event-conversation'
-}
-
 /* ─── Flow State ─── */
 
 export type DebriefStep = 'email' | 'record' | 'import' | 'review' | 'processing' | 'results'

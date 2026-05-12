@@ -5,7 +5,7 @@ import { Phone } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { DispositionDot, Badge } from './badge'
 import { scoreColorClass } from '@/lib/vbrick/colors'
-import type { CallDisposition, ProspectStatus, EventTemperature } from '@/lib/debrief/types'
+import type { CallDisposition, ProspectStatus } from '@/lib/debrief/types'
 
 export interface RecentCall {
   id: string
@@ -16,9 +16,6 @@ export interface RecentCall {
   spinScore?: number
   timestamp: string
   debriefSessionId?: string
-  /** When set to 'event', the row renders K26 styling instead of cold-call. */
-  mode?: 'bdr-cold-call' | 'vbrick-event-conversation'
-  temperature?: EventTemperature
 }
 
 function formatRelativeTime(ts: string): string {
@@ -46,13 +43,6 @@ function statusVariant(status?: ProspectStatus): 'cyan' | 'green' | 'amber' | 'r
 function statusLabel(status?: ProspectStatus): string {
   if (!status) return ''
   return status.replace(/-/g, ' ')
-}
-
-function temperatureVariant(t?: EventTemperature): 'green' | 'amber' | 'gray' | 'red' {
-  if (t === 'hot') return 'red'
-  if (t === 'warm') return 'amber'
-  if (t === 'not-a-fit') return 'gray'
-  return 'gray'
 }
 
 interface RecentCallsProps {
@@ -84,109 +74,82 @@ export function RecentCalls({ calls, onSelect }: RecentCallsProps) {
   return (
     <div className="space-y-2">
       <AnimatePresence mode="popLayout">
-        {calls.map((call) => {
-          const isEvent = call.mode === 'vbrick-event-conversation'
-          return (
-            <motion.div
-              key={call.id}
-              role={onSelect ? 'button' : undefined}
-              tabIndex={onSelect ? 0 : undefined}
-              onClick={onSelect ? () => onSelect(call.debriefSessionId || call.id) : undefined}
-              onKeyDown={
-                onSelect
-                  ? (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        onSelect(call.debriefSessionId || call.id)
-                      }
+        {calls.map((call) => (
+          <motion.div
+            key={call.id}
+            role={onSelect ? 'button' : undefined}
+            tabIndex={onSelect ? 0 : undefined}
+            onClick={onSelect ? () => onSelect(call.debriefSessionId || call.id) : undefined}
+            onKeyDown={
+              onSelect
+                ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      onSelect(call.debriefSessionId || call.id)
                     }
-                  : undefined
-              }
-              className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl transition-all duration-200 ${
-                onSelect ? 'cursor-pointer' : 'cursor-default'
-              }`}
-              style={{
-                background: neuTheme.colors.bg,
-                boxShadow: neuTheme.shadows.raisedSm,
-                touchAction: 'manipulation',
-              }}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
-              layout
-              whileHover={onSelect ? { boxShadow: neuTheme.shadows.raised } : undefined}
-            >
-              {isEvent ? (
-                <span
-                  className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[9px] font-inter font-bold uppercase tracking-wider shrink-0"
-                  style={{
-                    background: `${neuTheme.colors.accent.primary}20`,
-                    color: neuTheme.colors.accent.primary,
-                  }}
-                >
-                  K26
-                </span>
-              ) : (
-                <DispositionDot disposition={call.disposition} />
-              )}
+                  }
+                : undefined
+            }
+            className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl transition-all duration-200 ${
+              onSelect ? 'cursor-pointer' : 'cursor-default'
+            }`}
+            style={{
+              background: neuTheme.colors.bg,
+              boxShadow: neuTheme.shadows.raisedSm,
+              touchAction: 'manipulation',
+            }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            layout
+            whileHover={onSelect ? { boxShadow: neuTheme.shadows.raised } : undefined}
+          >
+            <DispositionDot disposition={call.disposition} />
 
-              <div className="flex-1 min-w-0">
-                <p
-                  className="font-inter font-semibold text-sm truncate"
-                  style={{ color: neuTheme.colors.text.heading }}
-                >
-                  {call.contactName}
-                </p>
-                <p
-                  className="text-xs font-inter truncate"
-                  style={{ color: neuTheme.colors.text.muted }}
-                >
-                  {call.company}
-                  <span className="sm:hidden ml-2" style={{ color: neuTheme.colors.text.subtle }}>
-                    · {formatRelativeTime(call.timestamp)}
-                  </span>
-                </p>
-              </div>
-
-              {isEvent ? (
-                call.temperature && (
-                  <span className="hidden sm:inline-flex">
-                    <Badge variant={temperatureVariant(call.temperature)}>
-                      {call.temperature.replace(/-/g, ' ')}
-                    </Badge>
-                  </span>
-                )
-              ) : (
-                call.prospectStatus && (
-                  <span className="hidden sm:inline-flex">
-                    <Badge variant={statusVariant(call.prospectStatus)}>
-                      {statusLabel(call.prospectStatus)}
-                    </Badge>
-                  </span>
-                )
-              )}
-
-              {!isEvent && (
-                <span
-                  className={`font-fira-code font-bold text-sm min-w-[32px] text-right ${
-                    call.spinScore ? scoreColorClass(call.spinScore) : ''
-                  }`}
-                  style={!call.spinScore ? { color: neuTheme.colors.text.subtle } : undefined}
-                >
-                  {call.spinScore ? call.spinScore.toFixed(1) : '—'}
-                </span>
-              )}
-
-              <span
-                className="hidden sm:inline text-xs font-fira-code min-w-[50px] text-right"
-                style={{ color: neuTheme.colors.text.subtle }}
+            <div className="flex-1 min-w-0">
+              <p
+                className="font-inter font-semibold text-sm truncate"
+                style={{ color: neuTheme.colors.text.heading }}
               >
-                {formatRelativeTime(call.timestamp)}
+                {call.contactName}
+              </p>
+              <p
+                className="text-xs font-inter truncate"
+                style={{ color: neuTheme.colors.text.muted }}
+              >
+                {call.company}
+                <span className="sm:hidden ml-2" style={{ color: neuTheme.colors.text.subtle }}>
+                  · {formatRelativeTime(call.timestamp)}
+                </span>
+              </p>
+            </div>
+
+            {call.prospectStatus && (
+              <span className="hidden sm:inline-flex">
+                <Badge variant={statusVariant(call.prospectStatus)}>
+                  {statusLabel(call.prospectStatus)}
+                </Badge>
               </span>
-            </motion.div>
-          )
-        })}
+            )}
+
+            <span
+              className={`font-fira-code font-bold text-sm min-w-[32px] text-right ${
+                call.spinScore ? scoreColorClass(call.spinScore) : ''
+              }`}
+              style={!call.spinScore ? { color: neuTheme.colors.text.subtle } : undefined}
+            >
+              {call.spinScore ? call.spinScore.toFixed(1) : '—'}
+            </span>
+
+            <span
+              className="hidden sm:inline text-xs font-fira-code min-w-[50px] text-right"
+              style={{ color: neuTheme.colors.text.subtle }}
+            >
+              {formatRelativeTime(call.timestamp)}
+            </span>
+          </motion.div>
+        ))}
       </AnimatePresence>
     </div>
   )

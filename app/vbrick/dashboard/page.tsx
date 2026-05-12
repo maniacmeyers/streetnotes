@@ -7,9 +7,6 @@ import { Leaderboard } from '@/components/vbrick/leaderboard'
 import { PerformanceCards } from '@/components/vbrick/performance-cards'
 import { RecentCalls, type RecentCall } from '@/components/vbrick/recent-calls'
 import { DashboardDebriefFlow, VbrickResultsCard } from '@/components/vbrick/dashboard-debrief-flow'
-import { VbrickEventResultsCard } from '@/components/vbrick/event-results-card'
-import { isEventOutput } from '@/lib/debrief/types'
-import type { EventConversationOutput } from '@/lib/debrief/types'
 import { TranscriptInput } from '@/components/vbrick/transcript-input'
 import { QuickStartTiles } from '@/components/vbrick/quick-start-tiles'
 import type { DebriefOutput, CallDisposition, ProspectStatus } from '@/lib/debrief/types'
@@ -117,35 +114,20 @@ export default function VbrickDashboardPage() {
         created_at: string
         structured_output: unknown
       }>) {
-        const raw = row.structured_output
-        if (isEventOutput(raw)) {
-          outputs[row.id] = raw as unknown as DebriefOutput
-          calls.push({
-            id: row.id,
-            contactName: raw.contactSnapshot?.name || 'Unknown',
-            company: raw.contactSnapshot?.company || 'Unknown',
-            disposition: 'connected' as CallDisposition,
-            timestamp: row.created_at,
-            debriefSessionId: row.id,
-            mode: 'vbrick-event-conversation',
-            temperature: raw.temperature,
-          })
-        } else if (isBDROutput(raw)) {
-          const out = raw
-          outputs[row.id] = out as unknown as DebriefOutput
-          const spinScore = isVbrickBDROutput(out) ? out.spin.composite : undefined
-          calls.push({
-            id: row.id,
-            contactName: out.contactSnapshot?.name || 'Unknown',
-            company: out.contactSnapshot?.company || 'Unknown',
-            disposition: out.callDisposition as CallDisposition,
-            prospectStatus: out.prospectStatus as ProspectStatus,
-            spinScore,
-            timestamp: row.created_at,
-            debriefSessionId: row.id,
-            mode: 'bdr-cold-call',
-          })
-        }
+        if (!isBDROutput(row.structured_output)) continue
+        const out = row.structured_output
+        outputs[row.id] = out as unknown as DebriefOutput
+        const spinScore = isVbrickBDROutput(out) ? out.spin.composite : undefined
+        calls.push({
+          id: row.id,
+          contactName: out.contactSnapshot?.name || 'Unknown',
+          company: out.contactSnapshot?.company || 'Unknown',
+          disposition: out.callDisposition as CallDisposition,
+          prospectStatus: out.prospectStatus as ProspectStatus,
+          spinScore,
+          timestamp: row.created_at,
+          debriefSessionId: row.id,
+        })
       }
       setRecentCalls(calls)
       setStoredOutputs(outputs)
@@ -171,20 +153,7 @@ export default function VbrickDashboardPage() {
         body: JSON.stringify({ email }),
       })
     }
-    if (isEventOutput(output)) {
-      const newCall: RecentCall = {
-        id: debriefSessionId,
-        contactName: output.contactSnapshot?.name || 'Unknown',
-        company: output.contactSnapshot?.company || 'Unknown',
-        disposition: 'connected' as CallDisposition,
-        timestamp: new Date().toISOString(),
-        debriefSessionId,
-        mode: 'vbrick-event-conversation',
-        temperature: output.temperature,
-      }
-      setRecentCalls(prev => [newCall, ...prev.filter(c => c.id !== debriefSessionId)].slice(0, 20))
-      setStoredOutputs(prev => ({ ...prev, [debriefSessionId]: output }))
-    } else if (isBDROutput(output)) {
+    if (isBDROutput(output)) {
       const spinScore = isVbrickBDROutput(output) ? output.spin.composite : undefined
       const newCall: RecentCall = {
         id: debriefSessionId,
@@ -195,7 +164,6 @@ export default function VbrickDashboardPage() {
         spinScore,
         timestamp: new Date().toISOString(),
         debriefSessionId,
-        mode: 'bdr-cold-call',
       }
       setRecentCalls(prev => [newCall, ...prev.filter(c => c.id !== debriefSessionId)].slice(0, 20))
       setStoredOutputs(prev => ({ ...prev, [debriefSessionId]: output }))
@@ -347,16 +315,12 @@ export default function VbrickDashboardPage() {
               >
                 ← Back to dashboard
               </button>
-              {isEventOutput(storedOutputs[viewingSessionId]) ? (
-                <VbrickEventResultsCard data={storedOutputs[viewingSessionId] as EventConversationOutput} />
-              ) : (
-                <VbrickResultsCard
-                  structured={storedOutputs[viewingSessionId]}
-                  sessionId={viewingSessionId}
-                />
-              )}
+              <VbrickResultsCard
+                structured={storedOutputs[viewingSessionId]}
+                sessionId={viewingSessionId}
+              />
               <a
-                href={`/api/vbrick/debrief/${isEventOutput(storedOutputs[viewingSessionId]) ? 'event-pdf' : 'pdf'}?sessionId=${viewingSessionId}`}
+                href={`/api/vbrick/debrief/pdf?sessionId=${viewingSessionId}`}
                 className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold uppercase tracking-widest text-sm text-white"
                 style={{
                   backgroundColor: neuTheme.colors.accent.primary,

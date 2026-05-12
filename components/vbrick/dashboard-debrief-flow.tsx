@@ -1,21 +1,14 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Loader2, Check, ArrowRight, FileText, Upload, ClipboardPaste, Video } from 'lucide-react'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { GlassCardElevated } from './glass-card'
 import { MicButton } from './mic-button'
-import { EventCheatSheet } from './event-cheat-sheet'
-import { VbrickEventResultsCard } from './event-results-card'
-import type {
-  DebriefOutput,
-  VbrickBDRStructuredOutput,
-  EventConversationOutput,
-} from '@/lib/debrief/types'
-import { isVbrickBDROutput, isBDROutput, isEventOutput } from '@/lib/debrief/types'
-import { activeDebriefMode } from '@/lib/vbrick/config'
+import type { DebriefOutput, VbrickBDRStructuredOutput } from '@/lib/debrief/types'
+import { isVbrickBDROutput, isBDROutput } from '@/lib/debrief/types'
 
 const ACCEPTED_TRANSCRIPT_EXTS = ['.txt', '.vtt', '.srt', '.csv', '.json', '.md']
 
@@ -55,11 +48,6 @@ export function DashboardDebriefFlow({
   const [processingStep, setProcessingStep] = useState<'transcribing' | 'extracting'>('transcribing')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Pin the mode at component mount so the BDR doesn't get a stale value
-  // if the K26 window flips while a debrief is in progress.
-  const mode = useMemo(() => activeDebriefMode(), [])
-  const isEventMode = mode === 'event-conversation'
-
   const recorder = useVoiceRecorder()
 
   // Start recording
@@ -93,7 +81,6 @@ export function DashboardDebriefFlow({
       body: JSON.stringify({
         sessionId,
         transcript,
-        mode,
         segment: 'bdr-cold-call',
         contactContext: queueContact
           ? {
@@ -165,7 +152,6 @@ export function DashboardDebriefFlow({
         body: JSON.stringify({
           sessionId: debriefSessionId,
           transcript: editedTranscript,
-          mode,
           segment: 'bdr-cold-call',
           contactContext: queueContact
             ? {
@@ -290,15 +276,11 @@ export function DashboardDebriefFlow({
             className="text-[11px] uppercase tracking-[0.2em] font-inter font-medium mb-1"
             style={{ color: neuTheme.colors.accent.primary }}
           >
-            {isEventMode ? 'K26 Booth Debrief' : 'Post-Call Debrief'}
+            Post-Call Debrief
           </h3>
-          <p className="text-xs font-inter mb-4" style={{ color: neuTheme.colors.text.muted }}>
-            {isEventMode
-              ? 'Capture a booth conversation in 60 seconds — or drop a transcript / summary.'
-              : 'Brain-dump in 60 seconds — or drop a transcript / meeting summary.'}
+          <p className="text-xs font-inter mb-6" style={{ color: neuTheme.colors.text.muted }}>
+            Brain-dump in 60 seconds — or drop a transcript / meeting summary.
           </p>
-
-          {isEventMode && <EventCheatSheet />}
 
           {/* Big mic */}
           <div className="flex flex-col items-center py-4" style={{ touchAction: 'manipulation' }}>
@@ -308,9 +290,7 @@ export function DashboardDebriefFlow({
               onStop={() => {}}
             />
             <p className="text-xs font-inter mt-3 text-center px-4" style={{ color: neuTheme.colors.text.muted }}>
-              {isEventMode
-                ? 'Tap the mic, debrief the booth chat, tap stop. We\u2019ll structure it.'
-                : 'Tap the mic, brain-dump for 60 seconds, tap stop. We\u2019ll show you the deal sheet.'}
+              Tap the mic, brain-dump for 60 seconds, tap stop. We&apos;ll show you the deal sheet.
             </p>
           </div>
 
@@ -687,16 +667,12 @@ export function DashboardDebriefFlow({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
         >
-          {isEventOutput(structured) ? (
-            <VbrickEventResultsCard data={structured as EventConversationOutput} />
-          ) : (
-            <VbrickResultsCard structured={structured} sessionId={debriefSessionId!} />
-          )}
+          <VbrickResultsCard structured={structured} sessionId={debriefSessionId!} />
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {debriefSessionId && (
               <a
-                href={`/api/vbrick/debrief/${isEventOutput(structured) ? 'event-pdf' : 'pdf'}?sessionId=${debriefSessionId}`}
+                href={`/api/vbrick/debrief/pdf?sessionId=${debriefSessionId}`}
                 className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold uppercase tracking-widest text-sm text-white transition-all"
                 style={{
                   backgroundColor: neuTheme.colors.accent.primary,
