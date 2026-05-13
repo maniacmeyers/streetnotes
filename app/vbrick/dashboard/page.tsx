@@ -16,6 +16,7 @@ import { useDashboard } from '@/lib/vbrick/dashboard-context'
 import { neuTheme } from '@/lib/vbrick/theme'
 import { useTour } from '@/lib/vbrick/tour/tour-context'
 import { hasSeenTour } from '@/lib/vbrick/tour/storage'
+import { TakeTheTourButton } from '@/components/vbrick/take-the-tour-button'
 
 interface StatsData {
   thisWeek: {
@@ -396,21 +397,25 @@ export default function VbrickDashboardPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35 }}
+                className="flex items-start justify-between gap-3"
               >
-                <h1
-                  className="font-general-sans font-bold text-2xl tracking-tight"
-                  style={{ color: neuTheme.colors.text.heading }}
-                >
-                  Welcome back, {displayName}
-                </h1>
-                {stats && (
-                  <p
-                    className="text-sm font-satoshi mt-1"
-                    style={{ color: neuTheme.colors.text.muted }}
+                <div className="min-w-0">
+                  <h1
+                    className="font-general-sans font-bold text-2xl tracking-tight"
+                    style={{ color: neuTheme.colors.text.heading }}
                   >
-                    {stats.streak}-day streak
-                  </p>
-                )}
+                    Welcome back, {displayName}
+                  </h1>
+                  {stats && (
+                    <p
+                      className="text-sm font-satoshi mt-1"
+                      style={{ color: neuTheme.colors.text.muted }}
+                    >
+                      {stats.streak}-day streak
+                    </p>
+                  )}
+                </div>
+                <TakeTheTourButton variant="hero" />
               </motion.div>
 
               <QuickStartTiles onDebrief={() => setView('debrief')} />

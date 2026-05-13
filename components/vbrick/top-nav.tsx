@@ -106,7 +106,7 @@ export function TopNav() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0" ref={menuRef}>
-          <TakeTheTourButton compact />
+          <TakeTheTourButton />
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex items-center justify-center border-none cursor-pointer"

@@ -36,16 +36,25 @@ export function TourProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const navigatingRef = useRef(false)
+
   const ensureRouteForStep = useCallback(
     async (step: TourStep) => {
       if (typeof window === 'undefined') return
-      if (step.route !== window.location.pathname) {
+      const sameRoute = step.route === window.location.pathname
+      if (!sameRoute) {
         router.push(step.route)
+        // Cross-route: wait a bit longer for paint, then for target.
+        if (step.target) {
+          await waitForElement(step.target, { timeoutMs: 1500 })
+        } else {
+          await new Promise<void>((r) => setTimeout(r, 250))
+        }
+        return
       }
+      // Same route: target should already exist or never will. Short wait only.
       if (step.target) {
-        await waitForElement(step.target, { timeoutMs: 3000 })
-      } else {
-        await new Promise<void>((r) => setTimeout(r, 200))
+        await waitForElement(step.target, { timeoutMs: 500 })
       }
     },
     [router],
@@ -79,21 +88,33 @@ export function TourProvider({ children }: { children: ReactNode }) {
         },
       })),
       onNextClick: async () => {
-        const current = driverObj.getActiveIndex() ?? 0
-        const nextIdx = current + 1
-        if (nextIdx >= TOUR_STEPS.length) {
-          driverObj.destroy()
-          return
+        if (navigatingRef.current) return
+        navigatingRef.current = true
+        try {
+          const current = driverObj.getActiveIndex() ?? 0
+          const nextIdx = current + 1
+          if (nextIdx >= TOUR_STEPS.length) {
+            driverObj.destroy()
+            return
+          }
+          await ensureRouteForStep(TOUR_STEPS[nextIdx])
+          driverObj.moveNext()
+        } finally {
+          navigatingRef.current = false
         }
-        await ensureRouteForStep(TOUR_STEPS[nextIdx])
-        driverObj.moveNext()
       },
       onPrevClick: async () => {
-        const current = driverObj.getActiveIndex() ?? 0
-        const prevIdx = current - 1
-        if (prevIdx < 0) return
-        await ensureRouteForStep(TOUR_STEPS[prevIdx])
-        driverObj.movePrevious()
+        if (navigatingRef.current) return
+        navigatingRef.current = true
+        try {
+          const current = driverObj.getActiveIndex() ?? 0
+          const prevIdx = current - 1
+          if (prevIdx < 0) return
+          await ensureRouteForStep(TOUR_STEPS[prevIdx])
+          driverObj.movePrevious()
+        } finally {
+          navigatingRef.current = false
+        }
       },
       onCloseClick: () => {
         driverObj.destroy()
