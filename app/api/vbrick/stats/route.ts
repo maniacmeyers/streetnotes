@@ -13,6 +13,54 @@ import {
 } from '@/lib/vbrick/stats'
 import { VBRICK_CONFIG } from '@/lib/vbrick/config'
 
+type PracticeCounts = {
+  elevatorPitch: number
+  objectionHandling: number
+  customerStory: number
+  total: number
+}
+
+type LeaderboardOverride = {
+  practiceThisWeek?: PracticeCounts
+  practiceLastWeek?: PracticeCounts
+  lastPracticeAt?: string | null
+  sparringThisWeek?: number
+  sparringLastWeek?: number
+}
+
+function counts(elevator: number, objection: number, customer: number): PracticeCounts {
+  return {
+    elevatorPitch: elevator,
+    objectionHandling: objection,
+    customerStory: customer,
+    total: elevator + objection + customer,
+  }
+}
+
+const DEMO_LEADERBOARD_OVERRIDES: Record<string, LeaderboardOverride> = {
+  'dylan.fawsitt@vbrick.com': {
+    practiceThisWeek: counts(9, 7, 5),
+    practiceLastWeek: counts(6, 5, 3),
+    lastPracticeAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    sparringThisWeek: 6,
+    sparringLastWeek: 4,
+  },
+  'kara.pryor@vbrick.com': {
+    practiceThisWeek: counts(0, 0, 0),
+    practiceLastWeek: counts(0, 0, 0),
+    lastPracticeAt: null,
+    sparringThisWeek: 0,
+    sparringLastWeek: 0,
+  },
+  'annabelle.frost@vbrick.com': {
+    practiceThisWeek: counts(0, 0, 0),
+    practiceLastWeek: counts(0, 0, 0),
+    lastPracticeAt: null,
+    sparringThisWeek: 0,
+    sparringLastWeek: 0,
+  },
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -60,6 +108,14 @@ export async function GET(request: Request) {
         const fallbackName = bdrEmail.split('@')[0].split('.')[0]
         const displayName = VBRICK_CONFIG.bdrDisplayNames[bdrEmail]
           || fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1)
+
+        const demo = DEMO_LEADERBOARD_OVERRIDES[bdrEmail]
+        const practiceThisWeek = demo?.practiceThisWeek ?? thisWeekPractice
+        const practiceLastWeek = demo?.practiceLastWeek ?? lastWeekPractice
+        const effectiveLastPracticeAt = demo?.lastPracticeAt !== undefined ? demo.lastPracticeAt : lastPracticeAt
+        const sparringThisWeek = demo?.sparringThisWeek ?? 0
+        const sparringLastWeek = demo?.sparringLastWeek ?? 0
+
         return {
           email: bdrEmail,
           name: displayName,
@@ -69,12 +125,14 @@ export async function GET(request: Request) {
           convTrend: stats.callToConversationRate - lastStats.callToConversationRate,
           apptTrend: stats.conversationToAppointmentRate - lastStats.conversationToAppointmentRate,
           spinTrend: stats.averageSpin - lastStats.averageSpin,
-          practiceThisWeek: thisWeekPractice,
-          practiceLastWeek: lastWeekPractice,
-          elevatorTrend: thisWeekPractice.elevatorPitch - lastWeekPractice.elevatorPitch,
-          objectionTrend: thisWeekPractice.objectionHandling - lastWeekPractice.objectionHandling,
-          customerTrend: thisWeekPractice.customerStory - lastWeekPractice.customerStory,
-          lastPracticeAt,
+          practiceThisWeek,
+          practiceLastWeek,
+          elevatorTrend: practiceThisWeek.elevatorPitch - practiceLastWeek.elevatorPitch,
+          objectionTrend: practiceThisWeek.objectionHandling - practiceLastWeek.objectionHandling,
+          customerTrend: practiceThisWeek.customerStory - practiceLastWeek.customerStory,
+          sparringThisWeek,
+          sparringTrend: sparringThisWeek - sparringLastWeek,
+          lastPracticeAt: effectiveLastPracticeAt,
         }
       })
     )

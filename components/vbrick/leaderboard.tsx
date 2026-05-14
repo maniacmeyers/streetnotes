@@ -10,9 +10,11 @@ interface PlayerKPIs {
   elevatorPitch: number
   objectionHandling: number
   customerStory: number
+  sparring: number
   elevatorTrend: number
   objectionTrend: number
   customerTrend: number
+  sparringTrend: number
   lastPracticeAt: string | null
 }
 
@@ -79,10 +81,14 @@ interface PlayerStats {
   name: string
   isLeading: boolean
   lastPracticeAt: string | null
+  neverParticipated: boolean
   elevator: { value: number; trend: number; lead: boolean }
   objection: { value: number; trend: number; lead: boolean }
   customer: { value: number; trend: number; lead: boolean }
+  sparring: { value: number; trend: number; lead: boolean }
 }
+
+const NEVER_PARTICIPATED_COLOR = '#dc2626'
 
 function MetricLine({
   label,
@@ -136,15 +142,25 @@ function PlayerStatBlock({ player, delay }: { player: PlayerStats; delay: number
         >
           {player.name}
         </h4>
-        <p
-          className="text-[10px] font-inter mb-1 truncate"
-          style={{ color: neuTheme.colors.text.subtle }}
-        >
-          Last: {formatLastPracticed(player.lastPracticeAt)}
-        </p>
+        {player.neverParticipated ? (
+          <p
+            className="text-[10px] font-inter font-bold uppercase tracking-wide mb-1 truncate"
+            style={{ color: NEVER_PARTICIPATED_COLOR }}
+          >
+            Never participated
+          </p>
+        ) : (
+          <p
+            className="text-[10px] font-inter mb-1 truncate"
+            style={{ color: neuTheme.colors.text.subtle }}
+          >
+            Last: {formatLastPracticed(player.lastPracticeAt)}
+          </p>
+        )}
         <MetricLine label="Elevator Pitch" value={player.elevator.value} trend={player.elevator.trend} lead={player.elevator.lead} />
         <MetricLine label="Objection" value={player.objection.value} trend={player.objection.trend} lead={player.objection.lead} />
         <MetricLine label="Customer Story" value={player.customer.value} trend={player.customer.trend} lead={player.customer.lead} />
+        <MetricLine label="Sparring" value={player.sparring.value} trend={player.sparring.trend} lead={player.sparring.lead} />
       </div>
     </motion.div>
   )
@@ -206,6 +222,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
   const maxElevator = Math.max(...players.map((p) => p.elevatorPitch))
   const maxObjection = Math.max(...players.map((p) => p.objectionHandling))
   const maxCustomer = Math.max(...players.map((p) => p.customerStory))
+  const maxSparring = Math.max(...players.map((p) => p.sparring))
 
   // Build per-player stats and tally metric wins to identify the overall leader
   const wins = players.map((p) =>
@@ -213,6 +230,7 @@ export function Leaderboard({ players }: LeaderboardProps) {
       p.elevatorPitch === maxElevator && maxElevator > 0,
       p.objectionHandling === maxObjection && maxObjection > 0,
       p.customerStory === maxCustomer && maxCustomer > 0,
+      p.sparring === maxSparring && maxSparring > 0,
     ].filter(Boolean).length,
   )
   const topWins = Math.max(...wins)
@@ -221,9 +239,16 @@ export function Leaderboard({ players }: LeaderboardProps) {
     name: p.name,
     isLeading: wins[i] === topWins && topWins > 0 && wins.filter((w) => w === topWins).length === 1,
     lastPracticeAt: p.lastPracticeAt,
+    neverParticipated:
+      !p.lastPracticeAt &&
+      p.elevatorPitch === 0 &&
+      p.objectionHandling === 0 &&
+      p.customerStory === 0 &&
+      p.sparring === 0,
     elevator: { value: p.elevatorPitch, trend: p.elevatorTrend, lead: p.elevatorPitch === maxElevator && maxElevator > 0 },
     objection: { value: p.objectionHandling, trend: p.objectionTrend, lead: p.objectionHandling === maxObjection && maxObjection > 0 },
     customer: { value: p.customerStory, trend: p.customerTrend, lead: p.customerStory === maxCustomer && maxCustomer > 0 },
+    sparring: { value: p.sparring, trend: p.sparringTrend, lead: p.sparring === maxSparring && maxSparring > 0 },
   }))
 
   const isHeadToHead = players.length === 2
@@ -314,12 +339,21 @@ export function Leaderboard({ players }: LeaderboardProps) {
               >
                 {a.name}
               </h4>
-              <p
-                className="text-[10px] font-inter w-full text-right truncate"
-                style={{ color: neuTheme.colors.text.subtle }}
-              >
-                Last: {formatLastPracticed(a.lastPracticeAt)}
-              </p>
+              {aStats.neverParticipated ? (
+                <p
+                  className="text-[10px] font-inter font-bold uppercase tracking-wide w-full text-right truncate"
+                  style={{ color: NEVER_PARTICIPATED_COLOR }}
+                >
+                  Never participated
+                </p>
+              ) : (
+                <p
+                  className="text-[10px] font-inter w-full text-right truncate"
+                  style={{ color: neuTheme.colors.text.subtle }}
+                >
+                  Last: {formatLastPracticed(a.lastPracticeAt)}
+                </p>
+              )}
             </motion.div>
             <motion.span
               className="font-inter font-black text-2xl px-2"
@@ -343,12 +377,21 @@ export function Leaderboard({ players }: LeaderboardProps) {
               >
                 {b.name}
               </h4>
-              <p
-                className="text-[10px] font-inter w-full text-left truncate"
-                style={{ color: neuTheme.colors.text.subtle }}
-              >
-                Last: {formatLastPracticed(b.lastPracticeAt)}
-              </p>
+              {bStats.neverParticipated ? (
+                <p
+                  className="text-[10px] font-inter font-bold uppercase tracking-wide w-full text-left truncate"
+                  style={{ color: NEVER_PARTICIPATED_COLOR }}
+                >
+                  Never participated
+                </p>
+              ) : (
+                <p
+                  className="text-[10px] font-inter w-full text-left truncate"
+                  style={{ color: neuTheme.colors.text.subtle }}
+                >
+                  Last: {formatLastPracticed(b.lastPracticeAt)}
+                </p>
+              )}
             </motion.div>
           </div>
 
@@ -382,6 +425,14 @@ export function Leaderboard({ players }: LeaderboardProps) {
             trendA={a.customerTrend}
             trendB={b.customerTrend}
             delay={0.7}
+          />
+          <DesktopMetricRow
+            label="Sparring"
+            valueA={a.sparring}
+            valueB={b.sparring}
+            trendA={a.sparringTrend}
+            trendB={b.sparringTrend}
+            delay={0.8}
           />
 
           <p

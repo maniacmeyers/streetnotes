@@ -63,6 +63,8 @@ interface StatsData {
     elevatorTrend: number
     objectionTrend: number
     customerTrend: number
+    sparringThisWeek: number
+    sparringTrend: number
     lastPracticeAt: string | null
   }>
 }
@@ -461,9 +463,11 @@ export default function VbrickDashboardPage() {
                     elevatorPitch: b.practiceThisWeek.elevatorPitch,
                     objectionHandling: b.practiceThisWeek.objectionHandling,
                     customerStory: b.practiceThisWeek.customerStory,
+                    sparring: b.sparringThisWeek,
                     elevatorTrend: b.elevatorTrend,
                     objectionTrend: b.objectionTrend,
                     customerTrend: b.customerTrend,
+                    sparringTrend: b.sparringTrend,
                     lastPracticeAt: b.lastPracticeAt,
                   }))}
                 />
