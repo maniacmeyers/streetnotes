@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="fg-icon-title fg-icon-desc">
   <title id="fg-icon-title">Field Glow icon mark</title>
-  <desc id="fg-icon-desc">A bold F and G monogram in warm dark ink with a metallic middle stroke on a cream square.</desc>
-  <rect width="1024" height="1024" fill="#FAF6EE"/>
-  <circle cx="606" cy="408" r="284" fill="#F2EBDF"/>
+  <desc id="fg-icon-desc">A bold F and G monogram in warm dark ink with a metallic middle stroke</desc>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path d="M654 256C597 214 523 197 446 213C306 241 202 365 202 514C202 683 339 820 512 820C646 820 756 739 806 620" stroke="#1A1410" stroke-width="88"/>
     <path d="M628 522H808V662" stroke="#1A1410" stroke-width="88"/>

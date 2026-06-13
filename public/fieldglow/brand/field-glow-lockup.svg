@@ -2,8 +2,6 @@
   <title id="fg-lockup-title">Field Glow horizontal logo lockup</title>
   <desc id="fg-lockup-desc">Field Glow wordmark paired with a unified F and G monogram icon.</desc>
   <g transform="translate(64 58) scale(0.23828125)">
-    <rect width="1024" height="1024" fill="#FAF6EE"/>
-    <circle cx="606" cy="408" r="284" fill="#F2EBDF"/>
     <g fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path d="M654 256C597 214 523 197 446 213C306 241 202 365 202 514C202 683 339 820 512 820C646 820 756 739 806 620" stroke="#1A1410" stroke-width="88"/>
       <path d="M628 522H808V662" stroke="#1A1410" stroke-width="88"/>
