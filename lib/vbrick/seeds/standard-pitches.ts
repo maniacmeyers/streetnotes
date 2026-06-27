@@ -107,6 +107,54 @@ Instead of a passive storage layer, Vbrick becomes the trusted knowledge engine 
     coaching_note:
       'The 1-minute standard. Frames the historical category (storage / town hall / training library) before pivoting to the AI opportunity. Use this in deeper discovery moments where the prospect wants to understand the strategic shift, not just the product.',
   },
+  {
+    title: 'Dublin Summit — Booth Pitch (Tacit Knowledge)',
+    duration_label: '30 seconds',
+    draft_content: `Everyone here's fighting the same battle.
+
+Your best knowledge is tacit — it lives in your people's heads. When they walk out, it walks with them.
+
+A document won't save it. Video will.
+
+Capture your experts explaining the thing, then make every minute searchable — for your team, and your AI.
+
+That's Vbrick. We turn tacit knowledge into something that outlives the person.
+
+Got two minutes? I'll show you.`,
+    scores: {
+      framework: 9.5,
+      clarity: 9.6,
+      confidence: 9.5,
+      pacing: 9.5,
+      specificity: 9.2,
+      brevity: 9.6,
+    } satisfies PitchScores,
+    coaching_note:
+      'Knowledge Summit Dublin booth pitch. Built for a Knowledge Management crowd whose obsession is tacit knowledge — lead there, not with "video." One breath per line, hard stops; let "Video will." land. Close by asking for a next step, never a brochure.',
+  },
+  {
+    title: 'Dublin Summit — Booth Pitch (Rugby)',
+    duration_label: '30 seconds',
+    draft_content: `I spent 15 years in pro rugby. Everything that made us better, we learned from the tape — not a manual.
+
+Your world's the same. Your experts' best knowledge is tacit. When they leave, it's gone.
+
+Vbrick captures it on video and makes it searchable — so your people and your AI can pull it back.
+
+Knowledge that outlives the person.
+
+Two minutes — want to see it?`,
+    scores: {
+      framework: 9.4,
+      clarity: 9.5,
+      confidence: 9.6,
+      pacing: 9.4,
+      specificity: 9.1,
+      brevity: 9.5,
+    } satisfies PitchScores,
+    coaching_note:
+      'Knowledge Summit Dublin booth pitch, personal-voice version. Use the rugby/"watching the tape" line only once and only with rapport — never open cold with it. Same payoff as the primary: tacit knowledge that outlives the person, then the two-minute ask.',
+  },
 ] as const
 
 interface SeedResult {
