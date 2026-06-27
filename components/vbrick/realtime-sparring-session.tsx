@@ -12,6 +12,15 @@ type TranscriptTurn = { role: 'user' | 'assistant'; text: string; at: number }
 
 type Phase = 'idle' | 'connecting' | 'in-call' | 'ending' | 'scored' | 'error'
 
+export type InflectionPointResult = {
+  moment: string
+  sequence?: string
+  prospectLine?: string
+  repSaid: string
+  whyItLost: string
+  shouldHaveSaid: string
+}
+
 export type SparringScoreResult = {
   score: number
   frameworkScore: number
@@ -24,6 +33,9 @@ export type SparringScoreResult = {
   strengths?: string[]
   improvements?: string[]
   scriptImprovements?: Array<{ original: string; improved: string; reason: string }>
+  appointmentSecured?: boolean
+  inflectionPoints?: InflectionPointResult[]
+  whatSealedIt?: string[]
   [key: string]: unknown
 }
 
@@ -274,8 +286,9 @@ export function RealtimeSparringSession({
           personaId: personaIdRef.current,
           action: 'score',
           sessionId: sessionIdRef.current,
+          scenarioId,
           transcription,
-          bdrAccent: 'general',
+          bdrAccent,
           durationSeconds: Math.max(30, turns.length * 15),
         }),
       })

@@ -3,6 +3,12 @@ import { getOpenAIClient } from '@/lib/openai/server'
 import { createClient } from '@/lib/supabase/server'
 import { ACCENT_COACHING_PROMPTS } from '@/lib/vbrick/bdr-framework'
 import { getPersonaById, type PersonaId } from '@/lib/vbrick/sparring-personas'
+import { getScenarioById } from '@/lib/vbrick/sparring-scenarios'
+import {
+  VBRICK_2026_CONTEXT,
+  INFLECTION_SCHEMA_PROPERTIES,
+  mapInflectionPoints,
+} from '@/lib/vbrick/sparring-scoring'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -19,14 +25,15 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const { 
-      personaId, 
-      action, 
-      sessionId, 
-      bdrMessage, 
-      transcription, 
+    const {
+      personaId,
+      action,
+      sessionId,
+      bdrMessage,
+      transcription,
       bdrAccent = 'general',
-      currentStep = 'name_capture'
+      currentStep = 'name_capture',
+      scenarioId
     } = body
 
     // Validate persona
@@ -144,10 +151,20 @@ export async function POST(request: Request) {
       const fullTranscript = transcription
 
       // Get accent-specific coaching context
-      const accentContext = bdrAccent === 'irish' 
-        ? ACCENT_COACHING_PROMPTS.irish 
-        : bdrAccent === 'newZealand' 
-        ? ACCENT_COACHING_PROMPTS.newZealand 
+      const accentContext = bdrAccent === 'irish'
+        ? ACCENT_COACHING_PROMPTS.irish
+        : bdrAccent === 'newZealand'
+        ? ACCENT_COACHING_PROMPTS.newZealand
+        : ''
+
+      // Scenario ground truth — drives the "what should have been said" rewrites
+      const scenario = getScenarioById(scenarioId)
+      const scenarioContext = scenario
+        ? `\nSCENARIO: ${scenario.title}\nRep goal: ${scenario.repGoal}\nDesired outcome: ${scenario.desiredOutcome}\n\nWINNING PATH (ground truth — base "should_have_said" rewrites on these ideal lines):\n${scenario.winningPathBeats
+            .map((b) => `- ${b.beat} — ${b.goal}\n  Ideal: "${b.idealLine}"`)
+            .join('\n')}\n\nSTRONG REP RESPONSES TO REWARD:\n${scenario.strongRepResponses
+            .map((r) => `- "${r}"`)
+            .join('\n')}\n`
         : ''
 
       // Framework-aware scoring
@@ -157,6 +174,8 @@ export async function POST(request: Request) {
           {
             role: 'system',
             content: `You are an expert BDR coach evaluating a cold call against the VBRICK framework.
+
+${VBRICK_2026_CONTEXT}
 
 FRAMEWORK BEING EVALUATED:
 1. Name Capture: "First and last name?" (inquisitive tone)
@@ -176,9 +195,15 @@ SCORING RUBRIC:
 - Objection Handling (20%): Handled NO path gracefully, got referral
 - Information Gathering (15%): Got name, qualified correctly, got referral if needed, permission to name-drop
 
+WHAT-SHOULD-HAVE-BEEN-SAID COACHING (most important output):
+- Set "would_transfer" to whether the rep earned the appointment/meeting/warm transfer this scenario was aiming for.
+- If NOT earned: populate "inflection_points" with the 2-4 specific moments the meeting was lost. Quote what the rep actually said ("rep_said"), say why it lost in one line ("why_it_lost"), and give the VERBATIM line they should have said ("should_have_said") to garner the appointment — grounded in the real Vbrick facts and the WINNING PATH below. Leave "what_sealed_it" empty.
+- If earned: leave "inflection_points" empty and populate "what_sealed_it" with the 1-2 moves that won it.
+
 PERSONA CONTEXT:
 ${persona.name}, ${persona.title} at ${persona.company}
-Personality: ${persona.personality}`
+Personality: ${persona.personality}
+${scenarioContext}`
           },
           {
             role: 'user',
@@ -245,9 +270,10 @@ Score on Framework Adherence, Accent Clarity, Tonality, Objection Handling, and 
                 }
               },
               would_transfer: { type: 'boolean' },
-              transfer_confidence: { type: 'number', description: '0-100' }
+              transfer_confidence: { type: 'number', description: '0-100' },
+              ...INFLECTION_SCHEMA_PROPERTIES
             },
-            required: ['total_score', 'framework_score', 'dimensions', 'framework_analysis', 'key_strengths', 'improvements']
+            required: ['total_score', 'framework_score', 'dimensions', 'framework_analysis', 'key_strengths', 'improvements', 'inflection_points', 'what_sealed_it']
           }
         }],
         function_call: { name: 'score_framework_call' },
@@ -282,6 +308,11 @@ Score on Framework Adherence, Accent Clarity, Tonality, Objection Handling, and 
         })
       }
 
+      const appointmentSecured =
+        typeof scoringResult.appointment_secured === 'boolean'
+          ? scoringResult.appointment_secured
+          : Boolean(scoringResult.would_transfer)
+
       return NextResponse.json({
         score: scoringResult.total_score,
         frameworkScore: scoringResult.framework_score,
@@ -293,7 +324,10 @@ Score on Framework Adherence, Accent Clarity, Tonality, Objection Handling, and 
         improvements: scoringResult.improvements,
         scriptImprovements: scoringResult.script_improvements || [],
         wouldTransfer: scoringResult.would_transfer,
-        transferConfidence: scoringResult.transfer_confidence
+        transferConfidence: scoringResult.transfer_confidence,
+        appointmentSecured,
+        inflectionPoints: mapInflectionPoints(scoringResult.inflection_points),
+        whatSealedIt: Array.isArray(scoringResult.what_sealed_it) ? scoringResult.what_sealed_it : []
       })
     }
 

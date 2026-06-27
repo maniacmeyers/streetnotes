@@ -4,10 +4,12 @@ import { createClient } from '@/lib/supabase/server'
 import {
   SPARRING_SCORING_FUNCTION,
   SPARRING_SCORER_PROMPT,
+  mapInflectionPoints,
   type ScoringInput,
   type CallScore
 } from '@/lib/vbrick/sparring-scoring'
 import { getPersonaById, type PersonaId } from '@/lib/vbrick/sparring-personas'
+import { getScenarioById } from '@/lib/vbrick/sparring-scenarios'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -24,13 +26,19 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const { personaId, action, sessionId, bdrMessage, transcription } = body
+    const { personaId, action, sessionId, bdrMessage, transcription, scenarioId, hardMode } = body
 
     // Validate persona
     const persona = getPersonaById(personaId as PersonaId)
     if (!persona) {
       return NextResponse.json({ error: 'Invalid persona' }, { status: 400 })
     }
+
+    // Optional scenario grounding (text mode mirrors the realtime voice mode)
+    const scenario = getScenarioById(scenarioId)
+    const scenarioPromptBlock = scenario
+      ? `\n\n${scenario.scenarioContext}${hardMode && scenario.hardModeContext ? `\n\n${scenario.hardModeContext}` : ''}`
+      : ''
 
     // Initialize new session
     if (action === 'start') {
@@ -42,7 +50,7 @@ export async function POST(request: Request) {
         messages: [
           {
             role: 'system',
-            content: `${persona.systemPrompt}\n\nThis is a cold call practice session. The BDR (sales rep) is about to call you. You answer the phone. This is your first response.`
+            content: `${persona.systemPrompt}${scenarioPromptBlock}\n\nThis is a cold call practice session. The BDR (sales rep) is about to call you. You answer the phone. This is your first response.`
           },
           {
             role: 'user',
@@ -92,7 +100,7 @@ export async function POST(request: Request) {
         messages: [
           {
             role: 'system',
-            content: `${persona.systemPrompt}\n\nCONVERSATION GUIDELINES:\n- Stay in character completely\n- Respond as this persona would realistically respond\n- Be appropriately challenging - don't make it too easy\n- If the BDR doesn't address your concerns, get more skeptical\n- If they handle objections well, you can soften\n- Never break character or acknowledge you're an AI\n- Keep responses realistic in length (1-3 sentences usually, occasionally longer)\n- You might hang up if they're pushy or not making sense`
+            content: `${persona.systemPrompt}${scenarioPromptBlock}\n\nCONVERSATION GUIDELINES:\n- Stay in character completely\n- Respond as this persona would realistically respond\n- Be appropriately challenging - don't make it too easy\n- If the BDR doesn't address your concerns, get more skeptical\n- If they handle objections well, you can soften\n- Never break character or acknowledge you're an AI\n- Keep responses realistic in length (1-3 sentences usually, occasionally longer)\n- You might hang up if they're pushy or not making sense`
           },
           ...conversationHistory,
           { role: 'user', content: bdrMessage }
@@ -146,7 +154,7 @@ export async function POST(request: Request) {
             content: `SCORING INPUT:
 Persona: ${persona.name}, ${persona.title} at ${persona.company} (${persona.companySize}, ${persona.industry})
 Persona Personality: ${persona.personality}
-
+${scenario ? `\nSCENARIO: ${scenario.title}\nRep goal: ${scenario.repGoal}\nDesired outcome: ${scenario.desiredOutcome}\n\nWINNING PATH (ground truth — base "should_have_said" rewrites on these ideal lines):\n${scenario.winningPathBeats.map((b) => `- ${b.beat} — ${b.goal}\n  Ideal: "${b.idealLine}"`).join('\n')}\n` : ''}
 TRANSCRIPT:
 ${transcription}
 
@@ -187,7 +195,13 @@ Provide detailed scoring and feedback.`
           text: ex.text,
           feedback: ex.feedback,
           score: ex.score
-        }))
+        })),
+        inflectionPoints: mapInflectionPoints(scoringResult.inflection_points),
+        whatSealedIt: Array.isArray(scoringResult.what_sealed_it) ? scoringResult.what_sealed_it : [],
+        appointmentSecured:
+          typeof scoringResult.appointment_secured === 'boolean'
+            ? scoringResult.appointment_secured
+            : Boolean(scoringResult.would_meet)
       }
 
       // Store score in database (only if a Supabase user is signed in;

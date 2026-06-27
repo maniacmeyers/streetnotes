@@ -7,6 +7,7 @@ import {
   RealtimeSparringSession,
   type SparringScoreResult,
 } from '@/components/vbrick/realtime-sparring-session'
+import { InflectionCoaching } from '@/components/vbrick/inflection-coaching'
 import { SPARRING_SCENARIOS, type BDRAccent } from '@/lib/vbrick/sparring-scenarios'
 import { ALL_PERSONAS, type PersonaId } from '@/lib/vbrick/sparring-personas'
 import { neuTheme } from '@/lib/vbrick/theme'
@@ -414,6 +415,17 @@ function ScoreDetail({
           </button>
         </div>
       </div>
+
+      {/* What should have been said — the primary takeaway */}
+      <InflectionCoaching
+        appointmentSecured={
+          typeof result.appointmentSecured === 'boolean'
+            ? result.appointmentSecured
+            : result.wouldTransfer
+        }
+        inflectionPoints={result.inflectionPoints ?? []}
+        whatSealedIt={result.whatSealedIt ?? []}
+      />
 
       {/* Dimensions breakdown */}
       {result.dimensions && result.dimensions.length > 0 && (
