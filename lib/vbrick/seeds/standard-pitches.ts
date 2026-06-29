@@ -155,6 +155,159 @@ Two minutes — want to see it?`,
     coaching_note:
       'Knowledge Summit Dublin booth pitch, personal-voice version. Use the rugby/"watching the tape" line only once and only with rapport — never open cold with it. Same payoff as the primary: tacit knowledge that outlives the person, then the two-minute ask.',
   },
+
+  // ---------------------------------------------------------------------
+  // 15-SECOND ELEVATOR PITCHES — capability + compliance set
+  // Tight, one-breath-per-line. Grounded in verified Vbrick facts.
+  // ---------------------------------------------------------------------
+
+  {
+    title: 'Vbrick AI — 15-Second Elevator Pitch',
+    duration_label: '15 seconds',
+    draft_content: `You're sitting on thousands of hours of video nobody can use.
+
+Vbrick's AI reads all of it — what's said and what's shown — then writes the titles, summaries, chapters, and tags for you. In 100-plus languages.
+
+It runs on AWS Bedrock and never trains on your data.
+
+Dead archive, meet working knowledge.`,
+    scores: {
+      framework: 9.4,
+      clarity: 9.6,
+      confidence: 9.5,
+      pacing: 9.5,
+      specificity: 9.3,
+      brevity: 9.6,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second AI pitch. Lead with the trapped-archive pain, then the multimodal payoff (reads what is said AND shown) and the trust line that closes every AI conversation: runs on Bedrock, never trains on your data. End on the "dead archive, meet working knowledge" turn.',
+  },
+  {
+    title: 'Vbrick MCP + CLI — 15-Second Elevator Pitch',
+    duration_label: '15 seconds',
+    draft_content: `Your AI agents are blind to everything trapped in your video.
+
+Vbrick's MCP server and CLI fix that in one connection — pipe your whole library straight into Copilot, ServiceNow, Salesforce, or whatever you're building.
+
+No custom pipeline. No data project.
+
+Your agents finally see the 500 hours of decisions nobody wrote down.`,
+    scores: {
+      framework: 9.3,
+      clarity: 9.4,
+      confidence: 9.5,
+      pacing: 9.4,
+      specificity: 9.4,
+      brevity: 9.5,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second developer/agent pitch. For technical buyers: frame it as AI-readiness, not video. The hook is "one connection, no maintenance burden" feeding the tools they already run. Name Copilot/ServiceNow/Salesforce so it lands as real, not abstract.',
+  },
+  {
+    title: 'Vbrick Smart Search — 15-Second Elevator Pitch',
+    duration_label: '15 seconds',
+    draft_content: `Stop scrubbing through a 90-minute town hall.
+
+With Vbrick Smart Search you type what you mean — "the Q3 pricing change" — and land on the exact 40-second clip.
+
+It reads the words and the screen, in 100-plus languages.
+
+Find the moment, not the file.`,
+    scores: {
+      framework: 9.4,
+      clarity: 9.6,
+      confidence: 9.5,
+      pacing: 9.6,
+      specificity: 9.4,
+      brevity: 9.7,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second semantic-search pitch. Make it concrete: a real query landing on a real 40-second clip inside a 90-minute video. "Reads the words AND the screen" is the multimodal differentiator. Close on "find the moment, not the file."',
+  },
+  {
+    title: 'Compliance — Government / FedRAMP — 15-Second Pitch',
+    duration_label: '15 seconds',
+    draft_content: `In government, an uncertified tool is a non-starter.
+
+Vbrick is the only enterprise video platform that's FedRAMP-certified — and the only FedRAMP-certified eCDN.
+
+Stop praying your vendor clears the authorization.
+
+Get the one that already did.`,
+    scores: {
+      framework: 9.5,
+      clarity: 9.6,
+      confidence: 9.6,
+      pacing: 9.5,
+      specificity: 9.5,
+      brevity: 9.6,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second government pitch. FedRAMP is the whole leverage point — lead with it and be precise: "certified," not "ready." The standout is that the eCDN is FedRAMP-certified too, not just the platform. The "stop praying / already did" close reframes compliance as a settled bet, not a gamble.',
+  },
+  {
+    title: 'Compliance — Financial Services — 15-Second Pitch',
+    duration_label: '15 seconds',
+    draft_content: `Regulators don't grade on effort.
+
+Vbrick keeps every town hall and webcast governed, retained, and audit-ready — with tamper-evident proof of what's real.
+
+SOC 2 Type II, encryption end to end, the recordkeeping FINRA and the SEC expect.
+
+Don't bet your next audit on a maybe.`,
+    scores: {
+      framework: 9.4,
+      clarity: 9.5,
+      confidence: 9.6,
+      pacing: 9.4,
+      specificity: 9.4,
+      brevity: 9.5,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second financial-services pitch. Anchor on recordkeeping and audit-readiness (the FINRA/SEC world), with C2PA tamper-evident proof as the modern differentiator. "Don\'t bet your next audit on a maybe" keeps the no-gamble framing without overstating a specific certification.',
+  },
+  {
+    title: 'Compliance — Healthcare — 15-Second Pitch',
+    duration_label: '15 seconds',
+    draft_content: `Healthcare video carries PHI, and "oops" isn't a compliance strategy.
+
+Vbrick locks it down — role-based access, encryption at rest and in transit, retention, and full audit trails.
+
+The same security rigor that clears FedRAMP, pointed at patient content.
+
+Governed, searchable, safe.`,
+    scores: {
+      framework: 9.3,
+      clarity: 9.5,
+      confidence: 9.5,
+      pacing: 9.4,
+      specificity: 9.2,
+      brevity: 9.5,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second healthcare pitch. Lead with PHI sensitivity, then the control stack (RBAC, encryption, retention, audit trails). Position via "the same rigor that clears FedRAMP" rather than claiming a specific HIPAA seal — honest and still reassuring. Keep it about governance, not features.',
+  },
+  {
+    title: 'Compliance — Any Regulated Org — 15-Second Pitch',
+    duration_label: '15 seconds',
+    draft_content: `If you're regulated, video is a liability — unless it's governed.
+
+Vbrick is the only video platform that's FedRAMP-certified, SOC 2 Type II, GDPR-ready, and C2PA-conformant for tamper-evident proof.
+
+One certified home for every recording.
+
+Stop living on a prayer. Get the one auditors already trust.`,
+    scores: {
+      framework: 9.5,
+      clarity: 9.5,
+      confidence: 9.6,
+      pacing: 9.5,
+      specificity: 9.5,
+      brevity: 9.5,
+    } satisfies PitchScores,
+    coaching_note:
+      'The 15-second all-regulated-industries pitch. Stack the certifications (FedRAMP, SOC 2 Type II, GDPR, C2PA) as the proof no competitor can match, then collapse it to "one certified home for every recording." The "stop living on a prayer / the one auditors already trust" close is the dependable-neighbor framing — certainty over a gamble.',
+  },
 ] as const
 
 interface SeedResult {
@@ -276,9 +429,10 @@ export async function seedStandardPitchesForDomain(
  * domain. If any standard pitches are already present, this is a no-op.
  */
 /**
- * Make sure all 3 standard pitches exist in the team vault for the
- * given domain. Re-seeds if fewer than 3 are present (handles partial
- * inserts from a prior failed run).
+ * Make sure all standard pitches exist in the team vault for the given
+ * domain. Re-seeds if fewer than STANDARD_PITCHES.length are present
+ * (handles partial inserts from a prior failed run, and picks up newly
+ * added standard pitches).
  */
 export async function ensureStandardPitchesForDomain(
   supabase: SupabaseClient,
