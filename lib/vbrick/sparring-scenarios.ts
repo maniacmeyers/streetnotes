@@ -53,6 +53,12 @@ export interface SparringScenario {
   topWinMoves: string[]
   /** Ordered decisive moments + the ideal line — ground truth for the coach. */
   winningPathBeats: WinningPathBeat[]
+  /**
+   * Sparring track. 'easy' = beginner-friendly Government / Financial-Services
+   * accounts (encouraging coaching). Undefined or 'hard' = the original, tougher
+   * scenarios. Existing scenarios are untagged and therefore Hard.
+   */
+  track?: 'easy' | 'hard'
 }
 
 export const SPARRING_SCENARIOS: Record<string, SparringScenario> = {
@@ -136,7 +142,7 @@ You've been pitched a dozen "AI for video" tools this quarter and most were vapo
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; you say their name inquisitively ("Alex Rivera?"). They confirm.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
       { label: '3. Qualification', hint: '"Are you involved in how your company manages or gets value out of its internal video?"' },
       { label: '4. Value prop', hint: '"Cool. We\'re hearing teams have years of video nobody can search — Vbrick AI makes all of it findable. Is that a problem you have?"' },
@@ -225,7 +231,7 @@ IT already "standardized on Microsoft" and you treat that as settled. You push b
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; you say their name inquisitively. They confirm.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Great, [first name], hoping you could help me out for a sec."' },
       { label: '3. Qualification', hint: '"Are you on the team responsible for internal communications or live video events?"' },
       { label: '4. Reframe', hint: '"We\'re not a Teams replacement — we make Teams better at scale."' },
@@ -313,7 +319,7 @@ You're harried and protective of your time, and you've already "solved" bufferin
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; you confirm their name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Great, [first name], hoping you can help me out quickly."' },
       { label: '3. Qualification', hint: '"Are you on the team that runs your company’s all-hands or town halls?"' },
       { label: '4. Value prop', hint: '"We help comms run all-hands that don’t buffer the building. Does your video hold up live?"' },
@@ -401,7 +407,7 @@ You're enthusiastic but stretched thin and have been burned by tools that overpr
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Great, [first name], hoping you can help me out for a moment."' },
       { label: '3. Qualification', hint: '"Are you the person driving the video library / training portal project?"' },
       { label: '4. Diagnose', hint: '"Where does your video live today?" Listen before pitching.' },
@@ -443,7 +449,7 @@ You already have a video tool that "passed security," so the rep has to differen
       "Fair — so here's the 30 seconds: we're the only EVP with FedRAMP certification, and the only FedRAMP-certified eCDN on the market. That's not marketing, it's the authorization.",
       "SOC 2 Type II, GDPR, encryption at rest and in transit, multi-layered RBAC — and our AI runs on AWS Bedrock and never trains on your data.",
       "Did the tool that 'passed' actually carry FedRAMP, or just a SOC 2 report? Because in regulated buys that distinction is usually the whole decision.",
-      "I'd rather not just send a whitepaper into the void — give me 20 minutes with you and I'll walk your architecture team straight through the controls.",
+      "I could send a whitepaper, but honestly I'd give you a lot more in a quick 20 minutes with your architecture team — would you be open to that?",
     ],
     weakRepResponses: [
       "Oh we're super secure, don't worry about it.",
@@ -485,11 +491,11 @@ You already have a video tool that "passed security," so the rep has to differen
         beat: 'Close to a review',
         goal: 'Beat the whitepaper brush-off.',
         idealLine:
-          "Instead of a whitepaper, give me 20 minutes with your architecture team and I'll walk the controls live. What's the soonest that group can meet?",
+          "I could send a whitepaper, but honestly I'd give you a lot more in a quick 20-minute call where I walk your architecture team through the controls — would you be open to that?",
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name fast.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"I’ll be quick — hoping you can point me in the right direction."' },
       { label: '3. Qualification', hint: '"Are you the person who vets video/streaming tools for security?"' },
       { label: '4. Lead with FedRAMP', hint: '"Only FedRAMP-certified EVP and the only FedRAMP-certified eCDN."' },
@@ -577,7 +583,7 @@ You've never had an incident, so "why spend on it?" is your default. You'll dema
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Hoping you can help me find the right person."' },
       { label: '3. Qualification', hint: '"Do you touch risk or compliance around executive communications/video?"' },
       { label: '4. Value prop', hint: '"First and only EVP that can prove a video is real — C2PA-conformant."' },
@@ -665,7 +671,7 @@ You're skeptical of "another integration to maintain" and you'll ask what MCP ev
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Hoping you can help me out for one minute."' },
       { label: '3. Qualification', hint: '"Are you involved in your company’s AI / agent initiatives?"' },
       { label: '4. Reframe', hint: '"Not a video pitch — your AI is blind to knowledge trapped in video."' },
@@ -753,7 +759,7 @@ You're protective of your ServiceNow stack and immediately suspicious of bolt-on
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Hoping you can help me out quickly."' },
       { label: '3. Qualification', hint: '"Are you involved with your ServiceNow platform or digital experience?"' },
       { label: '4. Value prop', hint: '"Only certified video app in the ServiceNow Store — powers Now Assist."' },
@@ -841,7 +847,7 @@ You've been called repeatedly this month about the Bending Spoons situation by c
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; you confirm name inquisitively.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Great, [first name], hoping you can help me out for a moment."' },
       { label: '3. Qualification', hint: '"Are you on the team responsible for enterprise video?"' },
       { label: '4. Value prop', hint: '"Customers are coming to us over Bending Spoons/Brightcove friction — seeing that?"' },
@@ -929,7 +935,7 @@ You demand a number and you're skeptical of every vendor's "savings" claim. Any 
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name fast.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"I’ll be quick — hoping you can point me the right way."' },
       { label: '3. Qualification', hint: '"Do you own or sign off on video/communications vendor spend?"' },
       { label: '4. Value prop', hint: '"Consolidation play: one platform replaces webcasting + eCDN + per-event licensing."' },
@@ -1017,7 +1023,7 @@ You're slammed and a little guarded about handing out colleagues' info. If the r
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; you confirm name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Great, hoping you can help me out for a second."' },
       { label: '3. Qualification', hint: '"Are you on the team responsible for the company’s video?"' },
       { label: '4. NO-path pivot', hint: 'No "sorry!" — "Who’s the best person to speak with about video?"' },
@@ -1105,12 +1111,904 @@ You try to drag everything to price immediately and you'll say "make the case in
       },
     ],
     cheatCard: [
-      { label: '1. Name confirmation', hint: 'They answer; confirm name.' },
+      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
       { label: '2. Help request', hint: '"Hoping you can help me out for a moment."' },
       { label: '3. Qualification', hint: '"Do you touch tools for training, knowledge, or internal comms?"' },
       { label: '4. Concede + reframe', hint: '"You’re not a video company — this is a knowledge/AI problem."' },
       { label: '5. One-liner + deflect price', hint: '"Knowledge walks out the door." Don’t price an unscoped category.' },
       { label: '6. Soft close', hint: '"15 minutes to see if you have that exposure?"' },
+    ],
+  },
+
+  // =====================================================================
+  // EASY TRACK — GOVERNMENT / FEDRAMP SCENARIOS
+  // Beginner-friendly. FedRAMP certification is the key leverage point:
+  // Vbrick is the ONLY FedRAMP-certified EVP and the ONLY FedRAMP-certified eCDN.
+  // =====================================================================
+
+  'gov-fedramp-mandate': {
+    id: 'gov-fedramp-mandate',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You run online services and training delivery at a federal agency that handles sensitive data. You have a simple, hard rule: any cloud tool you adopt has to be FedRAMP authorized, or it never gets off the ground. You're friendly and open — you'd genuinely like a better way to deliver training video at scale — but the authorization question decides everything.
+The BDR is calling from Vbrick. Let them get to it; warm up the moment they show they understand the federal authorization bar.`,
+    hardModeContext: '',
+    title: 'Government — "It Has to Be FedRAMP Authorized"',
+    subtitle:
+      'The core federal play. The agency cannot touch uncertified cloud video. Win on the one claim no competitor can match: the only FedRAMP-certified enterprise video platform.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'gov-irs-online',
+    defaultAccent: 'general',
+    difficultyScore: 2,
+    whyVbrickFits:
+      'Vbrick is the industry’s only FedRAMP-certified enterprise video platform AND the only FedRAMP-certified eCDN — exactly the authorization a federal agency needs before it can put training and comms video into the cloud.',
+    repGoal: 'Book a 20-minute call to map their training-video needs against Vbrick’s FedRAMP authorization.',
+    desiredOutcome: 'A scheduled scoping call, ideally with their security/authorization lead in the room.',
+    openingContinuation:
+      "I'll keep it short — we work with federal agencies that can't put video into anything that isn't FedRAMP authorized, and we're the only enterprise video platform that is. Is authorization the gate for you too?",
+    prospectTone: 'Friendly and open, but the FedRAMP question is the whole decision.',
+    likelyProspectResponses: [
+      "If it isn't FedRAMP authorized, it's a non-starter for us.",
+      "We handle sensitive data, so authorization is everything.",
+      "We already record trainings — what's actually different?",
+      "Is your eCDN authorized too, or just the platform?",
+      "How fast can something like this scale during our busy season?",
+      "Honestly, a better way to deliver training would help.",
+    ],
+    strongRepResponses: [
+      "That's exactly why I called — Vbrick is the only enterprise video platform that's FedRAMP-certified, so we clear your gate before the conversation even starts.",
+      "And it's not just the platform — our eCDN is FedRAMP-certified too, which is the part most vendors can't say.",
+      "Recording is the easy part. The value is a governed, searchable library inside an authorized boundary, with retention and access controls baked in.",
+      "It scales for surges — a financial-services customer runs about 100 webcasts a month for 115,000 users — so seasonal spikes aren't a problem.",
+    ],
+    weakRepResponses: [
+      "Oh, we're FedRAMP ready, basically the same thing.",
+      "I'd have to check whether the eCDN part is authorized.",
+      "It's basically YouTube but for the government.",
+    ],
+    coachingNote:
+      "With a federal buyer, FedRAMP authorization is the pitch — lead with it. Be precise: 'authorized,' not 'ready.' The standout move is knowing the eCDN is FedRAMP-certified too, not just the platform. You don't have to be perfect here — just clear the authorization bar and ask for a short scoping call.",
+    topMistakes: [
+      "Burying FedRAMP under feature talk instead of leading with it.",
+      "Saying 'FedRAMP ready' when the win is 'FedRAMP authorized.'",
+      "Not knowing the eCDN is separately FedRAMP-certified.",
+    ],
+    topWinMoves: [
+      "Leading with FedRAMP certification in the first breath.",
+      "Naming that the eCDN is FedRAMP-certified too.",
+      "Tying authorization to a low-risk scoping call.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on FedRAMP',
+        goal: 'Clear the gate in the first sentence.',
+        idealLine:
+          "We work with agencies that can't deploy uncertified cloud video — and we're the only enterprise video platform that's FedRAMP-certified. Is that your gate too?",
+      },
+      {
+        beat: 'Both platform AND eCDN',
+        goal: 'Show depth competitors can’t match.',
+        idealLine:
+          "It's not just the platform — our eCDN is FedRAMP-certified as well, which is the piece most vendors can't claim.",
+      },
+      {
+        beat: 'Make scale concrete',
+        goal: 'Reassure on reliability at surge time.',
+        idealLine:
+          "And it scales — one customer runs about 100 webcasts a month for 115,000 users, so your busy season is well within range.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book a low-risk scoping call.',
+        idealLine:
+          "Let's grab 20 minutes to map your training-video needs against our authorization — would later this week work, maybe with your security lead on too?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Great — I was hoping you could help me out for a second."' },
+      { label: '3. Qualification', hint: '"Are you involved in how your agency delivers training or internal video?"' },
+      { label: '4. Lead with FedRAMP', hint: '"We\'re the only FedRAMP-certified enterprise video platform — is authorization your gate?"' },
+      { label: '5. Go deeper', hint: 'Platform AND eCDN are FedRAMP-certified; governed, searchable, scales for surges.' },
+      { label: '6. Soft close', hint: '"20 minutes to map it to your needs — maybe with your security lead?"' },
+    ],
+  },
+
+  'gov-townhall-field-offices': {
+    id: 'gov-townhall-field-offices',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You run enterprise communications for a large federal agency with offices and facilities all over the country. Your monthly all-staff broadcasts buffer badly when everyone tunes in live, and you catch the complaints. You're warm and mission-driven, and you'd love this fixed — but anything you adopt still has to be federally authorized.
+The BDR is calling from Vbrick about all-hands that reach every site without buffering. React honestly and warmly.`,
+    hardModeContext: '',
+    title: 'Government — All-Hands Across Field Offices',
+    subtitle:
+      'Federal comms owns the agency all-hands, and it buffers at the field sites. Sell the FedRAMP-certified eCDN — three delivery methods from one vendor.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'gov-va-comms',
+    defaultAccent: 'general',
+    difficultyScore: 2,
+    whyVbrickFits:
+      'Vbrick is the only vendor offering all three eCDN technologies (peer-to-peer, edge caching, multicast) from one vendor, AND the only FedRAMP-certified eCDN — so a federal agency can broadcast to every field site without melting the network, inside an authorized boundary.',
+    repGoal: 'Book a 15-minute call with whoever owns the network and the next all-staff broadcast.',
+    desiredOutcome: 'A scheduled scoping call, ideally with IT/network in the room.',
+    openingContinuation:
+      "We help federal agencies run all-staff broadcasts that reach every field office without buffering — using the only FedRAMP-certified eCDN out there. When you go live agency-wide, does the video hold up?",
+    prospectTone: 'Warm, mission-driven; owns the message, not the plumbing.',
+    likelyProspectResponses: [
+      "Honestly, the last all-staff buffered at half our sites.",
+      "Anything we adopt has to be FedRAMP authorized.",
+      "That's really more of a network thing than mine.",
+      "We already have Teams across the agency.",
+      "What even is an eCDN?",
+      "I'd love for this to just work for once.",
+    ],
+    strongRepResponses: [
+      "That buffering is a bandwidth problem, not a video-quality one — an eCDN fixes it so you stop asking people to lower their resolution just to watch leadership.",
+      "And ours is the only FedRAMP-certified eCDN, so you get the fix inside an authorized boundary — that matters for a federal agency.",
+      "We're the only vendor that gives you all three delivery methods — peer-to-peer, edge caching, and multicast — so it adapts to whatever each field site's network looks like.",
+      "You own whether the message lands; I can bring your network folks into a short call so it's not all on you.",
+    ],
+    weakRepResponses: [
+      "You should just upgrade your whole network.",
+      "Let me transfer you to IT then.",
+      "Our video quality is amazing, that's the main thing.",
+    ],
+    coachingNote:
+      "Translate 'eCDN' into their language: it's the reason the broadcast doesn't buffer. The federal twist is huge — it's the only FedRAMP-certified eCDN, so it clears authorization too. Don't punt to IT and lose control; offer to bring them into the meeting. You've got room here — be warm and just earn a short call.",
+    topMistakes: [
+      "Talking about video quality when the pain is network bandwidth.",
+      "Using 'eCDN' without translating it into 'why your all-hands buffers.'",
+      "Forgetting the federal angle: it's the only FedRAMP-certified eCDN.",
+    ],
+    topWinMoves: [
+      "Reframing buffering as bandwidth, not resolution.",
+      "Naming the FedRAMP-certified, three-modality eCDN as the one-vendor advantage.",
+      "Offering to pull network/IT into the meeting.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on the felt pain',
+        goal: 'Lead with the buffering memory, not the product.',
+        idealLine:
+          "When you go live agency-wide, does the stream hold up — or do the field offices buffer and you catch the complaints?",
+      },
+      {
+        beat: 'Reframe + federal twist',
+        goal: 'Fix the blame and add the authorization angle.',
+        idealLine:
+          "That's bandwidth, not quality — an eCDN fixes it. And ours is the only FedRAMP-certified eCDN, so it's authorized for a federal agency.",
+      },
+      {
+        beat: 'One vendor, three methods',
+        goal: 'Show it adapts to every site.',
+        idealLine:
+          "We're the only vendor with all three delivery methods from one place, so it adapts to whatever each field site's network looks like.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book the scoping call with the network owner.',
+        idealLine:
+          "When's your next all-staff? Let's take 15 minutes to scope it before then — I can bring your network folks in too. Does next week work?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Great — I was hoping you could help me out quickly."' },
+      { label: '3. Qualification', hint: '"Are you on the team that runs your agency\'s all-staff broadcasts?"' },
+      { label: '4. Value prop', hint: '"We help agencies run all-hands that reach every site without buffering. Does yours hold up live?"' },
+      { label: '5. eCDN + FedRAMP', hint: 'eCDN fixes the bandwidth problem; ours is the only FedRAMP-certified one; three methods, one vendor.' },
+      { label: '6. Soft close', hint: '"When\'s your next all-staff? 15 minutes to scope it — network folks too?"' },
+    ],
+  },
+
+  'gov-replace-uncertified-tool': {
+    id: 'gov-replace-uncertified-tool',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You help set cloud standards across government, and you know authorization cold. An existing video tool in use only carries a SOC 2 report — not a real FedRAMP authorization — and that gap bothers you. You're friendly and standards-literate, and you enjoy a rep who can speak precisely about the difference.
+The BDR is calling from Vbrick. Make them be precise; reward it warmly when they are.`,
+    hardModeContext: '',
+    title: 'Government — Replace the Uncertified Incumbent',
+    subtitle:
+      'Their current video tool only has SOC 2, not FedRAMP. Win by exposing the gap between a real FedRAMP authorization and a SOC 2 report.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'gov-gsa-cloud',
+    defaultAccent: 'general',
+    difficultyScore: 3,
+    whyVbrickFits:
+      'Most video tools carry SOC 2 at best; Vbrick is the only FedRAMP-certified enterprise video platform (and the only FedRAMP-certified eCDN). In a government buy, that authorization gap is usually the whole decision.',
+    repGoal: 'Earn a short authorization/architecture review by exposing the SOC-2-vs-FedRAMP gap.',
+    desiredOutcome: 'A scheduled review to compare authorization posture.',
+    openingContinuation:
+      "I'll be quick because I know you live in this — a lot of video tools in government only carry SOC 2, not a real FedRAMP authorization. We're the only enterprise video platform that's actually FedRAMP-certified. Is that gap on your radar?",
+    prospectTone: 'Friendly, precise, standards-fluent; rewards a rep who is exact.',
+    likelyProspectResponses: [
+      "Plenty of vendors say 'FedRAMP-ready' — are you actually authorized?",
+      "We already have a tool that passed a security review.",
+      "SOC 2 isn't the same as FedRAMP, so be precise with me.",
+      "What's your impact level?",
+      "Other agencies ask us which platforms are actually authorized.",
+      "If you know the difference, I'm listening.",
+    ],
+    strongRepResponses: [
+      "Authorized — not 'ready,' not 'in process.' Vbrick carries a real FedRAMP authorization, which is exactly the distinction most vendors blur.",
+      "A SOC 2 report is a point-in-time audit; a FedRAMP authorization is continuous monitoring against federal controls. For a government buy, that's usually the whole decision.",
+      "And it's not just the platform — our eCDN is FedRAMP-certified too, so the delivery layer is covered, not just the catalog.",
+      "If agencies ask you who's actually authorized, we'd like to be the easy answer — happy to walk your team through the posture.",
+    ],
+    weakRepResponses: [
+      "Yeah, we're FedRAMP-ish, close enough.",
+      "SOC 2, FedRAMP — it's all basically security.",
+      "I'm not sure on the impact level, I'd have to check.",
+    ],
+    coachingNote:
+      "This buyer knows authorization better than you do, so precision wins respect. Lead with the SOC-2-vs-FedRAMP gap and never overstate — 'authorized,' not 'ready.' You don't need to win an argument; just be exact and ask for a short review. Being honest about what you don't know is fine here.",
+    topMistakes: [
+      "Blurring 'FedRAMP ready' with 'FedRAMP authorized.'",
+      "Treating SOC 2 and FedRAMP as interchangeable.",
+      "Missing that the eCDN is separately FedRAMP-certified.",
+    ],
+    topWinMoves: [
+      "Stating 'authorized, not ready' with confidence.",
+      "Explaining the SOC-2-vs-FedRAMP gap crisply.",
+      "Offering to be the authorized answer other agencies can point to.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on the gap',
+        goal: 'Name the SOC-2-vs-FedRAMP distinction immediately.',
+        idealLine:
+          "Most government video tools carry SOC 2 at best — we're the only enterprise video platform that's actually FedRAMP-certified. Is that gap on your radar?",
+      },
+      {
+        beat: 'Be precise',
+        goal: 'Earn respect with exactness.',
+        idealLine:
+          "Authorized, not 'ready' — continuous monitoring against federal controls, not a point-in-time SOC 2 audit. In a government buy that's usually the whole decision.",
+      },
+      {
+        beat: 'Cover the delivery layer',
+        goal: 'Show depth on the eCDN too.',
+        idealLine:
+          "And the eCDN is FedRAMP-certified as well, so your delivery layer is covered, not just the video catalog.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book a posture/architecture review.',
+        idealLine:
+          "Let's do 20 minutes to compare authorization posture side by side — would later this week work for you and your security folks?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"I\'ll be quick — hoping you can point me the right way."' },
+      { label: '3. Qualification', hint: '"Are you involved in cloud standards or which video tools get authorized?"' },
+      { label: '4. Name the gap', hint: '"Most video tools only carry SOC 2 — we\'re actually FedRAMP-certified."' },
+      { label: '5. Be precise', hint: '"Authorized, not ready." SOC 2 = point-in-time; FedRAMP = continuous. eCDN certified too.' },
+      { label: '6. Soft close', hint: '"20 minutes to compare authorization posture — with your security folks?"' },
+    ],
+  },
+
+  'gov-dod-secure-training': {
+    id: 'gov-dod-secure-training',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You authorize the tools your defense organization uses, and security is your whole job. Training and briefing video has to stay inside an authorized, access-controlled boundary, with real role-based access and encryption end to end. You're careful but genuinely approachable when a rep respects the controls instead of hand-waving them.
+The BDR is calling from Vbrick. Reward specificity on security; warm up when they earn it.`,
+    hardModeContext: '',
+    title: 'Defense — Secure Training & Briefing Video',
+    subtitle:
+      'A defense security owner who needs authorized, access-controlled video. Lead with FedRAMP, then stack the specific controls: RBAC, encryption, no AI training on data.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'gov-disa-issm',
+    defaultAccent: 'general',
+    difficultyScore: 3,
+    whyVbrickFits:
+      'Vbrick is FedRAMP-certified, with multi-layered role-based access control, encryption at rest and in transit, SOC 2 Type II, and AI that runs on AWS Bedrock and never trains on customer data — the control stack a defense security owner needs for training and briefing video.',
+    repGoal: 'Earn a short technical/security review by leading with certification and stacking specific controls.',
+    desiredOutcome: 'A scheduled security/architecture review.',
+    openingContinuation:
+      "I know security is the whole conversation for you, so here's the 30 seconds: we're FedRAMP-certified, with multi-layered role-based access and encryption at rest and in transit. Is secure video delivery something you're working on?",
+    prospectTone: 'Careful, controls-focused, but approachable when respected.',
+    likelyProspectResponses: [
+      "We can't use anything that isn't authorized at the right level.",
+      "How do you handle role-based access and least privilege?",
+      "Where does the data live, and is it encrypted end to end?",
+      "If you've got AI, does it train on our data?",
+      "Most vendors fall over when we ask about controls.",
+      "Okay — you're speaking my language, keep going.",
+    ],
+    strongRepResponses: [
+      "We're FedRAMP-certified, which is the baseline; on top of that, multi-layered RBAC so only the right people see the right content — least privilege by design.",
+      "Encryption at rest and in transit, plus SOC 2 Type II — the data stays inside the authorized boundary.",
+      "On AI: it runs on AWS Bedrock with retrieval-augmented generation and never trains on your data. Your content stays yours.",
+      "I'd rather not just send a packet into the void — let me get your team 20 minutes to walk the controls with you.",
+    ],
+    weakRepResponses: [
+      "Oh, we're super secure, don't worry about it.",
+      "I think the access stuff is configurable, probably.",
+      "Not sure about the AI-training part, I'd have to check.",
+    ],
+    coachingNote:
+      "With a security owner, certifications and controls ARE the pitch. Open with FedRAMP, then stack specifics — RBAC, encryption, Bedrock never-trains-on-your-data. Never say 'we're very secure' without naming a control. You don't need to be flawless; just be concrete and ask for a short review.",
+    topMistakes: [
+      "Saying 'we're very secure' without naming a specific control.",
+      "Hand-waving the AI-training-on-data question.",
+      "Leading with features instead of the certification baseline.",
+    ],
+    topWinMoves: [
+      "Leading with FedRAMP, then stacking RBAC + encryption.",
+      "Answering the AI-data question cleanly: Bedrock, RAG, never trains on your data.",
+      "Trading a static packet for a live controls review.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on certification',
+        goal: 'Buy credibility in the first breath.',
+        idealLine:
+          "Here's the 30 seconds: we're FedRAMP-certified, with multi-layered role-based access and encryption at rest and in transit.",
+      },
+      {
+        beat: 'Stack the controls',
+        goal: 'Prove depth, not slogans.',
+        idealLine:
+          "Least privilege by design, SOC 2 Type II, and AI on AWS Bedrock that never trains on your data — your content stays inside the authorized boundary.",
+      },
+      {
+        beat: 'Answer the AI-data fear',
+        goal: 'Turn the worry into a differentiator.',
+        idealLine:
+          "On the AI question specifically — retrieval-augmented, never trains on your content. That's exactly why regulated buyers choose us.",
+      },
+      {
+        beat: 'Close to a review',
+        goal: 'Earn the technical meeting.',
+        idealLine:
+          "Rather than a packet, let me get your team 20 minutes to walk the controls live — when could that group meet?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Hoping you can point me in the right direction for a second."' },
+      { label: '3. Qualification', hint: '"Are you the person who authorizes the tools your org uses?"' },
+      { label: '4. Lead with FedRAMP', hint: '"We\'re FedRAMP-certified — is secure video delivery on your plate?"' },
+      { label: '5. Stack controls', hint: 'RBAC / least privilege, encryption at rest+transit, SOC 2 Type II, AI never trains on your data.' },
+      { label: '6. Soft close', hint: '"20 minutes to walk the controls live with your team?"' },
+    ],
+  },
+
+  'gov-ai-searchable-no-train': {
+    id: 'gov-ai-searchable-no-train',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You lead communications at a public-mission federal agency sitting on years of recorded briefings, guidance, and trainings that nobody can search. You're genuinely excited about AI making all of it findable — but you cannot risk any AI training on your agency's content, and everything has to live inside an authorized boundary.
+The BDR is calling from Vbrick about making your video searchable with AI. Be warm and curious; surface the data-safety question naturally.`,
+    hardModeContext: '',
+    title: 'Government — Make the Archive Searchable (Safely)',
+    subtitle:
+      'A public-mission agency wants AI to make years of video findable — without the AI ever training on their data. Sell Smart Search on Bedrock, inside a FedRAMP boundary.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'gov-cdc-comms',
+    defaultAccent: 'general',
+    difficultyScore: 2,
+    whyVbrickFits:
+      'Vbrick AI runs on AWS Bedrock with retrieval-augmented generation and never trains on customer data, does semantic Smart Search, auto-generates titles/summaries/chapters/tags, and transcribes/translates in 100+ languages — all inside a FedRAMP-certified boundary.',
+    repGoal: 'Book a 20-minute working session to demo Smart Search against a slice of their real archive.',
+    desiredOutcome: 'A scheduled demo focused on their own video content.',
+    openingContinuation:
+      "We're talking to agencies sitting on years of recorded briefings and trainings nobody can search, so the knowledge just sits there. We make all of it findable with AI — without the AI ever training on your data. Is that a problem you have?",
+    prospectTone: 'Warm, curious, forward-leaning — but careful about data.',
+    likelyProspectResponses: [
+      "We're intrigued by AI, but it can't train on our data.",
+      "Is this inside a FedRAMP boundary?",
+      "We have years of video nobody can search.",
+      "How does it actually find a moment in a long briefing?",
+      "Can it handle multiple languages for public messaging?",
+      "If the data part checks out, I'm interested.",
+    ],
+    strongRepResponses: [
+      "That's the first thing agencies ask, and it's the easy answer: our AI runs on AWS Bedrock with retrieval-augmented generation and never trains on your content. Your video stays yours.",
+      "Smart Search is semantic — type 'what did we say about the spring guidance update' and it jumps you to the 40-second clip inside a 90-minute briefing.",
+      "It auto-writes titles, summaries, chapters, and tags, and transcribes and translates in 100+ languages — which matters for public messaging.",
+      "And all of it sits inside our FedRAMP-certified boundary, so you get the AI without leaving the authorization behind.",
+    ],
+    weakRepResponses: [
+      "Our AI is really powerful, it does everything.",
+      "I'm not totally sure how the data part works.",
+      "It's basically ChatGPT for your videos.",
+    ],
+    coachingNote:
+      "On an AI pitch to government, trust wins the meeting. Lead with the capability, but the second 'does it train on our data?' comes up, answer it cleanly — Bedrock, RAG, never trains on your data — and add that it's all inside a FedRAMP boundary. This is a warm buyer; you mostly just have to not fumble the data question and ask for a demo.",
+    topMistakes: [
+      "Fumbling 'does it train on our data?' with 'I think so / let me check.'",
+      "Leaving it abstract instead of grounding it in their archive.",
+      "Forgetting the FedRAMP boundary that makes the AI usable for them.",
+    ],
+    topWinMoves: [
+      "Answering the data-safety question crisply: Bedrock + RAG + never trains on your data.",
+      "Making Smart Search concrete (find the 40-second clip in a 90-minute briefing).",
+      "Tying the AI to the FedRAMP-certified boundary.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on the pain',
+        goal: 'Name the dead, unsearchable archive.',
+        idealLine:
+          "You've got years of briefings and trainings nobody can search, so the knowledge just sits there — that the situation for you?",
+      },
+      {
+        beat: 'Answer the data question',
+        goal: 'Convert the safety fear into trust.',
+        idealLine:
+          "Our AI runs on AWS Bedrock with retrieval-augmented generation and never trains on your content — and it all sits inside our FedRAMP boundary.",
+      },
+      {
+        beat: 'Make it concrete',
+        goal: 'Prove the capability is real.',
+        idealLine:
+          "Smart Search finds the 40-second clip inside a 90-minute briefing, and it auto-summarizes and translates in 100+ languages.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book a demo on their real content.',
+        idealLine:
+          "Let's grab 20 minutes and I'll run Smart Search against a slice of your own archive — would later this week work?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Great — hoping you could help me out for a moment."' },
+      { label: '3. Qualification', hint: '"Are you involved in how your agency manages or gets value from its video?"' },
+      { label: '4. Value prop', hint: '"We make years of video searchable with AI — without the AI ever training on your data."' },
+      { label: '5. Handle data + FedRAMP', hint: '"Runs on AWS Bedrock with RAG, never trains on your content — all inside a FedRAMP boundary."' },
+      { label: '6. Soft close', hint: '"20 minutes to run Smart Search against your own archive?"' },
+    ],
+  },
+
+  // =====================================================================
+  // EASY TRACK — FINANCIAL-SERVICES SCENARIOS
+  // Beginner-friendly. Regulated-finance angles: recordkeeping, scale,
+  // security, governed training, and certified AI/ServiceNow integration.
+  // =====================================================================
+
+  'fin-recordkeeping-supervision': {
+    id: 'fin-recordkeeping-supervision',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You own recordkeeping and supervision for communications at a wealth-management firm. Recorded webcasts and town halls have to be retained and supervisable under SEC Rule 17a-4 (WORM), with full audit trails — and you have no tamper-evident way to prove a video is authentic. You're precise but friendly, and you warm up to a rep who actually knows the regulatory language.
+The BDR is calling from Vbrick. Reward a rep who speaks recordkeeping and authenticity.`,
+    hardModeContext: '',
+    title: 'Financial Services — Recordkeeping & Supervision',
+    subtitle:
+      'A compliance supervisor who must retain and prove video. Win on governed WORM-style retention, audit trails, and C2PA tamper-evident authenticity.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'fin-morgan-stanley-compliance',
+    defaultAccent: 'general',
+    difficultyScore: 3,
+    whyVbrickFits:
+      'Vbrick is a governed video CMS with retention/expiration rules, fine-grained access, and complete audit trails — and is the first and only EVP with C2PA conformance, giving tamper-evident proof of a video’s origin. That maps directly to financial-services recordkeeping and supervision.',
+    repGoal: 'Book a 20-minute call on governed video retention, audit trails, and authenticity.',
+    desiredOutcome: 'A scheduled compliance/recordkeeping review.',
+    openingContinuation:
+      "We work with compliance teams that have to retain and supervise recorded video the way they do every other communication — with audit trails, and now tamper-evident proof a clip is real. Is recordkeeping for video on your plate?",
+    prospectTone: 'Precise, recordkeeping-focused, but approachable when you speak his language.',
+    likelyProspectResponses: [
+      "Anything we keep has to meet 17a-4 retention.",
+      "Can you produce an audit trail on demand?",
+      "How would we prove a recording wasn't altered?",
+      "Supervision and recordkeeping are the whole question for me.",
+      "We already record things — what's actually different?",
+      "If you know this space, keep going.",
+    ],
+    strongRepResponses: [
+      "Right to it: Vbrick governs video like a record — retention and expiration rules, fine-grained access, and a complete audit trail you can produce on request.",
+      "And on authenticity — we're the first and only enterprise video platform that's C2PA-conformant, so you get tamper-evident proof of a clip's origin.",
+      "That means when a regulator asks, you can show what's authentic and pull the record fast, instead of hunting across tools.",
+      "It's recordkeeping built in, not bolted on — exactly the supervision burden you're carrying.",
+    ],
+    weakRepResponses: [
+      "We store videos, so you're covered I think.",
+      "Not sure on the retention specifics, I'd have to check.",
+      "Authenticity isn't really something people worry about.",
+    ],
+    coachingNote:
+      "With a compliance supervisor, speak their language: retention, audit trails, supervision, authenticity. The modern differentiator is C2PA — tamper-evident proof a video is real. You don't have to be perfect; just connect governed retention + audit trail + C2PA to their burden and ask for a short review.",
+    topMistakes: [
+      "Reducing a governed CMS to 'we store videos.'",
+      "Missing the C2PA authenticity angle entirely.",
+      "Vague answers on retention and audit trails.",
+    ],
+    topWinMoves: [
+      "Naming governed retention + audit trails as built-in recordkeeping.",
+      "Leading the authenticity gap with C2PA conformance.",
+      "Framing fast production on a regulatory request.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on recordkeeping',
+        goal: 'Speak supervision from the first sentence.',
+        idealLine:
+          "We help compliance teams retain and supervise recorded video like any other communication — audit trails included. Is that on your plate?",
+      },
+      {
+        beat: 'Governed retention',
+        goal: 'Show recordkeeping is built in.',
+        idealLine:
+          "Retention and expiration rules, fine-grained access, and a complete audit trail you can produce on request — recordkeeping baked in, not bolted on.",
+      },
+      {
+        beat: 'The authenticity gap',
+        goal: 'Differentiate with C2PA.',
+        idealLine:
+          "And we're the first and only EVP that's C2PA-conformant — tamper-evident proof a clip is authentic when a regulator asks.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book a recordkeeping review.',
+        idealLine:
+          "Let's grab 20 minutes to map this to your supervision and retention requirements — would later this week work?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Great — hoping you could help me out for a second."' },
+      { label: '3. Qualification', hint: '"Are you involved in recordkeeping or supervision for communications?"' },
+      { label: '4. Value prop', hint: '"We govern video like a record — retention, audit trails, tamper-evident proof. On your plate?"' },
+      { label: '5. C2PA + retention', hint: 'Governed retention + audit trail; first/only C2PA-conformant EVP for tamper-evident authenticity.' },
+      { label: '6. Soft close', hint: '"20 minutes to map it to your retention requirements?"' },
+    ],
+  },
+
+  'fin-bank-townhall-scale': {
+    id: 'fin-bank-townhall-scale',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You run the technology behind firmwide town halls at a very large bank. When the whole firm tunes in live, the network strains and some sites buffer. You're polished and warm, and you'd love this to just work — anything new still has to clear security and risk eventually, but that's not today's gate.
+The BDR is calling from Vbrick about broadcasts that scale without melting the network. React honestly and warmly.`,
+    hardModeContext: '',
+    title: 'Financial Services — Town Halls at Bank Scale',
+    subtitle:
+      'A 300,000-person bank whose firmwide town halls strain the network. Sell the eCDN — three delivery methods from one vendor — plus the security posture banks need.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'fin-jpmc-comms',
+    defaultAccent: 'general',
+    difficultyScore: 2,
+    whyVbrickFits:
+      'Vbrick is the only vendor offering all three eCDN technologies (peer-to-peer, edge caching, multicast) from one vendor, broadcasts studio-quality live events to tens of thousands, and brings the security posture (SOC 2 Type II, FedRAMP, encryption) banks expect. A financial-services customer runs ~100 webcasts/month for 115,000 users.',
+    repGoal: 'Book a 15-minute call with whoever owns the network and the next firmwide town hall.',
+    desiredOutcome: 'A scheduled scoping call, ideally with IT/network in the room.',
+    openingContinuation:
+      "We help banks run firmwide town halls that don't buffer at the branches — using an eCDN that adapts to your network. When the whole firm tunes in live, does the video hold up?",
+    prospectTone: 'Polished, warm, scale-minded; owns the broadcast, not the plumbing.',
+    likelyProspectResponses: [
+      "Honestly, big town halls buffer at some of our sites.",
+      "Anything new has to clear security and risk.",
+      "How is this different from our meeting tools?",
+      "Does it actually scale to our headcount?",
+      "What's an eCDN, in plain terms?",
+      "I'd love for this to just work.",
+    ],
+    strongRepResponses: [
+      "That buffering is a bandwidth problem — an eCDN fixes it so the branches stop choking when the whole firm tunes in.",
+      "We're the only vendor with all three delivery methods — peer-to-peer, edge caching, and multicast — so it adapts to whatever each site's network looks like.",
+      "On scale: a financial-services customer runs about 100 webcasts a month for 115,000 users, so your headcount is well within range.",
+      "And it carries the posture banks expect — SOC 2 Type II, FedRAMP-certified, encryption end to end — so risk has less to push back on.",
+    ],
+    weakRepResponses: [
+      "You should just upgrade your network.",
+      "Our video quality is great, that's the main thing.",
+      "Let me send you to IT.",
+    ],
+    coachingNote:
+      "Translate 'eCDN' into 'your town hall stops buffering at the branches.' For a bank, pair the scale story with the security posture (SOC 2, FedRAMP, encryption) so risk has less to object to later. This is a warm buyer — be human and just earn a short scoping call.",
+    topMistakes: [
+      "Talking video quality when the pain is bandwidth.",
+      "Using 'eCDN' without translating it.",
+      "Forgetting the bank's security posture matters even on a comms call.",
+    ],
+    topWinMoves: [
+      "Reframing buffering as bandwidth, fixed by an eCDN.",
+      "Naming the three-method, one-vendor eCDN advantage.",
+      "Backing scale with the real ~100-webcasts/115,000-users proof point.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on the felt pain',
+        goal: 'Lead with the buffering memory.',
+        idealLine:
+          "When the whole firm tunes into a town hall live, does the stream hold up — or do some sites buffer?",
+      },
+      {
+        beat: 'Reframe + eCDN',
+        goal: 'Fix the blame and name the fix.',
+        idealLine:
+          "That's bandwidth, not quality — an eCDN fixes it, and we're the only vendor with all three delivery methods from one place.",
+      },
+      {
+        beat: 'Prove scale + posture',
+        goal: 'Reassure on reliability and security.',
+        idealLine:
+          "One customer runs about 100 webcasts a month for 115,000 users — and it's SOC 2 Type II and FedRAMP-certified, so risk has less to push on.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book the scoping call.',
+        idealLine:
+          "When's your next firmwide town hall? Let's take 15 minutes to scope it — I can bring your network folks in too. Does next week work?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Great — hoping you could help me out quickly."' },
+      { label: '3. Qualification', hint: '"Are you on the team that runs your firm\'s town halls?"' },
+      { label: '4. Value prop', hint: '"We help banks run town halls that don\'t buffer at the branches. Does yours hold up live?"' },
+      { label: '5. eCDN + posture', hint: 'eCDN fixes bandwidth; three methods, one vendor; SOC 2 + FedRAMP; ~100 webcasts/mo for 115K users.' },
+      { label: '6. Soft close', hint: '"When\'s your next town hall? 15 minutes to scope it — network folks too?"' },
+    ],
+  },
+
+  'fin-security-no-pii': {
+    id: 'fin-security-no-pii',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You review the tools that could touch sensitive or customer data at an investment bank. A video tool cannot expose customer data — period. You need SOC 2 Type II, encryption, and strong access controls, and the moment AI comes up you ask whether data is used for training. You're rigorous but fair, and you reward a rep who names real controls.
+The BDR is calling from Vbrick. Make them be specific; warm up when they earn it.`,
+    hardModeContext: '',
+    title: 'Financial Services — Security Review (No Data Exposure)',
+    subtitle:
+      'A tech-risk reviewer at a bank. Lead with the control stack: SOC 2 Type II, encryption, RBAC, AI that never trains on your data — with FedRAMP as proof of top-tier rigor.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'fin-goldman-techrisk',
+    defaultAccent: 'general',
+    difficultyScore: 3,
+    whyVbrickFits:
+      'Vbrick carries SOC 2 Type II, GDPR, encryption at rest and in transit, and multi-layered RBAC; its AI runs on AWS Bedrock with RAG and never trains on customer data; and it is FedRAMP-certified — the top-tier rigor a bank’s tech-risk team wants to see.',
+    repGoal: 'Earn a short security/architecture review by leading with controls.',
+    desiredOutcome: 'A scheduled security review.',
+    openingContinuation:
+      "I know you review anything that could touch sensitive data, so here's the 30 seconds: SOC 2 Type II, encryption at rest and in transit, multi-layered role-based access — and our AI never trains on your data. Is secure video on your review list?",
+    prospectTone: 'Rigorous but fair; rewards specifics, allergic to fluff.',
+    likelyProspectResponses: [
+      "Where does our data live, and is it encrypted?",
+      "What's your SOC 2 Type II status?",
+      "If you have AI, does it train on our data?",
+      "We can't expose anything customer-facing.",
+      "Most vendors fall over when we ask about controls.",
+      "Okay, you're being specific — keep going.",
+    ],
+    strongRepResponses: [
+      "SOC 2 Type II, GDPR, and encryption at rest and in transit — your content stays encrypted end to end.",
+      "Access is multi-layered RBAC, so only the right people see the right content — least privilege by design.",
+      "On AI: it runs on AWS Bedrock with retrieval-augmented generation and never trains on your data. Your content stays yours.",
+      "And we're FedRAMP-certified, which is about as high as the rigor bar goes — happy to get your team 20 minutes to walk it.",
+    ],
+    weakRepResponses: [
+      "We're super secure, don't worry about it.",
+      "I think the AI-training part is fine, probably.",
+      "Access controls are configurable, I'd have to check.",
+    ],
+    coachingNote:
+      "With a tech-risk reviewer, controls ARE the pitch. Open with the stack — SOC 2 Type II, encryption, RBAC — answer the AI-data question cleanly (Bedrock, RAG, never trains on your data), and use FedRAMP as proof of top-tier rigor. Never say 'we're very secure' without naming a control. Be concrete and ask for a short review.",
+    topMistakes: [
+      "Saying 'we're very secure' without naming a specific control.",
+      "Hand-waving the AI-training-on-data question.",
+      "Leading with features instead of the control stack.",
+    ],
+    topWinMoves: [
+      "Stacking SOC 2 Type II + encryption + RBAC up front.",
+      "Answering the AI-data question crisply: Bedrock, RAG, never trains on your data.",
+      "Using FedRAMP as the rigor proof point.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on controls',
+        goal: 'Buy credibility immediately.',
+        idealLine:
+          "Here's the 30 seconds: SOC 2 Type II, encryption at rest and in transit, multi-layered role-based access.",
+      },
+      {
+        beat: 'Answer the AI-data fear',
+        goal: 'Turn the worry into a differentiator.',
+        idealLine:
+          "Our AI runs on AWS Bedrock with retrieval-augmented generation and never trains on your data — your content stays yours.",
+      },
+      {
+        beat: 'Prove top-tier rigor',
+        goal: 'Use FedRAMP as the trust signal.',
+        idealLine:
+          "And we're FedRAMP-certified — about as high as the rigor bar goes, even outside government.",
+      },
+      {
+        beat: 'Close to a review',
+        goal: 'Earn the technical meeting.',
+        idealLine:
+          "Rather than a packet, let me get your team 20 minutes to walk the controls — would you be open to that?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Hoping you can point me the right way for a second."' },
+      { label: '3. Qualification', hint: '"Are you the person who reviews tools that could touch sensitive data?"' },
+      { label: '4. Lead with controls', hint: '"SOC 2 Type II, encryption, RBAC — is secure video on your review list?"' },
+      { label: '5. AI + FedRAMP', hint: 'AI on Bedrock never trains on your data; FedRAMP-certified as top-tier rigor proof.' },
+      { label: '6. Soft close', hint: '"20 minutes to walk the controls with your team?"' },
+    ],
+  },
+
+  'fin-advisor-training-completion': {
+    id: 'fin-advisor-training-completion',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You own training and compliance-education video for financial advisors. The content is scattered and hard to find on the job, and you have to prove compliance-training completion to auditors with reporting that's currently manual. You're warm and pragmatic, and you don't want to rip out your LMS — you want a better video layer.
+The BDR is calling from Vbrick. Lean in on completion rates and audit-ready reporting.`,
+    hardModeContext: '',
+    title: 'Financial Services — Advisor Training & Completion',
+    subtitle:
+      'An advisor-learning leader who must prove compliance-training completion. Sell the governed CMS + reporting, layered onto their LMS, not replacing it.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'fin-fidelity-ld',
+    defaultAccent: 'general',
+    difficultyScore: 2,
+    whyVbrickFits:
+      'Vbrick Rev is a governed video CMS — branded portal, channels/playlists, fine-grained permissions, retention rules — with AI that makes everything searchable and reporting on who watched what. It layers onto an existing LMS rather than replacing it.',
+    repGoal: 'Book a 20-minute call on a governed, searchable advisor-training library with completion reporting.',
+    desiredOutcome: 'A scheduled scoping/demo call.',
+    openingContinuation:
+      "We help advisor-training teams get their video into one governed, searchable place — and prove who actually completed compliance training, without ripping out the LMS. Is that a problem you have?",
+    prospectTone: 'Warm, pragmatic, outcomes-focused; protective of the existing LMS.',
+    likelyProspectResponses: [
+      "We already have an LMS.",
+      "Compliance training has to be auditable.",
+      "Is this just a video library?",
+      "How does it prove completion to a regulator?",
+      "Our advisors can't find training on the job.",
+      "If it works with what we have, I'm listening.",
+    ],
+    strongRepResponses: [
+      "It's not a rip-and-replace — Vbrick layers onto your LMS as the video layer, so you keep what works.",
+      "Everything lives in one governed, searchable portal, so advisors actually find the training on the job.",
+      "And you get reporting on who watched what — the completion evidence auditors want, without the manual pull.",
+      "Permissions and retention are baked in, so the compliance side is governed by default.",
+    ],
+    weakRepResponses: [
+      "Yeah, we can store your training videos.",
+      "It's basically a YouTube for advisors.",
+      "We can probably do completion reporting, I'd check.",
+    ],
+    coachingNote:
+      "This is a warm, high-intent buyer — the risk is under-selling. Don't pitch 'replace your LMS'; pitch a better video layer on top. Tie everything to two outcomes she owns: advisors finding training, and provable completion for auditors. Just don't fumble the LMS-integration point and ask for a short call.",
+    topMistakes: [
+      "Threatening to replace the LMS instead of layering onto it.",
+      "Reducing a governed CMS to 'video storage.'",
+      "Not connecting to provable completion for auditors.",
+    ],
+    topWinMoves: [
+      "Positioning as a video layer on the existing LMS.",
+      "Tying the library to advisors finding training on the job.",
+      "Connecting reporting to audit-ready completion evidence.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open on the outcome',
+        goal: 'Lead with findable training + provable completion.',
+        idealLine:
+          "We help advisor-training teams get video into one searchable place and prove who completed compliance training — without ripping out the LMS. That you?",
+      },
+      {
+        beat: 'Protect the LMS',
+        goal: 'Remove the rip-and-replace fear.',
+        idealLine:
+          "It layers onto your LMS as the video layer, so you keep what works and just fix the video experience.",
+      },
+      {
+        beat: 'Reporting auditors accept',
+        goal: 'Tie to the compliance burden.',
+        idealLine:
+          "You get reporting on who watched what — the completion evidence auditors want, without the manual pull.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book a scoping/demo call.',
+        idealLine:
+          "Let's grab 20 minutes to sketch the library and the reporting against your LMS — would later this week work?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Great — hoping you could help me out for a moment."' },
+      { label: '3. Qualification', hint: '"Are you the person driving advisor training or compliance education?"' },
+      { label: '4. Value prop', hint: '"One governed, searchable library + provable completion — layered on your LMS, not replacing it."' },
+      { label: '5. Map value', hint: 'Findable training on the job; reporting auditors accept; permissions + retention baked in.' },
+      { label: '6. Soft close', hint: '"20 minutes to sketch the library and reporting against your LMS?"' },
+    ],
+  },
+
+  'fin-servicenow-ai-bank': {
+    id: 'fin-servicenow-ai-bank',
+    track: 'easy',
+    scenarioContext: `CALL CONTEXT:
+You run a cloud-native, ServiceNow-heavy environment at a bank and partner on its AI tooling. You've been burned by "integrations" that broke on upgrade, so "certified" matters to you. The recorded knowledge across the bank is invisible to the AI agents you're building, and the metrics you care about are case deflection and resolution time.
+The BDR is calling from Vbrick. Lean in on certified integrations and AI-readiness.`,
+    hardModeContext: '',
+    title: 'Financial Services — Certified ServiceNow / AI Layer',
+    subtitle:
+      'A ServiceNow-heavy bank building AI agents. Sell the only certified video app in the ServiceNow Store — powering Now Assist — plus the MCP server feeding the agents they already run.',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'fin-capitalone-workplace',
+    defaultAccent: 'general',
+    difficultyScore: 3,
+    whyVbrickFits:
+      'Vbrick is the only certified video app in the ServiceNow Store and powers Now Assist with video intelligence; its MCP server exposes video as a data layer to AI agents and systems (Copilot, ServiceNow Now Assist, Salesforce) — turning recorded knowledge into deflection and faster resolution.',
+    repGoal: 'Book a 20-minute call with the ServiceNow platform owner + digital workplace.',
+    desiredOutcome: 'A scheduled call tied to their ServiceNow / AI roadmap.',
+    openingContinuation:
+      "You're deep in ServiceNow — we're the only certified video app in the ServiceNow Store, and we feed Now Assist so recorded knowledge shows up right in the agent workflow. Is improving case deflection or resolution a priority?",
+    prospectTone: 'Friendly, ServiceNow-fluent, protective of the stack; wants integration proof.',
+    likelyProspectResponses: [
+      "Is this actually certified for ServiceNow or just 'integrates with'?",
+      "We don't bolt random things onto our stack.",
+      "How does video help an agent close a case faster?",
+      "Our copilots already search docs and tickets.",
+      "We've been burned by integrations that broke on upgrade.",
+      "Certified? Okay, keep going.",
+    ],
+    strongRepResponses: [
+      "Certified, not 'integrates with' — we're the only certified video app in the ServiceNow Store, so it's tested against the platform and survives your upgrades.",
+      "Now Assist can surface the exact 90-second clip that resolves a ticket, right in the agent's flow — that's deflection and faster resolution without leaving ServiceNow.",
+      "Your copilots search docs and tickets but are blind to recorded knowledge — our MCP server exposes that video to the agents you're already building.",
+      "It feeds Copilot, ServiceNow Now Assist, and Salesforce out of the box — one connection, not a maintenance burden.",
+    ],
+    weakRepResponses: [
+      "Yeah, we integrate with ServiceNow, it's great.",
+      "Video just makes everything better.",
+      "Not sure who owns it on your side, you tell me.",
+    ],
+    coachingNote:
+      "With a ServiceNow-committed bank, 'certified' is the magic word — it answers the upgrade-fragility scar tissue. Tie video to a metric they own (deflection, resolution time), and name the MCP server as the way recorded knowledge reaches the agents they're building. You don't need perfection — just lead with certified and ask for a short call.",
+    topMistakes: [
+      "Saying 'integrates with' instead of 'certified in the Store.'",
+      "Not connecting video to a support metric.",
+      "Skipping the MCP / AI-readiness angle for a ServiceNow-heavy bank.",
+    ],
+    topWinMoves: [
+      "Leading with 'only certified video app in the ServiceNow Store.'",
+      "Tying Now Assist to deflection / resolution time.",
+      "Naming the MCP server as the bridge to the agents they're building.",
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Lead with certified',
+        goal: 'Earn credibility with the ServiceNow claim.',
+        idealLine:
+          "You're deep in ServiceNow — we're the only certified video app in the Store, and we power Now Assist with video intelligence in the agent workflow.",
+      },
+      {
+        beat: 'Tie to a metric',
+        goal: 'Connect video to deflection / resolution.',
+        idealLine:
+          "Now Assist can surface the 90-second clip that resolves a ticket — deflection and faster resolution without leaving ServiceNow.",
+      },
+      {
+        beat: 'Name the AI bridge',
+        goal: 'Show the MCP value for agents they’re building.',
+        idealLine:
+          "Your copilots are blind to recorded knowledge — our MCP server exposes that video to the agents you're already building, one connection.",
+      },
+      {
+        beat: 'Close',
+        goal: 'Book a call with the platform owner.',
+        idealLine:
+          "Let's get your ServiceNow owner on a 20-minute call to map it to your roadmap — would later this week work?",
+      },
+    ],
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Help request', hint: '"Hoping you can help me out quickly."' },
+      { label: '3. Qualification', hint: '"Are you involved with your ServiceNow platform or digital workplace?"' },
+      { label: '4. Value prop', hint: '"Only certified video app in the ServiceNow Store — powers Now Assist. Deflection a priority?"' },
+      { label: '5. Metric + MCP', hint: 'Certified survives upgrades; Now Assist surfaces the fix clip; MCP feeds the agents you\'re building.' },
+      { label: '6. Soft close', hint: '"20 minutes with your ServiceNow owner to map it?"' },
     ],
   },
 }

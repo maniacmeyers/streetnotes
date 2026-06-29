@@ -77,7 +77,7 @@ export function RealtimeSparringSession({
 
   const scenario = getScenarioById(scenarioId) ?? SPARRING_SCENARIOS['brightcove-friction']
 
-  function triggerGreeting(personaFirstName: string) {
+  function triggerGreeting() {
     const dc = dcRef.current
     if (!dc) return
     if (hasGreetedRef.current) return
@@ -92,9 +92,7 @@ export function RealtimeSparringSession({
             type: 'response.create',
             response: {
               instructions:
-                "The phone just rang and you're picking up now. Open with a short, natural pickup greeting — vary it: 'Hello?' / 'Yeah?' / 'This is " +
-                personaFirstName +
-                ".' / 'Hey?'. ONE short utterance only. Do not start the conversation, do not introduce VBrick — just answer the phone.",
+                "The phone just rang and you're picking up now. Answer with ONLY a short, plain greeting — vary it: 'Hello?' / 'Yeah?' / 'Hi?' / 'Hello, this is...?' (trailing off). Do NOT say your own name, do NOT start the conversation, do NOT introduce VBrick. Just answer the phone and then WAIT for the caller to introduce themselves.",
             },
           }),
         )
@@ -179,8 +177,7 @@ export function RealtimeSparringSession({
 
         if (!cancelled) {
           setPhase('in-call')
-          const firstName = (sessionData.personaName?.trim() || 'Prospect').split(' ')[0] || 'Prospect'
-          triggerGreeting(firstName)
+          triggerGreeting()
         }
       } catch (err) {
         console.error('Realtime start failed:', err)

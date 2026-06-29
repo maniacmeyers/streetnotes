@@ -25,15 +25,15 @@ export const BDR_CALL_FRAMEWORK = {
     {
       id: 'name_capture',
       order: 1,
-      name: 'Name Capture',
-      objective: 'Get first and last name, establish friendly tone',
-      script: "First and last name? (inquisitive tone)",
-      transition: "Great, I was hoping you can help me out real quick.",
-      note: "After they say their name, say 'Great, I was hoping you can help me out real quick'. Then move to qualification.",
+      name: 'Self-Introduction',
+      objective: 'Introduce yourself by your own first and last name, set a friendly tone',
+      script: "Hi, this is [Your First & Last Name]? (warm, inquisitive tone)",
+      transition: "Great, I was hoping you could help me out real quick.",
+      note: "The prospect picks up with a plain 'Hello?'. You then introduce yourself by your own first and last name in a warm, inquisitive tone, then say 'Great, I was hoping you could help me out real quick.' and move to qualification.",
       successCriteria: [
-        'Got full name',
-        'Friendly tone established',
-        'No resistance to giving name'
+        'Stated your own first and last name',
+        'Friendly, confident tone',
+        'Let the prospect answer before pitching'
       ],
       coachingTips: {
         irishAccent: [

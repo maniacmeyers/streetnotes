@@ -13,6 +13,7 @@ import { ALL_PERSONAS, type PersonaId } from '@/lib/vbrick/sparring-personas'
 import { neuTheme } from '@/lib/vbrick/theme'
 
 type Mode = 'landing' | 'active'
+type Track = 'easy' | 'hard'
 
 const ACCENT_OPTIONS: Array<{ id: BDRAccent; label: string; sub: string }> = [
   { id: 'general', label: 'General', sub: 'Standard coaching' },
@@ -24,17 +25,41 @@ export default function SparringPage() {
   const scenarios = useMemo(() => Object.values(SPARRING_SCENARIOS), [])
   const personas = useMemo(() => ALL_PERSONAS, [])
 
+  // Easy track = new beginner-friendly Government / Financial-Services accounts.
+  // Hard track = the original, tougher scenarios (untagged scenarios are Hard).
+  const [track, setTrack] = useState<Track>('easy')
+  const trackScenarios = useMemo(
+    () => scenarios.filter((s) => (track === 'easy' ? s.track === 'easy' : s.track !== 'easy')),
+    [scenarios, track],
+  )
+  const trackPersonas = useMemo(
+    () => personas.filter((p) => (track === 'easy' ? p.track === 'easy' : p.track !== 'easy')),
+    [personas, track],
+  )
+
   const [mode, setMode] = useState<Mode>('landing')
-  const [scenarioId, setScenarioId] = useState<string>(scenarios[0].id)
-  const scenario = SPARRING_SCENARIOS[scenarioId] ?? scenarios[0]
+  const [scenarioId, setScenarioId] = useState<string>(trackScenarios[0].id)
+  const scenario = SPARRING_SCENARIOS[scenarioId] ?? trackScenarios[0]
 
   const [personaId, setPersonaId] = useState<PersonaId>(scenario.defaultPersonaId)
-  const selectedPersona = personas.find((p) => p.id === personaId) ?? personas[0]
+  const selectedPersona = personas.find((p) => p.id === personaId) ?? trackPersonas[0]
 
   const [bdrAccent, setBdrAccent] = useState<BDRAccent>(scenario.defaultAccent)
   const [scriptVisible, setScriptVisible] = useState(true)
   const [hardMode, setHardMode] = useState(false)
   const [lastResult, setLastResult] = useState<SparringScoreResult | null>(null)
+
+  function selectTrack(next: Track) {
+    if (next === track) return
+    const first = scenarios.find((s) => (next === 'easy' ? s.track === 'easy' : s.track !== 'easy'))
+    setTrack(next)
+    if (first) {
+      setScenarioId(first.id)
+      setPersonaId(first.defaultPersonaId)
+      setBdrAccent(first.defaultAccent)
+    }
+    if (next === 'easy') setHardMode(false)
+  }
 
   if (mode === 'active') {
     return (
@@ -100,6 +125,40 @@ export default function SparringPage() {
           {scenario.subtitle} · ~{scenario.estimatedMinutes} minutes.
         </p>
 
+        {/* Difficulty track */}
+        <div className="space-y-2">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium" style={{ color: neuTheme.colors.text.muted }}>
+            Difficulty
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {([
+              { id: 'easy' as Track, label: 'Easy', sub: 'New here — Gov & Financial Services, encouraging coaching' },
+              { id: 'hard' as Track, label: 'Hard', sub: 'Seasoned reps — the original, tougher prospects' },
+            ]).map((opt) => {
+              const active = track === opt.id
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => selectTrack(opt.id)}
+                  className="text-left p-3 font-satoshi border-none cursor-pointer"
+                  style={{
+                    background: neuTheme.colors.bg,
+                    boxShadow: active ? neuTheme.shadows.insetSm : neuTheme.shadows.raisedSm,
+                    borderRadius: neuTheme.radii.sm,
+                    color: active ? neuTheme.colors.accent.primary : neuTheme.colors.text.body,
+                    transition: neuTheme.transitions.fast,
+                  }}
+                >
+                  <p className="text-sm font-semibold">{opt.label}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: neuTheme.colors.text.muted }}>
+                    {opt.sub}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Scenario picker */}
         <div data-tour="sparring-pick" className="space-y-2">
           <p className="text-[11px] uppercase tracking-[0.2em] font-satoshi font-medium" style={{ color: neuTheme.colors.text.muted }}>
@@ -115,7 +174,7 @@ export default function SparringPage() {
                 setBdrAccent(s.defaultAccent)
               }
             }}
-            options={scenarios.map((s) => ({ value: s.id, label: s.title }))}
+            options={trackScenarios.map((s) => ({ value: s.id, label: s.title }))}
           />
         </div>
 
@@ -127,7 +186,7 @@ export default function SparringPage() {
           <NeuSelect
             value={personaId}
             onChange={(next) => setPersonaId(next as PersonaId)}
-            options={personas.map((p) => ({
+            options={trackPersonas.map((p) => ({
               value: p.id,
               label: `${p.name} — ${p.title}${p.company ? ` (${p.company})` : ''}`,
             }))}
@@ -171,7 +230,9 @@ export default function SparringPage() {
         {/* Mode toggles */}
         <div className="flex items-center gap-2">
           <TogglePill active={scriptVisible} onClick={() => setScriptVisible((v) => !v)} label="Script visible" />
-          <TogglePill active={hardMode} onClick={() => setHardMode((v) => !v)} label="Hard mode" />
+          {track === 'hard' && (
+            <TogglePill active={hardMode} onClick={() => setHardMode((v) => !v)} label="Extra hard" />
+          )}
         </div>
 
         {/* Start */}

@@ -159,6 +159,7 @@ export async function POST(request: Request) {
 
       // Scenario ground truth — drives the "what should have been said" rewrites
       const scenario = getScenarioById(scenarioId)
+      const isEasy = scenario?.track === 'easy'
       const scenarioContext = scenario
         ? `\nSCENARIO: ${scenario.title}\nRep goal: ${scenario.repGoal}\nDesired outcome: ${scenario.desiredOutcome}\n\nWINNING PATH (ground truth — base "should_have_said" rewrites on these ideal lines):\n${scenario.winningPathBeats
             .map((b) => `- ${b.beat} — ${b.goal}\n  Ideal: "${b.idealLine}"`)
@@ -173,32 +174,41 @@ export async function POST(request: Request) {
         messages: [
           {
             role: 'system',
-            content: `You are an expert BDR coach evaluating a cold call against the VBRICK framework.
+            content: `You are an expert, supportive BDR coach evaluating a cold call. You coach on what actually works in a real conversation — NOT on whether the rep recited a script word-for-word.
 
 ${VBRICK_2026_CONTEXT}
 
-FRAMEWORK BEING EVALUATED:
-1. Name Capture: "First and last name?" (inquisitive tone)
-2. Help Request: "Great, I was hoping you can help me out real quick."
-3. Qualification: "Are you on the team responsible for [company's] X?"
-4. Pivot:
-   - YES → "Great, the reason I'm calling is because Y" (value prop)
-   - NO → "Who do you feel would be the best person to speak with about X?" (NO "oh sorry!" - direct pivot)
-5. Bridge: "Thanks! May I tell them hello from you?"
+THE FRAMEWORK IS A GUIDE, NOT A CHECKLIST. The ideal call tends to flow:
+1. Self-introduction: the prospect says a plain "Hello?", then the REP introduces THEMSELVES by their own first and last name, in a warm/inquisitive tone (e.g., "Hi, this is Jordan Avery?"). "name_captured" = the rep stated their OWN first and last name as a self-introduction near the top of the call. Be GENEROUS: accept any clearly-spoken first+last name, ignore transcription typos/misspellings/hyphenation, and do not require a specific phrasing. If the transcript shows the rep said two-part name that looks like a personal name in the opening, name_captured is TRUE.
+2. Help request: a light "I was hoping you could help me out for a second" (or any natural equivalent).
+3. Qualification: confirming the prospect owns / touches the relevant area.
+4. Pivot — YES → a value prop relevant to this call; NO → a clean pivot to "who's the best person?" (no groveling "oh sorry!").
+5. Close/Bridge: earning a concrete next step (a short meeting/demo/warm transfer), or permission to name-drop a referral.
 
 ${accentContext}
 
-SCORING RUBRIC:
-- Framework Adherence (30%): Did they hit all framework steps correctly?
-- Accent Clarity (15%): Were they clear despite their accent? Did they enunciate key words?
-- Tonality (20%): Friendly, helpful, confident delivery
-- Objection Handling (20%): Handled NO path gracefully, got referral
-- Information Gathering (15%): Got name, qualified correctly, got referral if needed, permission to name-drop
+SCORING RUBRIC — reward EFFECTIVENESS over script-matching:
+- Call Effectiveness (35%): Did the rep move the call forward and earn the next step? Going OFF-SCRIPT IS NOT A PENALTY. If the rep deviated from the suggested wording but the deviation was effective or advanced the call, score it HIGH. Only mark a missed step down when skipping it actually hurt the call.
+- Clarity & Delivery (20%): Were they clear and understandable (including despite any accent)? Score on what they actually said; never penalize the rep for a transcription error.
+- Tonality (20%): Friendly, helpful, confident, human.
+- Objection Handling (15%): Acknowledged pushback and turned it forward.
+- Discovery & Next Step (10%): Asked something useful, qualified, and asked for a concrete next step.
 
+HARD RULES ON FAIRNESS:
+- NEVER tell the rep they "didn't say their name" if the transcript shows them stating a first+last name. When unsure, give the rep the benefit of the doubt.
+- Do NOT deduct points for not matching the cheat-card wording. "script_improvements" are OPTIONAL polish suggestions, never the basis for a lower score.
+- A confident, natural off-script line that gets a yes should outscore a robotic on-script recital.
+${isEasy ? `\nBEGINNER MODE — this rep is brand-new to cold calling. Grade encouragingly and constructively. Be generous with the score, lead the feedback with what they did well, and frame every improvement as the next small thing to try (not a failure). Floor a genuine attempt around 70+. The goal is to motivate them to keep practicing.\n` : ''}
 WHAT-SHOULD-HAVE-BEEN-SAID COACHING (most important output):
 - Set "would_transfer" to whether the rep earned the appointment/meeting/warm transfer this scenario was aiming for.
-- If NOT earned: populate "inflection_points" with the 2-4 specific moments the meeting was lost. Quote what the rep actually said ("rep_said"), say why it lost in one line ("why_it_lost"), and give the VERBATIM line they should have said ("should_have_said") to garner the appointment — grounded in the real Vbrick facts and the WINNING PATH below. Leave "what_sealed_it" empty.
+- If NOT earned: populate "inflection_points" with the 2-4 specific moments the meeting was lost. Quote what the rep actually said ("rep_said"), say in one concrete line WHY it lost AND what would have generated the appointment ("why_it_lost"), and give the VERBATIM line they should have said ("should_have_said"). Make every "should_have_said" a usable next move, grounded in the real Vbrick facts and the WINNING PATH below. Leave "what_sealed_it" empty.
 - If earned: leave "inflection_points" empty and populate "what_sealed_it" with the 1-2 moves that won it.
+
+CALIBRATING THE "should_have_said" REBUTTALS — land in the MIDDLE between a rep's natural phrasing and an overly-aggressive ask. Confident and specific about the next step, but natural enough that a real rep would actually say it and a real prospect would say yes.
+- TOO AGGRESSIVE (never write like this): "Give me 20 minutes with your architecture team and I'll walk the controls live. When can that group meet?"
+- TOO SOFT / vague (avoid): "Would it maybe be okay if we possibly set something up sometime?"
+- JUST RIGHT (write like this): "I could send over a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — would you be open to that?" / "Let's grab 15 minutes so I can show you this on your own setup — does later this week work?"
+Write rebuttals in first person, warm and human, offering the meeting as an easy yes.
 
 PERSONA CONTEXT:
 ${persona.name}, ${persona.title} at ${persona.company}
@@ -243,7 +253,7 @@ Score on Framework Adherence, Accent Clarity, Tonality, Objection Handling, and 
               framework_analysis: {
                 type: 'object',
                 properties: {
-                  name_captured: { type: 'boolean' },
+                  name_captured: { type: 'boolean', description: 'TRUE if the rep introduced THEMSELVES by stating their own first and last name near the top of the call. Accept any clearly-spoken first+last name; ignore transcription typos. When in doubt, TRUE.' },
                   qualification_asked: { type: 'boolean' },
                   pivot_executed: { type: 'boolean' },
                   value_prop_delivered: { type: 'boolean' },

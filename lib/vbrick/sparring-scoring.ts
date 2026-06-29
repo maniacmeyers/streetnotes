@@ -286,12 +286,21 @@ IMPORTANT:
 - Consider the persona's personality (e.g., harder to engage with skeptical CISO)
 - Weight the difficulty - handling "send me an email" from a disinterested IT manager is harder than getting time from an enthusiast
 - Focus on actionable advice, not generic platitudes
+- GOING OFF-SCRIPT IS NOT A PENALTY. Reward what actually works in a real conversation. A confident, natural deviation that advances the call should score HIGHER than a robotic on-script recital. Only mark a missed step down when skipping it actually hurt the call.
+- Never penalize the rep for a transcription error — score what they actually said, and give the benefit of the doubt when the transcript is ambiguous (e.g., if it looks like they stated their name, count it).
 
 WHAT-SHOULD-HAVE-BEEN-SAID COACHING (the most important output):
 - Set "appointment_secured" to whether the rep actually earned the meeting/appointment/warm transfer this scenario was aiming for. This should track "would_meet".
 - If the appointment was NOT secured: populate "inflection_points" with the 2-4 specific moments the meeting was lost. For each, quote what the rep ACTUALLY said ("rep_said"), say in one line why it lost the meeting ("why_it_lost"), and give the VERBATIM line they should have said ("should_have_said") to garner the appointment. Ground every "should_have_said" line in the real Vbrick facts above — cite the specific differentiator that fits the moment (FedRAMP, C2PA, the Teams 20K cap / eCDN-behind-Premium, never-trains-on-your-data, the certified ServiceNow app, etc.). Make the lines sound like a sharp human rep, not a brochure. Leave "what_sealed_it" empty.
 - If the appointment WAS secured: leave "inflection_points" empty and populate "what_sealed_it" with the 1-2 moves that won the meeting.
 - When a scenario's WINNING PATH and ground-truth lines are provided in the user message, use them as the basis for the "should_have_said" rewrites.
+- Make every "should_have_said" a concrete, usable next move that explains specifically what would have generated the appointment.
+
+CALIBRATING THE "should_have_said" REBUTTALS — land in the MIDDLE between a rep's natural phrasing and an overly-aggressive ask. Confident and specific about the next step, but natural enough that a real rep would actually say it and a real prospect would say yes.
+- TOO AGGRESSIVE (never write like this): "Give me 20 minutes with your architecture team and I'll walk the controls live. When can that group meet?"
+- TOO SOFT / vague (avoid): "Would it maybe be okay if we possibly set something up sometime?"
+- JUST RIGHT (write like this): "I could send over a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — would you be open to that?" / "Let's grab 15 minutes so I can show you this on your own setup — does later this week work?"
+Write rebuttals in first person, warm and human, offering the meeting as an easy yes.
 `
 
 // Achievement badges for sparring practice

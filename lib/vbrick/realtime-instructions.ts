@@ -16,12 +16,24 @@ export function composeRealtimeInstructions(
   hardMode: boolean,
   bdrAccent: BDRAccent = 'general',
 ): string {
-  const firstName = persona.name.split(' ')[0]
+  const isEasy = scenario?.track === 'easy'
   const parts: string[] = [persona.systemPrompt]
 
   if (scenario) {
     parts.push(scenario.scenarioContext)
     if (hardMode && scenario.hardModeContext) parts.push(scenario.hardModeContext)
+  }
+
+  if (isEasy) {
+    parts.push(
+      [
+        'BEGINNER MODE — BE ENCOURAGING. The caller is brand-new to cold calling and the point of this drill is to build their confidence, not to break it.',
+        '- Be warm and patient. Give the rep room. Do NOT hang up over small fumbles, filler words, or going off-script.',
+        '- Warm up quickly the moment the rep touches anything relevant to your situation.',
+        "- When the rep makes a reasonable, relevant ask for a short meeting or next step, SAY YES (or a soft yes like \"yeah, that could work\"). Reward effort — you want this rep to leave feeling like they can do this.",
+        '- Stay realistic and in character, just on the friendly end of your personality.',
+      ].join('\n'),
+    )
   }
 
   parts.push(ACCENT_GUIDANCE[bdrAccent] ?? ACCENT_GUIDANCE.general)
@@ -30,10 +42,11 @@ export function composeRealtimeInstructions(
     [
       'YOU ARE ANSWERING A COLD CALL. The conversation usually follows this shape, but you are a real person — vary your phrasing, react naturally, and occasionally push back or ask clarifying questions consistent with your personality. Never parrot the same words twice.',
       '',
-      'Step 1 — PICK UP.',
-      '  You answer the phone with a short, natural greeting. VARY IT each time. Examples: "Hello?" / "Yeah?" / "This is ' + firstName + '." / "Hey?" / "This is ' + firstName + ' — who\'s this?"',
-      '  The rep will then say your first and last name in an inquisitive tone (e.g., "' + persona.name + '?").',
-      '  Your response: a short confirmation. VARY IT. Examples: "Yeah." / "Yes." / "Speaking." / "That\'s me." / "Yep, who\'s asking?" / "Uh-huh."',
+      'Step 1 — PICK UP, THEN LET THE REP INTRODUCE THEMSELVES.',
+      '  You answer the phone with a SHORT, PLAIN greeting — like a real person picking up an unknown call. Do NOT announce your own name. VARY IT each time. Examples: "Hello?" / "Yeah?" / "Hi?" / "Hello, this is...?" (trailing off).',
+      '  Then STOP and wait. The rep (the caller) will introduce THEMSELVES by saying their own first and last name, usually in a slightly inquisitive tone (e.g., "Hi, this is Jordan Avery?" or "Hey — Jordan Avery here?").',
+      '  Once the rep gives their name, respond with a short, natural acknowledgment. VARY IT. Examples: "Hi, what can I do for you?" / "Okay — who\'s this with?" / "Sure, what\'s this about?" / "Speaking." / "Yeah, hi."',
+      '  If the rep launches into their pitch WITHOUT first saying their own name, it\'s fine to gently prompt them once: "Sorry — who\'s this?" — then continue normally.',
       '',
       'Step 2 — HELP REQUEST.',
       '  The rep will say something close to: "I was hoping you could help me out, real quick." (or a near variant like "for a moment").',

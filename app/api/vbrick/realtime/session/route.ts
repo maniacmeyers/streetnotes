@@ -64,7 +64,10 @@ export async function POST(request: Request) {
           instructions,
           audio: {
             input: {
-              transcription: { model: 'whisper-1' },
+              // gpt-4o-transcribe is materially more accurate than whisper-1 on
+              // proper nouns / spoken names — the rep's first+last name in the
+              // opening was being mis-heard, which broke name detection downstream.
+              transcription: { model: 'gpt-4o-transcribe' },
               turn_detection: {
                 type: 'server_vad',
                 silence_duration_ms: 600,
