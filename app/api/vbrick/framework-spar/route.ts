@@ -33,7 +33,8 @@ export async function POST(request: Request) {
       transcription,
       bdrAccent = 'general',
       currentStep = 'name_capture',
-      scenarioId
+      scenarioId,
+      difficulty
     } = body
 
     // Validate persona
@@ -159,7 +160,16 @@ export async function POST(request: Request) {
 
       // Scenario ground truth — drives the "what should have been said" rewrites
       const scenario = getScenarioById(scenarioId)
-      const isEasy = scenario?.track === 'easy'
+      // Easy & Intermediate share the same content; the level decides how
+      // leniently to grade. Fall back to the content track if not provided.
+      const level: 'easy' | 'intermediate' | 'hard' =
+        difficulty ?? (scenario?.track === 'easy' ? 'easy' : 'hard')
+      const levelBlock =
+        level === 'easy'
+          ? `\nBEGINNER MODE — this rep is brand-new to cold calling. Grade encouragingly and constructively. Be generous with the score, lead the feedback with what they did well, and frame every improvement as the next small thing to try (not a failure). Floor a genuine attempt around 70+. The goal is to motivate them to keep practicing.\n`
+          : level === 'intermediate'
+          ? `\nINTERMEDIATE MODE — this rep has some reps in. Grade honestly but constructively. Do NOT apply the beginner score floor; score what actually happened. Still lead with what they did well and frame improvements as the next thing to try, but hold them to landing a specific, relevant reason for the meeting — a generic or purely scripted attempt should not score as if it booked.\n`
+          : ''
       const scenarioContext = scenario
         ? `\nSCENARIO: ${scenario.title}\nRep goal: ${scenario.repGoal}\nDesired outcome: ${scenario.desiredOutcome}\n\nWINNING PATH (ground truth — base "should_have_said" rewrites on these ideal lines):\n${scenario.winningPathBeats
             .map((b) => `- ${b.beat} — ${b.goal}\n  Ideal: "${b.idealLine}"`)
@@ -198,7 +208,7 @@ HARD RULES ON FAIRNESS:
 - NEVER tell the rep they "didn't say their name" if the transcript shows them stating a first+last name. When unsure, give the rep the benefit of the doubt.
 - Do NOT deduct points for not matching the cheat-card wording. "script_improvements" are OPTIONAL polish suggestions, never the basis for a lower score.
 - A confident, natural off-script line that gets a yes should outscore a robotic on-script recital.
-${isEasy ? `\nBEGINNER MODE — this rep is brand-new to cold calling. Grade encouragingly and constructively. Be generous with the score, lead the feedback with what they did well, and frame every improvement as the next small thing to try (not a failure). Floor a genuine attempt around 70+. The goal is to motivate them to keep practicing.\n` : ''}
+${levelBlock}
 WHAT-SHOULD-HAVE-BEEN-SAID COACHING (most important output):
 - Set "would_transfer" to whether the rep earned the appointment/meeting/warm transfer this scenario was aiming for.
 - If NOT earned: populate "inflection_points" with the 2-4 specific moments the meeting was lost. Quote what the rep actually said ("rep_said"), say in one concrete line WHY it lost AND what would have generated the appointment ("why_it_lost"), and give the VERBATIM line they should have said ("should_have_said"). Make every "should_have_said" a usable next move, grounded in the real Vbrick facts and the WINNING PATH below. Leave "what_sealed_it" empty.

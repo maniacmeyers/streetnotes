@@ -15,8 +15,13 @@ export function composeRealtimeInstructions(
   scenario: SparringScenario | null,
   hardMode: boolean,
   bdrAccent: BDRAccent = 'general',
+  difficulty?: 'easy' | 'intermediate' | 'hard',
 ): string {
-  const isEasy = scenario?.track === 'easy'
+  // Easy & Intermediate reuse the same (easy-track) content; they differ only
+  // in how forgiving the prospect is. Fall back to the content track when the
+  // caller doesn't pass an explicit level.
+  const level: 'easy' | 'intermediate' | 'hard' =
+    difficulty ?? (scenario?.track === 'easy' ? 'easy' : 'hard')
   const parts: string[] = [persona.systemPrompt]
 
   if (scenario) {
@@ -24,7 +29,7 @@ export function composeRealtimeInstructions(
     if (hardMode && scenario.hardModeContext) parts.push(scenario.hardModeContext)
   }
 
-  if (isEasy) {
+  if (level === 'easy') {
     parts.push(
       [
         'BEGINNER MODE — BE ENCOURAGING. The caller is brand-new to cold calling and the point of this drill is to build their confidence, not to break it.',
@@ -32,6 +37,16 @@ export function composeRealtimeInstructions(
         '- Warm up quickly the moment the rep touches anything relevant to your situation.',
         "- When the rep makes a reasonable, relevant ask for a short meeting or next step, SAY YES (or a soft yes like \"yeah, that could work\"). Reward effort — you want this rep to leave feeling like they can do this.",
         '- Stay realistic and in character, just on the friendly end of your personality.',
+      ].join('\n'),
+    )
+  } else if (level === 'intermediate') {
+    parts.push(
+      [
+        'INTERMEDIATE MODE — realistic but fair. The caller has a few reps under their belt now, so make them work a little.',
+        '- Stay warm and professional, but do NOT hand them the meeting — make them earn it with a relevant, specific reason.',
+        '- Push back once or twice on a generic or weak line; only agree to the next step after they say something that actually lands.',
+        "- Don't punish small fumbles, but a vague or purely scripted pitch gets a \"what's this actually about?\", not a yes.",
+        '- Stay in character on the neutral-to-slightly-skeptical end of your personality.',
       ].join('\n'),
     )
   }

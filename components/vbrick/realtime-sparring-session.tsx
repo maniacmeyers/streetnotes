@@ -44,6 +44,7 @@ interface RealtimeSparringSessionProps {
   personaId?: string
   bdrAccent?: 'irish' | 'newZealand' | 'general'
   hardMode: boolean
+  difficulty?: 'easy' | 'intermediate' | 'hard'
   scriptVisible: boolean
   onEnd: (result: SparringScoreResult | null, transcript: TranscriptTurn[]) => void
   onCancel: () => void
@@ -54,6 +55,7 @@ export function RealtimeSparringSession({
   personaId,
   bdrAccent = 'general',
   hardMode,
+  difficulty,
   scriptVisible,
   onEnd,
   onCancel,
@@ -123,7 +125,7 @@ export function RealtimeSparringSession({
         const sessionResp = await fetch('/api/vbrick/realtime/session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ scenarioId, hardMode, personaId, bdrAccent }),
+          body: JSON.stringify({ scenarioId, hardMode, personaId, bdrAccent, difficulty }),
         })
         if (!sessionResp.ok) throw new Error('Failed to mint Realtime session')
         const sessionData = await sessionResp.json()
@@ -286,6 +288,7 @@ export function RealtimeSparringSession({
           scenarioId,
           transcription,
           bdrAccent,
+          difficulty,
           durationSeconds: Math.max(30, turns.length * 15),
         }),
       })

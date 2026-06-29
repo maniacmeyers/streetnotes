@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     hardMode?: boolean
     personaId?: PersonaId
     bdrAccent?: BDRAccent
+    difficulty?: 'easy' | 'intermediate' | 'hard'
   } = {}
   try {
     body = await request.json()
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
     scenario,
     body.hardMode ?? false,
     resolvedAccent,
+    body.difficulty,
   )
 
   try {
