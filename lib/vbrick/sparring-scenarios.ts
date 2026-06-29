@@ -2011,6 +2011,1858 @@ The BDR is calling from Vbrick. Lean in on certified integrations and AI-readine
       { label: '6. Soft close', hint: '"20 minutes with your ServiceNow owner to map it?"' },
     ],
   },
+
+
+  // === EASY TRACK — UNIVERSITY / HIGHER-ED SCENARIOS ===
+  'edu-lecture-capture-lms': {
+    id: 'edu-lecture-capture-lms',
+    title: 'Lecture Capture Faculty Actually Like',
+    subtitle: 'Pitch Vbrick Rev for simplified recording + native Canvas integration at ASU scale',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'edu-asu-online',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT:
+You are a Vbrick BDR calling Rachel Nguyen, Director of Online Learning Technology at Arizona State University. ASU serves 80,000+ students, heavily online, and runs lecture capture at massive scale.
+
+Rachel's known pain: faculty skip the recording workflow because it has too many steps. Canvas LTI integration breaks mid-semester and she fields the support tickets herself.
+
+Your goal: earn 20 minutes to show her how Vbrick Rev integrates natively with Canvas, cuts the recording workflow to one click, and scales reliably for ASU's online volume. Vbrick's AI auto-titles, chapters, and tags every recording so the library stays searchable.
+
+This is an outbound cold call. Rachel does not know Vbrick well. She picked up — do your job.`,
+    hardModeContext: '',
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Ask for help', hint: 'Be brief and honest: "I work with university video teams — did I catch you at a bad time?"' },
+      { label: '3. Qualify the pain', hint: 'Ask one open question about their setup: "How is your faculty recording workflow going these days?"' },
+      { label: '4. Land one value prop', hint: 'Tie Vbrick to their pain: "We cut the recording workflow to one click inside Canvas — faculty just hit record and it posts automatically."' },
+      { label: '5. Handle the brush-off', hint: `If she says she has Kaltura: "Totally — we come up a lot at renewal. Our Canvas integration tends to be the thing people notice first."` },
+      { label: '6. Soft close for 20 minutes', hint: `"I could send a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — would you be open to that?"` },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: 'Vbrick Rev integrates natively with Canvas via LTI, reduces faculty recording to a single click, and delivers reliably at ASU online scale. AI auto-tagging and chaptering keeps the growing library searchable without manual effort from instructors or staff.',
+    repGoal: 'Book a 20-minute discovery call with Rachel to demo Canvas integration and AI library search.',
+    desiredOutcome: 'Rachel agrees to a 20-minute call next week.',
+    openingContinuation: `Rachel says "Hello?" — you are live.`,
+    prospectTone: 'Warm but busy. She will give you 60 seconds before she decides whether to stay on.',
+    likelyProspectResponses: [
+      `"We already have Kaltura — we're mid-contract."`,
+      `"Faculty keep skipping the workflow. It's honestly a headache."`,
+      `"What does Vbrick do differently from what we have?"`,
+      `"Does it actually work with Canvas or is it one of those integrations that breaks?"`,
+      `"I'd need faculty involved before I can evaluate anything."`,
+      `"Send me something and I'll take a look."`,
+    ],
+    strongRepResponses: [
+      `"That makes sense — a lot of schools are mid-contract when we talk. Our Canvas integration is usually what gets people curious. Can I ask — how many clicks does it take your faculty to post a recording right now?"`,
+      `"Totally hear you on faculty buy-in. What if we started with just 20 minutes for you, so you can decide if it is worth their time?"`,
+      `"Fair question on the integration. Ours is native LTI — recordings show up in Canvas automatically, no extra step for faculty. Would 20 minutes to see it live be worth it?"`,
+      `"Happy to send something. Though honestly a quick call gives you more than a PDF. Would 20 minutes next week work?"`,
+    ],
+    weakRepResponses: [
+      `"Vbrick Rev is a cloud-native AI enterprise video platform with full eCDN and FedRAMP certification..." (too much, too soon)`,
+      `"Can I get 45 minutes with you and your faculty team?" (too big an ask too fast)`,
+      `"When can your team meet?" (skipped building any rapport)`,
+    ],
+    coachingNote: 'Lead with the pain you know — faculty workflow friction — not the product. One relevant question earns more than three features listed back-to-back.',
+    topMistakes: [
+      'Launching into a feature list before confirming the pain is real for her',
+      'Asking for too much time too early — 45 minutes or a full team demo on a cold call',
+      'Folding when she mentions Kaltura instead of bridging naturally to renewal timing',
+    ],
+    topWinMoves: [
+      'Ask one specific pain question — "how many clicks does faculty recording take?" — to open the conversation',
+      'Bridge the Kaltura objection to renewal timing naturally, without sounding defensive',
+      'Close for exactly 20 minutes and frame it as more valuable than a PDF',
+    ],
+    winningPathBeats: [
+      { beat: 'Warm opener', goal: 'Get 30 seconds', idealLine: `"Hi, this is [Name] from Vbrick — did I catch you at an okay time? I work with university video teams and wanted to ask one quick question."` },
+      { beat: 'Pain probe', goal: 'Surface the faculty workflow problem', idealLine: `"How is your faculty recording experience these days — are they actually using the tool or skipping it?"` },
+      { beat: 'Relevant value prop', goal: 'Connect Vbrick to her pain', idealLine: `"That is exactly where we come in. We cut the recording workflow to one click inside Canvas — faculty hit record and it is posted and searchable automatically."` },
+      { beat: 'Soft close', goal: 'Book 20 minutes', idealLine: `"I could send you something, but honestly I would give you a lot more in a quick 20-minute call — would you be open to that next week?"` },
+    ],
+    track: 'easy',
+  },
+
+  'edu-accessibility-captions': {
+    id: 'edu-accessibility-captions',
+    title: 'Captions That Pass the Campus Audit',
+    subtitle: 'Pitch Vbrick auto-captioning (100+ languages, Section 508) to a compliance-driven lead at UMich',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'edu-umich-accessibility',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT:
+You are a Vbrick BDR calling Marcus Ellis, Accessibility & Academic Technology Lead at the University of Michigan. UMich is an R1 research university where WCAG 2.1 AA and Section 508 compliance are non-negotiable.
+
+Marcus's known pain: auto-captions on lecture recordings average around 85-88% accuracy — far below the ADA office threshold. A campus accessibility audit is roughly 90 days out. He is quietly under pressure.
+
+Your goal: earn 20 minutes to show Marcus how Vbrick Rev delivers high-accuracy auto-captioning with transcription and translation in 100+ languages, and how the compliance reporting gives him documented audit evidence.
+
+Vbrick holds SOC 2 Type II and is GDPR-compliant. Lead with caption accuracy and language coverage. FedRAMP is not your lead here — that is a government differentiator.`,
+    hardModeContext: '',
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Ask for help', hint: '"I work with university accessibility and academic tech teams — do you have 30 seconds?"' },
+      { label: '3. Qualify the pain', hint: 'Ask: "How is your lecture caption accuracy holding up right now — is it meeting your WCAG threshold?"' },
+      { label: '4. Land one value prop', hint: '"We specialize in high-accuracy auto-captioning with transcription and translation across 100+ languages — built for compliance audits, not just checkbox captions."' },
+      { label: '5. Handle the objection', hint: `If he asks how you're different: "Most built-in caption tools hover in the mid-80s on accuracy. Ours are built to 508 standards and we give you the completion and accuracy reports to back it up in an audit."` },
+      { label: '6. Soft close for 20 minutes', hint: '"Given your audit timeline, a 20-minute call might be worth your time now rather than later — would that work?"' },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: 'Vbrick Rev delivers high-accuracy auto-captioning with transcription and translation in 100+ languages. Built-in completion and engagement reporting gives accessibility teams documented evidence for compliance audits. SOC 2 Type II certified and GDPR-compliant.',
+    repGoal: 'Book a 20-minute call with Marcus to discuss caption accuracy, audit documentation, and language coverage.',
+    desiredOutcome: 'Marcus agrees to a 20-minute call and asks for a calendar invite.',
+    openingContinuation: `Marcus picks up at his Ann Arbor office. "Hello?"`,
+    prospectTone: 'Measured and thoughtful. He will give you a real shot if you speak his language — compliance, accuracy, documented evidence.',
+    likelyProspectResponses: [
+      `"We have captioning built into our LMS already."`,
+      `"How do I know your captions are actually more accurate than what we have?"`,
+      `"What languages do you support?"`,
+      `"I'd need to loop in our ADA office before evaluating anything."`,
+      `"We actually have an accessibility audit coming up — timing is not terrible for this conversation."`,
+      `"Send me something and I'll review it."`,
+    ],
+    strongRepResponses: [
+      `"Totally — LMS captions are a start. The gap we usually see is accuracy. What is your current caption accuracy sitting at? The ADA threshold tends to require 98% or above."`,
+      `"Fair. Our captions are built to 508 standards and we can show you accuracy benchmarks on real lecture content — that is usually more convincing than any spec sheet."`,
+      `"We cover 100+ languages — Arabic, Mandarin, Spanish, French, and many more. Full transcription and translation, not just English auto-captions."`,
+      `"Given you have an audit in 90 days, a 20-minute call now might save you a bigger scramble later — would that be worth your time?"`,
+    ],
+    weakRepResponses: [
+      `"Vbrick is FedRAMP-certified, which means we meet government security standards..." (wrong differentiator for a university accessibility lead)`,
+      `"We have the best captions in the market." (vague claim with no evidence)`,
+      `"Let me send you our full compliance documentation package." (too much paperwork too soon, buries the lead)`,
+    ],
+    coachingNote: 'Compliance buyers want evidence, not claims. One specific metric — 98% accuracy threshold, Section 508, 100+ languages — is worth ten feature bullets. Tie your ask directly to his audit deadline.',
+    topMistakes: [
+      'Leading with FedRAMP (a government credential) to a university accessibility professional',
+      'Claiming superior captions without offering a benchmark or specific accuracy figure',
+      'Ignoring the 90-day audit window — that is your strongest natural hook',
+    ],
+    topWinMoves: [
+      'Ask about current caption accuracy directly — "what is your 508 threshold right now?"',
+      'Name 100+ language transcription and translation specifically — it differentiates from LMS built-in tools',
+      'Tie the close to his audit deadline for natural urgency without manufactured pressure',
+    ],
+    winningPathBeats: [
+      { beat: 'Warm opener', goal: 'Get 30 seconds', idealLine: `"Hi, this is [Name] from Vbrick — I work with university accessibility teams. Do you have 30 seconds? Quick question about your lecture caption setup."` },
+      { beat: 'Pain probe', goal: 'Surface the accuracy gap', idealLine: `"How is your current caption accuracy holding up? A lot of schools we talk to are hovering in the mid-80s, which tends to be a problem when audit season comes around."` },
+      { beat: 'Value prop and differentiator', goal: 'Establish credibility with specifics', idealLine: `"We build to 508 standards with 100+ language transcription and translation — and we give you the compliance reporting to document it for an audit, not just the captions themselves."` },
+      { beat: 'Soft close tied to deadline', goal: 'Book 20 minutes', idealLine: `"Given you have an audit coming up, a 20-minute call might be worth it now rather than later — would that work?"` },
+    ],
+    track: 'easy',
+  },
+
+  'edu-hybrid-broadcast-scale': {
+    id: 'edu-hybrid-broadcast-scale',
+    title: 'Hybrid Classes Without the Buffering',
+    subtitle: 'Pitch Vbrick eCDN for reliable multi-campus hybrid delivery across Penn State',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'edu-pennstate-avp',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT:
+You are a Vbrick BDR calling David Chen, Associate VP of Teaching & Learning Technology at Penn State University. Penn State runs University Park (main campus) plus 19 Commonwealth campuses across Pennsylvania.
+
+David's known pain: hybrid class broadcasts buffer or drop quality at smaller Commonwealth campuses that have limited bandwidth. Students at Hazleton, DuBois, and other sites miss lecture content. He just finished a call with the DuBois IT director about another buffering incident.
+
+Your goal: earn 20 minutes to discuss how Vbrick's eCDN — the only platform with all three eCDN technologies (peer-to-peer, edge caching, multicast) from one vendor — delivers reliable broadcast quality to every Penn State campus without saturating limited pipes.`,
+    hardModeContext: '',
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Ask for help', hint: '"I work with universities managing video delivery across multiple campuses — got 30 seconds?"' },
+      { label: '3. Qualify the pain', hint: '"How is your hybrid class video holding up at your Commonwealth campuses — are students getting a consistent experience everywhere?"' },
+      { label: '4. Land the eCDN value prop', hint: '"Vbrick is the only platform with all three eCDN technologies — peer-to-peer, edge caching, and multicast — from one vendor. We keep bandwidth use low even when thousands of students hit the stream at once."' },
+      { label: '5. Handle the objection', hint: `If he says he needs his network team involved: "Of course — that makes total sense. Most network teams actually like the eCDN story because it reduces their load, not adds to it. Would it make sense to start with just 20 minutes for you first?"` },
+      { label: '6. Soft close for 20 minutes', hint: `"I would give you a lot more in 20 minutes than I can explain on a cold call — would that be worth it?"` },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick is the only enterprise video platform offering all three eCDN technologies — peer-to-peer, edge caching, and multicast — from a single vendor. This dramatically reduces bandwidth consumption and delivers consistent quality to bandwidth-constrained campuses without requiring network infrastructure upgrades.`,
+    repGoal: 'Book a 20-minute discovery call with David to walk through Vbrick eCDN for multi-campus delivery.',
+    desiredOutcome: 'David agrees to a 20-minute call and mentions he might loop in his network team.',
+    openingContinuation: `David picks up at his University Park office. He sounds a little tired. "Hello?"`,
+    prospectTone: 'Collegial and senior. He will engage if you sound like you understand multi-campus complexity and do not waste his time.',
+    likelyProspectResponses: [
+      `"We're mid-contract with our current provider."`,
+      `"Our Commonwealth campuses do struggle with buffering, honestly."`,
+      `"What exactly is eCDN — is that different from a regular CDN?"`,
+      `"I'd have to loop in our network team for anything like that."`,
+      `"Penn State IT has a long procurement cycle — this is not a quick decision."`,
+      `"Send me something and I'll look at it when I have a moment."`,
+    ],
+    strongRepResponses: [
+      `"Totally — we come up a lot at renewal. But the buffering problem at your smaller campuses is something eCDN addresses without waiting for a full procurement. Can I ask — how often are your Commonwealth students losing quality during class?"`,
+      `"Great question on eCDN. It is smart delivery that routes video intelligently across your network so you are not hammering limited campus pipes. We are the only vendor with all three technologies in one platform."`,
+      `"Makes sense to loop in networking. Most network teams actually love this conversation because eCDN reduces their load. Would it make sense to start with just 20 minutes for you first?"`,
+      `"I get it — Penn State IT moves carefully and that is smart. A 20-minute call now just helps you decide if it is worth putting us in the pipeline."`,
+    ],
+    weakRepResponses: [
+      `"Vbrick is a cloud-native AI Enterprise Video Platform with FedRAMP certification and SOC 2 Type II..." (wrong lead for a multi-campus delivery pain point)`,
+      `"Can we get your whole IT team on a call this week?" (too big an ask on a cold call)`,
+      `"Our eCDN is industry-leading." (vague, no specifics)`,
+    ],
+    coachingNote: 'eCDN is a technical concept — earn the right to explain it by confirming the pain first. "Are students at your smaller campuses getting a consistent experience?" is a better opener than any product description.',
+    topMistakes: [
+      'Explaining eCDN before confirming the multi-campus buffering pain',
+      'Asking for the full IT team on the first call instead of starting small',
+      'Leading with FedRAMP or security certifications — irrelevant to a multi-campus delivery problem',
+    ],
+    topWinMoves: [
+      'Ask about the Commonwealth campus experience specifically — not just "universities generally"',
+      'Define eCDN in plain language when he asks: "smart delivery that routes video across your network so you do not hammer limited campus bandwidth"',
+      'Offer 20 minutes just for him first — lower bar than bringing in the full network team immediately',
+    ],
+    winningPathBeats: [
+      { beat: 'Warm opener', goal: 'Get 30 seconds', idealLine: `"Hi, this is [Name] from Vbrick — I work with multi-campus universities on video delivery. Do you have 30 seconds? One quick question."` },
+      { beat: 'Pain probe', goal: 'Surface the Commonwealth campus buffering problem', idealLine: `"How is hybrid class quality holding up at your smaller campuses — are students getting the same experience in Hazleton or DuBois as they do at University Park?"` },
+      { beat: 'eCDN value prop', goal: 'Differentiate Vbrick clearly in plain language', idealLine: `"That is exactly where we come in. We are the only platform with all three eCDN technologies — peer-to-peer, edge caching, and multicast — from one vendor. We keep the stream reliable without upgrading campus pipes."` },
+      { beat: 'Soft close', goal: 'Book 20 minutes', idealLine: `"Would 20 minutes be worth it to see how this works at multi-campus scale? I would rather show you than try to explain it on a cold call."` },
+    ],
+    track: 'easy',
+  },
+
+  'edu-searchable-library-ai': {
+    id: 'edu-searchable-library-ai',
+    title: 'Make the Lecture Library Searchable — and Replace the Incumbent',
+    subtitle: 'Pitch Vbrick Smart Search + AI privacy to a UT Austin director evaluating Panopto renewal',
+    estimatedMinutes: 4,
+    defaultPersonaId: 'edu-utaustin-acadtech',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT:
+You are a Vbrick BDR calling Sofia Martinez, Director of Academic Technology at the University of Texas at Austin. UT Austin is a top-tier R1 research university with a large and growing lecture capture library.
+
+Sofia's known pain: her Panopto contract is up for renewal and cost has crept up roughly 30% over three years. The library is enormous and nearly unsearchable — faculty record but nobody can find content afterward. The incumbent AI features feel bolted-on and weak.
+
+She is in active evaluation mode. She will ask for peer R1 references. She cares deeply about data privacy — an AI that never trains on UT data is a key differentiator.
+
+Your goal: earn 20 minutes to show her Vbrick's AI Smart Search, auto-titling/chaptering/tagging, and the privacy guarantee — and position Vbrick as the renewal alternative worth evaluating.`,
+    hardModeContext: '',
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Ask for help', hint: '"I work with R1 universities evaluating their video platforms — do you have 30 seconds for one question?"' },
+      { label: '3. Qualify the pain', hint: '"How searchable is your lecture library right now — can faculty actually find specific content, or is it basically a growing archive nobody can navigate?"' },
+      { label: '4. Land the AI and privacy value prop', hint: '"Our AI does semantic search across the entire library — reads what was said AND what was shown on screen — and it never trains on your institutional data. Runs on AWS Bedrock with RAG."' },
+      { label: '5. Handle the peer reference ask', hint: '"Totally fair — we work with R1 institutions at comparable scale and I would rather give you names on a call than in a cold email. Would 20 minutes be worth it?"' },
+      { label: '6. Soft close for 20 minutes', hint: '"Given your renewal window, 20 minutes now could save you a lot of time later — would that work?"' },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: 'Vbrick Rev AI delivers semantic Smart Search across the full video library — reading what was said AND what was shown — with native auto-titling, chapters, summaries, and tags on every recording. The AI runs on AWS Bedrock with RAG and never trains on customer data. Proven at R1 scale for institutions evaluating incumbent renewals.',
+    repGoal: 'Book a 20-minute discovery call with Sofia focused on AI search and renewal alternatives.',
+    desiredOutcome: 'Sofia agrees to 20 minutes and asks you to send something before the call.',
+    openingContinuation: `Sofia picks up at her UT Austin office, fresh off opening a renewal quote. "Hello?"`,
+    prospectTone: 'Sharp and in evaluation mode. She is curious but will probe. Respond to specifics with specifics.',
+    likelyProspectResponses: [
+      `"We have been with our current vendor for six years."`,
+      `"The library is pretty unsearchable, honestly — that has been a frustration for a while."`,
+      `"Does your AI train on our data? That is a real concern for us."`,
+      `"Who else at an R1 is using this? I want peer references before I go any further."`,
+      `"Switching is painful. Migration costs are real and I have been through one before."`,
+      `"Send me something — I am actually in evaluation mode right now."`,
+    ],
+    strongRepResponses: [
+      `"Six years is a long run. A lot of schools that come to us are mid-evaluation after a renewal price jump. How are things sitting — happy with what you have, or looking around?"`,
+      `"The unsearchable library is the number-one thing we hear from R1 schools. Our AI does semantic search — reads what was said and what was shown on screen — and auto-titles, chapters, and tags everything automatically."`,
+      `"Our AI never trains on your institutional data. Zero. It runs on AWS Bedrock with RAG — retrieval-augmented generation. Your content stays yours, always."`,
+      `"Fair on references — I would rather give you names on a call than drop them in a cold email. Would 20 minutes be worth it? Given your renewal timeline, now is a good time to at least see what is out there."`,
+    ],
+    weakRepResponses: [
+      `"Vbrick has FedRAMP certification and SOC 2 Type II compliance..." (wrong lead for a higher ed renewal conversation)`,
+      `"Our AI is the best in the market." (no specifics, no evidence)`,
+      `"We can migrate everything for free." (not established, overshooting commitment on a cold call)`,
+    ],
+    coachingNote: 'Sofia is in evaluation mode — she is actually receptive. Do not over-sell. Surface the unsearchable library pain, state the AI privacy guarantee clearly and proactively, and ask for 20 minutes. She will ask about peer references — bridge that ask to the meeting rather than trying to satisfy it on the cold call.',
+    topMistakes: [
+      'Opening with security certifications before confirming the renewal and library search pain',
+      'Being vague on the AI privacy guarantee — say "never trains on your data" explicitly and early',
+      'Trying to name specific R1 references on the cold call instead of bridging that ask to a meeting',
+    ],
+    topWinMoves: [
+      'Ask about library searchability first — it is the pain she privately admitted before you called',
+      'Lead with the privacy guarantee proactively before she asks — it signals you did your homework',
+      'Bridge the R1 reference request to the meeting rather than trying to satisfy it on the cold call',
+    ],
+    winningPathBeats: [
+      { beat: 'Warm opener', goal: 'Get 30 seconds', idealLine: `"Hi, this is [Name] from Vbrick — I work with R1 universities looking at their video library setup. Do you have 30 seconds? One quick question."` },
+      { beat: 'Pain probe', goal: 'Confirm the unsearchable library problem', idealLine: `"How searchable is your lecture archive right now — can faculty actually find a specific clip from three semesters ago, or is it basically a pile of recordings growing every semester?"` },
+      { beat: 'AI and privacy value prop', goal: 'Land the differentiator with specifics', idealLine: `"That is exactly where our AI comes in. Semantic search across the entire library — reads what was said and what was shown — auto-titles and chapters everything, and it never trains on your institutional data. Runs on AWS Bedrock with RAG."` },
+      { beat: 'Soft close', goal: 'Book 20 minutes and bridge the references ask', idealLine: `"Given your renewal window, it is worth 20 minutes to see what the alternative looks like. I can bring peer R1 references to the call. Would that work?"` },
+    ],
+    track: 'easy',
+  },
+
+  'edu-global-multilingual': {
+    id: 'edu-global-multilingual',
+    title: "Consistent Learning Across NYU's Global Campuses",
+    subtitle: 'Pitch Vbrick multilingual delivery + eCDN for NYU New York, Abu Dhabi, and Shanghai',
+    estimatedMinutes: 3,
+    defaultPersonaId: 'edu-nyu-global',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT:
+You are a Vbrick BDR calling Priya Kapoor, Director of Global Learning Technology at New York University. NYU operates three portal campuses: New York, Abu Dhabi, and Shanghai.
+
+Priya's known pain: video streams poorly at NYU Abu Dhabi and NYU Shanghai due to network latency. A recent provost all-hands suffered buffering complaints from both global campuses — embarrassing at the leadership level. Caption and translation coverage is English-centric, underserving NYU's diverse international student body. Data residency for China and UAE is also on her radar.
+
+Your goal: earn 20 minutes to discuss how Vbrick's eCDN delivers reliable video to far campuses and how transcription and translation in 100+ languages serves NYU's multilingual student population.`,
+    hardModeContext: '',
+    cheatCard: [
+      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
+      { label: '2. Ask for help', hint: '"I work with universities managing video across global campuses — do you have 30 seconds?"' },
+      { label: '3. Qualify the pain', hint: '"How is your video quality holding up at your Abu Dhabi and Shanghai campuses — are students there getting the same experience as in New York?"' },
+      { label: '4. Land the global value prop', hint: '"Vbrick is built for global delivery — our eCDN handles latency to far campuses, and we do transcription and translation in 100+ languages so your international students are covered wherever they are."' },
+      { label: '5. Handle the incumbent objection', hint: `If she says she already has Panopto: "A lot of global schools keep those for basic recording but hit a wall on delivery quality to far campuses and multilingual coverage. Is that where you are feeling the gap?"` },
+      { label: '6. Soft close for 20 minutes', hint: `"Would 20 minutes be worth it to walk through how we handle global delivery? I would rather show you than pitch you on a cold call."` },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: 'Vbrick Rev delivers reliable video to globally distributed campuses via eCDN (peer-to-peer, edge caching, multicast). Transcription and translation in 100+ languages serves multilingual international student populations. SOC 2 Type II and GDPR-compliant with strong data governance relevant to multi-jurisdiction deployments.',
+    repGoal: 'Book a 20-minute discovery call with Priya to discuss global eCDN delivery and multilingual caption and translation coverage.',
+    desiredOutcome: 'Priya agrees to 20 minutes and asks you to send a calendar invite.',
+    openingContinuation: `Priya picks up at her New York office after a global campus sync. "Hello?"`,
+    prospectTone: 'Warm but purposeful. She is open to better solutions after the provost buffering incident.',
+    likelyProspectResponses: [
+      `"We already have Panopto globally — it works fine for recording."`,
+      `"Abu Dhabi and Shanghai do struggle with buffering. The provost all-hands was honestly embarrassing."`,
+      `"What languages do you support for captions and translation?"`,
+      `"Data residency is a real concern for us in China and UAE — we cannot just put everything on a US server."`,
+      `"Getting buy-in across three campus cultures and time zones is complicated."`,
+      `"Send me a calendar invite — 20 minutes is fine."`,
+    ],
+    strongRepResponses: [
+      `"Totally — Panopto covers recording well. The gap we usually hear about globally is delivery quality to far campuses. Is Abu Dhabi and Shanghai where you are feeling that most?"`,
+      `"We cover 100+ languages — Arabic, Mandarin, Spanish, French, and many more. Full transcription and translation, not just English auto-captions."`,
+      `"Data residency is something we take seriously — our architecture is SOC 2 Type II and GDPR-compliant, and we can walk through the governance options on a call. Better than trying to explain it here."`,
+      `"Would 20 minutes work to see how we handle global delivery and language coverage? I would rather show you than pitch you cold."`,
+    ],
+    weakRepResponses: [
+      `"Vbrick is FedRAMP-certified, which means government-grade security for your global campuses..." (wrong credential for a university global learning director)`,
+      `"Our platform is cloud-native and AI-powered with Smart Search and lecture capture..." (too broad, ignores the specific global delivery pain)`,
+      `"We can handle your data residency concerns." (vague, no detail, will not land with someone who has dealt with China and UAE compliance)`,
+    ],
+    coachingNote: 'Global delivery and multilingual coverage are the twin pain points here. Confirm the Abu Dhabi and Shanghai buffering problem first — that is the most emotionally resonant and recent pain. Then add language coverage. Data residency is real — do not dismiss it, but bridge it to the call rather than trying to solve it cold.',
+    topMistakes: [
+      'Leading with FedRAMP to a university global learning director — irrelevant credential for this buyer',
+      'Ignoring the provost buffering incident — that is the most acute and embarrassing recent pain',
+      'Being vague on language count — say "100+ languages" specifically, do not say "many languages"',
+    ],
+    topWinMoves: [
+      'Reference Abu Dhabi and Shanghai specifically by name — not just "global campuses"',
+      'Name 100+ language transcription and translation as a concrete capability, not a vague feature',
+      'Bridge data residency concerns to the call rather than attempting to resolve them on a cold call',
+    ],
+    winningPathBeats: [
+      { beat: 'Warm opener', goal: 'Get 30 seconds', idealLine: `"Hi, this is [Name] from Vbrick — I work with universities managing video across global campuses. Do you have 30 seconds? One quick question."` },
+      { beat: 'Pain probe', goal: 'Confirm the Abu Dhabi and Shanghai buffering problem', idealLine: `"How is your video quality at your Abu Dhabi and Shanghai campuses — are students there getting the same experience as in New York, or is delivery a real challenge?"` },
+      { beat: 'Global value prop', goal: 'Land eCDN and multilingual together concisely', idealLine: `"That is exactly where we come in. Our eCDN handles latency to far campuses without degrading quality, and we cover transcription and translation in 100+ languages so every student is actually served wherever they are."` },
+      { beat: 'Soft close', goal: 'Book 20 minutes', idealLine: `"Would 20 minutes be worth it to walk through global delivery and language coverage? I would rather show you than try to explain it on a cold call."` },
+    ],
+    track: 'easy',
+  },
+
+  // === EASY TRACK — HEALTHCARE SCENARIOS ===
+  "hc-clinical-mobile-training": {
+    id: "hc-clinical-mobile-training",
+    title: "Mobile Training at the Bedside",
+    subtitle: "Help Mayo Clinic get clinical training videos to nurses on the floor — governed, mobile-first, completion-tracked.",
+    estimatedMinutes: 4,
+    defaultPersonaId: "hc-mayo-clinical-ed",
+    defaultAccent: "general",
+    scenarioContext: `CALL CONTEXT:
+You are calling Dr. Sarah Chen, Director of Clinical Education Technology at Mayo Clinic.
+Mayo Clinic is a world-class academic medical center — 76,000+ employees across 20+ locations.
+Your goal: earn a 20-minute discovery call.
+
+THE PAIN: Nurses and residents cannot reliably access training videos on mobile at the bedside. The current LMS is desktop-first. Clinicians skip training when it is inconvenient, and the completion gap is a credentialing risk.
+
+VBRICK ANGLE: Vbrick Rev is a mobile-friendly, governed video platform with completion tracking, channel-level permissions by specialty, and AI-assisted content tagging. Videos load fast on any device. The platform is the only FedRAMP-certified enterprise video platform — the same security rigor federal agencies require.
+
+YOUR JOB THIS CALL:
+- Lead with the pain (mobile access, completion tracking) before introducing the product.
+- Ask one qualification question before the value prop.
+- Close with a natural, confident ask for a 20-minute call.`,
+    hardModeContext: "",
+    cheatCard: [
+      {
+        label: "1. Greet + introduce yourself",
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: "2. Ask for help",
+        hint: `"I was hoping you could point me in the right direction — are you still the person who oversees clinical training video at Mayo?"`,
+      },
+      {
+        label: "3. Qualify the pain",
+        hint: `"Quick question — are your nurses able to pull up training videos easily on mobile at the bedside, or is that still a headache?"`,
+      },
+      {
+        label: "4. Land the value prop",
+        hint: `"We work with academic medical centers to make governed training video actually mobile-friendly — completion tracking, channel-level permissions by specialty, the whole thing."`,
+      },
+      {
+        label: "5. Handle the LMS objection",
+        hint: `"Totally fair — most LMSes have video. The gap we usually find is reliable mobile delivery and completion reporting that holds up for credentialing. Is that true for yours?"`,
+      },
+      {
+        label: "6. Soft close",
+        hint: `"I could send a one-pager, but honestly I would give you a lot more in a quick 20-minute call — would you be open to that?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: "Vbrick Rev is purpose-built for governed enterprise video. The mobile-first portal, channel-level RBAC, and completion and engagement reporting directly address Mayo Clinic's bedside training gap. AI auto-tagging and semantic Smart Search make content discoverable across a library that grows with every specialty. The FedRAMP certification means IT conversations move faster than with generic platforms.",
+    repGoal: "Earn a 20-minute discovery call with Dr. Chen to explore how Vbrick can complement or replace the current LMS for clinical training video delivery.",
+    desiredOutcome: "Dr. Chen agrees to a 20-minute call and provides her availability or asks for a calendar invite.",
+    openingContinuation: `"Sure, I have a minute. What is this about?"`,
+    prospectTone: "Warm and engaged. Will lean in as soon as mobile access or completion tracking is mentioned. Offers a mild LMS objection but it is easy to navigate.",
+    likelyProspectResponses: [
+      "We do use an LMS for training, so I am not sure what the gap would be.",
+      "Mobile is actually something we have been trying to fix — what does Vbrick do differently?",
+      "How does completion tracking work — is it tied to our credentialing system?",
+      "Can clinicians access it without going through VPN?",
+      "What kind of hospitals are you working with?",
+      "A 20-minute call sounds reasonable — what are you thinking?",
+    ],
+    strongRepResponses: [
+      "Vbrick lets you set completion requirements at the channel level — a surgical team can have a different curriculum than the ICU, all tracked from one dashboard.",
+      "Clinicians access it through a branded mobile portal — no VPN required, permissions are handled inside the platform.",
+      "We work with academic medical centers at Mayo's scale — libraries over 500TB, tens of thousands of users.",
+      "Most LMSes serve video but were not built for reliable mobile delivery on the ward. Vbrick is.",
+    ],
+    weakRepResponses: [
+      "We are the best video platform on the market.",
+      "Vbrick does everything your LMS does and more.",
+      "We have a lot of healthcare clients — I can send you a case study list.",
+    ],
+    coachingNote: "The most common mistake here is leading with the product before the pain. Dr. Chen responds to the bedside mobile problem — start there and let her pull you into the product conversation. The LMS objection is a paper tiger; probe it with a question rather than challenging it head-on.",
+    topMistakes: [
+      "Pitching Vbrick features before asking a single qualification question.",
+      "Treating the LMS objection as a blocker instead of a probe opportunity.",
+      `Closing aggressively ("Give me 20 minutes this week") rather than naturally.`,
+    ],
+    topWinMoves: [
+      "Open with the mobile and bedside pain as a question, not a statement.",
+      "Let Dr. Chen confirm the pain in her own words before introducing Vbrick.",
+      "Tie the close directly to the specific pain she just confirmed.",
+    ],
+    winningPathBeats: [
+      {
+        beat: "Open",
+        goal: "Establish identity and ask for navigation help",
+        idealLine: `"Hi, this is [Name] — am I reaching the right person for clinical training video at Mayo?"`,
+      },
+      {
+        beat: "Qualify",
+        goal: "Uncover the mobile and completion tracking pain",
+        idealLine: `"Quick question — are nurses able to pull training videos on mobile at the bedside without issues, or is that still a gap?"`,
+      },
+      {
+        beat: "Value",
+        goal: "Connect Vbrick to the confirmed pain",
+        idealLine: `"That is exactly where we work with academic medical centers — mobile-first delivery, completion tracking that holds up for credentialing, channel-level governance by specialty."`,
+      },
+      {
+        beat: "Close",
+        goal: "Natural ask for a 20-minute discovery call",
+        idealLine: `"I could send a one-pager, but honestly I would give you a lot more in a quick 20-minute call — would you be open to that?"`,
+      },
+    ],
+    track: "easy",
+  },
+
+  "hc-hospital-allhands-scale": {
+    id: "hc-hospital-allhands-scale",
+    title: "All-Hands Without the Meltdown",
+    subtitle: "Help Kaiser Permanente run system-wide live events across 39 hospitals without crushing the corporate network.",
+    estimatedMinutes: 3,
+    defaultPersonaId: "hc-kaiser-comms",
+    defaultAccent: "general",
+    scenarioContext: `CALL CONTEXT:
+You are calling Marcus Williams, Director of Enterprise Communications at Kaiser Permanente.
+Kaiser is one of the largest integrated health systems in the US — 300,000+ employees, 39 hospitals, 8 regions.
+Your goal: earn a 20-minute discovery call.
+
+THE PAIN: System-wide live events — CEO all-hands, town halls, emergency communications — bring the corporate WAN to its knees. Remote hospitals and rural clinics get buffering and dropouts. Leadership wants more live events; the infrastructure says no.
+
+VBRICK ANGLE: Vbrick Rev is the only enterprise video vendor offering all three eCDN technologies (peer-to-peer, edge caching, multicast) from a single platform. Customers broadcast to tens of thousands simultaneously without straining the WAN. Post-event, AI generates summaries, chapters, and transcripts automatically.
+
+YOUR JOB THIS CALL:
+- Lead with the network pain — Marcus responds to that immediately.
+- eCDN is the key differentiation; keep the explanation plain ("the stream stays inside your building").
+- Close naturally after confirming the pain.`,
+    hardModeContext: "",
+    cheatCard: [
+      {
+        label: "1. Greet + introduce yourself",
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: "2. Ask for help",
+        hint: `"Quick question — are you still the person who owns large-scale live events at Kaiser?"`,
+      },
+      {
+        label: "3. Qualify the pain",
+        hint: `"When you run a system-wide all-hands, do remote hospitals and rural clinics get reliable delivery, or is network strain still an issue?"`,
+      },
+      {
+        label: "4. Land the value prop",
+        hint: `"We help health systems broadcast live to tens of thousands simultaneously without any WAN impact — using eCDN technology built specifically for enterprise networks."`,
+      },
+      {
+        label: "5. Handle the IT ownership objection",
+        hint: `"Makes sense — most IT teams own the streaming stack. The issue we usually find is that the tools were not built with eCDN. Is that true for what you are running today?"`,
+      },
+      {
+        label: "6. Soft close",
+        hint: `"I could send you a quick overview, but honestly a 20-minute call would let me show you the eCDN architecture for Kaiser's footprint — would that be worth your time?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: "Vbrick is the only vendor offering all three eCDN technologies — peer-to-peer, edge caching, and multicast — from a single platform. At Kaiser's scale (300k employees, 39 hospitals, 8 regions), this is the exact problem Vbrick was designed to solve. Customers run over 100 webcasts per month for 115,000 users. Post-event AI handles summaries, chapters, and transcription in 100+ languages automatically.",
+    repGoal: "Earn a 20-minute discovery call with Marcus to explore how Vbrick's eCDN can solve Kaiser's live event delivery problem at scale.",
+    desiredOutcome: "Marcus agrees to a 20-minute call and gives availability or asks for a calendar invite.",
+    openingContinuation: `"Yeah, Marcus here. Make it quick — I am between meetings."`,
+    prospectTone: "Pressed for time but pragmatic. Opens up fast when network pain or eCDN is mentioned. Brief, direct responses.",
+    likelyProspectResponses: [
+      "Network strain is actually a real problem for us — tell me more.",
+      "Our IT team handles the streaming side, so I am not sure this is my call.",
+      "We just ran an all-hands and three regions buffered out. My CHRO is not happy.",
+      "What is eCDN and how is it different from what we are doing now?",
+      "How many other health systems at our size are you working with?",
+      "Okay, 20 minutes — what does your calendar look like?",
+    ],
+    strongRepResponses: [
+      "eCDN routes the live stream locally inside your network — the video never leaves the building until it has to, so your WAN sees almost zero load even with 50,000 people tuned in.",
+      "Vbrick is the only vendor with all three eCDN technologies — peer-to-peer, edge caching, and multicast — so we pick the right one for each site automatically.",
+      "We have customers running over 100 webcasts a month for 115,000 users. Kaiser's scale is right in our wheelhouse.",
+      "Happy to loop IT in — we have a technical eCDN architecture brief that makes that conversation easy. Would a quick alignment call with you first make sense?",
+    ],
+    weakRepResponses: [
+      "We are the best live streaming platform out there.",
+      "You should switch away from whatever you are using now.",
+      "eCDN is complicated — let me just send you a brochure.",
+    ],
+    coachingNote: "Marcus responds to speed and specificity. Do not open with a company overview — lead with the network pain as a question. If he says IT owns streaming, do not retreat; offer to bring IT in after a quick alignment call with Marcus first. The eCDN explanation needs plain language: the stream stays inside your building.",
+    topMistakes: [
+      "Leading with a company overview instead of the network pain question.",
+      `Backing off when Marcus says "IT handles this" instead of offering a path forward.`,
+      "Trying to explain all three eCDN types in one breath instead of keeping it simple.",
+    ],
+    topWinMoves: [
+      "Open with the network strain question — let Marcus confirm the pain before explaining anything.",
+      `Use the plain-language eCDN summary: "the stream stays inside your building, your WAN barely notices."`,
+      "Offer to involve IT after the alignment call — position Marcus as the internal champion.",
+    ],
+    winningPathBeats: [
+      {
+        beat: "Open",
+        goal: "Establish identity, ask for navigation",
+        idealLine: `"Hi, this is [Name] — are you still the person who owns large-scale live events at Kaiser?"`,
+      },
+      {
+        beat: "Qualify",
+        goal: "Surface the network strain pain",
+        idealLine: `"When you run a system-wide all-hands, are remote hospitals getting clean delivery or is network strain still a problem?"`,
+      },
+      {
+        beat: "Value",
+        goal: "Land eCDN in plain language",
+        idealLine: `"We help health systems like yours broadcast to tens of thousands simultaneously — the stream stays inside your building, your WAN barely notices."`,
+      },
+      {
+        beat: "Close",
+        goal: "Earn the 20-minute call",
+        idealLine: `"Would a quick 20-minute call be worth it — I can show you exactly how the eCDN handles Kaiser's footprint?"`,
+      },
+    ],
+    track: "easy",
+  },
+
+  "hc-compliance-completion": {
+    id: "hc-compliance-completion",
+    title: "Prove It to the Auditors",
+    subtitle: "Help HCA Healthcare show The Joint Commission that 180+ hospitals completed mandatory compliance training — centrally, automatically.",
+    estimatedMinutes: 4,
+    defaultPersonaId: "hc-hca-compliance",
+    defaultAccent: "general",
+    scenarioContext: `CALL CONTEXT:
+You are calling Jennifer Torres, Director of Compliance Training at HCA Healthcare.
+HCA is one of the largest for-profit hospital systems in the US — 180+ hospitals, 2,000+ care sites, approximately 300,000 employees.
+Your goal: earn a 20-minute discovery call.
+
+THE PAIN: Jennifer cannot produce a unified completion report across 180+ hospitals for mandatory compliance modules. Data is siloed by facility. The Joint Commission survey window is two months away. Auditors want proof.
+
+VBRICK ANGLE: Vbrick Rev's governed CMS includes centralized completion and engagement reporting, video retention and expiration rules (outdated content removed automatically), and approval workflows before content goes live. One dashboard. Audit-ready in seconds.
+
+YOUR JOB THIS CALL:
+- Lead with the audit and completion pain, not the product.
+- The Joint Commission is the external pressure — reference it naturally.
+- Retention rules and content expiration are often overlooked but critical for compliance buyers — use them.
+- Soft close; she will say yes once completion tracking is clearly connected.`,
+    hardModeContext: "",
+    cheatCard: [
+      {
+        label: "1. Greet + introduce yourself",
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: "2. Ask for help",
+        hint: `"Quick question — are you still the person overseeing compliance training across HCA's hospitals?"`,
+      },
+      {
+        label: "3. Qualify the pain",
+        hint: `"When you need to show completion for a mandatory module across all your facilities — can you pull that from one place, or is it still a manual chase?"`,
+      },
+      {
+        label: "4. Land the value prop",
+        hint: `"We give hospital systems a single completion dashboard across every facility — the kind of report you can hand an auditor in 60 seconds."`,
+      },
+      {
+        label: "5. Handle the LMS objection",
+        hint: `"Totally fair — most LMSes handle the learning side. The gap we usually find is centralized video completion reporting and automatic content expiration. Is that tracked for you today?"`,
+      },
+      {
+        label: "6. Soft close",
+        hint: `"I think there is probably a 20-minute conversation worth having here — would that work given where you are with the survey window?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: "Vbrick's governed CMS gives compliance teams a single completion dashboard across every facility, video-level retention and expiration rules that remove outdated content automatically, and approval workflows before any module goes live. Reporting is audit-ready — exportable, timestamped, tied to individual users. This directly addresses HCA's siloed completion data problem ahead of Joint Commission surveys.",
+    repGoal: "Earn a 20-minute discovery call with Jennifer to explore how Vbrick can centralize compliance video completion reporting across HCA's 180+ hospitals.",
+    desiredOutcome: "Jennifer agrees to a 20-minute call and provides availability or asks for a calendar invite.",
+    openingContinuation: `"This is Jennifer. What can I do for you?"`,
+    prospectTone: "Polite, organized, and pressed. Warms up quickly when completion tracking or auditor-readiness is mentioned. Mild LMS objection but it is not a blocker.",
+    likelyProspectResponses: [
+      "We do use an LMS for compliance training — what would be different here?",
+      "Pulling completion across 180 hospitals is honestly a nightmare right now.",
+      "We have a Joint Commission survey in two months — timing is not great.",
+      "What does the completion report actually look like?",
+      "Can this integrate with our existing LMS or does it replace it?",
+      "A 20-minute call could work — let me check my calendar.",
+    ],
+    strongRepResponses: [
+      "The dashboard shows every module, every facility, every user — filter by hospital or training track and export it in one click for the auditor.",
+      "Built-in expiration rules mean outdated modules are pulled from circulation automatically. No more staff watching last year's version.",
+      "We can run alongside your LMS — most customers use Vbrick specifically for the video governance and reporting layer while keeping their LMS for curriculum management.",
+      "Two months out from a survey window is actually a good time to have this conversation — setup is fast and the reporting is immediately useful.",
+    ],
+    weakRepResponses: [
+      "Vbrick is better than any LMS on the market.",
+      "You should probably replace your LMS with us.",
+      "We have tons of healthcare clients — I can send case studies.",
+    ],
+    coachingNote: "Jennifer's biggest fear is walking into a Joint Commission survey with completion data gaps. Lead with that fear, not with product features. The LMS objection is a probe opportunity — ask if their LMS gives them a cross-facility completion report for video. It almost certainly does not.",
+    topMistakes: [
+      "Pitching the product before confirming the completion data problem exists.",
+      "Treating the LMS objection as a lost cause instead of a probe opportunity.",
+      "Missing the expiration and retention angle — that often seals the deal for compliance buyers.",
+    ],
+    topWinMoves: [
+      "Ask the completion-across-facilities question early and let Jennifer confirm the pain in her own words.",
+      `Probe the LMS objection: "Does your LMS give you a cross-hospital video completion report today?"`,
+      `Tie the close to the survey window: "Two months is a reasonable runway — a 20-minute call would help us figure out if this fits your timeline."`,
+    ],
+    winningPathBeats: [
+      {
+        beat: "Open",
+        goal: "Establish identity, confirm she owns compliance training",
+        idealLine: `"Hi, this is [Name] — are you still the person overseeing compliance training across HCA's facilities?"`,
+      },
+      {
+        beat: "Qualify",
+        goal: "Surface the siloed completion data pain",
+        idealLine: `"When you need to prove completion for a mandatory module across all your hospitals — is that one report or a manual chase?"`,
+      },
+      {
+        beat: "Value",
+        goal: "Land the central dashboard and expiration rules",
+        idealLine: `"We give compliance teams a single completion dashboard across every facility — plus automatic expiration so outdated modules disappear from circulation."`,
+      },
+      {
+        beat: "Close",
+        goal: "Earn the call with survey-window urgency",
+        idealLine: `"Given where you are with the survey window, I think there is a 20-minute conversation worth having — would that work?"`,
+      },
+    ],
+    track: "easy",
+  },
+
+  "hc-clinical-knowledge-ai": {
+    id: "hc-clinical-knowledge-ai",
+    title: "The Retiring Surgeon Problem",
+    subtitle: "Help Cleveland Clinic capture clinical expertise on video and make it searchable with AI — without feeding patient data to a model.",
+    estimatedMinutes: 4,
+    defaultPersonaId: "hc-clevelandclinic-knowledge",
+    defaultAccent: "general",
+    scenarioContext: `CALL CONTEXT:
+You are calling Dr. Robert Park, Director of Knowledge Management at Cleveland Clinic.
+Cleveland Clinic is a world-class academic medical center — 70,000+ caregivers, 22 hospitals, a global reputation for clinical innovation.
+Your goal: earn a 20-minute discovery call.
+
+THE PAIN: Institutional knowledge walks out the door every time a senior clinician retires. The video library is unsearchable — clinicians give up and ask a colleague instead. The team is curious about AI but deeply worried that clinical content will be used to train a model.
+
+VBRICK ANGLE: Vbrick Rev's AI runs on AWS Bedrock with RAG — it NEVER trains on customer data. Smart Search is semantic (not keyword-based), so a surgeon can search a clinical concept and find the right video. AI auto-generates titles, summaries, chapters, and tags at upload so the library stays organized without manual effort.
+
+CRITICAL: Do NOT say Vbrick is "HIPAA compliant" or "HIPAA certified." Position data safety via the Bedrock and RAG architecture and the explicit guarantee that the AI never trains on customer data.
+
+YOUR JOB THIS CALL:
+- The AI data safety question will come early — have the Bedrock and RAG answer ready.
+- Smart Search is the core value prop; feature-list selling will lose Dr. Park.
+- The retiring-expert narrative is the emotional hook — use it.`,
+    hardModeContext: "",
+    cheatCard: [
+      {
+        label: "1. Greet + introduce yourself",
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: "2. Ask for help",
+        hint: `"Quick question — are you still the person who owns knowledge management and clinical video at Cleveland Clinic?"`,
+      },
+      {
+        label: "3. Qualify the pain",
+        hint: `"When a senior clinician retires or transitions out — is there a reliable way to capture their expertise on video and make it findable, or is that knowledge still at risk of walking out the door?"`,
+      },
+      {
+        label: "4. Land the value prop",
+        hint: `"We help academic medical centers turn video into a searchable knowledge base — AI-powered semantic search across the whole library, and the AI never trains on your clinical content."`,
+      },
+      {
+        label: "5. Handle the AI data concern",
+        hint: `"Great question — our AI runs on AWS Bedrock with RAG. It reads your content to answer search queries but never fine-tunes on it, never stores it in a shared model. Your clinical video stays yours, period."`,
+      },
+      {
+        label: "6. Soft close",
+        hint: `"I think the AI architecture question alone is worth a 20-minute call — would you be open to that so I can walk you through exactly how it works?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: "Vbrick's AI runs on AWS Bedrock with RAG — it never fine-tunes on customer data, so clinical content surfaces answers but is never absorbed into a shared model. Smart Search is semantic rather than keyword-based, solving the give-up-and-ask-a-colleague problem. Auto-generated titles, summaries, and chapters mean the library stays organized as it scales. Fine-grained RBAC enables cross-department discoverability without privacy leakage.",
+    repGoal: "Earn a 20-minute discovery call with Dr. Park to explore Vbrick's AI knowledge platform and address his data safety concerns directly.",
+    desiredOutcome: "Dr. Park agrees to a 20-minute call, particularly to hear the Bedrock and RAG architecture explanation in more depth.",
+    openingContinuation: `"Sure, what is this regarding?"`,
+    prospectTone: "Intellectually curious and thoughtful. Will ask about AI data safety within the first two turns. Warms up significantly once the Bedrock and RAG answer is given. Responds well to the retiring-expert narrative.",
+    likelyProspectResponses: [
+      "Knowledge capture is something we think about a lot — what does your platform actually do?",
+      "My first question is always: does the AI train on our clinical content?",
+      "Our video library is enormous but nobody can find anything in it.",
+      "We tried a knowledge management tool before and nobody used it because search was too basic.",
+      "Can you tell me more about how the AI works without using our data?",
+      "A 20-minute call to understand the architecture — that actually makes sense.",
+    ],
+    strongRepResponses: [
+      "The AI runs on AWS Bedrock with RAG — it reads your content to surface answers but never fine-tunes on it. Your clinical video trains nothing. Ever.",
+      "Smart Search is semantic, not keyword-based — a resident can type a clinical concept and find the right video even if those exact words are never in the title.",
+      "At upload, AI auto-generates a title, summary, chapters, and tags — so the library stays organized even as it grows, without manual effort from your team.",
+      "The retiring-expert scenario is exactly what we were built for — one recorded session with a surgeon, auto-organized and searchable, available to every resident the next morning.",
+    ],
+    weakRepResponses: [
+      "Our AI is the most advanced in the healthcare space.",
+      "Do not worry about the data privacy stuff — it is all secure.",
+      "We have a great knowledge management tool — let me send you the brochure.",
+    ],
+    coachingNote: "Dr. Park's AI data concern is not a blocker — it is an invitation to show you know your product. Nail the Bedrock and RAG answer and he relaxes immediately. After that, Smart Search and the retiring-expert narrative close the call. Do not rush past the data safety question with a vague reassurance; answer it precisely.",
+    topMistakes: [
+      `Giving a vague "all your data is secure" answer instead of the specific Bedrock and RAG explanation.`,
+      "Leading with a feature list instead of the retiring-expert emotional hook.",
+      `Claiming Vbrick is "HIPAA compliant" — Dr. Park will probe it and credibility drops.`,
+    ],
+    topWinMoves: [
+      "Open with the retiring-expert question — it is emotionally resonant and immediately relevant to his role.",
+      `Answer the AI data safety question with specifics: "AWS Bedrock, RAG, never fine-tunes on your content."`,
+      `Connect Smart Search to the "give up and ask a colleague" problem he already recognizes.`,
+    ],
+    winningPathBeats: [
+      {
+        beat: "Open",
+        goal: "Establish identity, confirm he owns clinical knowledge management",
+        idealLine: `"Hi, this is [Name] — are you still the person who owns knowledge management and clinical video at Cleveland Clinic?"`,
+      },
+      {
+        beat: "Qualify",
+        goal: "Surface the retiring-expert and unsearchable library pain",
+        idealLine: `"When a senior surgeon retires — is there a reliable way to capture their expertise and make it findable, or is that knowledge still at risk of walking out the door?"`,
+      },
+      {
+        beat: "Value",
+        goal: "Land AI search and data safety together",
+        idealLine: `"We turn video into a searchable knowledge base with AI — and the AI never trains on your clinical content. It runs on AWS Bedrock with RAG."`,
+      },
+      {
+        beat: "Close",
+        goal: "Earn a call to walk through the architecture",
+        idealLine: `"I think the AI architecture question alone is worth 20 minutes on a call — would you be open to that?"`,
+      },
+    ],
+    track: "easy",
+  },
+
+  "hc-phi-secure-governance": {
+    id: "hc-phi-secure-governance",
+    title: "Secure Video for PHI-Adjacent Workflows",
+    subtitle: "Help CVS Health (Aetna) govern video in a PHI-sensitive environment — FedRAMP-grade controls, RBAC, encryption, retention, and audit trails.",
+    estimatedMinutes: 4,
+    defaultPersonaId: "hc-cvshealth-security",
+    defaultAccent: "general",
+    scenarioContext: `CALL CONTEXT:
+You are calling Lisa Armstrong, Director of Information Security and Privacy at CVS Health (Aetna).
+CVS Health includes Aetna, one of the largest health insurers in the US — 300,000+ employees, 23M+ members insured.
+Your goal: earn a 20-minute discovery call.
+
+THE PAIN: Generic video platforms fail Lisa's security review consistently. PHI-adjacent workflows need encryption at rest and in transit, fine-grained RBAC, retention rules, and a complete audit trail. Most vendors do not come close.
+
+VBRICK ANGLE: Vbrick Rev is the ONLY FedRAMP-certified enterprise video platform AND the only FedRAMP-certified eCDN — the highest available security bar in enterprise software. Layer on: SOC 2 Type II, GDPR compliance, AES encryption at rest and in transit, multi-layered RBAC down to individual video assets, configurable retention and expiration rules, and timestamped audit trails for every view event.
+
+CRITICAL: Do NOT say "Vbrick is HIPAA compliant" or "HIPAA certified." Lisa is sophisticated — she evaluates controls, not certs. If you use HIPAA-seal language, she will correct you and your credibility drops. Frame everything through the controls stack and let her connect it to her regulatory context.
+
+YOUR JOB THIS CALL:
+- Lead with FedRAMP — it is the signal that cuts through noise for a security director.
+- Let her ask the follow-up questions; answer each control precisely.
+- The close is confident but natural — she has an unsolved problem and needs this.`,
+    hardModeContext: "",
+    cheatCard: [
+      {
+        label: "1. Greet + introduce yourself",
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: "2. Ask for help",
+        hint: `"Quick question — are you still the person who evaluates security for enterprise video or collaboration tools at CVS Health?"`,
+      },
+      {
+        label: "3. Qualify the pain",
+        hint: `"I am curious — when your teams use video in workflows that are close to PHI or sensitive member data, are you confident the governance controls actually meet your bar, or is that still an open question?"`,
+      },
+      {
+        label: "4. Land the value prop",
+        hint: `"We are the only FedRAMP-certified enterprise video platform — same security rigor federal agencies are held to. On top of that: encryption at rest and in transit, multi-layered RBAC, retention rules, and a complete audit trail."`,
+      },
+      {
+        label: "5. Handle the documentation-first objection",
+        hint: `"Absolutely — we have a full security documentation package. Before I send a PDF though, I want to make sure we are talking about the right controls for your environment. Would a 20-minute call help me understand what your review checklist actually looks for?"`,
+      },
+      {
+        label: "6. Soft close",
+        hint: `"I could send you the FedRAMP docs, but honestly a 20-minute call would let me map our controls directly to your environment — would that be worth your time?"`,
+      },
+    ],
+    difficultyScore: 3,
+    whyVbrickFits: "Vbrick Rev is the only FedRAMP-certified enterprise video platform and the only FedRAMP-certified eCDN — the highest federal security standard in enterprise software. AES encryption at rest and in transit, multi-layered RBAC down to individual video assets, configurable retention and expiration rules, and timestamped audit trails (who watched what and when) directly address the controls CVS Health and Aetna require for PHI-adjacent video workflows.",
+    repGoal: "Earn a 20-minute discovery call with Lisa Armstrong by leading with FedRAMP and the controls stack — not HIPAA claims.",
+    desiredOutcome: "Lisa agrees to a 20-minute call to map Vbrick's controls against her security review checklist.",
+    openingContinuation: `"Armstrong here. I have five minutes."`,
+    prospectTone: "Measured and initially skeptical. Opens steadily as controls are named precisely. Will correct a HIPAA-seal claim — do not make one. Agrees to a call once FedRAMP and at least one additional control are mentioned relevantly.",
+    likelyProspectResponses: [
+      "Most video platforms do not clear our security bar — what makes you different?",
+      "FedRAMP — that is not something I hear from video vendors very often.",
+      "What does the RBAC model actually look like at the video level?",
+      "If you are about to say HIPAA compliant, I am going to stop you — that is not how we evaluate this.",
+      "Walk me through the audit trail — who watched what and when?",
+      "Okay — 20 minutes to map your controls to our checklist. Send me a calendar invite.",
+    ],
+    strongRepResponses: [
+      "We are the only FedRAMP-certified enterprise video platform and the only FedRAMP-certified eCDN. That is the same bar federal agencies are held to — it tends to clear most security checklists.",
+      "RBAC goes down to the individual video asset — you can restrict a single video to a specific team without touching anything else in the library.",
+      "Audit trail captures every view event — who watched, when, how long, from what device. Timestamped and exportable.",
+      "We do not talk about HIPAA as a certification — we talk about the controls stack. Encryption at rest and in transit, RBAC, retention, audit. That maps to your regulatory context.",
+    ],
+    weakRepResponses: [
+      "We are fully HIPAA compliant, so you do not need to worry about that.",
+      "Our security is the best in the industry.",
+      "I can send you a brochure with all our security features.",
+    ],
+    coachingNote: "Lisa is the hardest persona in the easy track because she will test your controls language. The HIPAA framing trap is real — if you say HIPAA certified, she will call it out and your credibility drops. Lead with FedRAMP, follow with specific controls, and let her drive the checklist conversation. The close works because she has an unsolved problem; you just need to prove you speak her language.",
+    topMistakes: [
+      `Saying "Vbrick is HIPAA compliant" — this triggers a correction and drops your credibility immediately.`,
+      "Leading with features instead of FedRAMP — the one credential that cuts through noise for a security director.",
+      `Offering to send documentation instead of earning the call — "I will send the docs" is a dead end.`,
+    ],
+    topWinMoves: [
+      "Open with FedRAMP immediately — it is the credential that earns you the next sentence.",
+      "Follow FedRAMP with specific controls in plain language: RBAC down to the individual video, encryption at rest and in transit, timestamped audit trail.",
+      "Frame the close around mapping controls to her checklist — make the call feel useful, not salesy.",
+    ],
+    winningPathBeats: [
+      {
+        beat: "Open",
+        goal: "Establish identity, confirm she owns video and collaboration security",
+        idealLine: `"Hi, this is [Name] — are you still the person who evaluates security for enterprise video tools at CVS Health?"`,
+      },
+      {
+        beat: "Qualify",
+        goal: "Surface the controls gap in current PHI-adjacent video workflows",
+        idealLine: `"When teams use video near sensitive workflows — are the governance controls actually meeting your bar, or is that still an open question?"`,
+      },
+      {
+        beat: "Value",
+        goal: "Lead with FedRAMP, follow with specific controls",
+        idealLine: `"We are the only FedRAMP-certified enterprise video platform. On top of that: encryption at rest and in transit, RBAC down to the individual video, and a full timestamped audit trail."`,
+      },
+      {
+        beat: "Close",
+        goal: "Earn a controls-mapping call",
+        idealLine: `"A 20-minute call would let me map our controls directly to your checklist — would that be worth your time?"`,
+      },
+    ],
+    track: "easy",
+  },
+
+
+  // === EASY TRACK — MANUFACTURING SCENARIOS ===
+  'mfg-plant-allhands-scale': {
+    id: 'mfg-plant-allhands-scale',
+    title: 'Plant All-Hands at Scale',
+    subtitle: `eCDN delivery to 10,000+ factory workers without melting the WAN`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'mfg-gm-comms',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You're calling Marcus Delgado, Director of Manufacturing Communications at General Motors. He oversees internal communications to 100,000+ employees across North American manufacturing plants. Last week's all-hands buffered for 30% of viewers — plant managers are still complaining. He's not expecting your call but he's in solve-it mode. Your hook: Vbrick's eCDN delivers live video to tens of thousands simultaneously using three methods (peer-to-peer, edge caching, multicast) from a single vendor, without taxing the corporate WAN.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
+      },
+      {
+        label: '2. Ask for help (15 seconds)',
+        hint: `Ask: "I caught you at a bad time?" then bridge to your hook — "I work with manufacturing comms teams that run large all-hands events and hit buffering problems at plant scale. Is that something on your radar?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `When he confirms buffering, ask: "How many sites or viewers were affected?" Let him tell the story — that's your qualification.`,
+      },
+      {
+        label: '4. Deliver the value prop (one sentence)',
+        hint: `"Vbrick uses three eCDN methods simultaneously — peer-to-peer, edge caching, and multicast — so 10,000 people can tune in at once and your WAN barely notices." Drop the proof point: one customer runs 100 webcasts/month to 115,000 users this way.`,
+      },
+      {
+        label: '5. Handle the Teams objection',
+        hint: `"Teams is great for meetings — it wasn't built for broadcast to 10,000 factory workers simultaneously. We sit alongside Teams and handle the delivery layer."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I could send a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — I can walk you through the delivery architecture and pressure-test whether it maps to your plant setup. Worth a look?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick is the only vendor offering all three eCDN technologies from one platform — peer-to-peer, edge caching, and multicast. A real customer runs ~100 webcasts per month for 115,000 users without WAN saturation. GM's factory-floor all-hands buffering problem is exactly this use case. Vbrick also provides multilingual auto-translation and captions in 100+ languages, which addresses GM's diverse manufacturing workforce.`,
+    repGoal: `Qualify the all-hands bandwidth problem and book a 20-minute discovery call with Marcus and possibly an IT contact.`,
+    desiredOutcome: `Marcus agrees to a 20-minute call to see the delivery architecture and explore fit for GM's plant communications.`,
+    openingContinuation: `Hi Marcus, this is [Your Name] with Vbrick — I'll be brief. I work with manufacturing communications teams that run large all-hands events, and I've been talking to a lot of plant comms leaders about the same problem: live video that buffers when the whole plant tunes in at once. Is that something you've run into?`,
+    prospectTone: `Frazzled but hopeful. He wants a solution. He'll engage fast if you sound like you actually understand his specific problem — not just "video delivery" in the abstract.`,
+    likelyProspectResponses: [
+      `Yeah, last week's all-hands was a mess. Half the plants couldn't watch without buffering.`,
+      `We use Teams for this — it mostly works but not when the whole plant logs in at once.`,
+      `How is this different from just upgrading our bandwidth?`,
+      `What does eCDN actually mean? I'm not super technical on this.`,
+      `Would IT have to install something at every plant location?`,
+      `Okay, that's interesting. What would a next step look like?`,
+    ],
+    strongRepResponses: [
+      `That buffering problem is exactly what we solve — Vbrick uses three eCDN methods simultaneously so local devices share the stream with each other. Your WAN barely notices even when 10,000 people tune in.`,
+      `eCDN in plain terms: instead of every screen in every plant pulling video from the cloud at once, local devices share the stream peer-to-peer. One customer runs 100 live webcasts a month to 115,000 people this way.`,
+      `IT typically deploys a lightweight agent once per site — not something on every endpoint. Most of our manufacturing customers are live in weeks, not months.`,
+      `I could send a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — I can walk you through the delivery architecture and pressure-test whether it maps to your plant setup. Worth a look?`,
+    ],
+    weakRepResponses: [
+      `We have a really comprehensive enterprise video platform with a lot of features across live, on-demand, and CMS...`,
+      `Vbrick Rev is a cloud-native AI Enterprise Video Platform that does live webcasting, video CMS, eCDN delivery, and a lot more...`,
+      `I can send you some information and you can review it whenever you have bandwidth.`,
+    ],
+    coachingNote: `Lead with the pain — "buffering during all-hands" — not the product. Marcus doesn't care what Vbrick is called. He cares that 30% of his plant viewers couldn't watch the CEO speak last week. Name that problem first, then introduce eCDN as the specific mechanism that solves it. Save product features for the discovery call.`,
+    topMistakes: [
+      `Pitching "Enterprise Video Platform" features before confirming the buffering pain`,
+      `Getting lost in eCDN technical details before Marcus has bought in on the basic concept`,
+      `Asking for the meeting before he's confirmed "yes, that's exactly my problem"`,
+    ],
+    topWinMoves: [
+      `Name the buffering problem in the first sentence — let him confirm it before you say anything else`,
+      `Explain eCDN in one plain sentence: "devices share the stream so your WAN stays clean"`,
+      `Drop a specific proof point: 100 webcasts per month, 115,000 users, no WAN saturation`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open with the pain',
+        goal: 'Get Marcus to confirm the buffering problem before pitching anything',
+        idealLine: `I work with manufacturing comms teams that run large all-hands events — a lot of them hit buffering issues when the whole plant tunes in at once. Is that something that's come up for you?`,
+      },
+      {
+        beat: 'Explain eCDN simply',
+        goal: `Help him understand the mechanism without losing him in network jargon`,
+        idealLine: `Short version: instead of every screen in every plant pulling video from the cloud at once, local devices share the stream with each other. Your WAN barely notices.`,
+      },
+      {
+        beat: 'Drop the proof point',
+        goal: 'Make the claim feel real and specific, not just a pitch',
+        idealLine: `One of our manufacturing customers runs about 100 live webcasts a month to 115,000 people this way. Their IT team doesn't even get calls during town halls anymore.`,
+      },
+      {
+        beat: 'Soft close',
+        goal: 'Book the 20-minute call without pushing',
+        idealLine: `I could send a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — would you be open to that?`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'mfg-tribal-knowledge-ai': {
+    id: 'mfg-tribal-knowledge-ai',
+    title: 'Tribal Knowledge, Preserved and Searchable',
+    subtitle: `AI-powered video search that finds the expert answer without training on your data`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'mfg-3m-knowledge',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You're calling Dr. Elena Vasquez, Director of Knowledge Management & R&D Learning at 3M. Three senior R&D fellows are retiring this quarter. She has hours of recorded expert sessions that no one can navigate, and she was burned last year by an AI tool that legal shut down over data privacy concerns. Your hook: Vbrick's AI generates semantic search, auto-chapters, auto-summaries, and auto-tags on video content — running on AWS Bedrock with RAG and never training on customer data. That's a contractual commitment, not a policy statement.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
+      },
+      {
+        label: '2. Ask for help (15 seconds)',
+        hint: `"I'll keep this short — I work with knowledge management leaders in R&D-heavy companies dealing with a specific problem: video recordings that pile up and can't be searched. Is that something you're dealing with?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `When she confirms, ask: "And is it specifically the search and navigation problem, or is the bigger issue just getting experts to record in the first place?" Let her answer — it tells you where to go next.`,
+      },
+      {
+        label: '4. Deliver the value prop — lead with data safety',
+        hint: `"Before I go further — I know AI and R&D content is a sensitive mix. Our AI runs on AWS Bedrock, generates chapters and semantic search, and never trains on your data. That's contractual. Then the search itself: an engineer types what they remember and finds the 4-minute segment in a 3-hour recording."`,
+      },
+      {
+        label: '5. Handle the data privacy objection',
+        hint: `"The AI processes video to generate metadata — it doesn't store your content or use it to improve the model. AWS Bedrock guarantees that. If legal wants to see the architecture, we can walk them through it on a call."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I could send our data privacy overview, but the fastest path is a 20-minute call where you can ask the data questions directly — you could even bring your privacy lead. Would that be worth 20 minutes?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick's AI auto-generates titles, summaries, chapters, and tags on upload. Its Smart Search is semantic — an engineer can describe what they remember and land on the specific minute in a multi-hour recording. The AI runs on AWS Bedrock with RAG and never trains on customer data, which is contractual. This directly addresses 3M's legal mandate and knowledge-capture crisis simultaneously.`,
+    repGoal: `Qualify the knowledge discovery and AI data privacy problem. Address the data concern proactively — before she raises it. Book a discovery call that can include her legal or privacy team.`,
+    desiredOutcome: `Dr. Vasquez agrees to a 20-minute call, likely wanting to include her privacy team to hear the data model directly.`,
+    openingContinuation: `Hi Dr. Vasquez, this is [Your Name] with Vbrick — I'll keep this short. I work with knowledge management leaders at R&D-heavy companies dealing with a specific challenge: expert sessions get recorded, the videos pile up, and nobody can find anything in them when they need it. Is that a problem you're sitting on?`,
+    prospectTone: `Thoughtful and cautious. She'll engage when you demonstrate you understand both the knowledge problem AND the data privacy constraint together — not just one side of it.`,
+    likelyProspectResponses: [
+      `Yes, we have hours of recorded expert sessions that are basically unsearchable right now.`,
+      `We tried an AI tool last year and legal shut it down. Data privacy was the issue.`,
+      `How does your AI actually work — does it train on our content?`,
+      `What can it actually surface from a long, unstructured recording?`,
+      `How is semantic search different from keyword search on video?`,
+      `Okay, I'm somewhat interested. What would a reasonable next step look like?`,
+    ],
+    strongRepResponses: [
+      `Our AI runs on AWS Bedrock — it processes your video to generate chapters and semantic search, and it never retains your content to train the model. That's contractual, not just a privacy policy.`,
+      `Semantic search means an engineer types what they remember — "how did Chen explain the bonding process for the new substrate" — and gets the exact 4-minute segment in a 3-hour session, not a list of files.`,
+      `We auto-generate titles, summaries, chapters, and tags on upload. A retiring expert's 3-hour deep-dive becomes a navigable, searchable knowledge asset in minutes without anyone manually editing it.`,
+      `I'd love to show you the search in a 20-minute call — you could even bring your privacy team to hear the data model directly. That's usually the fastest way to get legal comfortable. Would that work?`,
+    ],
+    weakRepResponses: [
+      `Our AI is really powerful and handles a lot of different search and discovery use cases across video...`,
+      `We have a comprehensive platform with strong compliance features and enterprise security controls...`,
+      `I can send you our data privacy documentation to share with your legal team.`,
+    ],
+    coachingNote: `Dr. Vasquez has two distinct concerns: knowledge discovery and data safety. Address both in the same call — don't lead with AI features and hope she forgets about privacy. Name the data concern proactively ("I know AI and R&D data is a sensitive mix — here's exactly how ours works") and she'll trust you more, not less. That move is the difference between a meeting and a polite goodbye.`,
+    topMistakes: [
+      `Pitching AI search features without proactively addressing the data privacy concern she's already been burned by`,
+      `Generic AI language ("powerful AI," "intelligent search") without explaining the AWS Bedrock and no-training-on-data mechanism in plain terms`,
+      `Skipping the retiring-engineers knowledge crisis and jumping straight to the technology`,
+    ],
+    topWinMoves: [
+      `Address the AI data privacy concern before she raises it — it's the move that builds trust`,
+      `Explain AWS Bedrock in plain language: "processes your video to generate search, never retains your content to train the model"`,
+      `Make semantic search concrete with a scenario: "an engineer describes what they remember and finds the 3-minute clip in a 4-hour session"`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open with the knowledge crisis',
+        goal: 'Get her to confirm retiring experts and unsearchable video before pitching',
+        idealLine: `I've been talking with knowledge management leaders who have years of expert recordings that no one can navigate — the expert is retiring, and the video library is basically a black box. Does that map to what you're dealing with?`,
+      },
+      {
+        beat: 'Address data privacy first — proactively',
+        goal: `Disarm the legal concern before she raises it, which signals you understand her situation`,
+        idealLine: `Before I go further — I know AI and R&D content is a sensitive combination. Our AI runs on AWS Bedrock, generates chapters and semantic search, and never trains on your data. Contractual.`,
+      },
+      {
+        beat: 'Make semantic search concrete',
+        goal: 'Help her see what "findable" actually means in practice',
+        idealLine: `An engineer types "how did Nakamura explain the polymer bonding process" — and instead of nothing, they get the 4-minute segment in a 3-hour recording. That's the difference.`,
+      },
+      {
+        beat: 'Soft close with a privacy-team invitation',
+        goal: 'Make the meeting feel like the logical next step for her and her legal contact',
+        idealLine: `The fastest path is a 20-minute call where you can ask the data questions directly — you could even bring your privacy lead. Would that be worth 20 minutes?`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'mfg-secure-export-training': {
+    id: 'mfg-secure-export-training',
+    title: 'Secure Training for Export-Controlled Content',
+    subtitle: `Role-based access and audit trails for ITAR-sensitive technical training at scale`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'mfg-boeing-training',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You're calling Sandra Okafor, Director of Technical Training & Workforce Development at Boeing. She manages technical training curricula for 70,000+ engineers and technicians across dozens of facilities. Her biggest headache: distributing training on export-controlled (ITAR) content without the video delivery layer becoming a compliance exposure. Most LMS platforms control the course wrapper but outsource video to a CDN with weaker access controls. Your hook: Vbrick is the ONLY FedRAMP-certified enterprise video platform, with multi-layered RBAC that mirrors job classifications, encryption at rest and in transit, SOC 2 Type II, and access logging for audit-ready reporting.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
+      },
+      {
+        label: '2. Ask for help (15 seconds)',
+        hint: `"I'll be quick — I work with training leaders at large aerospace and defense manufacturers on one specific problem: controlling access to export-controlled training video without the video delivery layer becoming a compliance gap. Is that a challenge at Boeing?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `When she confirms ITAR or access control as real issues, ask: "Is the concern more about who can access the video itself, or about audit trails and proving access was restricted appropriately?" Her answer tells you where to focus.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"Vbrick is the only FedRAMP-certified enterprise video platform — that's independently audited, not self-certified. RBAC goes to the individual video level, we can mirror Boeing job classifications, and every access attempt is logged for audit." Then contrast: "Most LMS platforms govern the course wrapper but outsource video delivery to a CDN with much weaker controls. We govern the video itself."`,
+      },
+      {
+        label: '5. Handle the LMS renewal objection',
+        hint: `"Your LMS is the right home for course structure and completion tracking — we're not replacing it. But if your LMS is hosting video on a general-purpose CDN, the video itself isn't under the same RBAC as the course. That's the gap we close."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"Given your security review timeline, the smartest move is a scoping call now — so when it goes to IT, they're reviewing something specific. Worth 20 minutes to map that out?"`,
+      },
+    ],
+    difficultyScore: 3,
+    whyVbrickFits: `Vbrick is the ONLY FedRAMP-certified enterprise video platform AND the only FedRAMP-certified eCDN. It has multi-layered RBAC that can be configured to Boeing's job classification structure, encryption at rest and in transit, SOC 2 Type II, and per-video access logging for audit trails. No other enterprise video vendor can make these claims in combination. Most LMS platforms outsource video delivery to a general-purpose CDN — Vbrick controls delivery end-to-end.`,
+    repGoal: `Qualify Boeing's access control and compliance pain around training video. Land on FedRAMP and RBAC as the differentiators. Book a discovery call, likely including an IT security contact.`,
+    desiredOutcome: `Sandra agrees to a 20-minute scoping call, likely wanting to include her IT security or compliance team.`,
+    openingContinuation: `Hi Sandra, this is [Your Name] with Vbrick — I'll be quick. I work with training directors at large aerospace and defense manufacturers, and the challenge I hear most often is managing access to export-controlled training content — making sure the right people can get to it, and the wrong people absolutely can't, at the video delivery level, not just the course wrapper. Is that something that keeps you up at night?`,
+    prospectTone: `Measured and methodical. She won't get excited fast, but she will engage when you demonstrate real fluency on ITAR, RBAC, and audit compliance — not just buzzwords.`,
+    likelyProspectResponses: [
+      `Access control is definitely a challenge. ITAR content is serious — we can't have the wrong person accessing it.`,
+      `We have an LMS we just renewed — what does Vbrick do differently from what we already have?`,
+      `What does FedRAMP certification actually mean in the context of a video platform?`,
+      `How granular is the role-based access? We have dozens of job classifications that map to content restrictions.`,
+      `Our security reviews take months — is it worth starting this conversation now?`,
+      `Okay, I'll hear more. What would a next step look like?`,
+    ],
+    strongRepResponses: [
+      `Vbrick is the only FedRAMP-certified enterprise video platform — that's independently audited security posture, not a self-certification. That's a claim your current video hosting layer almost certainly can't make.`,
+      `Our RBAC goes to the individual video level — you can mirror Boeing job classifications so a 737 technician never sees 787 content they're not cleared for, and every access attempt is logged for audit review.`,
+      `Most LMS platforms manage the course wrapper but outsource video delivery to a general-purpose CDN with much looser access controls. We control delivery end-to-end — the video itself is under the same governance as the course.`,
+      `Given your security review timeline, the smartest move is a scoping call now — so when it goes to IT, they're reviewing something specific, not a generic vendor inquiry. Worth 20 minutes to map it out?`,
+    ],
+    weakRepResponses: [
+      `We have a very comprehensive security posture with a lot of certifications across compliance frameworks...`,
+      `FedRAMP is basically the gold standard for government and enterprise cloud security...`,
+      `I can send you our security documentation and you can pass it to your IT team.`,
+    ],
+    coachingNote: `Sandra has a high bar — she's Boeing. Don't lead with features; lead with the compliance problem. FedRAMP is your differentiator but you have to explain what it means in practice for video: an independently audited security posture, not just a badge. The RBAC story is equally powerful — help her see that most LMS platforms outsource video delivery to a CDN with weaker controls. That gap is where Vbrick lives.`,
+    topMistakes: [
+      `Dropping "FedRAMP" without explaining what it means specifically for a video delivery context`,
+      `Treating this like a general video platform sale — Sandra's concern is compliance, not features`,
+      `Asking for the meeting before Sandra has confirmed that access control is her actual pain point`,
+    ],
+    topWinMoves: [
+      `Name the ITAR and export-controlled training pain in the opening — let her confirm it before pitching`,
+      `Explain why FedRAMP matters for video specifically: it's the delivery layer, not just the LMS wrapper`,
+      `Draw the contrast clearly: most platforms govern the course, Vbrick governs the video itself end-to-end`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open with the compliance pain',
+        goal: 'Get Sandra to confirm ITAR and access control as real problems she owns',
+        idealLine: `I work with training directors at aerospace and defense manufacturers — the challenge I hear most is controlling access to export-controlled video content across a large, distributed workforce. Is that on your radar?`,
+      },
+      {
+        beat: 'Introduce FedRAMP with meaning',
+        goal: 'Make FedRAMP land as a real differentiator, not a certification badge',
+        idealLine: `Vbrick is the only FedRAMP-certified enterprise video platform — meaning our security posture has been independently audited to federal standards. That's a claim your current video hosting layer probably can't make.`,
+      },
+      {
+        beat: 'Make RBAC concrete for Boeing',
+        goal: `Help her see granular access control that mirrors Boeing's real job classification structure`,
+        idealLine: `Our RBAC goes to the individual video level — you can mirror Boeing job classifications so a 737 tech never sees 787 content they're not cleared for, and every access attempt is logged for audit.`,
+      },
+      {
+        beat: 'Soft close with a scoping frame',
+        goal: 'Make the meeting feel like a logical planning step, not a sales pitch',
+        idealLine: `Given your security review timeline, the smartest move is a scoping call now — so when it goes to IT, they're reviewing something specific. Worth 20 minutes to map that out?`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'mfg-dealer-field-training': {
+    id: 'mfg-dealer-field-training',
+    title: 'Dealer & Field Training at Global Scale',
+    subtitle: `A branded, governed training portal for independent dealers and field technicians`,
+    estimatedMinutes: 3,
+    defaultPersonaId: 'mfg-caterpillar-dealer',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You're calling Priya Nair, Manager of Global Dealer Training at Caterpillar. She manages training for 3,000+ independent dealers and field technicians worldwide. Independent dealers aren't employees — they need external access without being inside the firewall. Her current setup: a generic SharePoint link and a manual spreadsheet for completion tracking. Your hook: Vbrick provides a branded external portal with fine-grained permissions, mobile-first delivery, and automated completion reporting — no VPN required.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
+      },
+      {
+        label: '2. Ask for help (15 seconds)',
+        hint: `"I'll be brief — I work with manufacturer training teams that manage content for external dealer and partner networks. The challenge is usually giving independent dealers a professional experience without the headache of getting them inside the corporate firewall. Does that sound familiar?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `When she confirms, ask: "Is the bigger challenge the external access piece, or is it more about tracking completion and compliance across dealers you don't directly control?" Her answer shapes your next move.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"We give dealers a branded Caterpillar training portal — they log in externally, no VPN, and they only see content scoped to their region or equipment line. Completion rolls up automatically to your dashboard. No spreadsheet."`,
+      },
+      {
+        label: '5. Handle the IT-involvement objection',
+        hint: `"You control the portal configuration — content, permissions by dealer or equipment line, branding. IT sets up SSO once and stays out of the way after that."`,
+      },
+      {
+        label: '6. Soft close with a portal demo offer',
+        hint: `"The fastest way to see if this fits is a 20-minute call where I walk you through exactly what a dealer sees when they log in — their portal, their content, your reporting. Would that be worth your time?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick's governed CMS supports branded portals accessible to external users — no VPN required. Permissions can be scoped by dealer, region, or equipment line. Mobile-friendly delivery with offline download works for field techs on tablets at job sites. Automated completion and engagement reporting replaces manual spreadsheet tracking. Fine-grained RBAC means each dealer only sees what's relevant to their specific equipment lines, managed centrally.`,
+    repGoal: `Qualify the external portal and completion tracking problem. Book a discovery call focused on what Caterpillar dealers would actually experience.`,
+    desiredOutcome: `Priya agrees to a 20-minute call, likely wanting to include a digital learning or IT contact to see the portal demo.`,
+    openingContinuation: `Hi Priya, this is [Your Name] with Vbrick — I'll be brief. I work with manufacturer training teams that manage content for external dealer and partner networks, and the challenge I hear most is giving independent dealers a professional training experience without the headache of getting them inside the corporate firewall. Is that something you're dealing with?`,
+    prospectTone: `Warm, organized, and receptive. She has a real operational headache and will engage readily if you speak her language: external access, branded portal, completion tracking, mobile.`,
+    likelyProspectResponses: [
+      `Yes — dealers aren't employees so getting them into our internal systems is always a hassle.`,
+      `Right now it's basically a SharePoint link and a spreadsheet. It's functional but not great.`,
+      `How do you handle permissions for external users who aren't in our directory?`,
+      `Our dealers are on tablets in the field — the mobile experience has to actually work in low connectivity.`,
+      `Would dealers need to create separate accounts or is there some kind of SSO?`,
+      `Okay, I'd like to hear more. What's a reasonable next step?`,
+    ],
+    strongRepResponses: [
+      `External dealers get a branded Caterpillar training portal — no VPN, no internal credentials. They see only the content scoped to their region or equipment line. You configure that centrally.`,
+      `Permissions go to the video level — a dealer in Australia who sells only Cat excavators never sees content for mining equipment they don't handle. You control that without IT involvement after initial setup.`,
+      `The mobile experience is built for field techs: offline downloads for low-connectivity sites, mobile-optimized player, works on a tablet at a job site without a strong connection.`,
+      `The fastest way to see if this fits is a 20-minute call where I show you exactly what a dealer sees when they log in — their portal, their content, how completion rolls up to your dashboard. Would that be worth your time?`,
+    ],
+    weakRepResponses: [
+      `We have a really robust platform with a lot of features for different training use cases...`,
+      `Permissions are very comprehensive — you can set them up in lots of different ways depending on your structure...`,
+      `I can send you some marketing materials and product documentation to start.`,
+    ],
+    coachingNote: `Priya's pain is operational and concrete: dealers aren't employees, the current setup looks unprofessional, and completion tracking is a spreadsheet. Lead with the external portal story — "branded, no VPN, external access" — before getting into features. Mobile is her secondary hook. The close should emphasize a portal demo, not just a generic discovery call — she wants to see what dealers would actually see.`,
+    topMistakes: [
+      `Talking about internal employee use cases before addressing external dealer access`,
+      `Using RBAC technical language without translating it: she wants to know dealers can log in without calling IT`,
+      `Not mentioning mobile, which is a key pain for field techs on tablets at job sites`,
+    ],
+    topWinMoves: [
+      `Lead with "external branded portal, no VPN" — that's the exact gap in her current setup`,
+      `Make permissions sound simple: "you configure it once per equipment line, dealers see only what's relevant"`,
+      `Offer a portal demo, not just a discovery call — she wants to see what dealers would experience`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open with external access pain',
+        goal: 'Get Priya to confirm the dealer-outside-the-firewall problem',
+        idealLine: `I work with manufacturer training teams that manage dealer networks — the challenge is usually giving independent partners a professional experience without the headache of getting them inside the corporate firewall. Does that sound familiar?`,
+      },
+      {
+        beat: 'Introduce the branded portal',
+        goal: `Help her see what "good" looks like for dealers logging in`,
+        idealLine: `We give dealers a branded Caterpillar training portal — they log in externally, no VPN, and they only see content scoped to their region or equipment line. Completion rolls up automatically to your dashboard.`,
+      },
+      {
+        beat: 'Hit the mobile hook',
+        goal: "Connect to the field tech reality she's already dealing with",
+        idealLine: `Field techs access it from tablets on job sites — mobile-optimized player, offline download option for low-connectivity areas. No desktop required.`,
+      },
+      {
+        beat: 'Soft close with a portal demo offer',
+        goal: 'Make the meeting feel concrete and specific, not a generic vendor call',
+        idealLine: `The fastest way to see if this fits is a 20-minute call where I walk you through exactly what a dealer sees when they log in — their portal, their content, your reporting. Worth a look?`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'mfg-consolidate-governance': {
+    id: 'mfg-consolidate-governance',
+    title: 'One Governed Video Home',
+    subtitle: `Replace the patchwork with a single searchable, governed video platform and eCDN`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'mfg-siemens-it',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You're calling Thomas Gruber, Senior Manager of Digital Workplace & IT at Siemens USA. He's managing four different video tools that don't integrate: Teams recordings, a legacy on-prem system, a Zoom webinar account, and a file share full of .mp4s. Last month's CEO all-hands buffered at 8 of 12 US manufacturing sites. He's skeptical of vendors but genuinely tired of the patchwork and the post-incident reports. Your hook: Vbrick consolidates webcasting, video CMS, and all three eCDN delivery methods from a single vendor — with native Microsoft Teams and SharePoint integration and full governance (RBAC, retention, audit trail).`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
+      },
+      {
+        label: '2. Ask for help (15 seconds)',
+        hint: `"I'll keep it quick — I work with IT leaders at large manufacturers who've ended up with a mix of video tools that don't talk to each other, and all-hands events that buffer when the whole plant tunes in. Does that sound familiar?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `When he confirms, ask: "Is the bigger headache the WAN saturation during live events, or the fact that there's no single searchable home for all the video content?" Let him prioritize — it tells you where to lead.`,
+      },
+      {
+        label: '4. Deliver the value prop — lead with eCDN',
+        hint: `"We use all three eCDN methods simultaneously: peer-to-peer, edge caching, and multicast. Whatever you're running now probably uses one. That's why 8 sites buffered — single-method delivery doesn't hold at plant scale." Then add: "Everything lives in one governed library — RBAC, retention rules, audit trail — and we integrate natively with Teams and SharePoint."`,
+      },
+      {
+        label: '5. Handle the Microsoft-ecosystem objection',
+        hint: `"We integrate natively — video lives in Vbrick's governed library but users access it through Teams or SharePoint. SSO, embedded player, no new login. You stay fully Microsoft — we're the delivery and governance layer underneath."`,
+      },
+      {
+        label: '6. Soft close with an architecture frame',
+        hint: `"I'd like 20 minutes to map this to your existing Microsoft footprint — bring your architecture lead if you want. We can figure out what consolidation actually looks like without a big migration lift. Worth a look?"`,
+      },
+    ],
+    difficultyScore: 3,
+    whyVbrickFits: `Vbrick is the only vendor offering all three eCDN technologies — peer-to-peer, edge caching, and multicast — from a single platform. Its governed CMS includes RBAC, retention and expiration policies, and full audit trails. AI semantic search makes existing content discoverable without manual reorganization. Native Microsoft integration: Teams embedded player, SharePoint access, SSO. A real customer manages libraries exceeding 500 TB with these tools. This is the consolidation + eCDN story Siemens IT needs.`,
+    repGoal: `Qualify the consolidation and eCDN pain. Address the Microsoft ecosystem concern directly. Book a scoping call that includes Thomas's architecture lead.`,
+    desiredOutcome: `Thomas agrees to a 20-minute scoping call and is open to including his architecture or digital workplace lead.`,
+    openingContinuation: `Hi Thomas, this is [Your Name] with Vbrick — I'll keep it quick. I work with IT leaders at large manufacturers who've ended up with a mix of video tools — Teams recordings in one place, webcasting somewhere else, file shares full of .mp4s — and all-hands events that buffer at the plant level. Sound familiar?`,
+    prospectTone: `Measured, technical, and slightly weary. He'll engage when you demonstrate actual technical knowledge — especially specific eCDN methods and Microsoft integration details. He wants to solve a real problem, not be impressed by a pitch.`,
+    likelyProspectResponses: [
+      `Yeah — Teams recordings, a legacy system, Zoom, and a shared drive nobody can search. Four tools, no searchable home.`,
+      `What makes this different from just using Teams more aggressively for everything?`,
+      `We're deep in Microsoft — everything has to work with Teams and SharePoint or it's a non-starter.`,
+      `How does your eCDN actually work? We've heard "better delivery" promises before.`,
+      `Any migration from our legacy video system is going to be a significant lift. We can't just move 10 TB overnight.`,
+      `Alright, I'd hear more. What does a reasonable next step look like?`,
+    ],
+    strongRepResponses: [
+      `Teams is great for meetings — it wasn't designed for broadcast delivery to 10,000 factory workers simultaneously. That's where the WAN saturation comes from. We sit alongside Teams and handle the scale delivery layer.`,
+      `We use all three eCDN methods simultaneously: peer-to-peer, edge caching, and multicast. Whatever you're running now probably relies on one. That's why 8 of 12 sites buffered — single-method delivery breaks at plant scale.`,
+      `We integrate natively — video lives in Vbrick's governed library but users access it through Teams or SharePoint. SSO, embedded player, no new login. You stay fully Microsoft.`,
+      `I'd like 20 minutes to map this to your existing Microsoft footprint — bring your architecture lead if you want. We can figure out what consolidation actually looks like without a big lift. Worth a look?`,
+    ],
+    weakRepResponses: [
+      `We have a very comprehensive enterprise video platform with governance, delivery, and AI features...`,
+      `A lot of companies are moving away from siloed video tools toward unified platforms right now...`,
+      `I can send you a comparison document against your current video tools to review.`,
+    ],
+    coachingNote: `Thomas has two live wounds: the all-hands buffering (he wrote the post-incident report) and the patchwork. Lead with eCDN first — that's the fresh pain. When he raises Microsoft, don't pivot away — go deeper: "we integrate natively with Teams and SharePoint, video stays in Vbrick's governed library but users never leave Microsoft." That's the right answer and it closes the objection without fighting it.`,
+    topMistakes: [
+      `Positioning Vbrick as a Microsoft replacement instead of a complement that lives alongside Teams`,
+      `Vague eCDN language ("we handle network delivery better") without naming the three specific methods and why single-method delivery fails at plant scale`,
+      `Leading with consolidation before earning credibility on the buffering problem that's still fresh in his mind`,
+    ],
+    topWinMoves: [
+      `Name the buffering problem first and directly — he wrote the post-incident report, it's top of mind`,
+      `Name all three eCDN methods specifically — peer-to-peer, edge caching, multicast — and explain why Teams-only delivery fails at plant scale`,
+      `Position Vbrick as living alongside Microsoft, not replacing it: "video in Vbrick, accessed through Teams"`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Open with patchwork + buffering',
+        goal: 'Get Thomas to confirm both pains in the first 30 seconds',
+        idealLine: `I work with IT leaders at large manufacturers who end up with video scattered across Teams, Zoom, file shares, and a legacy system — and all-hands events that buffer when the whole plant tunes in. Did last month give you a post-incident report to write?`,
+      },
+      {
+        beat: 'Lead eCDN with specifics',
+        goal: 'Distinguish from generic delivery promises he has already heard and discounted',
+        idealLine: `We use all three eCDN methods simultaneously: peer-to-peer, edge caching, and multicast. Whatever you're running now probably relies on one. That's why 8 sites buffered — single-method delivery doesn't hold at plant scale.`,
+      },
+      {
+        beat: 'Address Microsoft directly',
+        goal: 'Remove the "we are a Microsoft shop" objection without fighting it',
+        idealLine: `We integrate natively — video lives in Vbrick's governed library but users access it through Teams or SharePoint. SSO, embedded player, no new login. You stay fully Microsoft.`,
+      },
+      {
+        beat: 'Soft close with an architecture framing',
+        goal: 'Make the call feel like a technical scoping session, not a vendor pitch',
+        idealLine: `I'd love 20 minutes to map this to your existing footprint — bring your architecture lead if you want. We can figure out what consolidation actually looks like without a big migration lift. Worth a look?`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  // === EASY TRACK — TELECOMMUNICATIONS SCENARIOS ===
+  'telco-employee-townhall-scale': {
+    id: 'telco-employee-townhall-scale',
+    title: 'Employee Town Halls at Scale',
+    subtitle: `Help AT&T deliver live all-hands events to 200K+ employees without straining the corporate network`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'telco-att-comms',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You are cold-calling Sarah Chen, Director of Employee Communications at AT&T. AT&T runs quarterly all-hands events for 200,000+ employees. The last event had widespread buffering complaints and IT has been pushing back on large webcasts. Your goal is to surface the network-delivery pain, introduce Vbrick eCDN as the fix, and book a 20-minute discovery call.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: '2. Ask for help',
+        hint: `"I work with enterprise comms teams on large live-event delivery — do you have 30 seconds for one quick question?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `"When you run a firm-wide town hall, how does the network handle the load?" Listen for buffering, IT pushback, or scale concerns.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"Vbrick's eCDN uses three delivery methods — peer-to-peer, edge caching, and multicast — so 200,000 streams don't all hit the WAN at once."`,
+      },
+      {
+        label: '5. Handle the Teams objection',
+        hint: `"Totally — we actually pair with Teams. Vbrick handles the eCDN layer underneath so your Teams events don't saturate the network."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I could send over a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — would you be open to that?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick is the only vendor offering all three eCDN technologies — peer-to-peer, edge caching, and multicast — from one platform. For a workforce of 200,000+, this means live town halls deliver without saturating the corporate WAN, something Teams or Zoom webcasting alone cannot solve.`,
+    repGoal: `Book a 20-minute discovery call to explore how Vbrick eCDN can support AT&T town halls`,
+    desiredOutcome: `Sarah agrees to a 20-minute call and provides a preferred time or suggests a next step`,
+    openingContinuation: `Hi Sarah, this is [Your Name] with Vbrick. I work with enterprise comms teams on large-scale live events — do you have 30 seconds?`,
+    prospectTone: `Warm and curious. Sarah is open to solutions and mildly frustrated about the last town hall's buffering issues.`,
+    likelyProspectResponses: [
+      `Sure, what's this about?`,
+      `We've had some issues with our last all-hands — what do you do?`,
+      `We use Microsoft Teams for our webcasts already`,
+      `IT would have to review anything new before we could even look at it`,
+      `What does the network delivery piece actually look like?`,
+      `Would this work alongside what we already have?`,
+    ],
+    strongRepResponses: [
+      `"Totally — Vbrick sits behind Teams as an eCDN layer, so events still run in Teams but don't flood the WAN."`,
+      `"With a workforce your size, peer-to-peer delivery means the 200,000th stream costs the same bandwidth as the first."`,
+      `"We can walk your IT team through the architecture — it usually answers their questions faster than a doc."`,
+      `"Sounds like the last all-hands had some pain — that's exactly what we'd want to dig into on a call."`,
+    ],
+    weakRepResponses: [
+      `"Vbrick is the best enterprise video platform on the market."`,
+      `"You should seriously think about switching away from Teams."`,
+      `"Can I send you a 40-page security deck and follow up next week?"`,
+    ],
+    coachingNote: `The key insight is that Vbrick does not replace Teams — it layers eCDN delivery behind it. Reps who lead with "replace your tools" lose. Reps who lead with "we make your existing tools work at scale" win. Name all three eCDN methods to signal depth.`,
+    topMistakes: [
+      `Pitching Vbrick as a Teams replacement`,
+      `Going straight to features before confirming the network-strain pain`,
+      `Closing with "I'll send you a link" instead of asking for the call`,
+    ],
+    topWinMoves: [
+      `Name all three eCDN methods (peer-to-peer, edge caching, multicast) — it signals depth and differentiates`,
+      `Position Vbrick as complementary to Teams, not competitive with it`,
+      `Mirror her scale back to her — "200,000 employees" — to show you listened`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Hook with scale empathy',
+        goal: `Get Sarah to confirm the buffering or network problem`,
+        idealLine: `"Running a live event for 200,000 people is a different animal — how has that been going on your end?"`,
+      },
+      {
+        beat: 'Qualify the tech stack',
+        goal: `Learn if they use Teams, Webex, or a custom setup for delivery`,
+        idealLine: `"Are you running these through Teams today, or do you have something else handling the webcast layer?"`,
+      },
+      {
+        beat: 'Bridge to eCDN',
+        goal: `Connect the buffering pain to the three-method eCDN solution`,
+        idealLine: `"We sit behind whatever webcast tool you use and handle the delivery — three technologies, one vendor, no WAN saturation."`,
+      },
+      {
+        beat: 'Ask for the call',
+        goal: `Book the 20-minute discovery call`,
+        idealLine: `"I could send a one-pager, but honestly I'd give you a lot more in a quick 20-minute call — would you be open to that?"`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'telco-field-tech-mobile': {
+    id: 'telco-field-tech-mobile',
+    title: 'Mobile Field-Technician Training',
+    subtitle: `Help Verizon push updated procedures to field techs who learn on phones in the field`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'telco-verizon-field',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You are cold-calling Marcus Rivera, Senior Manager of Field Technician Enablement at Verizon. Marcus manages training content for thousands of field techs who work on towers, fiber installs, and equipment swaps. Training videos go stale fast and techs cannot find them on spotty LTE. Your goal is to surface the search-and-delivery pain, introduce Vbrick's Smart Search and governed mobile library, and book a 20-minute call.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: '2. Ask for help',
+        hint: `"I work with field-enablement teams on mobile training delivery — quick question, do you have 30 seconds?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `"When a procedure changes mid-shift, how do your techs find the updated training?" Listen for SharePoint chaos, helpdesk calls, or slow rollout.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"Vbrick's Smart Search reads inside the video — a tech searches 'fiber splice' on their phone and gets the exact timestamp, not just a filename."`,
+      },
+      {
+        label: '5. Handle the SharePoint objection',
+        hint: `"SharePoint stores the file — Vbrick lets techs search inside what's actually said in the video. Big difference in the field."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I'd love to show you what the mobile experience looks like — 20 minutes, your call. Would that be useful?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick's governed video CMS with AI-powered Smart Search lets field techs search by topic and jump to the right moment inside a video — on a phone, over LTE. Near-instant publish means a new safety procedure is live to every tech's device in minutes, not days.`,
+    repGoal: `Book a 20-minute call to show Marcus the mobile experience and Smart Search in action`,
+    desiredOutcome: `Marcus agrees to a discovery call, ideally open to including a peer from IT or L&D`,
+    openingContinuation: `Hi Marcus, this is [Your Name] with Vbrick — I work with field-enablement teams at large telcos. Quick question for you?`,
+    prospectTone: `Direct and practical. Marcus is open to solutions that solve a real operational problem but impatient with anything that sounds like enterprise marketing.`,
+    likelyProspectResponses: [
+      `Yeah, go ahead — make it quick`,
+      `We use SharePoint for that — it works but it's a mess`,
+      `My techs don't have time to learn another system`,
+      `How does it handle low bandwidth or spotty LTE?`,
+      `Can we push urgent updates without waiting on IT?`,
+      `What does Smart Search actually do differently than a regular keyword search?`,
+    ],
+    strongRepResponses: [
+      `"Smart Search reads what's actually said inside the video — 'fiber splice' returns the exact clip, not just a file with those words in the title."`,
+      `"Publish is near-instant. You update the video, hit publish, and it's live on every tech's phone — no IT ticket needed."`,
+      `"The mobile experience is built for LTE — adaptive streaming, works on any modern phone, no app install required."`,
+      `"If 40% of your helpdesk calls are topics that exist in video, Smart Search gets that call volume back."`,
+    ],
+    weakRepResponses: [
+      `"Vbrick is a comprehensive enterprise video platform with robust features."`,
+      `"You should replace SharePoint entirely with Vbrick."`,
+      `"Let me send you our full feature comparison document."`,
+    ],
+    coachingNote: `Marcus responds to operational specifics, not platform vision. Smart Search is the hook — paint what a tech actually experiences searching from a phone in a parking lot. Never say "comprehensive" or "robust." Speak his language: fast, mobile, works in the field.`,
+    topMistakes: [
+      `Leading with platform capabilities instead of the field-tech on-the-job experience`,
+      `Not asking how the current SharePoint situation is actually working day-to-day`,
+      `Closing with "I'll send you a link" instead of asking for demo time`,
+    ],
+    topWinMoves: [
+      `Paint the field scenario: "tech on a tower, needs the right procedure, has three minutes" — make it vivid`,
+      `Name Smart Search and explain it searches inside what's spoken, not just filenames`,
+      `Connect near-instant publish to a real operational pain he just described`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Hook with the field scenario',
+        goal: `Get Marcus to picture the tech-on-the-job problem`,
+        idealLine: `"When a tech is in the field and needs to find a procedure fast — how does that actually work today?"`,
+      },
+      {
+        beat: 'Expose the SharePoint gap',
+        goal: `Surface that current tools don't search inside video content`,
+        idealLine: `"Does SharePoint let them search inside the video itself — or just find the file by name?"`,
+      },
+      {
+        beat: 'Introduce Smart Search + fast publish',
+        goal: `Show the two capabilities that solve his core problem`,
+        idealLine: `"Vbrick's Smart Search finds the right timestamp inside any video. And publish is near-instant — new procedure, live to every phone in minutes."`,
+      },
+      {
+        beat: 'Ask for the call',
+        goal: `Book a 20-minute demo focused on the mobile experience`,
+        idealLine: `"I'd love to show you what it looks like on a phone — takes about 20 minutes. Would that be useful?"`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'telco-retail-frontline': {
+    id: 'telco-retail-frontline',
+    title: 'Frontline Retail Enablement',
+    subtitle: `Help T-Mobile get training to retail reps before device launches, not after`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'telco-tmobile-retail',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You are cold-calling Jamie Park, Director of Retail Learning & Enablement at T-Mobile. T-Mobile launches new devices and plans every few weeks. Jamie's team struggles to get training videos to frontline retail reps before launch day. Content is scattered across email, Teams, and an LMS that reps rarely log into. Your goal is to surface the launch-cadence gap, introduce Vbrick's fast-publish mobile library, and book a 20-minute call.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: '2. Ask for help',
+        hint: `"I work with retail-enablement teams on getting training to frontline reps fast — one quick question?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `"When a new device launches, how quickly can you get a training video in front of every rep?" Listen for LMS lag, scattered channels, or post-launch delivery.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"Vbrick publishes to a mobile portal in minutes — no app install, works on any phone. Reps get it the day before launch, not the day after."`,
+      },
+      {
+        label: '5. Handle the LMS objection',
+        hint: `"Totally — keep the LMS for formal certifications. Vbrick handles the short, fast-turnaround videos reps actually watch in the break room before a launch."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I could walk you through the publish-to-phone flow in about 20 minutes — would that be worth your time?"`,
+      },
+    ],
+    difficultyScore: 2,
+    whyVbrickFits: `Vbrick's governed video CMS lets L&D teams publish a training video and have it live in a branded mobile portal within minutes — no app install for reps. Built-in completion reporting shows who has watched before launch day. Fast-moving retail enablement is a natural fit.`,
+    repGoal: `Book a 20-minute call to show the publish-to-phone workflow and completion reporting`,
+    desiredOutcome: `Jamie agrees to a 20-minute call and is open to a brief live demo`,
+    openingContinuation: `Hi Jamie, this is [Your Name] with Vbrick. I work with retail L&D teams at telcos — quick question about your launch cadence?`,
+    prospectTone: `Energetic and direct. Jamie moves fast and wants solutions that match her pace.`,
+    likelyProspectResponses: [
+      `Sure, what's up?`,
+      `We push everything through our LMS — it's slow but it's what we have`,
+      `Reps don't install new apps — how do they access it?`,
+      `How fast can we actually publish something new?`,
+      `Does it give us completion data so we know who's watched before launch?`,
+      `What does the rep experience look like on a phone?`,
+    ],
+    strongRepResponses: [
+      `"No app install — reps open a link, it's a branded mobile portal that works on any phone."`,
+      `"Publish is near-instant. Upload, tag, hit publish — it's live on every rep's phone in minutes."`,
+      `"Completion reporting is built in — you can see who watched before launch day and who hasn't."`,
+      `"We play alongside the LMS — Vbrick handles fast-turnaround video; LMS handles the formal certifications."`,
+    ],
+    weakRepResponses: [
+      `"You should really reconsider your entire LMS strategy."`,
+      `"Vbrick is a comprehensive, robust enterprise video platform."`,
+      `"Let me send you a 20-page white paper on video delivery."`,
+    ],
+    coachingNote: `Jamie's currency is speed. Every response should have a speed-or-mobile angle. The LMS objection is a gift — Vbrick is not competing with it, it's complementing it for fast-turnaround content. Never use the word "platform" with Jamie; use "tool" or just describe the action.`,
+    topMistakes: [
+      `Positioning Vbrick as an LMS replacement`,
+      `Talking about enterprise governance before addressing launch speed`,
+      `Closing with "I'll send you some info" instead of booking the call`,
+    ],
+    topWinMoves: [
+      `Lead with "how fast can you get a video to every rep's phone right now?" to expose the lag`,
+      `Name no-app-install immediately — it's a barrier Jamie hears about constantly`,
+      `Connect completion reporting to launch-day readiness — that's her accountability metric`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Hook on launch cadence',
+        goal: `Get Jamie to describe the gap between content-ready and rep-ready`,
+        idealLine: `"With launches every few weeks, how are you making sure reps have the training before they hit the floor?"`,
+      },
+      {
+        beat: 'Surface the distribution problem',
+        goal: `Confirm that getting video to reps fast is the real friction, not creating it`,
+        idealLine: `"Is it more about creating the content faster, or actually getting it in front of every rep before launch day?"`,
+      },
+      {
+        beat: 'Pitch speed and mobile',
+        goal: `Connect fast publish and no-app-install mobile portal to her launch problem`,
+        idealLine: `"Vbrick publishes in minutes to a mobile portal — no app install, no LMS login. Rep gets a link, watches in the break room."`,
+      },
+      {
+        beat: 'Ask for the call',
+        goal: `Book a 20-minute demo focused on publish-to-phone`,
+        idealLine: `"I could walk you through the publish-to-phone flow in about 20 minutes — would that be worth your time?"`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'telco-care-knowledge-ai': {
+    id: 'telco-care-knowledge-ai',
+    title: 'Contact-Center Knowledge → AI Deflection',
+    subtitle: `Help Comcast surface video knowledge inside ServiceNow to cut handle time and deflect cases`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'telco-comcast-care',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You are cold-calling Diana Torres, Director of Contact-Center Knowledge at Comcast. Comcast's contact center runs on ServiceNow. Diana's team manages knowledge content for thousands of agents, but video training and how-to content is invisible inside ServiceNow — agents cannot find it mid-call, so handle time stays high and escalations accumulate. Vbrick is the only certified video app in the ServiceNow Store and powers Now Assist for case deflection. Your goal is to surface this fit and book a 20-minute call.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: '2. Ask for help',
+        hint: `"I work with contact-center knowledge teams on surfacing video content inside ServiceNow — one quick question?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `"When agents are on a live call and need a how-to video, how does that work today?" Listen for agents leaving ServiceNow, failed searches, or escalations.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"Vbrick is the only certified video app in the ServiceNow Store — agents find and play training video without ever leaving the case view."`,
+      },
+      {
+        label: '5. Handle the KM-strategy objection',
+        hint: `"Totally — we're not replacing your KM strategy. We make the video your team already creates findable inside ServiceNow, and surface it through Now Assist."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I'd love to show you the ServiceNow integration in about 20 minutes — would that be useful for your team?"`,
+      },
+    ],
+    difficultyScore: 3,
+    whyVbrickFits: `Vbrick is the ONLY certified video app in the ServiceNow Store and powers Now Assist for case deflection and faster resolution. Agents find and play video knowledge without leaving the case view. Smart Search also lets agents query video content like a knowledge base, returning exact timestamps.`,
+    repGoal: `Book a 20-minute call to demo the ServiceNow integration and Now Assist capability`,
+    desiredOutcome: `Diana agrees to a call and is open to including her ServiceNow admin or KM lead`,
+    openingContinuation: `Hi Diana, this is [Your Name] with Vbrick. We work with contact-center knowledge teams — quick question about your ServiceNow setup?`,
+    prospectTone: `Analytical and measured. Diana asks smart follow-up questions and responds well to specifics and metrics.`,
+    likelyProspectResponses: [
+      `Sure, what's the question?`,
+      `We have a pretty mature KM strategy already — what's the angle?`,
+      `ServiceNow integration sounds complicated — how long does that take?`,
+      `Does this work with Now Assist?`,
+      `What's the difference between this and just putting videos in the knowledge base?`,
+      `How does the AI surfacing work — is it automatic?`,
+    ],
+    strongRepResponses: [
+      `"We're the only video app certified in the ServiceNow Store — plugs into your existing instance, no custom dev required."`,
+      `"Yes, we power Now Assist — agents ask a question and the AI surfaces the right video clip, not just a text article."`,
+      `"Smart Search reads inside the video — 'billing dispute process' returns the exact timestamp, not just the video title."`,
+      `"The integration is typically live in days from the ServiceNow Store — your admin configures it directly."`,
+    ],
+    weakRepResponses: [
+      `"Vbrick is a comprehensive enterprise video platform — we do everything."`,
+      `"You should convert all your knowledge base articles to video going forward."`,
+      `"Let me send you a white paper on AI-powered video knowledge."`,
+    ],
+    coachingNote: `Diana responds to metrics and platform specifics. The certified ServiceNow app is the anchor — name it early. Then bridge to handle time and deflection. If she asks about Now Assist, that is a buying signal — lean into it immediately. Avoid feature sprawl; stay focused on the ServiceNow and handle-time story.`,
+    topMistakes: [
+      `Not naming the ServiceNow Store certification early — it's the most credible thing you can say`,
+      `Getting into AI features before confirming how agents currently find video content mid-call`,
+      `Closing without asking to include her ServiceNow admin in the discovery call`,
+    ],
+    topWinMoves: [
+      `Name "only certified video app in the ServiceNow Store" early and let her ask how that works`,
+      `Tie Smart Search and Now Assist directly to handle time and deflection — her core metrics`,
+      `Ask if she'd want to loop in her ServiceNow admin — it accelerates the evaluation`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Hook on the video-in-ServiceNow gap',
+        goal: `Get Diana to describe how agents find video content today`,
+        idealLine: `"When agents are mid-call and need a how-to video — are they finding that inside ServiceNow, or leaving the platform to search?"`,
+      },
+      {
+        beat: 'Land the ServiceNow certification',
+        goal: `Establish credibility and differentiation with a provable fact`,
+        idealLine: `"We're the only certified video app in the ServiceNow Store — so agents find and play video without ever leaving the case view."`,
+      },
+      {
+        beat: 'Bridge to Now Assist and deflection',
+        goal: `Connect AI surfacing to handle time and case deflection`,
+        idealLine: `"We also power Now Assist — agents ask a question and the AI surfaces the right video clip automatically, which shortens handle time."`,
+      },
+      {
+        beat: 'Ask for the call',
+        goal: `Book a 20-minute demo; invite the ServiceNow admin`,
+        idealLine: `"I'd love to show you the integration in about 20 minutes — would it make sense to include your ServiceNow admin?"`,
+      },
+    ],
+    track: 'easy',
+  },
+
+  'telco-secure-comms-governance': {
+    id: 'telco-secure-comms-governance',
+    title: 'Secure, Governed Video for CPNI-Sensitive Communications',
+    subtitle: `Help Lumen Technologies govern recorded video that touches customer data with RBAC, retention, and audit trails`,
+    estimatedMinutes: 4,
+    defaultPersonaId: 'telco-lumen-security',
+    defaultAccent: 'general',
+    scenarioContext: `CALL CONTEXT: You are cold-calling Kevin Walsh, Director of Information Security & Governance at Lumen Technologies. Lumen handles CPNI-regulated customer data. Kevin's concern: recorded all-hands and training sessions referencing customer data are stored in uncontrolled cloud tools with no RBAC, no retention policy, and no audit trail. Vbrick is FedRAMP-certified (the only enterprise video platform that is), SOC 2 Type II compliant, encrypts at rest and in transit, and offers fine-grained RBAC plus full audit logs. Your goal is to surface the compliance fit and book a 20-minute call.`,
+    hardModeContext: '',
+    cheatCard: [
+      {
+        label: '1. Greet + introduce yourself',
+        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
+      },
+      {
+        label: '2. Ask for help',
+        hint: `"I work with security and governance teams on governed video for sensitive communications — quick question?"`,
+      },
+      {
+        label: '3. Qualify the pain',
+        hint: `"When your team records a session that references customer data, what controls do you have on who can access that recording?" Listen for gaps in RBAC or audit trail.`,
+      },
+      {
+        label: '4. Deliver the value prop',
+        hint: `"Vbrick is FedRAMP-certified — the only enterprise video platform that is — plus SOC 2 Type II, RBAC to the individual video level, retention policies, and full audit logs."`,
+      },
+      {
+        label: '5. Handle the FedRAMP objection',
+        hint: `"That's a fair point — for commercial telcos, FedRAMP is about the rigor of the security program, not the customer type. Most of our commercial clients use it as a proxy for security depth."`,
+      },
+      {
+        label: '6. Soft close',
+        hint: `"I could send over our security overview, but I'd give you a lot more in a 20-minute call with our security team — would that be worth your time?"`,
+      },
+    ],
+    difficultyScore: 3,
+    whyVbrickFits: `Vbrick is the ONLY FedRAMP-certified enterprise video platform AND the only FedRAMP-certified eCDN. It is SOC 2 Type II compliant, encrypts data at rest and in transit, offers multi-layered RBAC to the individual video level, configurable retention policies, and full audit logs including delete events. For CPNI-sensitive communications, it is the most defensible video governance choice available.`,
+    repGoal: `Book a 20-minute security-focused call, ideally including a member of Vbrick's security team`,
+    desiredOutcome: `Kevin agrees to a 20-minute call and acknowledges Vbrick is worth running through his review process`,
+    openingContinuation: `Hi Kevin, this is [Your Name] with Vbrick. I work with security and governance teams at telcos — quick question about how you govern recorded communications?`,
+    prospectTone: `Measured and detail-oriented. Kevin warms up when certifications are named precisely and cools when claims are vague or unverifiable.`,
+    likelyProspectResponses: [
+      `Sure, go ahead`,
+      `We've been burned before by vendors claiming compliance they couldn't actually prove`,
+      `FedRAMP is for government agencies — how does that apply to a commercial telco?`,
+      `What certifications do you actually hold — specifically?`,
+      `How granular is the RBAC — per video or just per channel?`,
+      `Do you have an audit log for every access event, including deletes?`,
+    ],
+    strongRepResponses: [
+      `"FedRAMP-certified — the only enterprise video platform that is. It's a matter of public record, not a marketing claim."`,
+      `"SOC 2 Type II, encryption at rest and in transit, RBAC to the individual video level, and full audit logs including deletes."`,
+      `"RBAC is per video — you control exactly who has access to a specific recording, down to the individual user."`,
+      `"Our security team can walk through the controls and answer your review questions directly — usually cuts the 90-day process down significantly."`,
+    ],
+    weakRepResponses: [
+      `"We're the most secure video platform in the industry."`,
+      `"CPNI probably doesn't apply to internal training video anyway."`,
+      `"I can send you a compliance checklist document."`,
+    ],
+    coachingNote: `Kevin is won by precision, not enthusiasm. Every claim must have a specific certification or control behind it — no generalities. FedRAMP is your strongest card; play it early and explain why the rigor of the program matters for commercial telcos. Offer a call with the Vbrick security team, not just an account exec.`,
+    topMistakes: [
+      `Making vague security claims without naming specific certifications`,
+      `Not connecting CPNI obligations explicitly to the video governance gap`,
+      `Closing with "I'll send a security deck" instead of offering a security-team call`,
+    ],
+    topWinMoves: [
+      `Name FedRAMP early and note it's a matter of public record — signals you can prove it`,
+      `Be specific about RBAC granularity (per-video level) before he asks — answers his next question proactively`,
+      `Offer a call with the Vbrick security team — it signals seriousness and accelerates his review process`,
+    ],
+    winningPathBeats: [
+      {
+        beat: 'Hook on the CPNI governance gap',
+        goal: `Get Kevin to describe the access control problem on current recorded sessions`,
+        idealLine: `"When a recorded all-hands or training session touches customer data — CPNI territory — what controls are on who can access that recording?"`,
+      },
+      {
+        beat: 'Land FedRAMP as the anchor',
+        goal: `Establish credibility with the most defensible, verifiable claim`,
+        idealLine: `"Vbrick is the only FedRAMP-certified enterprise video platform. Public record. SOC 2 Type II on top of that."`,
+      },
+      {
+        beat: 'Specify the controls',
+        goal: `Answer the RBAC and audit-trail questions before he asks them`,
+        idealLine: `"RBAC goes to the individual video level. Audit log covers every access and delete event. Retention policies are configurable per content category."`,
+      },
+      {
+        beat: 'Ask for the call with the security team',
+        goal: `Book a 20-minute call that includes Vbrick's security team`,
+        idealLine: `"I'd love to set up 20 minutes with our security team — they can answer your review questions directly and usually cut the review timeline down."`,
+      },
+    ],
+    track: 'easy',
+  },
 }
 
 export function getScenarioById(id: string | null | undefined): SparringScenario | null {
