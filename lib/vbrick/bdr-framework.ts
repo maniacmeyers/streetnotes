@@ -25,14 +25,14 @@ export const BDR_CALL_FRAMEWORK = {
     {
       id: 'name_capture',
       order: 1,
-      name: 'Self-Introduction',
-      objective: 'Introduce yourself by your own first and last name, set a friendly tone',
-      script: "Hi, this is [Your First & Last Name]? (warm, inquisitive tone)",
-      transition: "Great, I was hoping you could help me out real quick.",
-      note: "The prospect picks up with a plain 'Hello?'. You then introduce yourself by your own first and last name in a warm, inquisitive tone, then say 'Great, I was hoping you could help me out real quick.' and move to qualification.",
+      name: 'Name confirmation + self-intro',
+      objective: "Confirm the prospect's name, then introduce yourself",
+      script: "[Prospect First & Last Name]? … (pause) … Great, this is [Your Name] with Vbrick.",
+      transition: "I was hoping you could help me out for a second.",
+      note: "The prospect picks up with a plain 'Hello?'. Say their first and last name back in an inquisitive tone and pause; once they confirm, introduce yourself — 'Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second.' — then move to qualification.",
       successCriteria: [
-        'Stated your own first and last name',
-        'Friendly, confident tone',
+        "Confirmed the prospect's name inquisitively",
+        'Introduced yourself (name + Vbrick)',
         'Let the prospect answer before pitching'
       ],
       coachingTips: {

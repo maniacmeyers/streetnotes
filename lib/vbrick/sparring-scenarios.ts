@@ -142,8 +142,8 @@ You've been pitched a dozen "AI for video" tools this quarter and most were vapo
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great, [first name], I was hoping you could help me out for a moment."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved in how your company manages or gets value out of its internal video?"' },
       { label: '4. Value prop', hint: '"Cool. We\'re hearing teams have years of video nobody can search — Vbrick AI makes all of it findable. Is that a problem you have?"' },
       { label: '5. Handle data objection', hint: 'If they ask about training on data: "Runs on AWS Bedrock with RAG, never trains on your content."' },
@@ -231,8 +231,8 @@ IT already "standardized on Microsoft" and you treat that as settled. You push b
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great, [first name], hoping you could help me out for a sec."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you on the team responsible for internal communications or live video events?"' },
       { label: '4. Reframe', hint: '"We\'re not a Teams replacement — we make Teams better at scale."' },
       { label: '5. The fact', hint: '"Are you on Teams Premium? eCDN is gated behind it, town halls cap ~20K."' },
@@ -319,8 +319,8 @@ You're harried and protective of your time, and you've already "solved" bufferin
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great, [first name], hoping you can help me out quickly."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you on the team that runs your company’s all-hands or town halls?"' },
       { label: '4. Value prop', hint: '"We help comms run all-hands that don’t buffer the building. Does your video hold up live?"' },
       { label: '5. Convene IT', hint: 'If punted to IT: "Let me bring them into a 15-min call with you."' },
@@ -407,8 +407,8 @@ You're enthusiastic but stretched thin and have been burned by tools that overpr
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great, [first name], hoping you can help me out for a moment."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you the person driving the video library / training portal project?"' },
       { label: '4. Diagnose', hint: '"Where does your video live today?" Listen before pitching.' },
       { label: '5. Map value', hint: 'Portal + governance + permissions; AI auto-organizes.' },
@@ -495,8 +495,8 @@ You already have a video tool that "passed security," so the rep has to differen
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"I’ll be quick — hoping you can point me in the right direction."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you the person who vets video/streaming tools for security?"' },
       { label: '4. Lead with FedRAMP', hint: '"Only FedRAMP-certified EVP and the only FedRAMP-certified eCDN."' },
       { label: '5. Stack controls', hint: 'SOC 2 Type II, GDPR, encryption, RBAC, Bedrock no-train.' },
@@ -583,8 +583,8 @@ You've never had an incident, so "why spend on it?" is your default. You'll dema
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can help me find the right person."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Do you touch risk or compliance around executive communications/video?"' },
       { label: '4. Value prop', hint: '"First and only EVP that can prove a video is real — C2PA-conformant."' },
       { label: '5. Translate + make concrete', hint: 'Faked CEO clip example; legal + comms own it.' },
@@ -671,8 +671,8 @@ You're skeptical of "another integration to maintain" and you'll ask what MCP ev
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can help me out for one minute."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved in your company’s AI / agent initiatives?"' },
       { label: '4. Reframe', hint: '"Not a video pitch — your AI is blind to knowledge trapped in video."' },
       { label: '5. Explain MCP', hint: 'Standard way agents pull data; one connection; feeds Copilot/ServiceNow/Salesforce.' },
@@ -759,8 +759,8 @@ You're protective of your ServiceNow stack and immediately suspicious of bolt-on
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can help me out quickly."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved with your ServiceNow platform or digital experience?"' },
       { label: '4. Value prop', hint: '"Only certified video app in the ServiceNow Store — powers Now Assist."' },
       { label: '5. Tie to metric', hint: 'Case deflection + resolution time; certified survives upgrades.' },
@@ -847,8 +847,8 @@ You've been called repeatedly this month about the Bending Spoons situation by c
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great, [first name], hoping you can help me out for a moment."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you on the team responsible for enterprise video?"' },
       { label: '4. Value prop', hint: '"Customers are coming to us over Bending Spoons/Brightcove friction — seeing that?"' },
       { label: '5. Differentiate', hint: 'FedRAMP + shipping AI roadmap; renewal = leverage.' },
@@ -935,8 +935,8 @@ You demand a number and you're skeptical of every vendor's "savings" claim. Any 
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"I’ll be quick — hoping you can point me the right way."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Do you own or sign off on video/communications vendor spend?"' },
       { label: '4. Value prop', hint: '"Consolidation play: one platform replaces webcasting + eCDN + per-event licensing."' },
       { label: '5. Prove + reframe', hint: 'Real Webex cost-cut; "we’ll surface your hidden spend."' },
@@ -1023,8 +1023,8 @@ You're slammed and a little guarded about handing out colleagues' info. If the r
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great, hoping you can help me out for a second."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you on the team responsible for the company’s video?"' },
       { label: '4. NO-path pivot', hint: 'No "sorry!" — "Who’s the best person to speak with about video?"' },
       { label: '5. Bridge', hint: '"May I tell them you said hello / pointed me their way?"' },
@@ -1111,8 +1111,8 @@ You try to drag everything to price immediately and you'll say "make the case in
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They answer "Hello?" — you introduce yourself by your own first and last name, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can help me out for a moment."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Do you touch tools for training, knowledge, or internal comms?"' },
       { label: '4. Concede + reframe', hint: '"You’re not a video company — this is a knowledge/AI problem."' },
       { label: '5. One-liner + deflect price', hint: '"Knowledge walks out the door." Don’t price an unscoped category.' },
@@ -1205,8 +1205,8 @@ The BDR is calling from Vbrick. Let them get to it; warm up the moment they show
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great — I was hoping you could help me out for a second."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved in how your agency delivers training or internal video?"' },
       { label: '4. Lead with FedRAMP', hint: '"We\'re the only FedRAMP-certified enterprise video platform — is authorization your gate?"' },
       { label: '5. Go deeper', hint: 'Platform AND eCDN are FedRAMP-certified; governed, searchable, scales for surges.' },
@@ -1293,8 +1293,8 @@ The BDR is calling from Vbrick about all-hands that reach every site without buf
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great — I was hoping you could help me out quickly."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you on the team that runs your agency\'s all-staff broadcasts?"' },
       { label: '4. Value prop', hint: '"We help agencies run all-hands that reach every site without buffering. Does yours hold up live?"' },
       { label: '5. eCDN + FedRAMP', hint: 'eCDN fixes the bandwidth problem; ours is the only FedRAMP-certified one; three methods, one vendor.' },
@@ -1381,8 +1381,8 @@ The BDR is calling from Vbrick. Make them be precise; reward it warmly when they
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"I\'ll be quick — hoping you can point me the right way."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved in cloud standards or which video tools get authorized?"' },
       { label: '4. Name the gap', hint: '"Most video tools only carry SOC 2 — we\'re actually FedRAMP-certified."' },
       { label: '5. Be precise', hint: '"Authorized, not ready." SOC 2 = point-in-time; FedRAMP = continuous. eCDN certified too.' },
@@ -1469,8 +1469,8 @@ The BDR is calling from Vbrick. Reward specificity on security; warm up when the
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can point me in the right direction for a second."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you the person who authorizes the tools your org uses?"' },
       { label: '4. Lead with FedRAMP', hint: '"We\'re FedRAMP-certified — is secure video delivery on your plate?"' },
       { label: '5. Stack controls', hint: 'RBAC / least privilege, encryption at rest+transit, SOC 2 Type II, AI never trains on your data.' },
@@ -1557,8 +1557,8 @@ The BDR is calling from Vbrick about making your video searchable with AI. Be wa
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great — hoping you could help me out for a moment."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved in how your agency manages or gets value from its video?"' },
       { label: '4. Value prop', hint: '"We make years of video searchable with AI — without the AI ever training on your data."' },
       { label: '5. Handle data + FedRAMP', hint: '"Runs on AWS Bedrock with RAG, never trains on your content — all inside a FedRAMP boundary."' },
@@ -1651,8 +1651,8 @@ The BDR is calling from Vbrick. Reward a rep who speaks recordkeeping and authen
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great — hoping you could help me out for a second."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved in recordkeeping or supervision for communications?"' },
       { label: '4. Value prop', hint: '"We govern video like a record — retention, audit trails, tamper-evident proof. On your plate?"' },
       { label: '5. C2PA + retention', hint: 'Governed retention + audit trail; first/only C2PA-conformant EVP for tamper-evident authenticity.' },
@@ -1739,8 +1739,8 @@ The BDR is calling from Vbrick about broadcasts that scale without melting the n
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great — hoping you could help me out quickly."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you on the team that runs your firm\'s town halls?"' },
       { label: '4. Value prop', hint: '"We help banks run town halls that don\'t buffer at the branches. Does yours hold up live?"' },
       { label: '5. eCDN + posture', hint: 'eCDN fixes bandwidth; three methods, one vendor; SOC 2 + FedRAMP; ~100 webcasts/mo for 115K users.' },
@@ -1827,8 +1827,8 @@ The BDR is calling from Vbrick. Make them be specific; warm up when they earn it
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can point me the right way for a second."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you the person who reviews tools that could touch sensitive data?"' },
       { label: '4. Lead with controls', hint: '"SOC 2 Type II, encryption, RBAC — is secure video on your review list?"' },
       { label: '5. AI + FedRAMP', hint: 'AI on Bedrock never trains on your data; FedRAMP-certified as top-tier rigor proof.' },
@@ -1915,8 +1915,8 @@ The BDR is calling from Vbrick. Lean in on completion rates and audit-ready repo
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Great — hoping you could help me out for a moment."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you the person driving advisor training or compliance education?"' },
       { label: '4. Value prop', hint: '"One governed, searchable library + provable completion — layered on your LMS, not replacing it."' },
       { label: '5. Map value', hint: 'Findable training on the job; reporting auditors accept; permissions + retention baked in.' },
@@ -2003,8 +2003,8 @@ The BDR is calling from Vbrick. Lean in on certified integrations and AI-readine
       },
     ],
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Help request', hint: '"Hoping you can help me out quickly."' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualification', hint: '"Are you involved with your ServiceNow platform or digital workplace?"' },
       { label: '4. Value prop', hint: '"Only certified video app in the ServiceNow Store — powers Now Assist. Deflection a priority?"' },
       { label: '5. Metric + MCP', hint: 'Certified survives upgrades; Now Assist surfaces the fix clip; MCP feeds the agents you\'re building.' },
@@ -2031,8 +2031,8 @@ Your goal: earn 20 minutes to show her how Vbrick Rev integrates natively with C
 This is an outbound cold call. Rachel does not know Vbrick well. She picked up — do your job.`,
     hardModeContext: '',
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Ask for help', hint: 'Be brief and honest: "I work with university video teams — did I catch you at a bad time?"' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualify the pain', hint: 'Ask one open question about their setup: "How is your faculty recording workflow going these days?"' },
       { label: '4. Land one value prop', hint: 'Tie Vbrick to their pain: "We cut the recording workflow to one click inside Canvas — faculty just hit record and it posts automatically."' },
       { label: '5. Handle the brush-off', hint: `If she says she has Kaltura: "Totally — we come up a lot at renewal. Our Canvas integration tends to be the thing people notice first."` },
@@ -2100,8 +2100,8 @@ Your goal: earn 20 minutes to show Marcus how Vbrick Rev delivers high-accuracy 
 Vbrick holds SOC 2 Type II and is GDPR-compliant. Lead with caption accuracy and language coverage. FedRAMP is not your lead here — that is a government differentiator.`,
     hardModeContext: '',
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Ask for help', hint: '"I work with university accessibility and academic tech teams — do you have 30 seconds?"' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualify the pain', hint: 'Ask: "How is your lecture caption accuracy holding up right now — is it meeting your WCAG threshold?"' },
       { label: '4. Land one value prop', hint: '"We specialize in high-accuracy auto-captioning with transcription and translation across 100+ languages — built for compliance audits, not just checkbox captions."' },
       { label: '5. Handle the objection', hint: `If he asks how you're different: "Most built-in caption tools hover in the mid-80s on accuracy. Ours are built to 508 standards and we give you the completion and accuracy reports to back it up in an audit."` },
@@ -2167,8 +2167,8 @@ David's known pain: hybrid class broadcasts buffer or drop quality at smaller Co
 Your goal: earn 20 minutes to discuss how Vbrick's eCDN — the only platform with all three eCDN technologies (peer-to-peer, edge caching, multicast) from one vendor — delivers reliable broadcast quality to every Penn State campus without saturating limited pipes.`,
     hardModeContext: '',
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Ask for help', hint: '"I work with universities managing video delivery across multiple campuses — got 30 seconds?"' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualify the pain', hint: '"How is your hybrid class video holding up at your Commonwealth campuses — are students getting a consistent experience everywhere?"' },
       { label: '4. Land the eCDN value prop', hint: '"Vbrick is the only platform with all three eCDN technologies — peer-to-peer, edge caching, and multicast — from one vendor. We keep bandwidth use low even when thousands of students hit the stream at once."' },
       { label: '5. Handle the objection', hint: `If he says he needs his network team involved: "Of course — that makes total sense. Most network teams actually like the eCDN story because it reduces their load, not adds to it. Would it make sense to start with just 20 minutes for you first?"` },
@@ -2236,8 +2236,8 @@ She is in active evaluation mode. She will ask for peer R1 references. She cares
 Your goal: earn 20 minutes to show her Vbrick's AI Smart Search, auto-titling/chaptering/tagging, and the privacy guarantee — and position Vbrick as the renewal alternative worth evaluating.`,
     hardModeContext: '',
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Ask for help', hint: '"I work with R1 universities evaluating their video platforms — do you have 30 seconds for one question?"' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualify the pain', hint: '"How searchable is your lecture library right now — can faculty actually find specific content, or is it basically a growing archive nobody can navigate?"' },
       { label: '4. Land the AI and privacy value prop', hint: '"Our AI does semantic search across the entire library — reads what was said AND what was shown on screen — and it never trains on your institutional data. Runs on AWS Bedrock with RAG."' },
       { label: '5. Handle the peer reference ask', hint: '"Totally fair — we work with R1 institutions at comparable scale and I would rather give you names on a call than in a cold email. Would 20 minutes be worth it?"' },
@@ -2303,8 +2303,8 @@ Priya's known pain: video streams poorly at NYU Abu Dhabi and NYU Shanghai due t
 Your goal: earn 20 minutes to discuss how Vbrick's eCDN delivers reliable video to far campuses and how transcription and translation in 100+ languages serves NYU's multilingual student population.`,
     hardModeContext: '',
     cheatCard: [
-      { label: '1. Greet + introduce yourself', hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").' },
-      { label: '2. Ask for help', hint: '"I work with universities managing video across global campuses — do you have 30 seconds?"' },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       { label: '3. Qualify the pain', hint: '"How is your video quality holding up at your Abu Dhabi and Shanghai campuses — are students there getting the same experience as in New York?"' },
       { label: '4. Land the global value prop', hint: '"Vbrick is built for global delivery — our eCDN handles latency to far campuses, and we do transcription and translation in 100+ languages so your international students are covered wherever they are."' },
       { label: '5. Handle the incumbent objection', hint: `If she says she already has Panopto: "A lot of global schools keep those for basic recording but hit a wall on delivery quality to far campuses and multilingual coverage. Is that where you are feeling the gap?"` },
@@ -2378,14 +2378,8 @@ YOUR JOB THIS CALL:
 - Close with a natural, confident ask for a 20-minute call.`,
     hardModeContext: "",
     cheatCard: [
-      {
-        label: "1. Greet + introduce yourself",
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: "2. Ask for help",
-        hint: `"I was hoping you could point me in the right direction — are you still the person who oversees clinical training video at Mayo?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: "3. Qualify the pain",
         hint: `"Quick question — are your nurses able to pull up training videos easily on mobile at the bedside, or is that still a headache?"`,
@@ -2486,14 +2480,8 @@ YOUR JOB THIS CALL:
 - Close naturally after confirming the pain.`,
     hardModeContext: "",
     cheatCard: [
-      {
-        label: "1. Greet + introduce yourself",
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: "2. Ask for help",
-        hint: `"Quick question — are you still the person who owns large-scale live events at Kaiser?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: "3. Qualify the pain",
         hint: `"When you run a system-wide all-hands, do remote hospitals and rural clinics get reliable delivery, or is network strain still an issue?"`,
@@ -2595,14 +2583,8 @@ YOUR JOB THIS CALL:
 - Soft close; she will say yes once completion tracking is clearly connected.`,
     hardModeContext: "",
     cheatCard: [
-      {
-        label: "1. Greet + introduce yourself",
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: "2. Ask for help",
-        hint: `"Quick question — are you still the person overseeing compliance training across HCA's hospitals?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: "3. Qualify the pain",
         hint: `"When you need to show completion for a mandatory module across all your facilities — can you pull that from one place, or is it still a manual chase?"`,
@@ -2705,14 +2687,8 @@ YOUR JOB THIS CALL:
 - The retiring-expert narrative is the emotional hook — use it.`,
     hardModeContext: "",
     cheatCard: [
-      {
-        label: "1. Greet + introduce yourself",
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: "2. Ask for help",
-        hint: `"Quick question — are you still the person who owns knowledge management and clinical video at Cleveland Clinic?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: "3. Qualify the pain",
         hint: `"When a senior clinician retires or transitions out — is there a reliable way to capture their expertise on video and make it findable, or is that knowledge still at risk of walking out the door?"`,
@@ -2815,14 +2791,8 @@ YOUR JOB THIS CALL:
 - The close is confident but natural — she has an unsolved problem and needs this.`,
     hardModeContext: "",
     cheatCard: [
-      {
-        label: "1. Greet + introduce yourself",
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: "2. Ask for help",
-        hint: `"Quick question — are you still the person who evaluates security for enterprise video or collaboration tools at CVS Health?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: "3. Qualify the pain",
         hint: `"I am curious — when your teams use video in workflows that are close to PHI or sensitive member data, are you confident the governance controls actually meet your bar, or is that still an open question?"`,
@@ -2913,14 +2883,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You're calling Marcus Delgado, Director of Manufacturing Communications at General Motors. He oversees internal communications to 100,000+ employees across North American manufacturing plants. Last week's all-hands buffered for 30% of viewers — plant managers are still complaining. He's not expecting your call but he's in solve-it mode. Your hook: Vbrick's eCDN delivers live video to tens of thousands simultaneously using three methods (peer-to-peer, edge caching, multicast) from a single vendor, without taxing the corporate WAN.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
-      },
-      {
-        label: '2. Ask for help (15 seconds)',
-        hint: `Ask: "I caught you at a bad time?" then bridge to your hook — "I work with manufacturing comms teams that run large all-hands events and hit buffering problems at plant scale. Is that something on your radar?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `When he confirms buffering, ask: "How many sites or viewers were affected?" Let him tell the story — that's your qualification.`,
@@ -3009,14 +2973,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You're calling Dr. Elena Vasquez, Director of Knowledge Management & R&D Learning at 3M. Three senior R&D fellows are retiring this quarter. She has hours of recorded expert sessions that no one can navigate, and she was burned last year by an AI tool that legal shut down over data privacy concerns. Your hook: Vbrick's AI generates semantic search, auto-chapters, auto-summaries, and auto-tags on video content — running on AWS Bedrock with RAG and never training on customer data. That's a contractual commitment, not a policy statement.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
-      },
-      {
-        label: '2. Ask for help (15 seconds)',
-        hint: `"I'll keep this short — I work with knowledge management leaders in R&D-heavy companies dealing with a specific problem: video recordings that pile up and can't be searched. Is that something you're dealing with?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `When she confirms, ask: "And is it specifically the search and navigation problem, or is the bigger issue just getting experts to record in the first place?" Let her answer — it tells you where to go next.`,
@@ -3105,14 +3063,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You're calling Sandra Okafor, Director of Technical Training & Workforce Development at Boeing. She manages technical training curricula for 70,000+ engineers and technicians across dozens of facilities. Her biggest headache: distributing training on export-controlled (ITAR) content without the video delivery layer becoming a compliance exposure. Most LMS platforms control the course wrapper but outsource video to a CDN with weaker access controls. Your hook: Vbrick is the ONLY FedRAMP-certified enterprise video platform, with multi-layered RBAC that mirrors job classifications, encryption at rest and in transit, SOC 2 Type II, and access logging for audit-ready reporting.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
-      },
-      {
-        label: '2. Ask for help (15 seconds)',
-        hint: `"I'll be quick — I work with training leaders at large aerospace and defense manufacturers on one specific problem: controlling access to export-controlled training video without the video delivery layer becoming a compliance gap. Is that a challenge at Boeing?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `When she confirms ITAR or access control as real issues, ask: "Is the concern more about who can access the video itself, or about audit trails and proving access was restricted appropriately?" Her answer tells you where to focus.`,
@@ -3201,14 +3153,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You're calling Priya Nair, Manager of Global Dealer Training at Caterpillar. She manages training for 3,000+ independent dealers and field technicians worldwide. Independent dealers aren't employees — they need external access without being inside the firewall. Her current setup: a generic SharePoint link and a manual spreadsheet for completion tracking. Your hook: Vbrick provides a branded external portal with fine-grained permissions, mobile-first delivery, and automated completion reporting — no VPN required.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
-      },
-      {
-        label: '2. Ask for help (15 seconds)',
-        hint: `"I'll be brief — I work with manufacturer training teams that manage content for external dealer and partner networks. The challenge is usually giving independent dealers a professional experience without the headache of getting them inside the corporate firewall. Does that sound familiar?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `When she confirms, ask: "Is the bigger challenge the external access piece, or is it more about tracking completion and compliance across dealers you don't directly control?" Her answer shapes your next move.`,
@@ -3297,14 +3243,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You're calling Thomas Gruber, Senior Manager of Digital Workplace & IT at Siemens USA. He's managing four different video tools that don't integrate: Teams recordings, a legacy on-prem system, a Zoom webinar account, and a file share full of .mp4s. Last month's CEO all-hands buffered at 8 of 12 US manufacturing sites. He's skeptical of vendors but genuinely tired of the patchwork and the post-incident reports. Your hook: Vbrick consolidates webcasting, video CMS, and all three eCDN delivery methods from a single vendor — with native Microsoft Teams and SharePoint integration and full governance (RBAC, retention, audit trail).`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: 'They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").',
-      },
-      {
-        label: '2. Ask for help (15 seconds)',
-        hint: `"I'll keep it quick — I work with IT leaders at large manufacturers who've ended up with a mix of video tools that don't talk to each other, and all-hands events that buffer when the whole plant tunes in. Does that sound familiar?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `When he confirms, ask: "Is the bigger headache the WAN saturation during live events, or the fact that there's no single searchable home for all the video content?" Let him prioritize — it tells you where to lead.`,
@@ -3394,14 +3334,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You are cold-calling Sarah Chen, Director of Employee Communications at AT&T. AT&T runs quarterly all-hands events for 200,000+ employees. The last event had widespread buffering complaints and IT has been pushing back on large webcasts. Your goal is to surface the network-delivery pain, introduce Vbrick eCDN as the fix, and book a 20-minute discovery call.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: '2. Ask for help',
-        hint: `"I work with enterprise comms teams on large live-event delivery — do you have 30 seconds for one quick question?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `"When you run a firm-wide town hall, how does the network handle the load?" Listen for buffering, IT pushback, or scale concerns.`,
@@ -3490,14 +3424,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You are cold-calling Marcus Rivera, Senior Manager of Field Technician Enablement at Verizon. Marcus manages training content for thousands of field techs who work on towers, fiber installs, and equipment swaps. Training videos go stale fast and techs cannot find them on spotty LTE. Your goal is to surface the search-and-delivery pain, introduce Vbrick's Smart Search and governed mobile library, and book a 20-minute call.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: '2. Ask for help',
-        hint: `"I work with field-enablement teams on mobile training delivery — quick question, do you have 30 seconds?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `"When a procedure changes mid-shift, how do your techs find the updated training?" Listen for SharePoint chaos, helpdesk calls, or slow rollout.`,
@@ -3586,14 +3514,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You are cold-calling Jamie Park, Director of Retail Learning & Enablement at T-Mobile. T-Mobile launches new devices and plans every few weeks. Jamie's team struggles to get training videos to frontline retail reps before launch day. Content is scattered across email, Teams, and an LMS that reps rarely log into. Your goal is to surface the launch-cadence gap, introduce Vbrick's fast-publish mobile library, and book a 20-minute call.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: '2. Ask for help',
-        hint: `"I work with retail-enablement teams on getting training to frontline reps fast — one quick question?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `"When a new device launches, how quickly can you get a training video in front of every rep?" Listen for LMS lag, scattered channels, or post-launch delivery.`,
@@ -3682,14 +3604,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You are cold-calling Diana Torres, Director of Contact-Center Knowledge at Comcast. Comcast's contact center runs on ServiceNow. Diana's team manages knowledge content for thousands of agents, but video training and how-to content is invisible inside ServiceNow — agents cannot find it mid-call, so handle time stays high and escalations accumulate. Vbrick is the only certified video app in the ServiceNow Store and powers Now Assist for case deflection. Your goal is to surface this fit and book a 20-minute call.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: '2. Ask for help',
-        hint: `"I work with contact-center knowledge teams on surfacing video content inside ServiceNow — one quick question?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `"When agents are on a live call and need a how-to video, how does that work today?" Listen for agents leaving ServiceNow, failed searches, or escalations.`,
@@ -3778,14 +3694,8 @@ YOUR JOB THIS CALL:
     scenarioContext: `CALL CONTEXT: You are cold-calling Kevin Walsh, Director of Information Security & Governance at Lumen Technologies. Lumen handles CPNI-regulated customer data. Kevin's concern: recorded all-hands and training sessions referencing customer data are stored in uncontrolled cloud tools with no RBAC, no retention policy, and no audit trail. Vbrick is FedRAMP-certified (the only enterprise video platform that is), SOC 2 Type II compliant, encrypts at rest and in transit, and offers fine-grained RBAC plus full audit logs. Your goal is to surface the compliance fit and book a 20-minute call.`,
     hardModeContext: '',
     cheatCard: [
-      {
-        label: '1. Greet + introduce yourself',
-        hint: `They say "Hello?" — you introduce yourself: say your own first and last name in a warm, inquisitive tone ("Hi, this is [Your Name]?").`,
-      },
-      {
-        label: '2. Ask for help',
-        hint: `"I work with security and governance teams on governed video for sensitive communications — quick question?"`,
-      },
+      { label: '1. Confirm their name', hint: 'They say "Hello?" — you say their first and last name back in an inquisitive tone ("[Prospect Name]?") and pause for them to confirm.' },
+      { label: '2. Introduce yourself + help request', hint: '"Great, this is [Your Name] with Vbrick. I was hoping you could help me out for a second." Then pause.' },
       {
         label: '3. Qualify the pain',
         hint: `"When your team records a session that references customer data, what controls do you have on who can access that recording?" Listen for gaps in RBAC or audit trail.`,

@@ -188,12 +188,12 @@ export async function POST(request: Request) {
 
 ${VBRICK_2026_CONTEXT}
 
-THE FRAMEWORK IS A GUIDE, NOT A CHECKLIST. The ideal call tends to flow:
-1. Self-introduction: the prospect says a plain "Hello?", then the REP introduces THEMSELVES by their own first and last name, in a warm/inquisitive tone (e.g., "Hi, this is Jordan Avery?"). "name_captured" = the rep stated their OWN first and last name as a self-introduction near the top of the call. Be GENEROUS: accept any clearly-spoken first+last name, ignore transcription typos/misspellings/hyphenation, and do not require a specific phrasing. If the transcript shows the rep said two-part name that looks like a personal name in the opening, name_captured is TRUE.
-2. Help request: a light "I was hoping you could help me out for a second" (or any natural equivalent).
-3. Qualification: confirming the prospect owns / touches the relevant area.
-4. Pivot — YES → a value prop relevant to this call; NO → a clean pivot to "who's the best person?" (no groveling "oh sorry!").
-5. Close/Bridge: earning a concrete next step (a short meeting/demo/warm transfer), or permission to name-drop a referral.
+THE FRAMEWORK IS A GUIDE, NOT A CHECKLIST. The ideal call flows:
+1. Name confirmation: the prospect says a plain "Hello?", then the REP says the PROSPECT's first and last name back in an inquisitive tone (e.g., "Dana Whitfield?") and pauses for the prospect to confirm.
+2. Self-introduction + help request: the rep introduces themselves and asks for a moment — close to "Great, this is [rep first name] with Vbrick. I was hoping you could help me out for a second." "name_captured" = TRUE if, near the top of the call, the rep EITHER said the prospect's name back to confirm it OR introduced themselves by name (with Vbrick). Be GENEROUS: accept any clearly-spoken personal name, ignore transcription typos/misspellings/hyphenation, do not require exact phrasing. When in doubt, TRUE.
+3. Qualification: an "are you involved in / do you lead how your [company/agency] does X?" question (e.g., "are you involved in how your company delivers training or internal video?").
+4. Reason for calling — YES → the rep leads with WHY they're calling, naming the key differentiator and why it matters to this buyer (e.g. "we're the only FedRAMP-certified enterprise video platform, and clients like you need that to unlock video + AI"); NO → a clean pivot to "who's the best person?" (no groveling "oh sorry!").
+5. Close: a soft ask for a slightly longer follow-up — close to "Would you be open to scheduling a slightly longer conversation to explore this in more detail?" — or permission to name-drop a referral.
 
 ${accentContext}
 
@@ -263,7 +263,7 @@ Score on Framework Adherence, Accent Clarity, Tonality, Objection Handling, and 
               framework_analysis: {
                 type: 'object',
                 properties: {
-                  name_captured: { type: 'boolean', description: 'TRUE if the rep introduced THEMSELVES by stating their own first and last name near the top of the call. Accept any clearly-spoken first+last name; ignore transcription typos. When in doubt, TRUE.' },
+                  name_captured: { type: 'boolean', description: 'TRUE if, near the top of the call, the rep EITHER said the prospect\'s name back to confirm it OR introduced themselves by name (with Vbrick). Accept any clearly-spoken personal name; ignore transcription typos. When in doubt, TRUE.' },
                   qualification_asked: { type: 'boolean' },
                   pivot_executed: { type: 'boolean' },
                   value_prop_delivered: { type: 'boolean' },
